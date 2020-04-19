@@ -1,0 +1,372 @@
+body {width: 100%; position: relative;line-height:1;position: relative; margin:0px auto;  line-height:1; padding:0px 0; font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;}
+h1, h2, h3, h4, h5, h6 {font-weight: normal;}
+ul, li, ol {padding-inline-start:0; list-style-type:none;}
+button {border: none;}
+input, textarea, button, a {border-radius: 2px;}
+.Explorer {min-height: 100%;width: 100%;position: relative; background-color: #f1f1f1;}
+.HeaderTop {top: 0 !important;}
+header {width: 100%; min-width: 990px; height: 60px; background-color: #ffffff; text-align: center; z-index: 999; position: fixed; top: 0; left: 0;}
+header ul {width: 990px; height: 60px; background-color: transparent; text-align: center; display: inline-block; margin: 0;}
+header ul li {background-color: transparent; text-align: center; display: inline-block;}
+header .BrandLi {width: 130px; height: 20px;vertical-align: top;margin-top: 20px; height: 20px; float: left;}
+header .BrandLi a {text-decoration: none;font-size: 18px; color: #292929;}
+header .BrandLi a span {font-size: 20px;}
+header .MenuLi {padding: 25px;height: 20px;}
+header .MenuLi a {font-size: 14px;font-weight: bold;text-decoration: none; color: #545454;}
+header .MenuLi a:hover {color: #000000;}
+header .ConnLi {width: 40px; float: right; margin-top: 15px;}
+header .ConnLi span {width: 30px; height: 30px; border-radius: 99%; background-color: #00ff00; display: inline-block;}
+header .SearchLi {display: inline-block; width: 650px;margin: 15px 0px 0 0; text-align: center;}
+header .SearchLi input {width: 400px; background-color: #ffffff; border: 1px solid #bbbbbb; height: 30px; font-size: 13px; outline: none; color: #000000; font-weight: normal; padding: 0 0 0 10px;}
+header .SearchLi input:hover, .Main .MainLoad input:focus, .Main .MainLoad input:active {background-color: #ffffff; border-bottom: 2px solid #f1f1f1;} 
+header .SearchLi a {width: 40px; display: inline-block; border: none; background-color: #292929; height: 30px; vertical-align: top;}
+header .SearchLi a:hover {background-color: #000000;}
+header .SearchLi a .search {position: relative;width: 20px ;margin: 0 auto;padding: 1px;text-align: center;margin-top: 6px;}
+header .DeployLi a {margin:0 0px 0 30px;font-weight: bold;font-size: 11px;width: auto;padding: 4px 15px;}
+header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
+.FixedNav {position: fixed; top:0;}
+.search__circle {width: 10px;height: 10px;border: 2px solid #fff;border-radius: 100px;}
+.search__rectangle {position: absolute;right: 2px;bottom: 2px;width: 7px;-webkit-transform: rotate(36deg);transform: rotate(36deg);border: 1px solid #fff;border-top-right-radius: 12px;border-bottom-right-radius: 12px;}
+.Main {width: 100%; background-color: transparent; text-align: center; position: relative;min-width: 990px;}
+.DFOList {width: 100%; min-width: 990px; background-color: #f1f1f1; padding: 50px 0; text-align: center; display: inline-block;     margin-top: 60px;}
+.DFOListFixed {margin-top: 55px;}
+.DFOList .DFOLister {width: 990px; margin: 0 auto; display: inline-block;}
+.DFOList .DFOLister .DFOInfo {width: 100%; display: inline-block; border-bottom: 1px solid #ffffff; margin-bottom: 10px;}
+.DFOList .DFOLister .DFOInfo .DFOOpener {margin: 0; display: inline-block; height: 80px; text-align: left;width:530px; vertical-align: top;}
+.DFOList .DFOLister .DFOInfo .DFOOpener:hover .DFOName h5, .DFOList .DFOLister .DFOInfo .DFOOpener .DFOName:hover h5, .DFOList .DFOLister .DFOInfo .DFOOpener .DFOName h5:hover {text-decoration: underline;}
+
+.DFOList .DFOLister .DFOInfo .DFOAddressOpener {margin: 0; display: inline-block; height: 80px; text-align: right;width: 100px;vertical-align: top; margin-left: 10px;}
+.DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo {width: 100px; display: inline-block; margin: 15px 0 0 0; vertical-align: top; text-align: center;}
+.DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo h5 {font-size: 12px; width: 100px; font-weight: bold; color: #292929;line-height: 1.1; word-break: break-all;margin: 0;display: inline-block; min-height: 20px;}
+.DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo h6 {font-size: 13px; width: 100px; color: #292929;line-height: 1; word-break: break-all;margin: 0;display: inline-block; margin: 0 0 10px 0;}
+.DFOList .DFOLister .DFOInfo .DFOAddressOpener:hover .DFOMinInfo h5, .DFOList .DFOLister .DFOInfo .DFOAddressOpener:hover .DFOMinInfo h6, .DFOAddressOpener .DFOMinInfo:hover h5, .DFOAddressOpener .DFOMinInfo:hover h6, .DFOAddressOpener h5:hover, .DFOAddressOpener h6:hover {text-decoration: underline;}
+
+.DFOList .DFOLister .DFOInfo .DFOENSOpener {margin: 0; display: inline-block; height: 80px; text-align: center;width: 220px;vertical-align: top;margin-left: 10px;}
+.DFOList .DFOLister .DFOInfo .DFOENSOpener .DFOMinInfo {width: 220px; display: inline-block; margin: 15px 0 0 0; vertical-align: top; text-align: center;}
+.DFOList .DFOLister .DFOInfo .DFOENSOpener .DFOMinInfo h5 {font-size: 12px; width: 220px; font-weight: bold; color: #292929;line-height: 1.1; word-break: break-all;margin: 0;display: inline-block;min-height: 20px;}
+.DFOList .DFOLister .DFOInfo .DFOENSOpener .DFOMinInfo h6 {font-size: 13px; width: 220px; color: #292929;line-height: 1; word-break: break-all;margin: 0;display: inline-block; margin: 0 0 10px 0;}
+.DFOList .DFOLister .DFOInfo .DFOENSOpener:hover .DFOMinInfo h5, .DFOList .DFOLister .DFOInfo .DFOENSOpener:hover .DFOMinInfo h6, .DFOENSOpener .DFOMinInfo:hover h5, .DFOENSOpener .DFOMinInfo:hover h6, .DFOENSOpener h5:hover, .DFOENSOpener h6:hover {text-decoration: underline;}
+
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOIcon {width: 35px; height: 35px; display: inline-block; margin: 15px 10px 0 10px; vertical-align: middle;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOIcon img {width: 35px; height: 35px; display: inline-block; margin: 0;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOName {width: 200px; display: inline-block; margin: 15px 10px 0 10px; vertical-align: middle;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOName h5 {font-size: 16px; font-weight: bold; color: #292929;line-height: 1;width: 200px; word-break: break-all;margin: 0;display: inline-block;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOMinInfo {width: 105px; display: inline-block; margin: 15px 0 0 10px; vertical-align: top; text-align: center;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOMinInfo h5 {font-size: 12px;font-weight: bold; width: 100px; color: #292929;line-height: 1.1; word-break: break-all;display: inline-block;margin: 0;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOMinInfo h6 {font-size: 13px; width: 100px; color: #292929;line-height: 1; word-break: break-all;margin: 0;display: inline-block; margin: 0 0 10px 0;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOENSInfo {width: 220px; display: inline-block; margin: 15px 10px 0 10px; vertical-align: top; text-align: center;} 
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOENSInfo h5 {font-size: 13px;font-weight: bold; width: 220px; color: #292929;line-height: 1.1; word-break: break-all;display: inline-block;margin: 0;}
+.DFOList .DFOLister .DFOInfo .DFOOpener .DFOENSInfo h6 {font-size: 13px; width: 220px; color: #292929;line-height: 1; word-break: break-all;margin: 0;display: inline-block; margin: 0 0 10px 0;}
+.DFOInfo .DFOOpened {width: 100%;}
+.DFOEditKill {width: 250px; display: inline-block; text-align: right;}
+.EditDFOYo {background-color: #007bff; color: #ffffff; padding: 5px 10px; font-size: 11px; font-weight: bold;display: inline-block;vertical-align: top; margin: 25px 40px 0px 0px; text-decoration: none;}
+.EditDFOYoBl {background-color: #000000;}
+.CloseDFOYo {color: #ffffff; font-size: 42px; display: inline-block; vertical-align: top;line-height: 0;margin-top: 33px; text-decoration: none; font-family: "arial" !important;}
+.DFOOpened .DFONavigator {width: 100%; text-align: center; padding: 0 0 0 0; margin: 0 0 20px 0; background-color: #f1f1f1; height: 37px;}
+.DFOOpened .DFONavigator li {width: 175px; margin: 0; height: 35px; font-size: 14px; font-weight: bold; display: inline-block; text-align: center; max-width: 330px;}
+.DFOOpened .DFONavigator li a {width: 100%; height: 20px; display: inline-block; text-align: center; text-decoration: none; padding: 10px 0 5px 0; color: #292929; border-bottom: 2px solid #f1f1f1; background-color: #f1f1f1; border-radius: 0;}
+.DFOOpened .DFONavigator li a:hover, .DFOOpened .DFONavigator li .selected {background-color: #545454; color: #ffffff; border-bottom: 2px solid #545454;}
+.DFOOpened .DFOOverview {width: 100%; display: inline-block; margin:50px 0 5px 0}
+.DFOOpened .DFOOverview .DFOHosting {width: 100%; margin-top: 30px; text-align: left; padding: 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none;}
+.DFOOpened .DFOOverview .DFOHosting li {width: 315px; display: inline-block; text-decoration: none; padding: 10px 5px 0 5px;list-style-type:none; vertical-align: top;}
+.DFOOpened .DFOOverview .DFOHosting li p {font-size: 12.5px; width: 230px; display: inline-block; line-height: 1.3;}
+.DFOOpened .DFOOverview .DFOHosting .DFOHostingBig {width: 210px;}
+.DFOOpened .DFOOverview .DFOHosting .DFOHostingMid {width: 190px;}
+.DFOOpened .DFOOverview .DFOHosting .DFOHostingTitle {font-size: 14px;font-weight: normal; width: 100%;line-height: 1.1; word-break: break-all;display: inline-block; margin: 8px 0;}
+.DFOOpened .DFOOverview .DFOHosting .DFOTitleSection {width: 100%; text-align: center; color: #292929; margin: 0 3px;}
+.DFOOpened .DFOOverview .DFOHosting .DFOTitleSection p {color: #292929; margin: 3px 0; font-size: 12px;font-weight: normal; line-height: 1.1; text-decoration: none; width: 100%; display: inline-block;}
+.DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span {color: #292929; margin: 3px 0; font-size: 20px; line-height: 1.1; width: 100%; display: inline-block; font-weight: bold;}
+.DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span aside {display: inline; font-size: 12px;}
+.DFOOpened .DFOOverview .DFOFunctionList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 50px;}
+.DFOOpened .DFOOverview .DFOFunctionList li {width: 100%; display: inline-block; text-decoration: none; padding: 0; margin: 0 0 20px 0;list-style-type:none; vertical-align: top; text-align: left;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionEmoji {width: 25px; min-height: 60px;margin: 0 5px 0 15px; vertical-align: top; display: inline-block;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionEmoji h4 {font-size: 22px;color: #292929;line-height: 1.1; word-break: break-all;display: inline-block; margin: 10px 0px;}
+.DFOOpened .DFOOverview .DFOFunctionList li  .DFOFunctionTitle {width: 230px;margin: 0 40px 0 0; vertical-align: top; display: inline-block; min-height: 60px;}
+.DFOOpened .DFOOverview .DFOFunctionList li  .DFOFunctionTitle h5 {font-size: 18px;font-weight: bold;color: #292929;line-height: 1.1; word-break: break-all;display: inline-block; margin: 10px 0px;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription {width: 470px;margin: 0 20px 0 0; vertical-align: top; display: inline-block; }
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p {font-size: 14px;color: #292929;line-height: 1.3;display: inline-block; margin: 10px 0px;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p > a {text-decoration: underline;color: #888888;font-weight: bold;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate {width: 110px;margin: 0 0 0 35px; vertical-align: top; display: inline-block; text-align: center;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate h6 {font-size: 13px; margin: 5px 0 0 0;display: inline-block; font-weight: bold;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate a {font-size: 12px; font-weight: bold;margin: 5px 0px; display: inline-block; color: #292929;}
+.DFOOpened .DFOOverview .DFOFunctionList li  .DFOBtnViewSection {width: 170px;margin: 1px 0 0 10px; vertical-align: top; display: inline-block;min-height: 60px;text-align: center;}
+
+
+.DFOOpened .DFOOverview .DFOStateList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 50px;}
+.DFOOpened .DFOOverview .DFOStateList li {width: 100%; display: inline-block; text-decoration: none; padding: 0; margin: 0 0 20px 0;list-style-type:none; vertical-align: top; text-align: left;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState {width: 850px; display: block; margin: 20px auto; text-align: center;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateTN {width: 350px;display: inline-block; margin: 0 40px 0 0; vertical-align: top;text-align: left;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateN {width: 350px; display: inline-block; margin: 0; font-size: 16px; font-weight: bold; word-break: break-all; vertical-align: top;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateT {width: 350px; display: inline-block; margin: 10px 0 0 0; font-size: 13px;  word-break: break-all; vertical-align: top;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV {width: 300px; display: inline-block; margin: 0 0 0 40px; vertical-align: top; text-align: left;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV span {font-size: 13px; word-break: break-all;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input {height: 20px;border: 2px solid #f2f2f2; font-size: 13px; color: #545454; background-color: #f9f9f9; width: 120px;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV .LinkVisualButton {margin: 0 5px; vertical-align: top;}
+
+.DFOOpened .DFOOverview .IndexShowCode {width: 100%; display: inline-block; text-align: center; background-color: #545454;}
+.DFOOpened .DFOOverview .IndexShowCode .IndexShowCodeEditorBox {width: 480px; display: inline-block; margin: 0px 5px; text-align: center;}
+.DFOOpened .DFOOverview .IndexShowCode .IndexShowCodeEditorBox h5 {font-size: 14px;color: #f1f1f1;font-weight: bold;}
+.DFOOpened .DFOOverview .IndexShowCode .IndexShowCodeEditorBox .editor, .DFOOpened .DFOOverview .IndexShowCode .IndexShowCodeEditorBox .NewProposaleditor {width: 480px; height: 450px; display: inline-block;}
+.DFOFunctionQuery {width: 100%; display: inline-block; margin: 5px 0 0 0;background-color:  #545454;}
+.DFOFunctionQueryFX {width: 100%;display: inline-block; padding: 5px 0 0 0; text-align: center;}
+.DFOFunctionQueryFX  .DFOFunctionMethod {width: 240px;margin: 0 20px 0 0; vertical-align: top; display: inline-block; min-height: 60px; text-align: left;}
+.DFOFunctionQueryFX  .DFOFunctionMethod h6 {font-size: 12px;color: #f1f1f1;line-height: 1.1; word-break: break-all;display: inline-block; margin: 15px 0px;}
+.DFOFunctionQueryFX  .DFOBtnReadSection {width: 240px;margin: 0 0 0 10px; vertical-align: top; display: inline-block;min-height: 60px;text-align: left;}
+.DFOFunctionQueryFX .DFOBtnReadSection input {width: 150px; height: 18px;border: 1px solid #f1f1f1; font-size: 10px; color: #545454; background-color: #f9f9f9;}
+.DFOFunctionQueryFX  .DFOBtnResultSection {width: 180px;margin: 0 0 0 20px; vertical-align: top; display: inline-block;min-height: 60px; text-align: right;}
+.DFOFunctionQueryFX  .DFOBtnResultSection h5 {font-size: 14px;font-weight: bold; width: 135px; color: #f1f1f1;line-height: 1.1; word-break: break-all;margin: 10px 0 0 0;display: inline-block;}
+.DFOFunctionQueryFX  .DFOBtnResultSection h6 {font-size: 12px; width: 135px; color: #f1f1f1;line-height: 1; word-break: break-all;margin: 10px 0 0 0;;display: inline-block;}
+.NewProposalIndex {width: 100%; display: inline-block; text-align: center;}
+.NewProposalIndex .NewProposalCode {text-align: left; width: 700px; display: inline-block; text-align: center;}
+.CodeEditorOptionsFrom {padding: 7px 0; display: inline-block; width: 300px;}
+.CodeEditorOptionsCoding {padding: 7px 0 1px 0;display: inline-block; width: 300px;}
+.CodeEditorOptionsSelect {background-color: #545454;color: #f1f1f1; border: none;}
+.CodeEditorOptionsWhat {display: inline-block; font-size: 11px; color: #f1f1f1; font-weight: bold; margin: 5px 3px 5px 10px;vertical-align: middle;}
+.CodeEditorOptionsLoad {display: inline-block; color: #f1f1f1; width: 160px;}
+.CodeEditorOptionsInputNum {display: inline-block; color: #f1f1f1; background-color: #545454; border: 1px solid #616060; width: 50px;}
+.CodeEditorOptionsInput {display: inline-block; color: #f1f1f1; background-color: #545454; border: 1px solid #616060; width: 90px;}
+.CodeEditorOptionsLoadBtn {background-color: #f1f1f1; font-size: 10px; margin-left: 5px; padding: 2px 4px;}
+.NewProposalIndex .DFOItOptions {width: 290px;display: inline-block; vertical-align: top; margin: 20px 0 0 0;}
+.NewProposalIndex .DFOItOptions select {height: 20px; background-color: #ffffff; color: #292929; border-radius: 0;font-size: 11px; text-align: center; margin: 10px auto 0 auto;display: block; font-weight: bold;border: none; width: 190px;}
+.NewProposalIndex .DFOItOptions label {width: 120px;font-size: 11.5px;display: inline-block;margin: 15px 45px 0px 0px;text-align: left;} 
+.NewProposalIndex .DFOItOptions p {width:190px; font-size: 13px; display: inline-block; margin: 15px 0 0px 0; font-weight: bold;} 
+.NewProposalIndex .DFOItOptions input[type="checkbox"] {width: 15px; display: inline-block;}
+.NewProposalIndex .DFOItOptions input[type="text"], .NewProposalIndex .DFOItOptions input[type="number"] {width: 190px; display: inline-block; text-align: left; height: 20px; border:none; margin: 10px 0 0 0;}
+.NewProposalIndex .DFOItOptions textarea {width: 190px; display: inline-block; text-align: left; height: 70px;border:none; padding: 1%; margin: 10px 0 0 0;}
+.NewProposalIndex .DFOItOptions a {width: 190px; height: 12px; background-color: #007bff;color: #f1f1f1; font-size: 11px; border: none; font-weight: bold; margin: 10px 0 0 0;padding: 7px 0; text-decoration: none; display: inline-block;}
+.NewProposalIndex .DFOItOptions h4 {line-height: 1;margin: 25px 0 0px 0;font-size: 13px;font-weight: bold;}
+.NewProposalIndex .DFOItOptions .disabled {background-color: #d6d6d6;color: #5f5f5f;}
+.LinkVisualButtonPre {background-color: #888888; color: #2f2f2f;}
+.NewProposalIndex {width: 100%; display: inline-block; text-align: center; min-height: 600px;}
+.ProposalsIndex, .DraftsIndex, .DraftsOldIndex {width: 100%; display: inline-block; text-align: center;}
+.ProposalsActiveIndex, .DraftsActiveIndex {width: 100%; margin: 10px 0;}
+.ProposalsOldIndex {width: 100%; margin: 10px 0 0 0;}
+.ProposalsActiveIndex h4, .ProposalsOldIndex h4, .DraftsActiveIndex h4, .DraftsOldIndex h4 {font-size: 20px;}
+.ProposalsActiveIndex > ul, .ProposalsOldIndex > ul, .DraftsActiveIndex > ul, .DraftsOldIndex > ul {width: 100%; padding: 0; display: inline-block; text-decoration: none; text-align: center;}
+.ProposalsActiveIndex > ul > li, .ProposalsOldIndex > ul > li, .DraftsActiveIndex > ul > li, .DraftsOldIndex > ul > li {width: 100%; display: inline-block; text-decoration: none; padding:  15px 0 0 0;margin: 25px 0 0 0;; vertical-align: top; text-align: left; border-bottom: 1px solid #f1f1f1;}
+.ProposalAction {width: 150px;margin: 0 20px 0 0; vertical-align: top; text-align: center; float: right;}
+.DraftAction {width: 150px;margin: 0 0 0 0; vertical-align: top; text-align: center; float: right;}
+.ProposalAction h6 {font-size: 15px; color: #292929; font-weight: bold; vertical-align: top;margin: 0;}
+.DraftsOldIndex .DraftAction p {font-size: 12px;}
+.DraftAction .DraftActionTransaction {background-color: #007bff;}
+.ProposalPool {width: 220px;margin: 0 15px 0 15px; vertical-align: top; text-align: left; float: right;}
+.ProposalPool h6 {font-size: 15px; color: #292929; font-weight: bold; vertical-align: top;margin: 0;}
+.ProposalPool .LinkVisualStandard {font-size: 12px; color: #292929; margin: 15px 5px 0 0; font-weight: bold; display: inline; text-decoration: underline;}
+.ProposalPool > p {font-size: 14px; margin: 10px 0 5px 0;}
+.ProposalPool > p > span {font-size: 9px;}
+.ProposalPool > p > a {color: #292929;}
+.ProposalsActiveIndex .ProposalAction {width: 250px; text-align: left;}
+.ProposalsActiveIndex .ProposalAction .LinkVisualStandard {font-size: 11px;margin: 6px 5px 0 0;}
+.ProposalsActiveIndex .ProposalAction .LinkVisualButton {margin: 5px 5px 0px 0px;}
+.ProposalsActiveIndex .ProposalAction p {font-size: 16px; margin: 5px 0;}
+.ProposalsActiveIndex .ProposalAction p a {font-size: 14px; color: #616060;}
+.ProposalsOldIndex .ProposalBio {width: 650px;}
+.DraftsActiveIndex .DraftBio,.DraftsOldIndex .DraftBio {width: 600px;}
+.ProposalsOldIndex .ProposalPool {width: 250px;}
+.ProposalsOldIndex .ProposalPool > .LinkVisualStandard {margin: 6px 5px 0 0;}
+.ProposalsOldIndex .ProposalPool > p {margin: 5px 0 5px 0;}
+.ProposalsOldIndex .ProposalPool h6 {font-size: 16px;}
+.ProposalsOldIndex .ProposalPool section {width: 100%; display: inline-block; text-align: left;}
+.ProposalsOldIndex .ProposalPool .ProposalPoolWithdraw {background-color: #007bff;}
+.ProposalBio, .DraftBio {width: 650px; display: inline-block; margin: 0; padding: 0 20px 0 30px; min-height: 120px;}
+.ProposalBio p, .DraftBio p {font-size: 14px;line-height: 1.3;}
+.ProposalBio p > a, .DraftBio p > a {text-decoration: underline; color: #888888; font-weight: bold;}
+.DFOFunctionList b, .DFOFunctionList b {text-decoration: underline; color: #191919; font-weight: bold;}
+.ProposalBio b, .ProposalBio b {text-decoration: underline; color: #191919; font-weight: bold;}
+.ProposalBio h5, .DraftBio h5 {font-size: 18px; margin: 0; word-break: break-all;}
+.ProposalBio h5 span, .DraftBio h5 span {font-weight: bold;}
+.ProposalVote {width: 100%; display: inline-block; margin: 5px 0 0 0;background-color:  #545454;}
+.ProposalVoteINFO {width:615px; display: inline-block; padding: 15px 0; vertical-align: top;}
+.ProposalVote h6 {width: 100%; font-size: 15px;font-weight: bold; text-align: left; margin: 8px 0 15px 0; color: #f1f1f1;}
+.ProposalVoteToken {width: 180px;margin: 5px 0 5px 15px; vertical-align: top; text-align: left; display: inline-block;vertical-align: top;}
+.ProposalVote .ProposalPoolReview {width: 100%; margin: 10px 0 4px 0; height: 15px; text-align: left;}
+.ProposalVote .ProposalPoolReview .ProposalPoolReviewEm {width: 20px; display: inline-block; margin: 0 5px; text-align: center;}
+.ProposalVote .ProposalPoolReview .ProposalPoolReviewPercentage {width: 130px; display: inline-block; margin: 0 10px; text-align: left;}
+.ProposalVote .ProposalPoolReview .ProposalPoolReviewEm p {font-size: 12px; vertical-align: top; margin-top: 3px;display: inline-block;}
+.ProposalVote .ProposalPoolReview .ProposalPoolReviewPercentage  .ProposalPoolReviewPercentageN {max-width: 100%; width: 70%; text-align: center; font-size: 11px; font-weight: bold; background-color: #ff0000; height: 10px; vertical-align: top; margin-top: 1px; color: #f1f1f1;display: inline-block; padding: 2px 0;}
+.ProposalVote .ProposalPoolReview .ProposalPoolReviewPercentage  .ProposalPoolReviewPercentageY {max-width: 100%; width: 30%;text-align: center; font-size: 11px; font-weight: bold; background-color: #00bd3a; height: 10px; vertical-align: top; margin-top: 1px; color: #f1f1f1; display: inline-block; padding: 2px 0;}
+.ProposalVoteToken > p {width: 100%; display: inline-block; font-size: 11px; color: #eaeaea; word-break: break-all; margin: 4px 40px;}
+.ProposalVoteBalances {width:200px; padding: 5px 0 10px 20px; border-left: 1px solid #292929; display: inline-block;vertical-align: top;  border-right: 1px solid #292929;}
+.ProposalVoteBalances p {width: 100%; display: inline-block; font-size: 12px; color: #eaeaea; word-break: break-all; margin: 5px 0px;}
+.ProposalVoteBalances h6 {margin: 8px 0 5px 0; font-size: 14px;}
+.ProposalVoteVoting {width: 339px; display: inline-block; padding: 0 15px 0 20px; vertical-align: top; text-align: center; margin: 10px 0 0 0;}
+.ProposalVoteVoting h6 {margin: 10px 0 10px 0; font-size: 14px; color: #f1f1f1; width: 100%; text-align: center;}
+.ProposalVoteVotingNew, .ProposalVoteVotingExit {width: 100%; text-align: right; margin: 10px 0 10px 0;padding: 5px 0 10px 0;}
+.ProposalVoteVotingNew select {background-color: #2f2f2f;color: #f1f1f1;height: 25px;font-size: 10px;font-weight: bold;width: 80px;border: none;vertical-align: top;margin: 0 5px 0 0;}
+.ProposalVoteVotingExit select {background-color: #2f2f2f;color: #f1f1f1;height: 25px;font-size: 10px;font-weight: bold;width: 40px;border: none;vertical-align: top;margin: 0 5px 0 0;}
+.ProposalVoteVotingNew input, .ProposalVoteVotingExit input {width: 80px;height: 25px;background-color: #292929;border: 1px solid #616060;vertical-align: top;font-size: 10px;font-weight: bold;margin: 0 5px 0 0px; color: #f1f1f1;}
+.ProposalVoteVotingExit p ,.ProposalVoteVotingNew p {font-size: 12px; display: inline-block; margin:6px 5px 0 0; font-weight: bold; vertical-align: top; color: #f1f1f1;}
+.AllViewCode {width: 100%; height: 600px; background-color: #545454; display: inline-block; margin:0;}
+.ProposalsOldIndex .ProposalVoteINFO {width: 100%;}
+.ProposalsOldIndex .ProposalVoteToken {width: 470px;}
+.ProposalsOldIndex .ProposalPoolReview .ProposalPoolReviewPercentage {width: 410px;}
+.SideViewCode {width: 700px; display: inline-block; background-color: #292929; margin: 20px 0 0px 0; vertical-align: top;min-height: 600px;}
+.NewProposaleditor {width: 700px; display: inline-block; background-color: #292929; height: 600px; text-align: left;}
+.LinkVisualStandard {color: #292929;font-size: 10px;font-weight: bold; line-height: 1.1; text-decoration: underline; width: 100%; display: inline-block;}
+.LinkVisualButton {display: inline-block;background-color: #545454;color: #f1f1f1;font-size: 10px;height: 12px;width: 70px;padding: 4px 0px;font-weight: bold;text-decoration: none;text-align: center;}
+.LinkVisualClassic {display: inline-block; text-align: center; font-size: 9px; width: 100%; margin-top: 5px; color: #545454;}
+.DFOHosting .LinkVisualStandard {margin: 3px 0; font-size: 20px; font-weight: bold; text-decoration: none;}
+.DFOHosting .LinkVisualStandard:hover {text-decoration: underline;}
+.DFOHosting .LinkVisualStandard aside {font-size: 12px; display: inline;}
+.DFOHosting .LinkVisualButton {margin: 4px 2px;}
+.LinkVisualButtonB {background-color: #007bff;}
+.DFOFxTools {width: 70px; margin: 5px 5px 0 0; display: inline-block; vertical-align: top;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOBtnViewSection .LinkVisualButton {margin: 5px 0 0 0;}
+.DFOFunctionQueryFX .DFOBtnReadSection .LinkVisualButton {margin: 15px 5px;background-color: #292929;}
+.ProposalAction .LinkVisualButton, .DraftAction .LinkVisualButton {margin: 5px 0px 0px 4px;width: 90px;}
+.DraftsOldIndex .DraftAction .LinkVisualButton {vertical-align: middle;}
+.ProposalsActiveIndex > span, .ProposalsOldIndex > span {font-size: 12px;}
+.ProposalsActiveIndex > h4, .ProposalsOldIndex > h4 {font-size: 18px; font-weight: bold;}
+.ProposalsOldIndex .ProposalPool .LinkVisualButton {width: 90px; margin: 5px 5px 5px 0px;}
+.ProposalVoteVotingNew .LinkVisualButton, .ProposalVoteVotingExit .LinkVisualButton {width: 70px;height: 12px;border: none;font-weight: bold;font-size: 10px; color: #f1f1f1;background-color: #007bff; padding: 7px 0;}
+.Main .MainLoader {width: 100%; position: fixed; top: 0; left: 0; background-color: #f1f1f1; z-index: 88888888; height: 100%; overflow: hidden;}
+.Main .MainLoader .MainLoaderAll {width: 990px; margin: 150px auto 0 auto; display: inline-block; vertical-align: middle;}
+.Main .MainLoader figure {text-align: center; display: inline-block; width: 290px; margin-block-start: 0;margin-block-end: 0;margin-inline-start: 0;margin-inline-end: 0;vertical-align: top;}
+.Main .MainLoader figure > div {width: 290px; height: 200px; display: inline-block;}
+.Main .MainAwesome {width: 100%; position: fixed; margin: 0 auto; text-align: center; min-width: 990px; top: 40px;}
+.Main .MainAwesome .DFOTitle {width: 500px; margin: 0 auto;text-align: left; display: inline-block;vertical-align: top;}
+.Main .MainAwesome h4 {font-size: 28px; text-align: left; color: #f1f1f1; display: inline-block; margin: 40px 0px 0 10px; line-height: 1.3;}
+.Main .MainAwesome h6 {font-size: 13.5px; text-align: left; color: #f1f1f1; display: inline-block; line-height: 1.3; margin: 15px 0px 0 10px;}
+.Main .MainAwesome h6 a {font-weight: bold; text-decoration: underline;}
+.Main .MainAwesome img {width: 350px; display: inline-block;margin-left: 50px;}
+.Main .MainAwesome .MainBtn, .UnderstandingDFO .MainBtn {width: 100%; display: inline-block; margin: 20px 0 10px 0; text-align: center; clear: both; text-align: left;}
+.Main .MainAwesome .MainBtn a, .UnderstandingDFO .MainBtn a {margin: 0 5px; display: inline-block; padding: 10px 20px; text-decoration: underline; color: #ff00ff; font-size: 14px;font-weight: bold;}
+.Main .MainAwesome .MainBtn a:hover, .UnderstandingDFO .MainBtn a:hover {background-color: #ff00ff; color: #000000; text-decoration: none;}
+.Main .MainMsg {width: 100%; background-color: #00ffff; position: fixed; min-height: 30px; padding: 5px 0; bottom: 0; left: 0; z-index: 9999999999; }
+.Main .MainMsg button {position: absolute;top: 0;right: 0;background-color: transparent;border: none;text-decoration: underline;font-size: 12px;color: #2f2f2f;}
+.Main .MainMsg_warning {background-color: #ff00ff;}
+.Main .MainMsg_error {background-color: #ff0000;}
+.Main .MainMsg_success {background-color: #00ff00;}
+.Main .MainMsg a {font-size: 16px; color: #000000; font-weight: bold;}
+.BrandLiInfo {background-color: #000000;color: #ffffff !important;border-radius: 99px;width: 20px;height: 20px;display: inline-block; font-family: "arial";}
+.sequentialOps {width: 600px; padding: 25px; background-color: #ffffff; border: 2px solid #bbbbbb;display: inline-block; max-height: 500px; overflow: auto;}
+.sequentialOps h3 {font-size: 23px; width: 100%; display: inline-block; text-align: center; font-weight: bold; margin: 10px auto;}
+.sequentialOps ol {width: 550px; display: inline-block; text-align: left;}
+.sequentialOps ol li {width: 100%;padding: 5px 0;border-bottom: 1px solid #f1f1f1; list-style-type: decimal;}
+.sequentialOps ol li p {font-size: 16px; max-width: 500px; margin-right: 10px; display: inline-block;}
+.sequentialOps ol li span {font-size: 18px;width: 30px;text-align: center;display: inline-block; vertical-align: middle;}
+.sequentialOps .LetsGoPika {width: 150px; text-align: center; display: inline-block;}
+.sequentialOps .LetsGoPika a {font-size: 13px; padding: 10px 10px; display: inline-block; color: #616060; font-weight: bold; text-decoration: none;margin: 2px 4px;}
+.sequentialOps .LetsGoPika .LinkVisualButtonB {background-color: #007bff; color: #ffffff;}
+.sequentialOps .emergency {background-color: #ff0000;}
+.sequentialOps .LetsGoPika .disabled {background-color: transparent !important; color: #616060 !important;}
+.Nav {width: 100%; text-align: center;  display: inline-block; padding: 30px 0 30px 0;}
+.NavFixed {padding: 90px 0 30px 0;}
+.NavAll {width: 100%; text-align: center;  display: inline-block;}
+.NavDeploy {width: 900px; text-align: center; padding: 0; margin: 100px auto 0 auto;}
+.NavDeploy h2 {color: #000000; font-size: 40px; font-weight: bold; margin-bottom: 80px;}
+.NavDeploy h4 {font-size: 18px; color: #000000;}
+.NavDeploy p {font-size: 14px; color: #000000; text-decoration: none; line-height: 1.3; width: 250px; text-align: left; display: inline-block;vertical-align: middle;}
+.NavDeploy p span {font-weight: bold; font-size: 18px;line-height: 1.8;}
+.NavDeploy  .LinkVisualButton {width: 100%;height: 18px;background-color: #007bff;color: #f1f1f1;font-size: 13px;border: none;padding: 11px 0; font-weight: bold; text-decoration: none;}
+.DeployNewWhat .OkBoomer {width: 420px; font-size: 13px;}
+.DeployNewWhat h5 {font-size: 20px;margin: 10px 0px;display: inline-block;}
+.DeployNewWhat .EmergencyDescription {width: 450px; display: inline-block; margin: 20px 0;}
+.DeployNewWhat {width: 450px; margin-left: 150px; display: inline-block; vertical-align: middle;}
+.DeployNewWhat div {text-align: left;display: inline-block; padding: 15px 0; width: 100%;}
+.DFOGovernanceSelector {width: 500px; margin-left: 100px; display: inline-block; vertical-align: top;}
+.DFOGovernanceSelector ul {width: 100%; text-align: center;}
+.DFOGovernanceSelector ul li {width: 130px; padding: 10px; margin: 0 8px; display: inline-block; vertical-align: top;}
+.DFOGovernanceSelector ul li:hover, .DFOGovernanceSelector ul .selected {background-color: #292929;}
+.DFOGovernanceSelector ul li a {width: 100%; display: inline-block; vertical-align: top;}
+.DFOGovernanceSelector ul li a p {width: 100%; display: inline-block; font-size: 14px; text-align: left;}
+.DFOGovernanceSelector ul li a h6 {width: 100%; display: inline-block; font-size: 18px; text-align: left; font-weight: bold; margin: 0; color: #000000;}
+.DFOGovernanceSelector ul li:hover h6, .DFOGovernanceSelector ul li:hover p, .DFOGovernanceSelector ul .selected p, .DFOGovernanceSelector ul .selected h6 {color: #f1f1f1;}
+.DFOGovernanceSelector ul .selected {position: relative;}
+.DFOGovernanceSelector ul .SelectedTriangle {display: none;}
+.DFOGovernanceSelector ul .selected .SelectedTriangle {width: 0;height: 0;border-style: solid;border-width: 13.0px 7.5px 0 7.5px;border-color: #000000 transparent transparent transparent; border-style: inset; -webkit-transform:rotate(360deg); display: inline-block; position: absolute;bottom: -13px;left: 65px;}
+.InsertDfoName label, .InsertDfoSubdomain label, .InsertTokenName label, .InsertTokenSupply label, .InsertSurveyLength label, .InsertSurveyQuorum label, .InsertSurveyMinStake label, .InsertSurveyEmergencyLength label, .InsertSurveyEmergencyPenalty label, .InsertSurveySingleReward label, .InsertSurveyCommunityStake label {width: 150px; display: inline-block; font-size: 15px;color: #000000; font-weight: bold;}
+.InsertDfoName input, .InsertDfoSubdomain input, .InsertTokenName input, .InsertTokenSupply input, .InsertSurveyLength input, .InsertSurveyQuorum .SurveyQuorumHow, .InsertSurveyMinStake input,.InsertSurveyEmergencyLength input, .InsertSurveyEmergencyPenalty input, .InsertSurveySingleReward input, .InsertSurveyCommunityStake input {width: 150px;height: 25px;border: none;}
+.DFOGovernanceSelector .DeployNewWhat {margin-left: 0; width: 465px;}
+.InsertDfoSubdomain span, .InsertSurveyLength span, .InsertSurveyQuorum span, .InsertSurveyMinStake span, .InsertSurveyEmergencyPenalty span, .InsertSurveyEmergencyLength span, .InsertSurveyCommunityStake span, .InsertSurveySingleReward span  {font-size: 12px;}
+.InsertSurveyQuorum .SurveyQuorumYN  {margin: 0 12px 0 -26px;font-size: 20px;}
+.DeployActions {width: 100%; margin-top: 60px; text-align: center;}
+.DeployActions .DeployNextPrev {font-size: 12px; text-decoration: none; background-color: #007bff; color: #f1f1f1; font-weight: bold; padding: 5px 10px; margin: 0 10px;}
+.DFOFunctionIndexIcon {width: 100%; display: inline-block; background-color: #545454;}
+.DFOFunctionIndexIcon ul {width: 100%;padding: 10px 0;}
+.DFOFunctionIndexIcon ul li {width: 450px; text-align: center; display: inline-block; vertical-align: middle;}
+.DFOFunctionIndexIcon ul li p {font-size: 11px; line-height: 1.3; color: #f1f1f1; display: inline-block; width: 250px; text-align: left;}
+.DFOFunctionIndexIcon ul li section {width: 100%; display: inline-block; padding: 10px 0; text-align: left;}
+.DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconSelector {width: 20px; text-align: left; display: inline-block;}
+.DFOFunctionIndexIcon ul li section label {font-size: 13px; font-weight: bold; display: inline-block; color: #f1f1f1;}
+.DFOFunctionIndexIcon ul li section a {margin: 0px 5px 0 -35px; background-color: #292929; color: #ffffff; font-size: 10px;height: 12px;width: 70px;padding: 4px 0px;font-weight: bold;display: inline-block; text-align: center;}
+.DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconText {width: 120px; background-color: #191919; color: #9e9e9e; border: 1px solid #000000; height: 20px; margin-left: 10px;display: inline-block;}
+.DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconUpload {width: 120px; color: #9e9e9e;height: 20px; margin-left: 10px;display: inline-block;}
+.DFOFunctionIndexIcon aside {padding: 15px 0;}
+.NoWeb3 {width: 100%; text-align: center; min-width: 990px; margin-top: 140px;}
+.NoWeb3 h1 {font-size: 200px;margin: 30px auto;}
+.NoWeb3 .DisclamerWeb3 {width: 500px; text-align: center; display: inline-block; margin: 10px auto;}
+.NoWeb3 .DisclamerWeb3 h2 {font-size: 20px;font-weight: bold;color: #000000;}
+.NoWeb3 .DisclamerWeb3 p {font-size: 16px; color: #000000; line-height: 1.4;}
+.NoWeb3 .DisclamerWeb3 p a {font-size: 15px; color: #ff00ff; font-weight: bold; padding: 0 3px;}
+.NoWeb3 .DisclamerWeb3 p a:hover {color: #ffffff; background-color: #ff00ff; text-decoration: none;}
+.NoWeb3, .BrandLi {font-family: "Courier New", "Lucida Console", "Courier", "Times", "Arial" !important;}
+.BODL {font-weight: bold !important;}
+.DFOFunctionQuery .NewProposaleditor {width: 990px;}
+.AllViewCode .NewProposaleditor {width: 990px;}
+.lds-ellipsis {display: inline-block;position: relative;width: 80px;height: 35px;}
+.lds-ellipsis div {position: absolute;top: 10px;width: 13px;height: 13px;border-radius: 50%;background: #7901ff;animation-timing-function: cubic-bezier(0, 1, 1, 0);}
+.lds-ellipsis div:nth-child(1) {left: 8px;animation: lds-ellipsis1 0.6s infinite;}
+.lds-ellipsis div:nth-child(2) {left: 8px;animation: lds-ellipsis2 0.6s infinite;}
+.lds-ellipsis div:nth-child(3) {left: 32px;animation: lds-ellipsis2 0.6s infinite;}
+.lds-ellipsis div:nth-child(4) {left: 56px;animation: lds-ellipsis3 0.6s infinite;}
+.LoaderChainPull {min-width: 290px; width: 100%;height: 40px; display: inline-block;vertical-align: top; text-align: left; text-align: center;display: inline-block;vertical-align: top;}
+.LoaderChainPull h5 {font-size: 15px !important;margin: 10px 0 !important;color: #7901ff !important;display: inline-block!important;vertical-align: top!important; font-weight: bold!important;}
+.loaderMinimino {border: 2px solid #f3f3f3;border-radius: 50%;border-top: 2px solid #ff00ff;width: 15px !important;height: 15px !important;-webkit-animation: spin 2s linear infinite;animation: spin 2s linear infinite;display: inline-block; vertical-align: middle;}
+@-webkit-keyframes spin {0% { -webkit-transform: rotate(0deg); } 100% { -webkit-transform: rotate(360deg);}}
+@keyframes spin {0% { transform: rotate(0deg); }100% { transform: rotate(360deg);}}
+@keyframes lds-ellipsis1 {0% {transform: scale(0);}100% {transform: scale(1);}}
+@keyframes lds-ellipsis3 {0% {transform: scale(1);}100% {transform: scale(0);}}
+@keyframes lds-ellipsis2 {0% {transform: translate(0, 0);}100% {transform: translate(24px, 0);}}
+@-webkit-keyframes dash {to {stroke-dashoffset: 136;}}
+@keyframes dash {to {stroke-dashoffset: 136;}}
+@-webkit-keyframes rotate {100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}}
+@keyframes rotate {100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}}
+.LoaderChainPush .lds-ellipsis div {background-color: #8d40ff;}
+.Editing {background-color: #7901ff; color: #f1f1f1;}
+.DarkMode, .DarkMode .ProposalVote, .DarkMode .NewProposalIndex .DFOItOptions input[type="text"], .DarkMode .NewProposalIndex .DFOItOptions textarea, .DarkMode .NewProposalIndex .DFOItOptions select, .DarkMode .DFOFunctionQuery, .DarkMode .InsertDfoName input, .DarkMode .InsertDfoSubdomain input, .DarkMode .InsertTokenName input, .DarkMode .InsertTokenSupply input, .DarkMode .InsertSurveyLength input, .DarkMode .InsertSurveyQuorum .SurveyQuorumHow, .DarkMode .InsertSurveyMinStake input, .DarkMode .InsertSurveySingleReward input, .DarkMode .InsertSurveyCommunityStake input, .DarkMode .sequentialOps, .DarkMode .DFOFunctionIndexIcon, .DarkMode .MainLoaderAll .sequentialOps, .DarkMode .InsertSurveyEmergencyLength input, .DarkMode .InsertSurveyEmergencyPenalty input, .DarkMode .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input {background-color: #000000;}
+.DarkMode .DFOInfo .DFOOpened, .DarkMode .DFOOpened .DFONavigator, .DarkMode .DFOOpened .DFONavigator li, .DarkMode .Explorer, .DarkMode .DFOOpened .DFONavigator li a, .DarkMode .DFOList, .DarkMode header .SearchLi input,.DarkMode header .SearchLi a, .DarkMode .MainLoader {background-color:#292929;}
+.DarkMode .HeaderDFO {background-color: #010101;}
+.DarkMode .NewProposalIndex .DFOItOptions .disabled {background-color: #3e3e3e;color: #9e9e9e;}
+.DarkMode header .BrandLi a, .DarkMode header .DeployLi a, .DarkMode header .SearchLi input, .DarkMode .DFOList .DFOLister .DFOInfo .DFOOpener .DFOName h5, .DarkMode .DFOOpened .DFONavigator li a, .DarkMode .DFOList .DFOLister .DFOInfo .DFOOpener .DFOName h6, .DarkMode .DFOList .DFOLister .DFOInfo .DFOOpener .DFOENSInfo h6, .DarkMode .DFOList .DFOLister .DFOInfo .DFOOpener .DFOENSInfo h5, .DarkMode .DFOList .DFOLister .DFOInfo .DFOOpener .DFOMinInfo h5, .DarkMode .DFOList .DFOLister .DFOInfo .DFOOpener .DFOMinInfo h6, .DarkMode .DFOOpened .DFOOverview .DFOHosting .DFOHostingTitle, .DarkMode .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection p, .DarkMode .DFOHosting .LinkVisualStandard, .DarkMode .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span, .DarkMode .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionTitle h5,.DarkMode .NewProposalIndex .DFOItOptions h4, .DarkMode .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p, .DarkMode .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate h6,.DarkMode .DFOFunctionList b, .DarkMode .ProposalBio b, .DarkMode .ProposalBio b,.DarkMode .DFOFunctionList b,.DarkMode .sequentialOps h3,.DarkMode .DeployNewWhat h5,.DarkMode .InsertSurveyEmergencyLength label, .DarkMode .InsertSurveyEmergencyLength span,.DarkMode .InsertSurveyEmergencyPenalty label, .DarkMode .InsertSurveyEmergencyPenalty span, .DarkMode .ProposalsIndex, .DraftsIndex, .DraftsOldIndex span, .DarkMode .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate a, .DarkMode .ProposalsActiveIndex h4, .DarkMode .ProposalsOldIndex h4, .DarkMode .DraftsActiveIndex h4, .DarkMode .DraftsOldIndex h4, .DarkMode .ProposalBio h5, .DarkMode .DraftBio h5, .DarkMode .ProposalBio p, .DarkMode .DraftBio p, .DarkMode .ProposalPool > p, .DarkMode .ProposalPool .LinkVisualStandard, .DarkMode .ProposalPool, .DarkMode .ProposalAction h6, .DarkMode .DraftsOldIndex .DraftAction p, .DarkMode .NewProposalIndex .DFOItOptions p, .DarkMode .NewProposalIndex .DFOItOptions label, .DarkMode .NewProposalIndex .DFOItOptions input[type="text"], .DarkMode .NewProposalIndex .DFOItOptions textarea, .DarkMode .NewProposalIndex .DFOItOptions select, .DarkMode .DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo h6, .DarkMode .DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo h5, .DarkMode .DFOList .DFOLister .DFOInfo .DFOENSOpener .DFOMinInfo h5, .DarkMode .DFOList .DFOLister .DFOInfo .DFOENSOpener .DFOMinInfo h6,.DarkMode .ProposalPool h6 span, .DarkMode .ProposalPool > p > a, .DarkMode .LinkVisualClassic, .DarkMode .NavDeploy h2, .DarkMode .NavDeploy p, .DarkMode .InsertDfoName label, .DarkMode .InsertDfoSubdomain label, .DarkMode .InsertTokenName label, .DarkMode .InsertTokenSupply label, .DarkMode .InsertSurveyLength label, .DarkMode .InsertSurveyQuorum label, .DarkMode .InsertSurveyMinStake label, .DarkMode .InsertSurveySingleReward label, .DarkMode .InsertSurveyCommunityStake label, .DarkMode .InsertDfoSubdomain span, .DarkMode .InsertSurveyLength span, .DarkMode .InsertSurveyQuorum span, .DarkMode .InsertSurveyMinStake span, .DarkMode .InsertSurveyCommunityStake span, .DarkMode .InsertSurveySingleReward span, .DarkMode .DFOGovernanceSelector ul li a h6, .DarkMode .InsertDfoName input, .DarkMode .InsertDfoSubdomain input, .DarkMode .InsertTokenName input, .DarkMode .InsertTokenSupply input, .DarkMode .InsertSurveyLength input, .DarkMode .InsertSurveyQuorum .SurveyQuorumHow, .DarkMode .InsertSurveyMinStake input, .DarkMode .InsertSurveySingleReward input, .DarkMode .InsertSurveyCommunityStake input, .DarkMode .ProposalsActiveIndex .ProposalAction p, .DarkMode .ProposalAction p a, .DarkMode .DFOOpened .DFOOverview .DFOHosting li p, .DarkMode .MainLoaderAll .sequentialOps p, .DarkMode .InsertSurveyEmergencyLength input, .DarkMode .InsertSurveyEmergencyPenalty input, .DarkMode .DFOSingleStateT, .DarkMode .DFOSingleStateN, .DarkMode .DFOSingleStateV span, .DarkMode .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input {color: #f1f1f1}
+.DarkMode .DFOOpened .DFONavigator li .selected, .DarkMode .DFOOpened .DFONavigator li a:hover,.DarkMode .DFOGovernanceSelector ul li:hover,.DarkMode .DFOGovernanceSelector ul .selected  {background-color: #545454;}
+.DarkMode .DFOOpened .DFONavigator li .selected, .DarkMode .DFOOpened .DFONavigator li a:hover {border-bottom: 2px solid #545454;}
+.DarkMode .DFOGovernanceSelector ul .selected .SelectedTriangle {border-color: #545454 transparent transparent transparent !important; border-style: solid;}
+.DarkMode .DFOOpened .DFONavigator li a {border-bottom: 2px solid #292929;}
+.DarkMode .sequentialOps, .DarkMode .MainLoaderAll .sequentialOps, .DarkMode .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input {border:  2px solid #191919;}
+.DarkMode header .SearchLi a, .DarkMode header .SearchLi input {border-radius: 0;}
+.DarkMode header .SearchLi input  {border: none; height: 30px;}
+.DarkMode .DFOList .DFOLister .DFOInfo, .DarkMode .sequentialOps ol li, .DarkMode .MainLoaderAll .sequentialOps ol li {border-bottom: 1px solid #616060;}
+.DarkMode .ProposalsActiveIndex > ul > li, .DarkMode .ProposalsOldIndex > ul > li, .DarkMode .DraftsActiveIndex > ul > li, .DarkMode .DraftsOldIndex > ul > li {border-bottom:1px solid #191919 ;}
+.DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}
+.DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #545454 !important;z-index: 10000;}
+.DFONavigatorAfter {position: fixed; top: 130px; left:0; z-index: 10000;}
+.DFOMAinNavAfter .DFOIcon {width: 40px !important; height: 40px !important;}
+.DFOMAinNavAfter .DFOIcon img {width: 40px !important; height: 40px !important;}
+.DFOMAinNavAfter .DFOName {width: 250px !important;}
+.DFOMAinNavAfter .DFOName h5 {font-size: 20px !important; color: #ffffff !important;}
+.DFOMAinNavAfter .DFOMinInfo {width: 300px !important; text-align: center;}
+.DFOMAinNavAfter .DFOMinInfo figure {display: inline-block;width: 30px;height: 30px;margin: 0;}
+.DFOMAinNavAfter .DFOMinInfo section {display: inline-block;width: 245px; text-align: left;}
+.DFOMAinNavAfter .DFOMinInfo h5 {font-size: 11px !important; margin: 5px 0 0 0 !important; color: #ffffff !important;}
+.DFOMAinNavAfter .DFOMinInfo h6 {font-size: 9px !important; color: #ffffff !important;}
+.DFOMAinNavAfter .DFOMinInfo figure {display: inline-block;width: 40px;height: 30px;margin: 0;margin-right: 10px;}
+.DFOMAinNavAfter .DFOMinInfo figure  img {display: inline-block;width: 30px;height: 30px; margin: 0;border-radius: 100%; vertical-align: middle;margin-top: 3px;}
+.DFOMAinNavAfter .DFOMinInfo section {display: inline-block;width: 245px; text-align: left; vertical-align: top;}
+.DFOMAinNavAfter .DFOMinInfo section h5 {font-size: 15px !important; display: inline-block !important; width: 100% !important;margin: 5px 0 !important;}
+.DFOMAinNavAfter .DFOMinInfo section h6 {font-size: 9px !important; display: inline-block !important; width: 100% !important;margin: 2px 0 !important; color: #9e9e9e;}
+.DFOMAinNavAfter .DFOMinInfo section h5 aside {display: inline; font-size: 10px;}
+.DFOMAinNavAfter .DFOOpener {height: 70px !important; width: 640px !important}
+.DFOMAinNavAfter .DFOENSOpener, .DFOMAinNavAfter .DFOAddressOpener, .DFOMAinNavAfter .DFOMinInfoOp {display: none !important;}
+.DFOListOpenAfter .DFOInfo {border-bottom: 0 !important;}
+.DFOListOpenAfter .DFOENSOpener .DFOMinInfo, .DFOListOpenAfter .DFOENSOpener .DFOMinInfo h6, .DFOListOpenAfter .DFOENSOpener .DFOMinInfo h5 {width: 160px !important;}
+.BETABANNER {position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-height: 100%; z-index: 9999999999999999999; background-color: #8d40ffeb; overflow: hidden; padding-top: 100px;}
+.BETABANNER section {width: 700px; display: inline-block; color: #ffffff;}
+.BETABANNER h1 {font-size: 100px; line-height: 0.4;}
+.BETABANNER h2 {font-size: 30px; font-weight: bold; line-height: 1.5;}
+.BETABANNER h2 span {color: #ffb004;}
+.BETABANNER h3 {font-size: 18px; line-height: 1.3;}
+.BETABANNER p {font-size: 14px; line-height: 1.3;}
+.BETABANNER p a {text-decoration: underline; color: #ffb004; font-weight: bold;}
+.BETABANNER section > a {font-size: 15px; padding: 10px 15px; background-color: #ffb004; color: #ffffff; font-weight: bold; text-decoration: none; margin-top: 25px; display: inline-block;}
+.BETABANNER section > a:hover {background-color: #fccb63;}

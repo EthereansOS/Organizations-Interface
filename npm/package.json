@@ -1,0 +1,25 @@
+{
+  "name": "npm",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "web3": "browserify web3.js | uglifyjs > ../assets/plugins/web3.min.js",
+    "monaco.editor": "webpack --progress && rm ../assets/plugins/monaco.editor/35bb8d560db5205616671eab8c4d0303.ttf && rm ../assets/plugins/monaco.editor/monaco.editor.min.js.LICENSE"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^3.4.1",
+    "file-loader": "^5.0.2",
+    "monaco-editor": "^0.19.0",
+    "monaco-editor-webpack-plugin": "^1.8.1",
+    "style-loader": "^1.1.2",
+    "terser-webpack-plugin": "^2.3.1",
+    "uglifyjs": "^2.4.11",
+    "web3": "^1.2.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {}
+}

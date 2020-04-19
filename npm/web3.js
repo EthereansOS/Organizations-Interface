@@ -1,0 +1,1 @@
+(typeof window === 'undefined' && (global.window = global));window.Web3Browser = require('web3');
