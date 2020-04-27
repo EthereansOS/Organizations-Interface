@@ -4,7 +4,7 @@ window.descriptionWordLimit = 300;
 window.urlRegex = /(https?:\/\/[^\s]+)/gs;
 window.solidityImportRule = /import( )*"(\d+)"( )*;/gs;
 window.pragmaSolidityRule = /pragma( )*solidity( )*(\^|>)\d+.\d+.\d+;/gs;
-window.base64Regex = /data:(\w+)\/(\w+);base64,/gs;
+window.base64Regex = /data:([\S]+)\/([\S]+);base64,/gs;
 
 window.Main = async function Main() {
     await window.loadContext();
@@ -762,11 +762,11 @@ window.getDFOLogs = async function getDFOLogs(args) {
         toBlock: 'latest'
     };
     args.address && (logArgs.address = args.address);
-    args.event && logArgs.topics.push(window.web3.utils.sha3(args.event));
+    args.event && logArgs.topics.push(args.event.indexOf('0x') === 0 ? args.event : window.web3.utils.sha3(args.event));
     args.topics && logArgs.topics.push(...args.topics);
     args.fromBlock && (logArgs.fromBlock = args.fromBlock);
     args.toBlock && (logArgs.toBlock = args.toBlock);
-    return window.formatDFOLogs(await window.web3.eth.getPastLogs(logArgs), args.event);
+    return window.formatDFOLogs(await window.web3.eth.getPastLogs(logArgs), args.event && args.event.indexOf('0x') === -1 ? args.event : undefined);
 };
 
 window.formatDFOLogs = function formatDFOLogs(logVar, event) {
