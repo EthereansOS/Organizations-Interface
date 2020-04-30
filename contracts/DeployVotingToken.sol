@@ -31,11 +31,7 @@ contract DeployVotingToken {
         token.transfer(msg.sender, additionalAmountWei + toUint256(proxy.read("getVotingTokenAmountForHub", abi.encode(token.totalSupply()))));
         token.transfer(sender, token.balanceOf(address(this)));
 
-        IStateHolder stateHolder = IStateHolder(stateHolderAddress = clone(proxy.getStateHolderAddress()));
-        stateHolder.init();
-        IStateHolder senderStateHolder = IStateHolder(proxy.getStateHolderAddress());
-        stateHolder.setUint256("index", senderStateHolder.getUint256("defaultIndex"));
-        stateHolder.setUint256("additionalAmount", additionalAmountWei);
+        IStateHolder(stateHolderAddress = clone(proxy.getStateHolderAddress())).init();
 
         mvdFunctionalityModelsManagerAddress = proxy.getMVDFunctionalityModelsManagerAddress();
 
@@ -68,8 +64,6 @@ interface IVotingToken {
 
 interface IStateHolder {
     function init() external;
-    function getUint256(string calldata varName) external view returns (uint256);
-    function setUint256(string calldata varName, uint256 val) external returns(uint256);
 }
 
 interface IMVDProxy {

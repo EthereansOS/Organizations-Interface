@@ -14,10 +14,12 @@ pragma solidity ^0.6.0;
 
 contract DeployCommunityDrivenGovernanceRules {
 
-    address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
+    address private _sourceLocation = 0x6ae6cf934b2BD8c84d932AeE75102Ca2ef1Bf2Ce;
 
-    uint256 private _communityDrivenGovernanceLocationId = 4;
-    address private _communityDrivenGovernanceFunctionalityAddress = 0x75b827b7C30a633bfB5C8088d1BD184350530f47;
+    uint256 private _communityDrivenGovernanceLocationId = 104;
+    address private _communityDrivenGovernanceFunctionalityAddress = 0xE29F0c010cdCBBf6671CC9B4C5Bbc6B7F3394df2;
+
+    uint256 private _getSurveySingleRewardSourceLocationId = 105;
 
     function onStart(address newSurvey, address oldSurvey) public {
     }
@@ -30,32 +32,43 @@ contract DeployCommunityDrivenGovernanceRules {
         uint256 minimumBlockNumber,
         uint256 emergencyBlockNumber,
         uint256 emergencyStaking,
-        address stateHolderAddress,
         uint256 quorum,
         uint256 surveySingleReward) public returns (IMVDFunctionalitiesManager mvdFunctionalitiesManager) {
-        IStateHolder(stateHolderAddress).setUint256("surveySingleReward", surveySingleReward * (10 ** 18));
         (mvdFunctionalitiesManager = IMVDFunctionalitiesManager(abi.decode(IMVDProxy(msg.sender).submit("deployOpenBasicGovernanceRules", abi.encode(
             address(0),
             0,
             minimumBlockNumber,
             emergencyBlockNumber,
             emergencyStaking,
-            stateHolderAddress,
             quorum)), (address))))
             .addFunctionality("proposalEnd", _sourceLocation, _communityDrivenGovernanceLocationId, _communityDrivenGovernanceFunctionalityAddress, true, "proposalEnd(address,bool)", "[]", false, false);
+            mvdFunctionalitiesManager.addFunctionality("getSurveySingleReward", _sourceLocation, _getSurveySingleRewardSourceLocationId, address(new GetUint256Value(surveySingleReward * (10 ** 18))), false, "getValue()", '["uint256"]', false, false);
     }
 }
 
-interface IStateHolder {
-    function getUint256(string calldata varName) external view returns (uint256);
-    function setUint256(string calldata varName, uint256 val) external returns(uint256);
-}
-
 interface IMVDProxy {
-    function getStateHolderAddress() external view returns(address);
     function submit(string calldata codeName, bytes calldata data) external payable returns(bytes memory returnData);
 }
 
 interface IMVDFunctionalitiesManager {
     function addFunctionality(string calldata codeName, address sourceLocation, uint256 sourceLocationId, address location, bool submitable, string calldata methodSignature, string calldata returnAbiParametersArray, bool isInternal, bool needsSender) external;
+}
+
+contract GetUint256Value {
+
+    uint256 private _value;
+
+    constructor(uint256 value) public {
+        _value = value;
+    }
+
+    function onStart(address newSurvey, address oldSurvey) public {
+    }
+
+    function onStop(address newSurvey) public {
+    }
+
+    function getValue() public view returns(uint256) {
+        return _value;
+    }
 }

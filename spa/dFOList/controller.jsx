@@ -54,7 +54,7 @@ var DFOListController = function (view) {
         element.updating = true;
 
         element.token = window.newContract(window.context.votingTokenAbi, await window.blockchainCall(element.dFO.methods.getToken));
-        element !== window.dfoHub && (element.stateHolder = window.newContract(window.context.stateHolderAbi, await window.blockchainCall(element.dFO.methods.getStateHolderAddress)));
+        element.stateHolder = window.newContract(window.context.stateHolderAbi, await window.blockchainCall(element.dFO.methods.getStateHolderAddress));
         element.name = await window.blockchainCall(element.token.methods.name);
         element.symbol = await window.blockchainCall(element.token.methods.symbol);
         element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
@@ -73,15 +73,34 @@ var DFOListController = function (view) {
                 element.emergencySurveyStaking = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getEmergencySurveyStaking', '0x')) || '0';
             } catch(e) {
             }
-            element.minimumStaking = parseInt(await window.blockchainCall(element.stateHolder.methods.getUint256, 'minimumStaking'));
-            element.surveySingleReward = await window.blockchainCall(element.stateHolder.methods.getUint256, 'surveySingleReward');
-            element.quorum = await window.blockchainCall(element.stateHolder.methods.getUint256, 'quorum');
-
+            try {
+                element.quorum = parseInt(window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getQuorum', '0x')));
+            } catch(e) {
+                element.quorum = 0;
+            }
+            try {
+                element.surveySingleReward = parseInt(window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveySingleReward', '0x')));
+            } catch(e) {
+                element.surveySingleReward = 0;
+            }
+            try {
+                element.minimumStaking = parseInt(window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveyMinimumStaking', '0x')));
+            } catch(e) {
+                element.minimumStaking = 0;
+            }
             element.icon = window.makeBlockie(element.dFO.options.address);
-            element.link = await window.blockchainCall(element.stateHolder.methods.getString, 'link');
-            element.index = await window.blockchainCall(element.stateHolder.methods.getUint256, 'index');
-            element.index = element.index !== '0' ? element.index : window.defaultDFOIndex;
-            element !== window.dfoHub && (element.ens = await window.blockchainCall(window.dfoHubENSResolver.methods.subdomain, element.dFO.options.originalAddress));
+            try {
+                element.link = window.web3.eth.abi.decodeParameter("string" , await window.blockchainCall(element.dFO.methods.read, 'getLink', '0x'));
+            } catch(e) {
+            }
+            try {
+                element.index = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getIndex', '0x'));
+            } catch(e) {
+            }
+            try {
+                element !== window.dfoHub && (element.ens = await window.blockchainCall(window.dfoHubENSResolver.methods.subdomain, element.dFO.options.originalAddress));
+            } catch(e) {
+            }
             element.ens = element.ens || '';
             try {
                 context && context.view && setTimeout(function() {

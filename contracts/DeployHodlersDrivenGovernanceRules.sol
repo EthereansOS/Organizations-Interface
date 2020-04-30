@@ -11,6 +11,10 @@ pragma solidity ^0.6.0;
 
 contract DeployHodlersDrivenGovernanceRules {
 
+    address private _sourceLocation = 0x6ae6cf934b2BD8c84d932AeE75102Ca2ef1Bf2Ce;
+
+    uint256 private _getSurveyMinimumStakingSourceLocationId = 106;
+
     function onStart(address newSurvey, address oldSurvey) public {
     }
 
@@ -22,18 +26,16 @@ contract DeployHodlersDrivenGovernanceRules {
         uint256 minimumBlockNumber,
         uint256 emergencyBlockNumber,
         uint256 emergencyStaking,
-        address stateHolderAddress,
         uint256 quorum,
-        uint256 surveyMinStake) public returns (address) {
-        IStateHolder(stateHolderAddress).setUint256("minimumStaking", surveyMinStake * (10 ** 18));
-        return abi.decode(IMVDProxy(msg.sender).submit("deployOpenBasicGovernanceRules", abi.encode(
+        uint256 surveyMinStake) public returns (IMVDFunctionalitiesManager mvdFunctionalitiesManager) {
+        (mvdFunctionalitiesManager = IMVDFunctionalitiesManager(abi.decode(IMVDProxy(msg.sender).submit("deployOpenBasicGovernanceRules", abi.encode(
             address(0),
             0,
             minimumBlockNumber,
             emergencyBlockNumber,
             emergencyStaking,
-            stateHolderAddress,
-            quorum)), (address));
+            quorum)), (address))))
+            .addFunctionality("getSurveyMinimumStaking", _sourceLocation, _getSurveyMinimumStakingSourceLocationId, address(new GetUint256Value(surveyMinStake * (10 ** 18))), false, "getValue()", '["uint256"]', false, false);
     }
 }
 
@@ -41,6 +43,25 @@ interface IMVDProxy {
     function submit(string calldata codeName, bytes calldata data) external payable returns(bytes memory returnData);
 }
 
-interface IStateHolder {
-    function setUint256(string calldata varName, uint256 val) external returns(uint256);
+interface IMVDFunctionalitiesManager {
+    function addFunctionality(string calldata codeName, address sourceLocation, uint256 sourceLocationId, address location, bool submitable, string calldata methodSignature, string calldata returnAbiParametersArray, bool isInternal, bool needsSender) external;
+}
+
+contract GetUint256Value {
+
+    uint256 private _value;
+
+    constructor(uint256 value) public {
+        _value = value;
+    }
+
+    function onStart(address newSurvey, address oldSurvey) public {
+    }
+
+    function onStop(address newSurvey) public {
+    }
+
+    function getValue() public view returns(uint256) {
+        return _value;
+    }
 }

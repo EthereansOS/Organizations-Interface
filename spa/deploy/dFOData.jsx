@@ -19,15 +19,20 @@ var DFOData = React.createClass({
         var ens = (target ? target.value : e.ensDomain).toLowerCase();
         e.ensDomain && (e.ensDomain = ens);
         var call = function () {
-            return window.blockchainCall(window.ENSController.methods.recordExists, nameHash.hash(nameHash.normalize(ens + ".dfohub.eth"))).then(exists => {
-                if(_this.ensCheck) {
+            return new Promise(async function (ok, ko) {
+                var exists = false;
+                try {
+                    exists = await window.blockchainCall(window.ENSController.methods.recordExists, nameHash.hash(nameHash.normalize(ens + ".dfohub.eth")));
+                } catch(exception) {
+                }
+                if (_this.ensCheck) {
                     target && (target.value = ens);
                     _this.ensCheck.innerHTML = "&#" + (exists ? "9940" : "9989") + ";"
                     if (!e.preventDefault && exists) {
-                        throw ['ENS Name already taken'];
+                        return ko(['ENS Name already taken']);
                     }
                 }
-                return e;
+                return ok(e);
             });
         };
         if (!target) {

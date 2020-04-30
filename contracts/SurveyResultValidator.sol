@@ -22,24 +22,35 @@ contract SurveyResultValidator {
 
     function checkSurveyResult(address proposalAddress) public view returns(bool) {
         IMVDProxy proxy = IMVDProxy(msg.sender);
-        IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
         IMVDFunctionalityProposal proposal = IMVDFunctionalityProposal(proposalAddress);
-        uint256 minimumStaking = stateHolder.getUint256("minimumStaking");
-        if(minimumStaking > 0) {
-            (uint256 accept,) = proposal.getVote(proposal.getProposer());
-            if(accept < minimumStaking) {
-                return false;
+        if(proxy.hasFunctionality("getMinimumStaking")) {
+            uint256 minimumStaking = toUint256(proxy.read("getMinimumStaking", bytes("")));
+            if(minimumStaking > 0) {
+                (uint256 accept,) = proposal.getVote(proposal.getProposer());
+                if(accept < minimumStaking) {
+                    return false;
+                }
             }
         }
         (uint256 accept, uint256 refuse) = proposal.getVotes();
         bool acceptWins = accept > refuse;
-        uint256 quorum = stateHolder.getUint256("quorum");
-        if(quorum > 0) {
-            if((acceptWins ? accept : refuse) < quorum) {
-                return false;
+        if(proxy.hasFunctionality("getQuorum")) {
+            uint256 quorum = toUint256(proxy.read("getQuorum", bytes("")));
+            if(quorum > 0) {
+                if((acceptWins ? accept : refuse) < quorum) {
+                    return false;
+                }
             }
         }
         return acceptWins;
+    }
+
+    function toUint256(bytes memory bs) private pure returns(uint256 x) {
+        if(bs.length >= 32) {
+            assembly {
+                x := mload(add(bs, add(0x20, 0)))
+            }
+        }
     }
 }
 
@@ -50,9 +61,6 @@ interface IMVDFunctionalityProposal {
 }
 
 interface IMVDProxy {
-    function getStateHolderAddress() external view returns(address);
-}
-
-interface IStateHolder {
-    function getUint256(string calldata varName) external view returns (uint256);
+    function hasFunctionality(string calldata codeName) external view returns(bool);
+    function read(string calldata codeName, bytes calldata data) external view returns(bytes memory returnData);
 }

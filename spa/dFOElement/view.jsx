@@ -37,8 +37,7 @@ var DFOElement = React.createClass({
                 <ul className="DFONavigator DFONavigatorAfter">
                     <li><a href="javascript:;" onClick={this.onClick} className="selected">Overview</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>Functions</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>State</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick} data-alternatives="New Proposal,One Time Proposal">Proposals</a></li>
+                    <li><a href="javascript:;" onClick={this.onClick}>Proposals</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>New Proposal</a></li>
                 </ul>
                 {React.createElement(window[this.state.element], props)}

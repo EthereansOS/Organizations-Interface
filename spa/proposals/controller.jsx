@@ -120,7 +120,7 @@ var ProposalsController = function (view) {
             data.address = address;
             data.startBlock = survey.blockNumber;
             try {
-                data.code = data.code || await window.loadContent(data.sourceLocationId, data.sourceLocation);
+                data.code = (!data.codeName && data.replaces) ? undefined : data.code || await window.loadContent(data.sourceLocationId, data.sourceLocation);
             } catch (ex) {
             }
             data.description = window.extractHTMLDescription(data.code, true);
@@ -128,7 +128,7 @@ var ProposalsController = function (view) {
             data.accepted = data.allVotes[0];
             data.refused = data.allVotes[1];
             data.allVotes = parseInt(data.allVotes[0]) + parseInt(data.allVotes[1]);
-            data.surveyEnd = data.endBlock < currentBlock;
+            data.surveyEnd = data.endBlock <= (currentBlock + 1);
             data.myVotes = !window.walletAddress ? [0, 0] : await window.blockchainCall(contract.methods.getVote, window.walletAddress);
             data.myAccepts = data.myVotes[0];
             data.myRefuses = data.myVotes[1];
@@ -207,12 +207,13 @@ var ProposalsController = function (view) {
                     proposal.data = JSON.parse(proposal.data.split('"returnAbiParametersArray":,').join('"returnAbiParametersArray":[],'));
                 }
                 try {
-                    proposal.data.code = proposal.data.code || await window.loadContent(proposal.data.sourceLocationId, proposal.data.sourceLocation);
+                    proposal.data.code = (!proposal.data.codeName && proposal.data.replaces) ? undefined : proposal.data.code || await window.loadContent(proposal.data.sourceLocationId, proposal.data.sourceLocation);
                 } catch (ex) {
                 }
                 survey.replacesCode = survey.replaces ? proposal.data.code : undefined;
             }
             survey.compareErrors = await window.searchForCodeErrors(survey.location, survey.code, survey.codeName, survey.methodSignature, survey.replaces);
+            survey.code === survey.replacesCode && (delete survey.replacesCode);
             context.view.setState(state);
         }
     };

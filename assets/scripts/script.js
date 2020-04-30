@@ -78,11 +78,11 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                     dFO: await window.loadDFO(window.getNetworkElement('dfoAddress')),
                     startBlock: window.getNetworkElement('deploySearchStart')
                 };
-                window.dfoHub.stateHolder = window.newContract(window.context.stateHolderAbi, await window.blockchainCall(window.dfoHub.dFO.methods.getStateHolderAddress));
-                window.defaultDFOIndex = await window.blockchainCall(window.dfoHub.stateHolder.methods.getUint256, 'defaultIndex');
-
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
-                window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));
+                try {
+                    window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));
+                } catch(e) {
+                }
 
                 window.list = {
                     DFO: window.dfoHub
@@ -260,13 +260,13 @@ window.sendBlockchainTransaction = function sendBlockchainTransaction(transactio
             (transaction = transaction.send ? transaction.send(await window.getSendingOptions(transaction), err => err && ko(err.message || err)) : transaction).on('transactionHash', transactionHash => {
                 var timeout = async function() {
                     var receipt = await window.web3.eth.getTransactionReceipt(transactionHash);
-                    if (!receipt || !receipt.blockNumber || parseInt(await window.web3.eth.getBlockNumber()) <= (parseInt(receipt.blockNumber) + (window.context.transactionConfirmations || 0))) {
+                    if (!receipt || !receipt.blockNumber || parseInt(await window.web3.eth.getBlockNumber()) < (parseInt(receipt.blockNumber) + (window.context.transactionConfirmations || 0))) {
                         return window.setTimeout(timeout, window.context.transactionConfirmationsTimeoutMillis);
                     }
                     return transaction.catch(ko).then(ok);
                 };
                 window.setTimeout(timeout);
-            });
+            }).catch(ko);
         } catch(e) {
             return ko(e.message || e);
         }
@@ -671,74 +671,6 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
     return errors;
 };
 
-window.showProposalLoader = async function showProposalLoader(initialContext) {
-    var sequentialOps = initialContext.sequentialOps || [];
-    delete initialContext.sequentialOps;
-    window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
-    !initialContext.functionalitySourceId && sequentialOps.push({
-        name: "Publishing Smart Contract Code",
-        async call(data) {
-            data.functionalitySourceId = await window.mint(window.split(data.sourceCode), undefined, true);
-            data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
-        }
-    });
-    !initialContext.functionalityAddress && sequentialOps.push({
-        name: "Deploying Smart Contract",
-        async call(data) {
-            var args = [
-                data.selectedContract.abi,
-                data.selectedContract.bytecode
-            ];
-            data.constructorArguments && Object.keys(data.constructorArguments).map(key => args.push(data.constructorArguments[key]));
-            data.functionalityAddress = (await window.createContract.apply(window, args)).options.address;
-            data.editor && data.editor.functionalityAddress && (data.editor.functionalityAddress.value = data.functionalityAddress);
-        }
-    });
-    if (initialContext.emergency) {
-        var approved = parseInt(await window.blockchainCall(initialContext.element.token.methods.allowance, window.walletAddress, initialContext.element.dFO.options.address));
-        approved < parseInt(initialContext.element.emergencySurveyStaking) && sequentialOps.push({
-            name: 'Approving ' + window.fromDecimals(initialContext.element.emergencySurveyStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Emergency Staking',
-            async call(data) {
-                await window.blockchainCall(data.element.token.methods.approve, initialContext.element.dFO.options.address, data.element.emergencySurveyStaking);
-            }
-        });
-    }
-    sequentialOps.push({
-        name: 'Publishing Proposal...',
-        async call(data) {
-            data.transaction = await window.blockchainCall(
-                data.element.dFO.methods.newProposal,
-                data.functionalityName,
-                data.emergency,
-                window.getNetworkElement('defaultOcelotTokenAddress'),
-                isNaN(data.functionalitySourceId) ? 0 : data.functionalitySourceId,
-                window.hasEthereumAddress(data.functionalityAddress) ? data.functionalityAddress : window.voidEthereumAddress,
-                data.functionalitySubmitable,
-                data.functionalityMethodSignature || "",
-                data.functionalityOutputParameters || "",
-                data.functionalityInternal,
-                data.functionalityNeedsSender,
-                data.functionalityReplace
-            );
-            if (!data.element.minimumStaking) {
-                $.publish('loader/toggle', false);
-                $.publish('message', 'Proposal Sent!', 'info');
-                $.publish('section/change', 'Proposals');
-            }
-        }
-    });
-    initialContext.element.minimumStaking && sequentialOps.push({
-        name: 'Sending Initial ' + window.fromDecimals(initialContext.element.minimumStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Staking',
-        async call(data) {
-            await window.blockchainCall(data.element.token.methods.transfer, data.transaction.events.Proposal.returnValues.proposal, window.numberToString(data.element.minimumStaking));
-            $.publish('loader/toggle', false);
-            $.publish('message', 'Proposal Sent!', 'info');
-            $.publish('section/change', 'Proposals');
-        }
-    });
-    $.publish('loader/toggle', [true, sequentialOps, initialContext]);
-};
-
 window.tokenPercentage = function tokenPercentage(amount, totalSupply) {
     amount = (amount && amount.value) || amount;
     amount = (typeof amount).toLowerCase() === 'string' ? parseInt(amount) : amount;
@@ -814,7 +746,7 @@ window.formatDFOLogs = function formatDFOLogs(logVar, event) {
     return logVar.length ? logs : logVar;
 };
 
-window.sendOneTimeProposal = function sendOneTimeProposal(element, ctx, template, lines, descriptions, updates) {
+window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, template, lines, descriptions, updates) {
     var initialContext = {
         element,
         functionalityName: '',
@@ -825,19 +757,22 @@ window.sendOneTimeProposal = function sendOneTimeProposal(element, ctx, template
         functionalityNeedsSender: false,
         functionalityReplace: '',
         emergency: false,
-        sequentialOps: [{
+        template,
+        lines,
+        descriptions,
+        updates,
+        sequentialOps: template && [{
             name: 'Generating Smart Contract proposal',
             async call(data) {
-                var generatedAndCompiled = await window.generateAndCompileContract(template, lines, descriptions, updates);
+                var generatedAndCompiled = await window.generateAndCompileContract(data.template, data.lines, data.descriptions, data.updates);
                 data.sourceCode = generatedAndCompiled.sourceCode;
                 data.selectedContract = generatedAndCompiled.selectedContract;
             }
         }]
     }
     ctx = ctx || {};
-    Object.keys(ctx).map(key => {
-        initialContext[key] = ctx[key];
-    });
+    ctx.sequentialOps && ctx.sequentialOps.push(initialContext.sequentialOps[0]);
+    Object.keys(ctx).map(key => initialContext[key] = ctx[key]);
     window.showProposalLoader(initialContext);
 };
 
@@ -874,4 +809,77 @@ window.generateAndCompileContract = async function generateAndCompileContract(so
         sourceCode,
         selectedContract: (await window.SolidityUtilities.compile(sourceCode, compilers[version])).optimized.DFOHubGeneratedProposal
     }
+};
+
+window.showProposalLoader = async function showProposalLoader(initialContext) {
+    var sequentialOps = initialContext.sequentialOps || [];
+    delete initialContext.sequentialOps;
+    window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
+    (!initialContext.functionalitySourceId && (initialContext.sourceCode || initialContext.template)) && sequentialOps.push({
+        name: "Publishing Smart Contract Code",
+        async call(data) {
+            data.functionalitySourceId = await window.mint(window.split(data.sourceCode), undefined, true);
+            data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
+        }
+    });
+    (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template)) && sequentialOps.push({
+        name: "Deploying Smart Contract",
+        async call(data) {
+            if(data.contractName && data.functionalitySourceId && data.selectedSolidityVersion) {
+                var code = await window.loadContent(data.functionalitySourceId);
+                var compiled = await window.SolidityUtilities.compile(code, data.selectedSolidityVersion, 200);
+                data.selectedContract = compiled[data.contractName];
+            }
+            var args = [
+                data.selectedContract.abi,
+                data.selectedContract.bytecode
+            ];
+            data.constructorArguments && Object.keys(data.constructorArguments).map(key => args.push(data.constructorArguments[key]));
+            data.functionalityAddress = (await window.createContract.apply(window, args)).options.address;
+            data.editor && data.editor.functionalityAddress && (data.editor.functionalityAddress.value = data.functionalityAddress);
+        }
+    });
+    if (initialContext.emergency) {
+        var approved = parseInt(await window.blockchainCall(initialContext.element.token.methods.allowance, window.walletAddress, initialContext.element.dFO.options.address));
+        approved < parseInt(initialContext.element.emergencySurveyStaking) && sequentialOps.push({
+            name: 'Approving ' + window.fromDecimals(initialContext.element.emergencySurveyStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Emergency Staking',
+            async call(data) {
+                await window.blockchainCall(data.element.token.methods.approve, initialContext.element.dFO.options.address, data.element.emergencySurveyStaking);
+            }
+        });
+    }
+    sequentialOps.push({
+        name: 'Publishing Proposal...',
+        async call(data) {
+            data.transaction = await window.blockchainCall(
+                data.element.dFO.methods.newProposal,
+                data.functionalityName,
+                data.emergency,
+                window.getNetworkElement('defaultOcelotTokenAddress'),
+                isNaN(data.functionalitySourceId) ? 0 : data.functionalitySourceId,
+                window.hasEthereumAddress(data.functionalityAddress) ? data.functionalityAddress : window.voidEthereumAddress,
+                data.functionalitySubmitable,
+                data.functionalityMethodSignature || "",
+                data.functionalityOutputParameters || "",
+                data.functionalityInternal,
+                data.functionalityNeedsSender,
+                data.functionalityReplace
+            );
+            if (!data.element.minimumStaking) {
+                $.publish('loader/toggle', false);
+                $.publish('message', 'Proposal Sent!', 'info');
+                $.publish('section/change', 'Proposals');
+            }
+        }
+    });
+    initialContext.element.minimumStaking && sequentialOps.push({
+        name: 'Sending Initial ' + window.fromDecimals(initialContext.element.minimumStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Staking',
+        async call(data) {
+            await window.blockchainCall(window.newContract(window.context.propsalAbi, data.transaction.events.Proposal.returnValues.proposal).methods.accept, window.numberToString(data.element.minimumStaking));
+            $.publish('loader/toggle', false);
+            $.publish('message', 'Proposal Sent!', 'info');
+            $.publish('section/change', 'Proposals');
+        }
+    });
+    $.publish('loader/toggle', [true, sequentialOps, initialContext]);
 };

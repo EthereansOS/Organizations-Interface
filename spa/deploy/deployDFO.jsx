@@ -56,12 +56,11 @@ var DeployDFO = React.createClass({
                     }, {
                         name: "Deploy " + _this.props.allData.governanceRulesText + " Governance Rules" + (_this.props.allData.governanceRules === 'OpenBasic' ? '' : (' | Staking ' + (_this.props.allData.governanceRules === 'HodlersDriven' ? _this.props.allData.surveyMinStake : _this.props.allData.surveyCommunityStake + ' ' + _this.props.allData.tokenSymbol + ' and releasing ' + _this.props.allData.surveySingleReward) + ' ' + _this.props.allData.tokenSymbol)),
                         call: function (data) {
-                            var params = ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'address', 'uint256'];
+                            var params = ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'];
                             var values = [window.voidEthereumAddress, 0,
                                 data.surveyLength,
                                 data.emergencySurveyLength,
                                 data.emergencySurveyStaking,
-                                data.stateHolder,
                                 data.surveyQuorum || 0
                             ];
                             data.governanceRules !== 'OpenBasic' && params.push('uint256') && values.push(data.governanceRules === 'CommunityDriven' ? data.surveySingleReward : data.surveyMinStake);

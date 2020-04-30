@@ -1,6 +1,3 @@
-/* Update:
- * New StateHolder
- */
 /* Discussion:
  * https://gitcoin.co/grants/154/decentralized-flexible-organization
  */
@@ -36,14 +33,13 @@ contract DeployDFO {
             require(compareContracts(votingToken, senderProxy.getToken()) == 1, "Not original Voting Token");
             IVotingToken tkn = IVotingToken(votingToken);
 
-            (,bytes memory amountBytes) = IStateHolder(stateHolderAddress).clear("additionalAmount");
+            uint256 proxyBalance = tkn.balanceOf(msg.sender);
+            uint256 votingTokenAmountForHub = toUint256(senderProxy.read("getVotingTokenAmountForHub", abi.encode(tkn.totalSupply())));
 
-            uint256 additionalAmount = toUint256(amountBytes);
-
-            require(tkn.balanceOf(msg.sender) >= toUint256(senderProxy.read("getVotingTokenAmountForHub", abi.encode(tkn.totalSupply()))) + additionalAmount, "Insufficient tokens amount for DFOHub!");
+            require(proxyBalance >= votingTokenAmountForHub, "Insufficient tokens amount for DFOHub!");
 
             IMVDProxy(proxy = clone(msg.sender)).init(votingToken, stateHolderAddress, mvdFunctionalityModelsManagerAddress, mvdFunctionalityProposalManagerAddress, mvdFunctionalitiesManagerAddress);
-            senderProxy.transfer(proxy, additionalAmount, votingToken);
+            senderProxy.transfer(proxy, proxyBalance - votingTokenAmountForHub, votingToken);
             senderProxy.emitEvent("DFODeployed(address_indexed,address)", abi.encodePacked(sender), bytes(""), abi.encode(proxy));
             setupENS(senderProxy, proxy, toLowerCase(ens));
     }
@@ -123,12 +119,6 @@ contract DeployDFO {
 interface IVotingToken {
     function totalSupply() external view returns (uint256);
     function balanceOf(address account) external view returns (uint256);
-}
-
-interface IStateHolder {
-    function clear(string calldata varName) external returns(string memory oldDataType, bytes memory oldVal);
-    function setAddress(string calldata varName, address val) external returns (address);
-    function setString(string calldata varName, string calldata val) external returns(string memory);
 }
 
 interface IMVDProxy {

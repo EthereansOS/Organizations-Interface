@@ -66,14 +66,14 @@ var Overview = React.createClass({
                 <li>
                     <section>
                         <a href={this.props.element.link ? "javascript:;" : undefined} className={!this.props.element.link ? undefined : "LinkVisualButton" + (this.state && this.state.indexShow === 'link' ? ' Editing' : "")} onClick={() => this.props.element.link && this.setState({ indexShow: this.state && this.state.indexShow === 'link' ? null : 'link' })}>Code</a>
-                        <input id="linkCheck" type="checkbox" className="DFOFunctionIndexIconSelector" onChange={e => { this.linkValue.value = this.props.element.link; this.linkValue.disabled = !e.currentTarget.checked }} />
+                        <input id="linkCheck" type="checkbox" className="DFOFunctionIndexIconSelector" ref={ref => this.linkCheck = ref} onChange={e => { this.linkValue.value = this.props.element.link || ''; this.linkValue.disabled = !e.currentTarget.checked; this.indexCheck.checked = false; this.indexFile.disabled = true; }} />
                         <label htmlFor="linkCheck">Distributed Layer</label>
                         <input className="DFOFunctionIndexIconText" id="link" type="text" placeholder="Link IPFS Swarm" ref={ref => (this.linkValue = ref) && (ref.value = this.props.element.link || '')} disabled />
                     </section>
                     <section>
                         <a href={this.props.element.index ? 'javascript:;' : undefined} className={!this.props.element.index ? undefined : "LinkVisualButton" + (this.state && this.state.indexShow === 'index' ? ' Editing' : "")} onClick={() => this.props.element.index && this.props.element.index !== '0' && this.setState({ indexShow: this.state && this.state.indexShow === 'index' ? null : 'index' })}>Code</a>
                         <input type="hidden" id="index" ref={ref => (this.indexValue = ref) && (ref.value = this.props.element.index)} />
-                        <input id="indexCheck" type="checkbox" className="DFOFunctionIndexIconSelector" onChange={e => { this.indexValue.value = this.props.element.index; this.indexFile.value = ''; this.indexFile.disabled = !e.currentTarget.checked }} />
+                        <input id="indexCheck" type="checkbox" className="DFOFunctionIndexIconSelector" ref={ref => this.indexCheck = ref} onChange={e => { this.indexValue.value = this.props.element.index; this.indexFile.value = ''; this.indexFile.disabled = !e.currentTarget.checked; this.linkCheck.checked = false; this.linkValue.disabled = true; }} />
                         <label htmlFor="indexCheck">Decentralized Layer</label>
                         <input className="DFOFunctionIndexIconUpload" id="indexFile" type="file" accept=".html,.htm" ref={ref => this.indexFile = ref} disabled onChange={this.uploadFile} />
                     </section>
@@ -204,7 +204,7 @@ var Overview = React.createClass({
                     <li>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward && <span>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside></span>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward !== undefined && <span>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside></span>}
                             </AsyncValue>
                             {_this.renderChangeButton('surveySingleReward')}
                         </section>
@@ -214,7 +214,7 @@ var Overview = React.createClass({
                     <li>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.quorum && <span>{window.fromDecimals(_this.props.element.quorum, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol} ({window.tokenPercentage(_this.props.element.quorum, _this.props.element.totalSupply)})</aside></span>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.quorum !== undefined && <span>{window.fromDecimals(_this.props.element.quorum, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol} ({window.tokenPercentage(_this.props.element.quorum, _this.props.element.totalSupply)})</aside></span>}
                             </AsyncValue>
                             {_this.renderChangeButton('quorum')}
                         </section>

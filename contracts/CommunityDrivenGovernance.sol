@@ -22,7 +22,20 @@ contract CommunityDrivenGovernance {
             return;
         }
         IMVDProxy proxy = IMVDProxy(msg.sender);
-        proxy.transfer(IMVDFunctionalityProposal(proposal).getProposer(), IStateHolder(proxy.getStateHolderAddress()).getUint256("surveySingleReward"), proxy.getToken());
+        if(proxy.hasFunctionality("getSurveySingleReward")) {
+            uint256 surveySingleReward = toUint256(proxy.read("getSurveySingleReward", bytes("")));
+            if(surveySingleReward > 0) {
+                proxy.transfer(IMVDFunctionalityProposal(proposal).getProposer(), surveySingleReward, proxy.getToken());
+            }
+        }
+    }
+
+    function toUint256(bytes memory bs) private pure returns(uint256 x) {
+        if(bs.length >= 32) {
+            assembly {
+                x := mload(add(bs, add(0x20, 0)))
+            }
+        }
     }
 }
 
@@ -32,14 +45,11 @@ interface IVotingToken {
 
 interface IMVDProxy {
     function getToken() external view returns(address);
-    function getStateHolderAddress() external view returns(address);
     function transfer(address receiver, uint256 value, address token) external;
+    function hasFunctionality(string calldata codeName) external view returns(bool);
+    function read(string calldata codeName, bytes calldata data) external view returns(bytes memory returnData);
 }
 
 interface IMVDFunctionalityProposal {
     function getProposer() external view returns(address);
-}
-
-interface IStateHolder {
-    function getUint256(string calldata varName) external view returns (uint256);
 }

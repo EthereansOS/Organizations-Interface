@@ -160,7 +160,7 @@ var Editor = React.createClass({
                 </div>}
                 {((this.props.readonly && this.props.compileAtStart) || (!this.props.readonly && !this.props.firstCode && !this.props.first && !this.props.secondCode && !this.props.second)) && <div className="CodeEditorOptionsCoding">
                     <p className="CodeEditorOptionsWhat">Solidity: </p>
-                    <select className="CodeEditorOptionsSelect" ref={this.onSolidityVersion} />
+                    <select id="selectedSolidityVersion" className="CodeEditorOptionsSelect" ref={this.onSolidityVersion} />
                 </div>}
                 <section className="NewProposaleditor" ref={this.onEditor} />
             </section>
