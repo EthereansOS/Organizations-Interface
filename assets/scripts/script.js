@@ -81,8 +81,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
                 try {
                     window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));
-                } catch(e) {
-                }
+                } catch (e) {}
 
                 window.list = {
                     DFO: window.dfoHub
@@ -243,12 +242,12 @@ window.createContract = async function createContract(abi, data) {
             data: data.encodeABI(),
             gasLimit: await data.estimateGas({ from })
         }))).contractAddress;
-    } catch(e) {
+    } catch (e) {
         try {
-            if(!contractAddress || (e.message || e).indexOf("The contract code couldn't be stored, please check your gas") === -1) {
+            if (!contractAddress || (e.message || e).indexOf("The contract code couldn't be stored, please check your gas") === -1) {
                 throw e;
             }
-        } catch(a) {
+        } catch (a) {
             throw e;
         }
     }
@@ -279,7 +278,7 @@ window.sendBlockchainTransaction = function sendBlockchainTransaction(transactio
                 };
                 window.setTimeout(timeout);
             }).catch(ko);
-        } catch(e) {
+        } catch (e) {
             return ko(e.message || e);
         }
     });
@@ -374,11 +373,15 @@ window.indexMain = function indexMain() {
 window.fromDecimals = function fromDecimals(n, d) {
     n = (n && n.value || n);
     d = (d && d.value || d);
+    var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
+    var symbol = window.toEthereumSymbol(decimals);
+    if(symbol) {
+        return window.web3.utils.fromWei((typeof n).toLowerCase() === 'string' ? n : window.numberToString(n), symbol);
+    }
     var number = (typeof n).toLowerCase() === 'string' ? parseInt(n) : n;
     if (!number || this.isNaN(number)) {
         return '0';
     }
-    var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
     var nts = parseFloat(window.numberToString((number / (decimals < 2 ? 1 : Math.pow(10, decimals)))));
     return window.numberToString(Math.round(nts * 100) / 100);
 };
@@ -386,12 +389,16 @@ window.fromDecimals = function fromDecimals(n, d) {
 window.toDecimals = function toDecimals(n, d) {
     n = (n && n.value || n);
     d = (d && d.value || d);
+    var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
+    var symbol = window.toEthereumSymbol(decimals);
+    if(symbol) {
+        return window.web3.utils.toWei((typeof n).toLowerCase() === 'string' ? n : window.numberToString(n), symbol);
+    }
     var number = (typeof n).toLowerCase() === 'string' ? parseInt(n) : n;
     if (!number || this.isNaN(number)) {
         return 0;
     }
-    var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
-    return number * (decimals < 2 ? 1 : Math.pow(10, decimals));
+    return window.numberToString(number * (decimals < 2 ? 1 : Math.pow(10, decimals)));
 };
 
 window.loadContent = async function loadContent(tokenId, ocelotAddress, raw) {
@@ -499,6 +506,9 @@ window.mint = async function mint(inputs, ocelotAddress, silent, firstChunkCallb
 window.numberToString = function numberToString(num, locale) {
     if (num === undefined || num === null) {
         num = 0;
+    }
+    if((typeof num).toLowerCase() === 'string') {
+        return num;
     }
     let numStr = String(num);
 
@@ -837,7 +847,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
     (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template)) && sequentialOps.push({
         name: "Deploying Smart Contract",
         async call(data) {
-            if(data.contractName && data.functionalitySourceId && data.selectedSolidityVersion) {
+            if (data.contractName && data.functionalitySourceId && data.selectedSolidityVersion) {
                 var code = await window.loadContent(data.functionalitySourceId);
                 var compiled = await window.SolidityUtilities.compile(code, data.selectedSolidityVersion, 200);
                 data.selectedContract = compiled[data.contractName];
@@ -894,4 +904,44 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
         }
     });
     $.publish('loader/toggle', [true, sequentialOps, initialContext]);
+};
+
+window.toEthereumSymbol = function toEthereumSymbol(decimals) {
+    var symbols = {
+        "noether": "0",
+        "wei": "1",
+        "kwei": "1000",
+        "Kwei": "1000",
+        "babbage": "1000",
+        "femtoether": "1000",
+        "mwei": "1000000",
+        "Mwei": "1000000",
+        "lovelace": "1000000",
+        "picoether": "1000000",
+        "gwei": "1000000000",
+        "Gwei": "1000000000",
+        "shannon": "1000000000",
+        "nanoether": "1000000000",
+        "nano": "1000000000",
+        "szabo": "1000000000000",
+        "microether": "1000000000000",
+        "micro": "1000000000000",
+        "finney": "1000000000000000",
+        "milliether": "1000000000000000",
+        "milli": "1000000000000000",
+        "ether": "1000000000000000000",
+        "kether": "1000000000000000000000",
+        "grand": "1000000000000000000000",
+        "mether": "1000000000000000000000000",
+        "gether": "1000000000000000000000000000",
+        "tether": "1000000000000000000000000000000"
+    };
+    var d = "1" + (new Array(decimals + 1)).join('0');
+    var values = Object.entries(symbols);
+    for(var i in values) {
+        var symbol = values[i];
+        if(symbol[1] === d) {
+            return symbol[0];
+        }
+    }
 };

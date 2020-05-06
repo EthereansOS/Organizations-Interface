@@ -17,7 +17,7 @@ contract DeployOpenBasicGovernanceRules {
     uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 50;
     uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 54;
 
-    uint256 private _surveyResultValidatorSourceLocationId = 102;
+    uint256 private _surveyResultValidatorSourceLocationId = 41;
 
     uint256 private _getIndexSourceLocationId = 98;
     uint256 private _getQuorumSourceLocationId = 103;

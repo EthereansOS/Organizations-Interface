@@ -105,7 +105,8 @@ var OverviewController = function (view) {
     };
 
     context.emergencyPenaltyChange = function emergencyPenaltyChange(data) {
-        data.emergencySurveyStaking = window.toDecimals(data.emergencySurveyStaking, context.view.props.element.decimals);
+        var emergencySurveyStakingString = window.toDecimals(data.emergencySurveyStaking, context.view.props.element.decimals);
+        data.emergencySurveyStaking = parseInt(emergencySurveyStakingString);
         if(data.emergencySurveyStaking === parseInt(context.view.props.element.emergencySurveyStaking)) {
             return;
         }
@@ -115,7 +116,7 @@ var OverviewController = function (view) {
         if(data.emergencySurveyStaking > parseInt(context.view.props.element.totalSupply)) {
             return context.view.emit('message', 'Specified amount exceedes Total Voting Token Supply', 'error');
         }
-        var template = JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('getValue()').join('getEmergencySurveyStaking()').split('type').join('uint256').split('value').join(window.numberToString(data.emergencySurveyStaking)));
+        var template = JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('getValue()').join('getEmergencySurveyStaking()').split('type').join('uint256').split('value').join(emergencySurveyStakingString));
         window.sendGeneratedProposal(context.view.props.element, {
             title: 'Updating Emergency Proposal Stake',
             functionalityName: 'getEmergencySurveyStaking',
@@ -127,7 +128,9 @@ var OverviewController = function (view) {
     };
 
     context.quorumChange = async function quorumChange(data) {
-        data.quorum = window.toDecimals(data.quorum, context.view.props.element.decimals);
+        var originalQuorum = window.numberToString(data.quorum);
+        var quorumString = window.toDecimals(data.quorum, context.view.props.element.decimals);
+        data.quorum = parseInt(quorumString);
         if(data.quorum === parseInt(context.view.props.element.quorum)) {
             return;
         }
@@ -138,12 +141,12 @@ var OverviewController = function (view) {
             return context.view.emit('message', 'Specified amount exceedes Total Voting Token Supply', 'error');
         }
         var descriptions = ['DFO Hub - Utilities - Get Quorum', 'This functionality returns the quorum value needed to accept a Survey'];
-        var updates = ['Setting quorum value to ' + window.fromDecimals(data.quorum, context.view.props.element.decimals) + ' ' + context.view.props.element.symbol];
+        var updates = ['Setting quorum value to ' + originalQuorum + ' ' + context.view.props.element.symbol];
         !context.view.props.element.quorum && descriptions.push(updates[0]);
         if(data.quorum === 0) {
             updates = ['Clearing quorum'];
         }
-        var template = !data.quorum ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(window.numberToString(data.quorum)));
+        var template = !data.quorum ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(quorumString));
         window.sendGeneratedProposal(context.view.props.element, {
             title: updates[0],
             functionalityName: data.quorum ? 'getQuorum' : '',
@@ -155,7 +158,9 @@ var OverviewController = function (view) {
     };
 
     context.proposalStakeChange = function proposalStakeChange(data) {
-        data.minimumStaking = window.toDecimals(data.minimumStaking, context.view.props.element.decimals);
+        var originalMinimumStaking = window.numberToString(data.minimumStaking);
+        var minimumStakingString = window.toDecimals(data.minimumStaking, context.view.props.element.decimals);
+        data.minimumStaking = parseInt(minimumStakingString);
         if(data.minimumStaking === parseInt(context.view.props.element.minimumStaking)) {
             return;
         }
@@ -166,12 +171,12 @@ var OverviewController = function (view) {
             return context.view.emit('message', 'Specified amount exceedes Total Voting Token Supply', 'error');
         }
         var descriptions = ['DFO Hub - Utilities - Get Proposal Stake', 'This functionality provides the amount of voting tokens needed to be staked to make a new proposal'];
-        var updates = ['Setting Proposal Stake value to ' + window.fromDecimals(data.minimumStaking, context.view.props.element.decimals) + ' ' + context.view.props.element.symbol];
+        var updates = ['Setting Proposal Stake value to ' + originalMinimumStaking + ' ' + context.view.props.element.symbol];
         !context.view.props.element.minimumStaking && descriptions.push(updates[0]);
         if(data.minimumStaking === 0) {
             updates = ['Clearing Proposal Stake'];
         }
-        var template = !data.minimumStaking ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(window.numberToString(data.minimumStaking)));
+        var template = !data.minimumStaking ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(minimumStakingString));
         window.sendGeneratedProposal(context.view.props.element, {
             title: updates[0],
             functionalityName: data.minimumStaking ? 'getSurveyMinimumStaking' : '',
@@ -183,7 +188,9 @@ var OverviewController = function (view) {
     };
 
     context.surveySingleRewardChange = function surveySingleRewardChange(data) {
-        data.surveySingleReward = window.toDecimals(data.surveySingleReward, context.view.props.element.decimals);
+        var originalSurveySingleReward = window.numberToString(data.surveySingleReward);
+        var surveySingleRewardString = window.toDecimals(data.surveySingleReward, context.view.props.element.decimals);
+        data.surveySingleReward = parseInt(surveySingleRewardString);
         if(data.surveySingleReward === parseInt(context.view.props.element.surveySingleReward)) {
             return;
         }
@@ -194,12 +201,12 @@ var OverviewController = function (view) {
             return context.view.emit('message', 'Specified amount exceedes Total Voting Token Supply', 'error');
         }
         var descriptions = ['DFO Hub - Utilities - Get Dev Incentives', 'This functionality provides the amount of voting tokens needed to be staked to make a new proposal'];
-        var updates = ['Setting Dev Incentives value to ' + window.fromDecimals(data.surveySingleReward, context.view.props.element.decimals) + ' ' + context.view.props.element.symbol];
+        var updates = ['Setting Dev Incentives value to ' + originalSurveySingleReward + ' ' + context.view.props.element.symbol];
         !context.view.props.element.surveySingleReward && descriptions.push(updates[0]);
         if(data.surveySingleReward === 0) {
             updates = ['Clearing Dev Incentives'];
         }
-        var template = !data.surveySingleReward ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(window.numberToString(data.surveySingleReward)));
+        var template = !data.surveySingleReward ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(surveySingleRewardString));
         window.sendGeneratedProposal(context.view.props.element, {
             title: updates[0],
             functionalityName: data.surveySingleReward ? 'getSurveySingleReward' : '',

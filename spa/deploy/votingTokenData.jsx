@@ -8,7 +8,7 @@ var VotingTokenData = React.createClass({
             if (errors.length > 0) {
                 return ko(errors);
             }
-            data.totalSupplyWei = window.toDecimals(data.tokenTotalSupply, 18);
+            data.totalSupplyWei = parseInt(window.toDecimals(data.tokenTotalSupply, 18));
             window.blockchainCall(window.dfoHub.dFO.methods.read, 'getVotingTokenAmountForHub', window.web3.eth.abi.encodeParameter('uint256', window.numberToString(data.totalSupplyWei))).then(result => {
                 data.availableSupply = parseInt(window.fromDecimals(data.totalSupplyWei - parseInt(window.web3.eth.abi.decodeParameter('uint256', result)), 18));
                 return ok(data);

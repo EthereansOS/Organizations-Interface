@@ -74,19 +74,19 @@ var DFOListController = function (view) {
             } catch(e) {
             }
             try {
-                element.quorum = parseInt(window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getQuorum', '0x')));
+                element.quorum = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getQuorum', '0x'));
             } catch(e) {
-                element.quorum = 0;
+                element.quorum = "0";
             }
             try {
-                element.surveySingleReward = parseInt(window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveySingleReward', '0x')));
+                element.surveySingleReward = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveySingleReward', '0x'));
             } catch(e) {
-                element.surveySingleReward = 0;
+                element.surveySingleReward = "0";
             }
             try {
-                element.minimumStaking = parseInt(window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveyMinimumStaking', '0x')));
+                element.minimumStaking = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveyMinimumStaking', '0x'));
             } catch(e) {
-                element.minimumStaking = 0;
+                element.minimumStaking = "0";
             }
             element.icon = window.makeBlockie(element.dFO.options.address);
             try {
