@@ -45,7 +45,7 @@ var Proposals = React.createClass({
         } catch (e) {
         }
         var _this = this;
-        this.controller.interact(survey, name, type, parseInt(window.toDecimals(value, this.props.element.decimals))).then(replaceSituation).catch(e => replaceSituation() && _this.emit('message', e.message || e, "error"));
+        this.controller.interact(survey, name, type, window.toDecimals(value, this.props.element.decimals)).then(replaceSituation).catch(e => replaceSituation() && _this.emit('message', e.message || e, "error"));
     },
     sortSurveys(surveys) {
         var list = [];

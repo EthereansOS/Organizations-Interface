@@ -11,16 +11,16 @@ pragma solidity ^0.6.0;
 
 contract DeployOpenBasicGovernanceRules {
 
-    address private _sourceLocation = 0x6ae6cf934b2BD8c84d932AeE75102Ca2ef1Bf2Ce;
+    address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
-    uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 43;
-    uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 50;
-    uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 54;
+    uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 2;
+    uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 1;
+    uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 0;
 
     uint256 private _surveyResultValidatorSourceLocationId = 41;
 
-    uint256 private _getIndexSourceLocationId = 98;
-    uint256 private _getQuorumSourceLocationId = 103;
+    uint256 private _getIndexSourceLocationId = 50;
+    uint256 private _getQuorumSourceLocationId = 51;
 
     function onStart(address newSurvey, address oldSurvey) public {
     }

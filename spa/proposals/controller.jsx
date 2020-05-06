@@ -224,7 +224,7 @@ var ProposalsController = function (view) {
         if (name === 'Withdraw All') {
             await window.blockchainCall(method);
         } else {
-            await window.blockchainCall(method, window.numberToString(amount));
+            await window.blockchainCall(method, amount);
         }
         context.view.emit('message', 'Operation completed!');
         context.loadSurveys(true);

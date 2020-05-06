@@ -14,12 +14,12 @@ pragma solidity ^0.6.0;
 
 contract DeployCommunityDrivenGovernanceRules {
 
-    address private _sourceLocation = 0x6ae6cf934b2BD8c84d932AeE75102Ca2ef1Bf2Ce;
+    address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
-    uint256 private _communityDrivenGovernanceLocationId = 104;
-    address private _communityDrivenGovernanceFunctionalityAddress = 0xE29F0c010cdCBBf6671CC9B4C5Bbc6B7F3394df2;
+    uint256 private _communityDrivenGovernanceLocationId = 48;
+    address private _communityDrivenGovernanceFunctionalityAddress = 0x6FF93F88dE579c4e158b772eA680573c7A012F08;
 
-    uint256 private _getSurveySingleRewardSourceLocationId = 105;
+    uint256 private _getSurveySingleRewardSourceLocationId = 49;
 
     function onStart(address newSurvey, address oldSurvey) public {
     }

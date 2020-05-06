@@ -11,7 +11,7 @@ pragma solidity ^0.6.0;
 
 contract DeployHodlersDrivenGovernanceRules {
 
-    address private _sourceLocation = 0x6ae6cf934b2BD8c84d932AeE75102Ca2ef1Bf2Ce;
+    address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
     uint256 private _getSurveyMinimumStakingSourceLocationId = 106;
 
