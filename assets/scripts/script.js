@@ -373,6 +373,9 @@ window.indexMain = function indexMain() {
 window.fromDecimals = function fromDecimals(n, d) {
     n = (n && n.value || n);
     d = (d && d.value || d);
+    if(!n || !d) {
+        return "0";
+    }
     var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
     var symbol = window.toEthereumSymbol(decimals);
     if(symbol) {
@@ -389,6 +392,9 @@ window.fromDecimals = function fromDecimals(n, d) {
 window.toDecimals = function toDecimals(n, d) {
     n = (n && n.value || n);
     d = (d && d.value || d);
+    if(!n || !d) {
+        return "0";
+    }
     var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
     var symbol = window.toEthereumSymbol(decimals);
     if(symbol) {
@@ -887,14 +893,14 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
                 data.functionalityNeedsSender,
                 data.functionalityReplace
             );
-            if (!data.element.minimumStaking) {
+            if (!parseInt(data.element.minimumStaking)) {
                 $.publish('loader/toggle', false);
                 $.publish('message', 'Proposal Sent!', 'info');
                 $.publish('section/change', 'Proposals');
             }
         }
     });
-    initialContext.element.minimumStaking && sequentialOps.push({
+    parseInt(initialContext.element.minimumStaking) && sequentialOps.push({
         name: 'Sending Initial ' + window.fromDecimals(initialContext.element.minimumStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Staking',
         async call(data) {
             await window.blockchainCall(window.newContract(window.context.propsalAbi, data.transaction.events.Proposal.returnValues.proposal).methods.accept, window.numberToString(data.element.minimumStaking));
