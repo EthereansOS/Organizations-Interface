@@ -236,11 +236,23 @@ window.createContract = async function createContract(abi, data) {
         data,
         arguments: args,
     });
-    return window.newContract(abi, (await window.sendBlockchainTransaction(window.web3.eth.sendTransaction({
-        from,
-        data: data.encodeABI(),
-        gasLimit: await data.estimateGas({ from })
-    }))).contractAddress);
+    var contractAddress = window.getNextContractAddress && window.getNextContractAddress(from, await window.web3.eth.getTransactionCount(from));
+    try {
+        contractAddress = (await window.sendBlockchainTransaction(window.web3.eth.sendTransaction({
+            from,
+            data: data.encodeABI(),
+            gasLimit: await data.estimateGas({ from })
+        }))).contractAddress;
+    } catch(e) {
+        try {
+            if(!contractAddress || (e.message || e).indexOf("The contract code couldn't be stored, please check your gas") === -1) {
+                throw e;
+            }
+        } catch(a) {
+            throw e;
+        }
+    }
+    return window.newContract(abi, contractAddress);
 };
 
 window.blockchainCall = async function blockchainCall(call) {
