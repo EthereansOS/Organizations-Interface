@@ -645,13 +645,23 @@ window.extractHTMLDescription = function extractHTMLDescription(code, updateFirs
 }
 
 window.searchForCodeErrors = async function searchForCodeErrors(location, code, codeName, methodSignature, replaces) {
+    var knownFunctionalities = {
+        "getMinimumBlockNumberForSurvey" : true,
+        "getMinimumBlockNumberForEmergencySurvey" : true,
+        "getEmergencySurveyStaking" : true,
+        "getQuorum" : true,
+        "getSurveySingleReward" : true,
+        "getSurveyMinimumStaking" : true,
+        "getIndex" : true,
+        "getLink" : true
+    };
     var errors = [];
     var comments = code ? window.extractComment(code) : {};
     if ((codeName || (!codeName && !replaces)) && !comments.Description) {
         errors.push('Missing description!');
     }
     if ((codeName || (!codeName && !replaces)) && !comments.Discussion) {
-        errors.push('Missing discussion Link!');
+        !knownFunctionalities[codeName] && errors.push('Missing discussion Link!');
     }
     if (codeName && replaces && !comments.Update) {
         errors.push('Missing update text!');

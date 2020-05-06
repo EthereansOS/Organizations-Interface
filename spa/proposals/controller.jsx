@@ -127,12 +127,12 @@ var ProposalsController = function (view) {
             data.allVotes = await window.blockchainCall(contract.methods.getVotes);
             data.accepted = data.allVotes[0];
             data.refused = data.allVotes[1];
-            data.allVotes = parseInt(data.allVotes[0]) + parseInt(data.allVotes[1]);
+            data.allVotes = window.web3.utils.toBN(data.allVotes[0]).add(window.web3.utils.toBN(data.allVotes[1]));
             data.surveyEnd = data.endBlock <= (currentBlock + 1);
             data.myVotes = !window.walletAddress ? [0, 0] : await window.blockchainCall(contract.methods.getVote, window.walletAddress);
             data.myAccepts = data.myVotes[0];
             data.myRefuses = data.myVotes[1];
-            data.myVotes = parseInt(data.myVotes[0]) + parseInt(data.myVotes[1]);
+            data.myVotes = window.web3.utils.toBN(data.myVotes[0]).add(window.web3.utils.toBN(data.myVotes[1]));
             data.myBalance = myBalance;
             data.leading = await window.blockchainCall(context.view.props.element.dFO.methods.read, 'checkSurveyResult', window.web3.eth.abi.encodeParameter('address', data.address));
             data.leading = window.web3.eth.abi.decodeParameter('bool', data.leading);
