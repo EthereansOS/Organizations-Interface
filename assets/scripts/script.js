@@ -68,6 +68,8 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 delete window.contracts;
                 window.web3 = new window.Web3Browser(window.web3.currentProvider);
                 window.web3.currentProvider.setMaxListeners(0);
+                window.web3.eth.transactionBlockTimeout = 999999999;
+                window.web3.eth.transactionPollingTimeout = new Date().getTime();
                 window.networkId = await window.web3.eth.net.getId();
                 var network = window.context.ethereumNetwork[window.networkId];
                 if (network === undefined || network === null) {
@@ -267,19 +269,22 @@ window.blockchainCall = async function blockchainCall(call) {
 
 window.sendBlockchainTransaction = function sendBlockchainTransaction(transaction) {
     return new Promise(async function(ok, ko) {
+        var handleTransactionError = function handleTransactionError(e) {
+            e !== undefined && e !== null && (e.message || e).indexOf('not mined within') === -1 && ko(e);
+        }
         try {
-            (transaction = transaction.send ? transaction.send(await window.getSendingOptions(transaction), err => err && ko(err.message || err)) : transaction).on('transactionHash', transactionHash => {
+            (transaction = transaction.send ? transaction.send(await window.getSendingOptions(transaction), handleTransactionError) : transaction).on('transactionHash', transactionHash => {
                 var timeout = async function() {
                     var receipt = await window.web3.eth.getTransactionReceipt(transactionHash);
                     if (!receipt || !receipt.blockNumber || parseInt(await window.web3.eth.getBlockNumber()) < (parseInt(receipt.blockNumber) + (window.context.transactionConfirmations || 0))) {
                         return window.setTimeout(timeout, window.context.transactionConfirmationsTimeoutMillis);
                     }
-                    return transaction.catch(ko).then(ok);
+                    return transaction.then(ok);
                 };
                 window.setTimeout(timeout);
-            }).catch(ko);
+            }).catch(handleTransactionError);
         } catch (e) {
-            return ko(e.message || e);
+            return handleTransactionError(e);
         }
     });
 };
