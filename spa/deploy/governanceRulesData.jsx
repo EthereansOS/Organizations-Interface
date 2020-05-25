@@ -3,10 +3,11 @@ var GovernanceRulesData = React.createClass({
         'spa/okBoomer.jsx'
     ],
     getData() {
+        var _this = this;
         var data = window.getData(this.domRoot);
         data.governanceRules = (this.state && this.state.element) || this.props.allData.governanceRules;
         data.governanceRulesText = this.state && this.state.governanceRulesText;
-        data.surveyQuorum = parseInt(data.surveyQuorumCheck ? this.surveyQuorum.dataset.value : undefined);
+        data.surveyQuorum = parseFloat(data.surveyQuorumCheck ? this.surveyQuorum.dataset.value : undefined);
         var errors = [];
         if (!data.governanceRules) {
             throw ['You must choose one of te proposed governance rules to continue'];
@@ -14,11 +15,11 @@ var GovernanceRulesData = React.createClass({
         var errors = [];
         (isNaN(data.surveyLength) || data.surveyLength < 1) && errors.push('Survey Length must be greater than or equal to 1');
         (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength < 1) && errors.push('Emergency Survey Length must be greater than or equal to 1');
-        (isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0 || data.emergencySurveyStaking > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Emergency Survey Penalty must be a number between 0 and ' + this.props.allData.tokenTotalSupply);
-        data.surveyQuorumCheck && (isNaN(data.surveyQuorum) || data.surveyQuorum < 1 || data.surveyQuorum > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Survey quorum must be a number between 1 and ' + this.props.allData.tokenTotalSupply);
-        data.governanceRules === 'HodlersDriven' && (isNaN(data.surveyMinStake) || data.surveyMinStake < 1 || parseInt(data.surveyMinStake) > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Survey minimum stake must be a number between 1 and ' + this.props.allData.tokenTotalSupply);
-        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveyCommunityStake) || data.surveyCommunityStake < 1 || parseInt(data.surveyCommunityStake) > this.props.allData.availableSupply) && errors.push('Survey Community reward must be a number between 1 and ' + this.props.allData.availableSupply);
-        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveySingleReward) || data.surveySingleReward < 1 || parseInt(data.surveySingleReward) > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Survey single reward must be a number between 1 and ' + this.props.allData.tokenTotalSupply);
+        (isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0 || data.emergencySurveyStaking > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Emergency Survey Penalty must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        data.surveyQuorumCheck && (isNaN(data.surveyQuorum) || data.surveyQuorum < 0 || data.surveyQuorum > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey quorum must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        data.governanceRules === 'HodlersDriven' && (isNaN(data.surveyMinStake) || data.surveyMinStake < 0 || parseFloat(data.surveyMinStake) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey minimum stake must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveyCommunityStake) || data.surveyCommunityStake < 0 || parseFloat(data.surveyCommunityStake) > _this.props.allData.availableSupply) && errors.push('Survey Community reward must be a number between 0 and ' + _this.props.allData.availableSupply);
+        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveySingleReward) || data.surveySingleReward < 0 || parseFloat(data.surveySingleReward) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey single reward must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
         if (errors.length > 0) {
             throw errors;
         }
@@ -52,11 +53,8 @@ var GovernanceRulesData = React.createClass({
         if (isNaN(surveyQuorumPercentage)) {
             return;
         }
-        var result = this.props.allData.totalSupplyWei * (surveyQuorumPercentage * 100) / 10000;
+        var result = parseInt(this.props.allData.totalSupplyWei) * (surveyQuorumPercentage * 100) / 10000;
         result = window.fromDecimals(result, 18);
-        result = window.numberToString(result);
-        result = parseInt(result);
-        result = window.numberToString(result);
         this.surveyQuorum.dataset.value = result;
         this.surveyQuorum.innerHTML = result;
     },

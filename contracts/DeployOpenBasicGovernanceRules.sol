@@ -1,35 +1,38 @@
+/* Update:
+ * Avoid StateHolder use
+ */
+/* Discussion:
+ * https://gitcoin.co/grants/154/decentralized-flexible-organization
+ */
 /* Description:
  * DFOHub - Setup the Open Basic Governance.
  * This specific DFOHub functionality is called on choosing to create a DFO with this specific governance model.
  * The Functionality Manager uses the 4 basic functionalities provided by the DFO Protocol: the Survey length provider, the emergency Survey length provider, the minimum amount to stake for emergency Surveys, and the Survey result checker.
  * If present, the quorum is also set inside the new StateHolder.
  */
-/* Discussion:
- * https://gitcoin.co/grants/154/decentralized-flexible-organization
- */
 pragma solidity ^0.6.0;
 
 contract DeployOpenBasicGovernanceRules {
 
-    address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
+    address private _sourceLocation = 0x6ae6cf934b2BD8c84d932AeE75102Ca2ef1Bf2Ce;
 
-    uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 2;
-    uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 1;
-    uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 0;
+    uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 43;
+    uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 50;
+    uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 54;
 
-    uint256 private _surveyResultValidatorSourceLocationId = 41;
+    uint256 private _surveyResultValidatorSourceLocationId = 102;
 
-    uint256 private _getIndexSourceLocationId = 50;
-    uint256 private _getQuorumSourceLocationId = 51;
+    uint256 private _getIndexSourceLocationId = 98;
+    uint256 private _getQuorumSourceLocationId = 103;
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function deployOpenBasicGovernanceRules(
-        address sender, uint256 value,
+        address sender, uint256,
         uint256 minimumBlockNumber,
         uint256 emergencyBlockNumber,
         uint256 emergencyStaking,
@@ -37,16 +40,22 @@ contract DeployOpenBasicGovernanceRules {
 
         IMVDProxy proxy = IMVDProxy(msg.sender);
 
-        (mvdFunctionalitiesManager = IMVDFunctionalitiesManager(clone(proxy.getMVDFunctionalitiesManagerAddress()))).init(_sourceLocation,
+        IMVDFunctionalitiesManager originalFunctionalitiesManager = IMVDFunctionalitiesManager(proxy.getMVDFunctionalitiesManagerAddress());
+
+        (address functionalityAddress,,,,) = originalFunctionalitiesManager.getFunctionalityData("checkSurveyResult");
+
+        (mvdFunctionalitiesManager = IMVDFunctionalitiesManager(clone(address(originalFunctionalitiesManager)))).init(_sourceLocation,
             _getMinimumBlockNumberForSurveySourceLocationId, address(new GetMinimumBlockNumberForSurveyFunctionality(minimumBlockNumber)),
             _getMinimumBlockNumberForEmergencySurveySourceLocationId, address(new GetMinimumBlockNumberForEmergencySurveyFunctionality(emergencyBlockNumber)),
-            _getEmergencySurveyStakingFunctionalitySourceLocationId, address(new GetEmergencySurveyStakingFunctionality(emergencyStaking * (10 ** 18))),
-            _surveyResultValidatorSourceLocationId, proxy.getFunctionalityAddress("checkSurveyResult"));
+            _getEmergencySurveyStakingFunctionalitySourceLocationId, address(new GetEmergencySurveyStakingFunctionality(emergencyStaking)),
+            _surveyResultValidatorSourceLocationId, functionalityAddress);
 
-        mvdFunctionalitiesManager.addFunctionality("getIndex", _sourceLocation, _getIndexSourceLocationId, proxy.getFunctionalityAddress("getDefaultIndex"), false, "getValue()", '["uint256"]', false, false);
+        (functionalityAddress,,,,) = originalFunctionalitiesManager.getFunctionalityData("getDefaultIndex");
+
+        mvdFunctionalitiesManager.addFunctionality("getIndex", _sourceLocation, _getIndexSourceLocationId, functionalityAddress, false, "getValue()", '["uint256"]', false, false);
 
         if(quorum > 0) {
-            mvdFunctionalitiesManager.addFunctionality("getQuorum", _sourceLocation, _getQuorumSourceLocationId, address(new GetUint256Value(quorum * (10 ** 18))), false, "getValue()", '["uint256"]', false, false);
+            mvdFunctionalitiesManager.addFunctionality("getQuorum", _sourceLocation, _getQuorumSourceLocationId, address(new GetUint256Value(quorum)), false, "getValue()", '["uint256"]', false, false);
         }
         proxy.emitEvent("DFOCollateralContractsCloned(address_indexed,address)", abi.encodePacked(sender), bytes(""), abi.encode(address(mvdFunctionalitiesManager)));
     }
@@ -62,7 +71,6 @@ contract DeployOpenBasicGovernanceRules {
 
 interface IMVDProxy {
     function getMVDFunctionalitiesManagerAddress() external view returns(address);
-    function getFunctionalityAddress(string calldata codeName) external view returns(address);
     function emitEvent(string calldata eventSignature, bytes calldata firstIndex, bytes calldata secondIndex, bytes calldata data) external;
 }
 
@@ -73,6 +81,7 @@ interface IMVDFunctionalitiesManager {
         uint256 getEmergencySurveyStakingSourceLocationId, address getEmergencySurveyStakingFunctionalityAddress,
         uint256 checkVoteResultSourceLocationId, address checkVoteResultFunctionalityAddress) external;
     function addFunctionality(string calldata codeName, address sourceLocation, uint256 sourceLocationId, address location, bool submitable, string calldata methodSignature, string calldata returnAbiParametersArray, bool isInternal, bool needsSender) external;
+    function getFunctionalityData(string calldata codeName) external view returns(address, uint256, string memory, address, uint256);
 }
 
 contract GetMinimumBlockNumberForSurveyFunctionality {

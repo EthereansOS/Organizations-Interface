@@ -6,7 +6,7 @@ var IndexController = function (view) {
         if (!isEthereumAddress(dFOAddress)) {
             throw "Insert a valid DFO Address";
         }
-        var dFO = window.newContract(window.context.dfoAbi, dFOAddress);
+        var dFO = window.newContract(window.context.proxyAbi, dFOAddress);
         if (await window.blockchainCall(dFO.methods.getFunctionalitiesAmount) === 0) {
             return "This Address is not a DFO";
         }

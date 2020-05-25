@@ -11,10 +11,10 @@ pragma solidity ^0.6.0;
 
 contract CommunityDrivenGovernance {
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function proposalEnd(address proposal, bool result) public {
@@ -22,7 +22,7 @@ contract CommunityDrivenGovernance {
             return;
         }
         IMVDProxy proxy = IMVDProxy(msg.sender);
-        if(proxy.hasFunctionality("getSurveySingleReward")) {
+        if(IMVDFunctionalitiesManager(proxy.getMVDFunctionalitiesManagerAddress()).hasFunctionality("getSurveySingleReward")) {
             uint256 surveySingleReward = toUint256(proxy.read("getSurveySingleReward", bytes("")));
             if(surveySingleReward > 0) {
                 proxy.transfer(IMVDFunctionalityProposal(proposal).getProposer(), surveySingleReward, proxy.getToken());
@@ -45,6 +45,7 @@ interface IVotingToken {
 
 interface IMVDProxy {
     function getToken() external view returns(address);
+    function getMVDFunctionalitiesManagerAddress() external view returns(address);
     function transfer(address receiver, uint256 value, address token) external;
     function hasFunctionality(string calldata codeName) external view returns(bool);
     function read(string calldata codeName, bytes calldata data) external view returns(bytes memory returnData);
@@ -52,4 +53,8 @@ interface IMVDProxy {
 
 interface IMVDFunctionalityProposal {
     function getProposer() external view returns(address);
+}
+
+interface IMVDFunctionalitiesManager {
+    function hasFunctionality(string calldata codeName) external view returns(bool);
 }

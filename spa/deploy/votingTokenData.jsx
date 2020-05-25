@@ -4,13 +4,13 @@ var VotingTokenData = React.createClass({
         return (new Promise(function (ok, ko) {
             var errors = [];
             !data.tokenSymbol && errors.push('Insert a valid Token Symbol');
-            (isNaN(data.tokenTotalSupply) || data.tokenTotalSupply < 1) && errors.push('Token Total Supply must be greater than 1');
+            (isNaN(data.tokenTotalSupply) || data.tokenTotalSupply <= 0) && errors.push('Token Total Supply must be greater than 0');
             if (errors.length > 0) {
                 return ko(errors);
             }
-            data.totalSupplyWei = parseInt(window.toDecimals(data.tokenTotalSupply, 18));
-            window.blockchainCall(window.dfoHub.dFO.methods.read, 'getVotingTokenAmountForHub', window.web3.eth.abi.encodeParameter('uint256', window.numberToString(data.totalSupplyWei))).then(result => {
-                data.availableSupply = parseInt(window.fromDecimals(data.totalSupplyWei - parseInt(window.web3.eth.abi.decodeParameter('uint256', result)), 18));
+            data.totalSupplyWei = window.toDecimals(data.tokenTotalSupply, 18);
+            window.blockchainCall(window.dfoHub.dFO.methods.read, 'getVotingTokenAmountForHub', window.web3.eth.abi.encodeParameter('uint256', data.totalSupplyWei)).then(result => {
+                data.availableSupply = parseFloat(window.fromDecimals(parseInt(data.totalSupplyWei) - parseInt(window.web3.eth.abi.decodeParameter('uint256', result)), 18));
                 return ok(data);
             });
         }));

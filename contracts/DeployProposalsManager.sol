@@ -11,14 +11,21 @@ pragma solidity ^0.6.0;
 
 contract DeployProposalsManager {
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
-    function deployProposalsManager(address sender, uint256 value) public returns (address mvdFunctionalityProposalManagerAddress) {
-        IMVDProxy(msg.sender).emitEvent("DFOCollateralContractsCloned(address_indexed,address)", abi.encodePacked(sender), bytes(""), abi.encode(mvdFunctionalityProposalManagerAddress = clone(IMVDProxy(msg.sender).getMVDFunctionalityProposalManagerAddress())));
+    function deployProposalsManager(address sender, uint256) public returns (address mvdFunctionalityProposalManagerAddress, address mvdWallet) {
+        IMVDProxy senderProxy = IMVDProxy(msg.sender);
+        senderProxy
+            .emitEvent("DFOCollateralContractsCloned(address_indexed,address,address)", abi.encodePacked(sender), bytes(""),
+            abi.encode(
+                mvdFunctionalityProposalManagerAddress = clone(senderProxy.getMVDFunctionalityProposalManagerAddress()),
+                mvdWallet = clone(senderProxy.getMVDWalletAddress())
+            )
+        );
     }
 
     function clone(address original) private returns(address copy) {
@@ -32,5 +39,6 @@ contract DeployProposalsManager {
 
 interface IMVDProxy {
     function getMVDFunctionalityProposalManagerAddress() external view returns(address);
+    function getMVDWalletAddress() external view returns(address);
     function emitEvent(string calldata eventSignature, bytes calldata firstIndex, bytes calldata secondIndex, bytes calldata data) external;
 }

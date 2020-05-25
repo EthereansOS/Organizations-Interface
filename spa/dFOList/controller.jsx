@@ -53,13 +53,29 @@ var DFOListController = function (view) {
         }
         element.updating = true;
 
-        element.token = window.newContract(window.context.votingTokenAbi, await window.blockchainCall(element.dFO.methods.getToken));
-        element.stateHolder = window.newContract(window.context.stateHolderAbi, await window.blockchainCall(element.dFO.methods.getStateHolderAddress));
+        var votingToken = "";
+        var stateHolderAddress = "";
+        var functionalitiesManagerAddress = "";
+
+        try {
+            votingToken = await window.blockchainCall(element.dFO.methods.getToken);
+            stateHolderAddress = await window.blockchainCall(element.dFO.methods.getStateHolderAddress);
+            functionalitiesManagerAddress = await window.blockchainCall(element.dFO.methods.getMVDFunctionalitiesManagerAddress);
+        } catch(e) {
+            var delegates = await window.blockchainCall(element.dFO.methods.getDelegates);
+            votingToken = delegates[0];
+            stateHolderAddress = delegates[2];
+            functionalitiesManagerAddress = delegates[4];
+        }
+
+        element.token = window.newContract(window.context.votingTokenAbi, votingToken);
+        element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
+        element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
         element.name = await window.blockchainCall(element.token.methods.name);
         element.symbol = await window.blockchainCall(element.token.methods.symbol);
         element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
         element.decimals = await window.blockchainCall(element.token.methods.decimals);
-        element.functionalitiesAmount = parseInt(await window.blockchainCall(element.dFO.methods.getFunctionalitiesAmount));
+        element.functionalitiesAmount = parseInt(await window.blockchainCall(element.functionalitiesManager.methods.getFunctionalitiesAmount));
         element.lastUpdate = element.startBlock;
         element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.getNetworkElement('dfoAddress'));
         element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.dFO.options.address);
