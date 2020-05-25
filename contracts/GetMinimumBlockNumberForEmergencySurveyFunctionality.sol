@@ -17,10 +17,10 @@ contract GetMinimumBlockNumberForEmergencySurveyFunctionality {
         _value = value;
     }
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function getMinimumBlockNumberForEmergencySurvey() public view returns(uint256) {

@@ -18,7 +18,7 @@ contract CallENS {
 
     address private _proxy;
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
         require(_proxy == address(0), "Already initialized!");
         _proxy = msg.sender;
     }
@@ -34,8 +34,7 @@ contract CallENS {
         ENS_CONTROLLER.setOwner(DOMAIN_NODE, location == address(0) ? DFOHUB : location);
     }
 
-    function callENS(address sender, uint256 value,
-    bytes memory payload) public returns (bytes memory) {
+    function callENS(address sender, uint256, bytes memory payload) public returns (bytes memory) {
         require(msg.sender == _proxy && IMVDProxy(_proxy).isAuthorizedFunctionality(sender), "Unauthorized operation!");
         (bool result, bytes memory response) = address(ENS_CONTROLLER).call(payload);
         require(result, "Something went wrong while calling ENS");

@@ -11,13 +11,13 @@ pragma solidity ^0.6.0;
 
 contract VotingTokenAmountForHub {
 
-    function onStart(address newProposal, address oldProposal) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newProposal) public {
+    function onStop(address) public {
     }
 
     function calculate(uint256 total) public pure returns(uint256) {
-        return total * 500 / 10000;
+        return total * 15 / 1000;
     }
 }

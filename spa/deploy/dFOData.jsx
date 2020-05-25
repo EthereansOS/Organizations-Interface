@@ -43,7 +43,7 @@ var DFOData = React.createClass({
     },
     render() {
         return (<section>
-            <p><span>1 of 3 | Bio</span><br></br>Fist of all, choose the DFO name and redeem your ENS subdomain. The .dfohub.eth subdomain is an essential feature for new DFOs, in fact, the subdomain will redirect users to the DFO's index persistently as long as the ethereum network exists.</p>
+            <p><span>1 of 3 | Bio</span><br></br>Fist of all, choose the DFO's name and redeem your ENS subdomain. The .dfohub.eth subdomain will redirect users to the DFO's front-end persistently as long as the ethereum network exists.</p>
             <section className="DeployNewWhat">
                 <div className="InsertDfoName">
                     <label htmlFor="dfoName">Name:</label>

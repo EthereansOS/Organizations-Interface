@@ -3,10 +3,11 @@ var GovernanceRulesData = React.createClass({
         'spa/okBoomer.jsx'
     ],
     getData() {
+        var _this = this;
         var data = window.getData(this.domRoot);
         data.governanceRules = (this.state && this.state.element) || this.props.allData.governanceRules;
         data.governanceRulesText = this.state && this.state.governanceRulesText;
-        data.surveyQuorum = parseInt(data.surveyQuorumCheck ? this.surveyQuorum.dataset.value : undefined);
+        data.surveyQuorum = parseFloat(data.surveyQuorumCheck ? this.surveyQuorum.dataset.value : undefined);
         var errors = [];
         if (!data.governanceRules) {
             throw ['You must choose one of te proposed governance rules to continue'];
@@ -14,11 +15,11 @@ var GovernanceRulesData = React.createClass({
         var errors = [];
         (isNaN(data.surveyLength) || data.surveyLength < 1) && errors.push('Survey Length must be greater than or equal to 1');
         (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength < 1) && errors.push('Emergency Survey Length must be greater than or equal to 1');
-        (isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0 || data.emergencySurveyStaking > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Emergency Survey Penalty must be a number between 0 and ' + this.props.allData.tokenTotalSupply);
-        data.surveyQuorumCheck && (isNaN(data.surveyQuorum) || data.surveyQuorum < 1 || data.surveyQuorum > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Survey quorum must be a number between 1 and ' + this.props.allData.tokenTotalSupply);
-        data.governanceRules === 'HodlersDriven' && (isNaN(data.surveyMinStake) || data.surveyMinStake < 1 || parseInt(data.surveyMinStake) > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Survey minimum stake must be a number between 1 and ' + this.props.allData.tokenTotalSupply);
-        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveyCommunityStake) || data.surveyCommunityStake < 1 || parseInt(data.surveyCommunityStake) > this.props.allData.availableSupply) && errors.push('Survey Community reward must be a number between 1 and ' + this.props.allData.availableSupply);
-        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveySingleReward) || data.surveySingleReward < 1 || parseInt(data.surveySingleReward) > parseInt(this.props.allData.tokenTotalSupply)) && errors.push('Survey single reward must be a number between 1 and ' + this.props.allData.tokenTotalSupply);
+        (isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0 || data.emergencySurveyStaking > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Emergency Survey Penalty must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        data.surveyQuorumCheck && (isNaN(data.surveyQuorum) || data.surveyQuorum < 0 || data.surveyQuorum > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey quorum must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        data.governanceRules === 'HodlersDriven' && (isNaN(data.surveyMinStake) || data.surveyMinStake < 0 || parseFloat(data.surveyMinStake) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey minimum stake must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveyCommunityStake) || data.surveyCommunityStake < 0 || parseFloat(data.surveyCommunityStake) > _this.props.allData.availableSupply) && errors.push('Survey Community reward must be a number between 0 and ' + _this.props.allData.availableSupply);
+        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveySingleReward) || data.surveySingleReward < 0 || parseFloat(data.surveySingleReward) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey single reward must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
         if (errors.length > 0) {
             throw errors;
         }
@@ -52,11 +53,8 @@ var GovernanceRulesData = React.createClass({
         if (isNaN(surveyQuorumPercentage)) {
             return;
         }
-        var result = this.props.allData.totalSupplyWei * (surveyQuorumPercentage * 100) / 10000;
+        var result = parseInt(this.props.allData.totalSupplyWei) * (surveyQuorumPercentage * 100) / 10000;
         result = window.fromDecimals(result, 18);
-        result = window.numberToString(result);
-        result = parseInt(result);
-        result = window.numberToString(result);
         this.surveyQuorum.dataset.value = result;
         this.surveyQuorum.innerHTML = result;
     },
@@ -167,8 +165,7 @@ var GovernanceRulesData = React.createClass({
     },
     renderEmergencySuite() {
         return ([
-            <h5>Emergency</h5>,
-            <p className="EmergencyDescription">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To be sure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fail, the Proposer will lose it.</p>,
+            <p className="EmergencyDescription">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.</p>,
             this.renderSurveyEmergencyLength(),
             this.renderSurveyEmergencyPenalty()
         ]);
@@ -180,7 +177,7 @@ var GovernanceRulesData = React.createClass({
                 <p>
                     <span>3 of 3 | Governance</span>
                     <br/>
-                    Its time to choose the Governance Rules! All Governance Rules can be changed anytime via Proposals.
+                    Its time to choose the Governance Rules! All Governance Rules can be changed anytime via proposals.
                     <br/>
                     <a className={"EditDFOYo EditDFOYoBl" + (this.state && this.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => this.setState({ okBoomer: !(this.state && this.state.okBoomer) })}>Info</a>
                 </p>
@@ -189,14 +186,14 @@ var GovernanceRulesData = React.createClass({
                         <li className={element === "OpenBasic" ? "selected" : undefined}>
                             <a href="javascript:;" onClick={this.onClick}>
                                 <h6>Open Basic</h6>
-                                <p>Anyone can propose updates. Token Holders can vote based on Staked Tokens for a Proposal.</p>
+                                <p>Anyone can propose updates. Voting Token Holders can vote by staking their tokens.</p>
                             </a>
                             <span className="SelectedTriangle"></span>
                         </li>
                         <li className={element === "HodlersDriven" ? "selected" : undefined}>
                             <a href="javascript:;" onClick={this.onClick}>
                                 <h6>Hodlers Driven</h6>
-                                <p>Token Holders can propose updates and vote based on Staked Tokens for a Proposal.</p>
+                                <p>Only Voting Tokens Holders can propose updates.</p>
                             </a>
                             <span className="SelectedTriangle"></span>
                         </li>

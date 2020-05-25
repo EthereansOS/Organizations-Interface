@@ -53,13 +53,25 @@ var DFOListController = function (view) {
         }
         element.updating = true;
 
-        element.token = window.newContract(window.context.votingTokenAbi, await window.blockchainCall(element.dFO.methods.getToken));
-        element.stateHolder = window.newContract(window.context.stateHolderAbi, await window.blockchainCall(element.dFO.methods.getStateHolderAddress));
+        var votingToken = await window.blockchainCall(element.dFO.methods.getToken);
+        var stateHolderAddress = await window.blockchainCall(element.dFO.methods.getStateHolderAddress);
+        var functionalitiesManagerAddress = await window.blockchainCall(element.dFO.methods.getMVDFunctionalitiesManagerAddress);
+        var walletAddress = element.dFO.options.address;
+
+        try {
+            walletAddress = await window.blockchainCall(element.dFO.methods.getMVDWalletAddress);
+        } catch(e) {
+        }
+
+        element.token = window.newContract(window.context.votingTokenAbi, votingToken);
+        element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
+        element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
+        element.walletAddress = walletAddress;
         element.name = await window.blockchainCall(element.token.methods.name);
         element.symbol = await window.blockchainCall(element.token.methods.symbol);
         element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
         element.decimals = await window.blockchainCall(element.token.methods.decimals);
-        element.functionalitiesAmount = parseInt(await window.blockchainCall(element.dFO.methods.getFunctionalitiesAmount));
+        element.functionalitiesAmount = parseInt(await window.blockchainCall(element.functionalitiesManager.methods.getFunctionalitiesAmount));
         element.lastUpdate = element.startBlock;
         element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.getNetworkElement('dfoAddress'));
         element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.dFO.options.address);
@@ -113,8 +125,11 @@ var DFOListController = function (view) {
     };
 
     context.refreshBalances = async function refreshBalances(element) {
-        element && (element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.getNetworkElement('dfoAddress')));
-        element && (element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.dFO.options.address));
+        element && (element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.dfoHub.walletAddress));
+        element && (element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.walletAddress));
+        element && (element.walletETH = await window.web3.eth.getBalance(element.walletAddress));
+        element && (element.walletBUIDL = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, element.walletAddress));
+        element && (element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement('usdcTokenAddress')).methods.balanceOf, element.walletAddress));
         window.walletAddress && element && (element.myBalanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress));
         element && context.view.forceUpdate();
         setTimeout(function () {

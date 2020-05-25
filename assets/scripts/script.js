@@ -11,7 +11,6 @@ window.Main = async function Main() {
     if (!await window.blockchainSetup()) {
         return;
     }
-    window.onEthereumUpdate();
     window.choosePage();
 };
 
@@ -30,9 +29,9 @@ window.blockchainSetup = async function blockchainSetup() {
         return;
     }
     try {
-        window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
-        window.ethereum.on && window.ethereum.on('networkChanged', window.onEthereumUpdate);
-        window.ethereum.on && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
+        window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
+        window.ethereum && window.ethereum.on && window.ethereum.on('networkChanged', window.onEthereumUpdate);
+        window.ethereum && window.ethereum.on && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
         return window.onEthereumUpdate(0);
     } catch (e) {
         throw 'An error occurred while trying to setup the Blockchain Connection: ' + (e.message || e + '.');
@@ -42,22 +41,52 @@ window.blockchainSetup = async function blockchainSetup() {
 window.loadDFO = async function loadDFO(address, allAddresses) {
     allAddresses = allAddresses || [];
     allAddresses.push(address);
-    var dfo = window.newContract(window.context.dfoAbi, address);
+    var dfo = window.newContract(window.context.proxyAbi, address);
+    var votingToken = window.voidEthereumAddress;
+
     try {
-        await window.blockchainCall(dfo.methods.getToken);
-    } catch (e) {
-        var logs = await window.web3.eth.getPastLogs({
+        votingToken = (await window.blockchainCall(dfo.methods.getDelegates))[0];
+    } catch(e) {
+    }
+
+    if(votingToken === window.voidEthereumAddress) {
+        try {
+            votingToken = await window.blockchainCall(dfo.methods.getToken);
+        } catch (e) {
+        }
+    }
+
+    if(votingToken === window.voidEthereumAddress) {
+        var logs = await window.getLogs({
             address,
             topics: [
                 window.proxyChangedTopic = window.proxyChangedTopic || window.web3.utils.sha3('ProxyChanged(address)')
-            ],
-            fromBlock: '0'
-        });
+            ]
+        }, true);
         return await window.loadDFO(window.web3.eth.abi.decodeParameter('address', logs[0].topics[1]), allAddresses);
     }
     dfo.options.originalAddress = allAddresses[0];
     dfo.options.allAddresses = allAddresses;
     return dfo;
+};
+
+window.getLogs = async function(a, endOnFirstResult) {
+    var args = JSON.parse(JSON.stringify(a));
+    var logs = [];
+    args.fromBlock = args.fromBlock || (window.getNetworkElement('deploySearchStart') + '');
+    args.toBlock = args.toBlock || (await window.web3.eth.getBlockNumber() + '');
+    var to = parseInt(args.toBlock);
+    while(parseInt(args.fromBlock) <= to) {
+        var newTo = parseInt(args.fromBlock) + window.context.blockSearchSection;
+        newTo = newTo <= to ? newTo : to;
+        args.toBlock = newTo + '';
+        logs.push(...(await window.web3.eth.getPastLogs(args)));
+        if(logs.length > 0 && endOnFirstResult === true) {
+            return logs;
+        }
+        args.fromBlock = (parseInt(args.toBlock) + 1) + '';
+    }
+    return logs;
 };
 
 window.onEthereumUpdate = function onEthereumUpdate(millis) {
@@ -67,7 +96,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
             if (!window.networkId || window.networkId !== await window.web3.eth.net.getId()) {
                 delete window.contracts;
                 window.web3 = new window.Web3Browser(window.web3.currentProvider);
-                window.web3.currentProvider.setMaxListeners(0);
+                window.web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
                 window.web3.eth.transactionBlockTimeout = 999999999;
                 window.web3.eth.transactionPollingTimeout = new Date().getTime();
                 window.networkId = await window.web3.eth.net.getId();
@@ -307,7 +336,7 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
     }
     element.waiters = [];
     return new Promise(async function(ok) {
-        var functionalitiesJSON = await blockchainCall(element.dFO.methods.functionalitiesToJSON);
+        var functionalitiesJSON = await blockchainCall(element.functionalitiesManager.methods.functionalitiesToJSON);
         var functionalities = window.parseFunctionalities(functionalitiesJSON);
         var keys = Object.keys(functionalities);
         element.functionalities && Object.keys(element.functionalities).map(key => {
@@ -634,15 +663,15 @@ window.methodSignatureMatch = function methodSignatureMatch(methodSignature, com
 window.extractHTMLDescription = function extractHTMLDescription(code, updateFirst) {
     var description = '';
     var comments = window.extractComment(code);
-    if (comments.Discussion) {
-        description += '<a href="' + comments.Discussion + '" target="_blank"><b>Discussion Link</b></a><br/><br/>';
-    }
     if (updateFirst) {
         comments.Update && (description += comments.Update);
         comments.Description && (description += ((comments.Update ? '<br/><br/><b>Description</b>:<br/>' : '') + comments.Description));
     } else {
         comments.Description && (description += comments.Description);
         comments.Update && (description += ((comments.Description ? '<br/><br/><b>Last Updates</b>:<br/>' : '') + comments.Update));
+    }
+    if (comments.Discussion) {
+        description += '<a class="ComEXTLink" href="' + comments.Discussion + '" target="_blank"><b>Discussion Link</b></a><br/><br/>';
     }
     description = description.trim();
     description && (description = description.split('\n').join('<br/>').trim() + '<br/><br/>');
@@ -741,7 +770,7 @@ window.getDFOLogs = async function getDFOLogs(args) {
     args.topics && logArgs.topics.push(...args.topics);
     args.fromBlock && (logArgs.fromBlock = args.fromBlock);
     args.toBlock && (logArgs.toBlock = args.toBlock);
-    return window.formatDFOLogs(await window.web3.eth.getPastLogs(logArgs), args.event && args.event.indexOf('0x') === -1 ? args.event : undefined);
+    return window.formatDFOLogs(await window.getLogs(logArgs), args.event && args.event.indexOf('0x') === -1 ? args.event : undefined);
 };
 
 window.formatDFOLogs = function formatDFOLogs(logVar, event) {
@@ -965,4 +994,11 @@ window.toEthereumSymbol = function toEthereumSymbol(decimals) {
             return symbol[0];
         }
     }
+};
+
+window.dumpFunctionalities = async function dumpFunctionalities(dfo) {
+    await window.loadFunctionalities(dfo, undefined, true);
+    var entries = ["        IMVDFunctionalitiesManager functionalitiesManager = IMVDFunctionalitiesManager(address(0));"];
+    entries.push(...Object.values(dfo.functionalities).map(it => `functionalitiesManager.addFunctionality("${it.codeName}", ${window.web3.utils.toChecksumAddress(it.sourceLocation)}, ${it.sourceLocationId}, ${window.web3.utils.toChecksumAddress(it.location)}, ${it.submitable}, "${it.methodSignature}", '${JSON.stringify(it.returnAbiParametersArray)}', ${it.isInternal}, ${it.needsSender});`));
+    return entries.join('\n        ');
 };

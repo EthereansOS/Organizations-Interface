@@ -110,7 +110,7 @@ var OverviewController = function (view) {
         if(data.emergencySurveyStaking === parseInt(context.view.props.element.emergencySurveyStaking)) {
             return;
         }
-        if(!data.emergencySurveyStaking || isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0) {
+        if(isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0) {
             return context.view.emit('message', 'You must specify a number greater or equal to 0 to proceed', 'error');
         }
         if(data.emergencySurveyStaking > parseInt(context.view.props.element.totalSupply)) {
@@ -152,7 +152,7 @@ var OverviewController = function (view) {
             functionalityName: data.quorum ? 'getQuorum' : '',
             functionalityMethodSignature: data.quorum ? 'getValue()' : '',
             functionalitySubmitable: false,
-            functionalityReplace: (data.quorum === 0 || context.view.props.element.quorum) ? 'getQuorum' : '',
+            functionalityReplace: (data.quorum === 0 || parseInt(context.view.props.element.quorum)) ? 'getQuorum' : '',
             functionalityOutputParameters: data.quorum ? '["uint256"]' : '',
         }, template, undefined, descriptions, updates);
     };
@@ -182,7 +182,7 @@ var OverviewController = function (view) {
             functionalityName: data.minimumStaking ? 'getSurveyMinimumStaking' : '',
             functionalityMethodSignature: data.minimumStaking ? 'getValue()' : '',
             functionalitySubmitable: false,
-            functionalityReplace: (data.minimumStaking === 0 || context.view.props.element.minimumStaking) ? 'getSurveyMinimumStaking' : '',
+            functionalityReplace: (data.minimumStaking === 0 || parseInt(context.view.props.element.minimumStaking)) ? 'getSurveyMinimumStaking' : '',
             functionalityOutputParameters: data.minimumStaking ? '["uint256"]' : '',
         }, template, undefined, descriptions, updates);
     };
@@ -212,7 +212,7 @@ var OverviewController = function (view) {
             functionalityName: data.surveySingleReward ? 'getSurveySingleReward' : '',
             functionalityMethodSignature: data.surveySingleReward ? 'getValue()' : '',
             functionalitySubmitable: false,
-            functionalityReplace: (data.surveySingleReward === 0 || context.view.props.element.surveySingleReward) ? 'getSurveySingleReward' : '',
+            functionalityReplace: (data.surveySingleReward === 0 || parseInt(context.view.props.element.surveySingleReward)) ? 'getSurveySingleReward' : '',
             functionalityOutputParameters: data.surveySingleReward ? '["uint256"]' : '',
         }, template, undefined, descriptions, updates);
     };

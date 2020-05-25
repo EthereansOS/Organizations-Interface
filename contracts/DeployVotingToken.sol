@@ -1,3 +1,9 @@
+/* Update:
+ * Move Amounts to decimals
+ */
+/* Discussion:
+ * https://gitcoin.co/grants/154/decentralized-flexible-organization
+ */
 /* Description:
  * DFOHub - Voting Token Creation.
  * This specific DFOHub functionality is called during the new DFO creation.
@@ -5,21 +11,18 @@
  * Complessive Voting Token amount is split between DFOHub (calculating the correct amount through the proper functionality) and the survey proposer.
  * After its initialization, StateHolder is filled with a standard index page and an additional voting token amount (if any).
  */
-/* Discussion:
- * https://gitcoin.co/grants/154/decentralized-flexible-organization
- */
 pragma solidity ^0.6.0;
 
 contract DeployVotingToken {
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function deployVotingToken(
-        address sender, uint256 value,
+        address sender, uint256,
         string memory name, string memory symbol, uint256 totalSupply, uint256 additionalAmount)
         public returns(address votingToken, address stateHolderAddress, address mvdFunctionalityModelsManagerAddress) {
 
@@ -27,8 +30,7 @@ contract DeployVotingToken {
 
         IVotingToken token = IVotingToken(votingToken = clone(proxy.getToken()));
         token.init(name, symbol, 18, totalSupply);
-        uint additionalAmountWei = (additionalAmount * (10 ** 18));
-        token.transfer(msg.sender, additionalAmountWei + toUint256(proxy.read("getVotingTokenAmountForHub", abi.encode(token.totalSupply()))));
+        token.transfer(proxy.getMVDWalletAddress(), additionalAmount + toUint256(proxy.read("getVotingTokenAmountForHub", abi.encode(token.totalSupply()))));
         token.transfer(sender, token.balanceOf(address(this)));
 
         IStateHolder(stateHolderAddress = clone(proxy.getStateHolderAddress())).init();
@@ -67,7 +69,7 @@ interface IStateHolder {
 }
 
 interface IMVDProxy {
-
+    function getMVDWalletAddress() external view returns(address);
     function getToken() external view returns(address);
     function getStateHolderAddress() external view returns(address);
     function getMVDFunctionalityModelsManagerAddress() external view returns(address);

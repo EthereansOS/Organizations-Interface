@@ -12,9 +12,11 @@ var DFOList = React.createClass({
             'ethereum/ping': () => this.controller.loadList(true),
             'search': search => this.setState({ search, key: null }),
             'element/update': this.updateElement,
-            'balances/refresh': this.controller.refreshBalances
+            'balances/refresh': this.controller.refreshBalances,
+            'okBommer/toggle': this.toggleOkBoomer
         };
     },
+    toggleOkBoomer () {var _this = this; this.dfoElement.setState({ okBoomer: !(this.dfoElement.state && this.dfoElement.state.okBoomer)}, () => _this.forceUpdate())},
     updateElement(element) {
         delete element.updating;
         this.controller.updateInfo(element);
@@ -65,6 +67,7 @@ var DFOList = React.createClass({
                     {list.map(it => {
                         return (!_this.state || !_this.state.key || _this.state.key === it.key) && <li key={it.key} className="DFOInfo">
                             <section className={"DFOMAinNav" + (this.state && this.state.key ? ' DFOMAinNavAfter' : '')}>
+                                <section className="DFOMAinNavBox">
                                 <a href="javascript:;" onClick={() => {delete it.functionalities; _this.setState({ key: _this.state && _this.state.key === it.key ? null : it.key })}} className="DFOOpener">
                                     <section className="DFOIcon">
                                         <AsyncValue>
@@ -94,7 +97,7 @@ var DFOList = React.createClass({
                                             </figure>
                                             <section>
                                             <h6>{window.walletAddress.substring(0, 20)}...</h6>
-                                            <h5><aside>Balance: </aside><AsyncValue>{window.fromDecimals(it.myBalanceOf, it.decimals)}</AsyncValue><aside> {it.symbol}</aside></h5>
+                                            <h5><aside>Balance: <AsyncValue>{window.fromDecimals(it.myBalanceOf, it.decimals)}</AsyncValue> {it.symbol}</aside></h5>
                                         </section>
                                     </section>}
                                 </a>
@@ -123,10 +126,10 @@ var DFOList = React.createClass({
                                     </section>
                                 </a>
                                 {_this.state && _this.state.key === it.key && <section className="DFOEditKill">
-                                    <a className={"EditDFOYo EditDFOYoBl" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.dfoElement.setState({ okBoomer: !(_this.dfoElement.state && _this.dfoElement.state.okBoomer) }, () => _this.forceUpdate())}>Info</a>
                                     <WalletEnablerButton href="javascript:;" className={"EditDFOYo" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.edit ? ' Editing' : '')} onClick={() => _this.dfoElement.setState({ edit: !(_this.dfoElement.state && _this.dfoElement.state.edit) }, () => _this.forceUpdate())}>Edit</WalletEnablerButton>
                                     <a href="javascript:;" className="CloseDFOYo" onClick={() => {delete it.functionalities; _this.setState({ key: null })}}>&#x2612;</a>
                                 </section>}
+                                </section>
                             </section>
                             {_this.state && _this.state.key === it.key && <DFOElement element={it} ref={ref => _this.dfoElement = ref} />}
                         </li>

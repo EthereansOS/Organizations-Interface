@@ -30,7 +30,7 @@ var ProposalsController = function (view) {
                     delete context.loading;
                     return context.view.setState({ surveys: surveys || {}, terminatedSurveys: terminatedSurveys || {} }, context.updateErrors);
                 }
-                var list = await window.web3.eth.getPastLogs({
+                var list = await window.getLogs({
                     address: context.view.props.element.dFO.options.allAddresses,
                     topics: [
                         context.proposalTopic
@@ -53,7 +53,7 @@ var ProposalsController = function (view) {
                     if (!survey) {
                         continue;
                     }
-                    var set = await window.web3.eth.getPastLogs({
+                    var set = await window.getLogs({
                         address: context.view.props.element.dFO.options.allAddresses,
                         topics: [
                             context.proposalSetTopic,
@@ -71,16 +71,16 @@ var ProposalsController = function (view) {
                     set.length > 0 && surveys && refresh && delete surveys[survey.id];
                     set.length > 0 && (terminatedSurveys[survey.id].result = window.web3.eth.abi.decodeParameter('bool', set[0].data));
                     set.length > 0 && (terminatedSurveys[survey.id].resultBlock = set[0].blockNumber);
-                    set.length > 0 && (terminatedSurveys[survey.id].withdrawed = survey.raisedBy === context.view.props.element.dFO.options.address.toLowerCase() ? survey.myVotes === 0 : true);
+                    set.length > 0 && (terminatedSurveys[survey.id].withdrawed = survey.raisedBy === context.view.props.element.dFO.options.address.toLowerCase() ? parseInt(survey.myVotes.toString()) === 0 : true);
                     if (set.length > 0 && survey.myVotes > 0 && window.walletAddress && survey.raisedBy === context.view.props.element.dFO.options.address.toLowerCase()) {
-                        var transfer = await window.web3.eth.getPastLogs({
+                        var transfer = await window.getLogs({
                             address: context.view.props.element.token.options.address,
-                            topics: [[
+                            topics: [
                                 context.transferTopic,
                                 window.web3.eth.abi.encodeParameter('address', survey.address),
                                 window.web3.eth.abi.encodeParameter('address', window.walletAddress)
-                            ]],
-                            fromBlock: set[0].blockNumber
+                            ],
+                            fromBlock: survey.startBlock
                         });
                         transfer.length > 0 && (terminatedSurveys[survey.id].withdrawed = true);
                     }
@@ -134,8 +134,11 @@ var ProposalsController = function (view) {
             data.myRefuses = data.myVotes[1];
             data.myVotes = window.web3.utils.toBN(data.myVotes[0]).add(window.web3.utils.toBN(data.myVotes[1]));
             data.myBalance = myBalance;
-            data.leading = await window.blockchainCall(context.view.props.element.dFO.methods.read, 'checkSurveyResult', window.web3.eth.abi.encodeParameter('address', data.address));
-            data.leading = window.web3.eth.abi.decodeParameter('bool', data.leading);
+            data.leading = false;
+            try {
+                data.leading = await window.blockchainCall(context.view.props.element.dFO.methods.read, 'checkSurveyResult', window.web3.eth.abi.encodeParameter('address', data.address));
+                data.leading = window.web3.eth.abi.decodeParameter('bool', data.leading);
+            } catch(e) {}
             return data;
         } catch (e) {
             console.error(e);
