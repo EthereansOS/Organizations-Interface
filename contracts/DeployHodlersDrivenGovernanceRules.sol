@@ -1,11 +1,14 @@
+/* Update:
+ * Use of decimals
+ */
+/* Discussion:
+ * https://gitcoin.co/grants/154/decentralized-flexible-organization
+ */
 /* Description:
  * DFOHub - Setup the Hodlers Driven Governance.
  * This specific DFOHub functionality is called when choosing to create a DFO with this specific governance model.
  * The Functionality Manager is created using the Open Basic governance rules, which is the standard.
  * The new StateHolder is filled up with the minimum number of Voting Tokens every proposer must stake to consider their Proposals valid.
- */
-/* Discussion:
- * https://gitcoin.co/grants/154/decentralized-flexible-organization
  */
 pragma solidity ^0.6.0;
 
@@ -15,14 +18,14 @@ contract DeployHodlersDrivenGovernanceRules {
 
     uint256 private _getSurveyMinimumStakingSourceLocationId = 106;
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function deployHodlersDrivenGovernanceRules(
-        address sender, uint256 value,
+        address, uint256,
         uint256 minimumBlockNumber,
         uint256 emergencyBlockNumber,
         uint256 emergencyStaking,
@@ -35,7 +38,7 @@ contract DeployHodlersDrivenGovernanceRules {
             emergencyBlockNumber,
             emergencyStaking,
             quorum)), (address))))
-            .addFunctionality("getSurveyMinimumStaking", _sourceLocation, _getSurveyMinimumStakingSourceLocationId, address(new GetUint256Value(surveyMinStake * (10 ** 18))), false, "getValue()", '["uint256"]', false, false);
+            .addFunctionality("getSurveyMinimumStaking", _sourceLocation, _getSurveyMinimumStakingSourceLocationId, address(new GetUint256Value(surveyMinStake)), false, "getValue()", '["uint256"]', false, false);
     }
 }
 

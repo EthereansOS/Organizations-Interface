@@ -1,3 +1,9 @@
+/* Update:
+ * New Community Driven Governance
+ */
+/* Discussion:
+ * https://gitcoin.co/grants/154/decentralized-flexible-organization
+ */
 /* Description:
  * DFOHub - Setup the Community-Driven Governance.
  * This specific DFOHub functionality is called when choosing to create a DFO with this specific governance model.
@@ -7,28 +13,25 @@
  * To let every proposer receive its eventual reward, the proposalEnd well-known functionality is also set up.
  * It will be triggered every time a new Proposal Survey ends and will execute the reward business logic.
  */
-/* Discussion:
- * https://gitcoin.co/grants/154/decentralized-flexible-organization
- */
 pragma solidity ^0.6.0;
 
 contract DeployCommunityDrivenGovernanceRules {
 
     address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
-    uint256 private _communityDrivenGovernanceLocationId = 48;
-    address private _communityDrivenGovernanceFunctionalityAddress = 0x6FF93F88dE579c4e158b772eA680573c7A012F08;
+    uint256 private _communityDrivenGovernanceLocationId = 202;
+    address private _communityDrivenGovernanceFunctionalityAddress = 0xb209b0A64E76605fCEb8C56AF68d1d506a2cB4De;
 
     uint256 private _getSurveySingleRewardSourceLocationId = 49;
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function deployCommunityDrivenGovernanceRules(
-        address sender, uint256 value,
+        address, uint256,
         uint256 minimumBlockNumber,
         uint256 emergencyBlockNumber,
         uint256 emergencyStaking,
@@ -42,7 +45,7 @@ contract DeployCommunityDrivenGovernanceRules {
             emergencyStaking,
             quorum)), (address))))
             .addFunctionality("proposalEnd", _sourceLocation, _communityDrivenGovernanceLocationId, _communityDrivenGovernanceFunctionalityAddress, true, "proposalEnd(address,bool)", "[]", false, false);
-            mvdFunctionalitiesManager.addFunctionality("getSurveySingleReward", _sourceLocation, _getSurveySingleRewardSourceLocationId, address(new GetUint256Value(surveySingleReward * (10 ** 18))), false, "getValue()", '["uint256"]', false, false);
+            mvdFunctionalitiesManager.addFunctionality("getSurveySingleReward", _sourceLocation, _getSurveySingleRewardSourceLocationId, address(new GetUint256Value(surveySingleReward)), false, "getValue()", '["uint256"]', false, false);
     }
 }
 
@@ -62,10 +65,10 @@ contract GetUint256Value {
         _value = value;
     }
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function getValue() public view returns(uint256) {

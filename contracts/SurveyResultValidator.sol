@@ -1,3 +1,9 @@
+/* Update:
+ * Avoid StateHolder
+ */
+/* Discussion:
+ * https://gitcoin.co/grants/154/decentralized-flexible-organization
+ */
 /* Description:
  * DFO Protocol - Survey Result validator.
  * One of the 4 well-known read-only mandatory Functionalities every DFO needs.
@@ -7,23 +13,21 @@
  * (Decided by the DFO Governance Rules), the Proposal is considered failed by design, regardless of its number of votes.
  * If the DFO Governance Rules provide a minimum quorum of Voting Tokens and it is not reached, regardless of accepts or refuses, the Proposal is considered failed. If the two rules described above are respected or bypassed, the Proposal is to be considered valid if and only if the accept votes are higher than the refuses.
  */
-/* Discussion:
- * https://gitcoin.co/grants/154/decentralized-flexible-organization
- */
 pragma solidity ^0.6.0;
 
 contract SurveyResultValidator {
 
-    function onStart(address newSurvey, address oldSurvey) public {
+    function onStart(address, address) public {
     }
 
-    function onStop(address newSurvey) public {
+    function onStop(address) public {
     }
 
     function checkSurveyResult(address proposalAddress) public view returns(bool) {
         IMVDProxy proxy = IMVDProxy(msg.sender);
+        IMVDFunctionalitiesManager functionalitiesManager = IMVDFunctionalitiesManager(proxy.getMVDFunctionalitiesManagerAddress());
         IMVDFunctionalityProposal proposal = IMVDFunctionalityProposal(proposalAddress);
-        if(proxy.hasFunctionality("getMinimumStaking")) {
+        if(functionalitiesManager.hasFunctionality("getMinimumStaking")) {
             uint256 minimumStaking = toUint256(proxy.read("getMinimumStaking", bytes("")));
             if(minimumStaking > 0) {
                 (uint256 accept,) = proposal.getVote(proposal.getProposer());
@@ -34,7 +38,7 @@ contract SurveyResultValidator {
         }
         (uint256 accept, uint256 refuse) = proposal.getVotes();
         bool acceptWins = accept > refuse;
-        if(proxy.hasFunctionality("getQuorum")) {
+        if(functionalitiesManager.hasFunctionality("getQuorum")) {
             uint256 quorum = toUint256(proxy.read("getQuorum", bytes("")));
             if(quorum > 0) {
                 if((acceptWins ? accept : refuse) < quorum) {
@@ -61,6 +65,10 @@ interface IMVDFunctionalityProposal {
 }
 
 interface IMVDProxy {
-    function hasFunctionality(string calldata codeName) external view returns(bool);
+    function getMVDFunctionalitiesManagerAddress() external view returns(address);
     function read(string calldata codeName, bytes calldata data) external view returns(bytes memory returnData);
+}
+
+interface IMVDFunctionalitiesManager {
+    function hasFunctionality(string calldata codeName) external view returns(bool);
 }
