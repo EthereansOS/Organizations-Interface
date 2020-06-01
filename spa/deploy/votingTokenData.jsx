@@ -26,6 +26,7 @@ var VotingTokenData = React.createClass({
                     <div className="InsertTokenSupply">
                         <label htmlFor="tokenTotalSupply">Supply:</label>
                         <input id="tokenTotalSupply" type="number" min="1" />
+                        <aside><b>Generation Fee:</b> 1.5% <span>(10000 UDCF)</span></aside>
                     </div>
             </section>
         </section>);
