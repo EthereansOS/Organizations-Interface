@@ -86,9 +86,12 @@ var Index = React.createClass({
                     <div className="BETABANNER">
                         <section>
                             <h1>&#128123;</h1>
-                            <h2>Welcome to the DFOhub <span>BETA</span></h2>
-                            <h3>We're in beta, everything seems to work fine, lets start using it, but remember... At your own risk!</h3>
-                            <p>We're developing the documentation and the Improvement Proposal Process, if you want to keep in touch with DFOhub subscribe to our newsletter at <a href="https://dfohub.com">dfohub.com</a>. If you find some bug, please report it to us on our <a href="">Github</a> | or by mail at <a href="mailto:bro@buidl.life">bro@buidl.life</a></p>
+                            <h2>Welcome to the DFOhub <span>BETA 0.1</span></h2>
+                            <p>To follow our Developing and Bug Fixing: <a href="https://www.notion.so/dfohub/DFOhub-Project-05787c6c7e2f49c5bd3a767c020583e8" target="_blank">DevStatus</a> If you want to be an active part of our Developing, we scheduled some fancy rewards! Read the <a href="https://www.notion.so/dfohub/Community-Guidelines-a03ceeab28254eb3944ab85320be70de" target="_blank">Community Guidelines</a> and join our <a href="https://discord.gg/B9V9CM4" target="_blank">Discord Server</a></p>
+                            <section className="BugUpdateBunner">
+                            <h2>&#128718; Release Notes:</h2>
+                            <p>ENS Integration is working, but due to the early state of ENS, we're dicussing an <a href="https://github.com/MetaMask/metamask-extension/pull/7740" target="_blank">Improvement Proposal</a> to the Metamask team, in order to manage DFOs ENS in a totally decentralized way. In the meantime Metamask can't redirect the ENS properly.</p>
+                            </section>
                             <a href="javascript:;" onClick={e => $(e.currentTarget).parent().parent().hide()}>Gotcha!</a>
                         </section>
                     </div>

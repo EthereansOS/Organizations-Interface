@@ -61,7 +61,7 @@ var Overview = React.createClass({
         return (
             <ul>
                 <li>
-                    <p>DFOs Indexes are designed to work in two layers, the "Distributed Layer" and the "Decentralized Layer". The Distributed Layer  is a version of the Front-End deployed via IPFS or Swarn, for fast and free updates. The Decentralized Layer is a version of the Front-End via On-Chain files, expensive, but critical to make a DFO Censorship Resistant. The ENS automatically redirect users to the Distributed Layer and if it's Censored to the Decentralized Layer.</p>
+                    <p>DFOs Front-End is designed to work in two layers, the "Distributed Layer" and the "Decentralized Layer." The Distributed Layer is a version of the Front-End deployed via IPFS or Swarn, for fast and free updates. The Decentralized Layer is a version of the Front-End via On-Chain files, expensive but critical to making a DFO Censorship Resistant. The ENS automatically redirects users to the Distributed Layer and if it's Censored to the Decentralized Layer.</p>
                 </li>
                 <li>
                     <section>
@@ -122,12 +122,6 @@ var Overview = React.createClass({
         var _this = this;
         return (
             <section className="DFOOverview">
-                <section className="BugUpdateBunner">
-                    <h6>&#128718; Important Release Notes:</h6>
-                    <p>We noticed some critical bugs into the StateHolder related functions. Every other Core functions are working well! Don't worry! DFOs are designed to easly replace every service, <b>EVEN CORE THINGS!</b> Once we'll solved the issue you'll be able to update the DFO's Core easly!</p>
-                    <p>To follow our Developing and Bug Fixing: <a href="https://www.notion.so/dfohub/DFOhub-Project-05787c6c7e2f49c5bd3a767c020583e8" target="_blank">DevStatus</a> If you want to be an active part of our Developing, we schedued some fancy rewards! Read the <a href="https://www.notion.so/dfohub/Community-Guidelines-a03ceeab28254eb3944ab85320be70de" target="_blank">Community Guidelines</a> and join our <a href="https://discord.gg/B9V9CM4" target="_blank">Discord Server</a></p>
-                    <p>ENS Integration is working, but due to the early state of ENS, we're dicussing an <a href="https://github.com/MetaMask/metamask-extension/pull/7740" target="_blank">Improvement Proposal</a> to the Metamask team, in order to manage DFOs ENS in a totally decentralized way. In the meantime Metamask can't redirect the ENS properly.</p>
-                </section>
                 <ul className="DFOHosting">
                     <li>
                         <section className="DFOTitleSection">
