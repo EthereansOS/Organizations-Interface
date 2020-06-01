@@ -224,7 +224,7 @@ var Proposals = React.createClass({
                                 <section className="ProposalPool">
                                     <h6>{it.result && <span>&#9989; Accepted</span>} {!it.result && <span>&#9940; Refused</span>}</h6>
                                     <p>Block: <a href={window.getNetworkElement('etherscanURL') + 'block/' + it.resultBlock} target="_blank">{it.resultBlock}</a></p>
-                                    <p>Staked: {window.fromDecimals(it.allVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>
+                                    <p>Total Votes: {window.fromDecimals(it.allVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>
                                     <section>
                                         {!it.withdrawed && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
                                         <a className={"LinkVisualButton" + (_this.state && _this.state.opened === ('info_' + it.id) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.setState({ opened: _this.state && _this.state.opened === ('info_' + it.id) ? null : ('info_' + it.id) })}>Info</a>
