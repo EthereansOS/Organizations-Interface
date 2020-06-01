@@ -366,7 +366,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOMAinNavAfter .DFOENSOpener, .DFOMAinNavAfter .DFOAddressOpener, .DFOMAinNavAfter .DFOMinInfoOp {display: none !important;}
 .DFOListOpenAfter .DFOInfo {border-bottom: 0 !important;}
 .DFOListOpenAfter .DFOENSOpener .DFOMinInfo, .DFOListOpenAfter .DFOENSOpener .DFOMinInfo h6, .DFOListOpenAfter .DFOENSOpener .DFOMinInfo h5 {width: 160px !important;}
-.BETABANNER {position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-height: 100%; z-index: 9999999999999999999; background-color: #8d40ffeb; overflow: hidden; padding-top: 100px;}
+.BETABANNER {position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-height: 100%; z-index: 9999999999999999999; background-color: #8d40ffeb; overflow: hidden;}
 .BETABANNER section {width: 700px; display: inline-block; color: #ffffff;}
 .BETABANNER h1 {font-size: 100px; line-height: 0.4;}
 .BETABANNER h2 {font-size: 30px; font-weight: bold; line-height: 1.5;}
