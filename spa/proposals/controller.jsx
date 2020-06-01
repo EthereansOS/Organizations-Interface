@@ -71,16 +71,16 @@ var ProposalsController = function (view) {
                     set.length > 0 && surveys && refresh && delete surveys[survey.id];
                     set.length > 0 && (terminatedSurveys[survey.id].result = window.web3.eth.abi.decodeParameter('bool', set[0].data));
                     set.length > 0 && (terminatedSurveys[survey.id].resultBlock = set[0].blockNumber);
-                    set.length > 0 && (terminatedSurveys[survey.id].withdrawed = survey.raisedBy === context.view.props.element.dFO.options.address.toLowerCase() ? parseInt(survey.myVotes) === 0 : true);
+                    set.length > 0 && (terminatedSurveys[survey.id].withdrawed = survey.raisedBy === context.view.props.element.dFO.options.address.toLowerCase() ? parseInt(survey.myVotes.toString()) === 0 : true);
                     if (set.length > 0 && survey.myVotes > 0 && window.walletAddress && survey.raisedBy === context.view.props.element.dFO.options.address.toLowerCase()) {
                         var transfer = await window.getLogs({
                             address: context.view.props.element.token.options.address,
-                            topics: [[
+                            topics: [
                                 context.transferTopic,
                                 window.web3.eth.abi.encodeParameter('address', survey.address),
                                 window.web3.eth.abi.encodeParameter('address', window.walletAddress)
-                            ]],
-                            fromBlock: set[0].blockNumber
+                            ],
+                            fromBlock: survey.startBlock
                         });
                         transfer.length > 0 && (terminatedSurveys[survey.id].withdrawed = true);
                     }
