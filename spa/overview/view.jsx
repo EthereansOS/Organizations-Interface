@@ -123,26 +123,33 @@ var Overview = React.createClass({
         return (
             <section className="DFOOverview">
                 <ul className="DFOHosting">
-                    <li>
+                    <section className="HostingCategoryTitle">
+                        <h2>Decentralized Application</h2>
+                    </section>
+                    <li className="TheDappInfo1">
+                        <h5 className="DFOHostingTitle">&#128587; Voting Token</h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.ens !== undefined && <a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a>}
+                                {_this.props.element.symbol && <p className="DFOLabelTitleInfo">Ticker: <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.symbol}</a></p>}
                             </AsyncValue>
                         </section>
-                        <h5 className="DFOHostingTitle">&#128302; ENS</h5>
+                        <section className="DFOTitleSection">
+                            <AsyncValue>
+                                {_this.props.element.symbol && _this.props.element.totalSupply && <p className="DFOLabelTitleInfo">Supply: <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)}</a></p>}
+                            </AsyncValue>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1">
+                    <h5 className="DFOHostingTitle">&#128302; Domain</h5>
+                        <section className="DFOTitleSection">
+                            <AsyncValue>
+                                {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo">ENS: <a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
+                            </AsyncValue>
+                        </section>
                         <OkBoomer okBoomer={_this.props.okBoomer}>A perpetual unique Web3-Based Name Service to reach this Application</OkBoomer>
                     </li>
-                    <li>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {<a className="LinkVisualStandard" href="javascript:;" onClick={() => (_this.props.element.link || _this.props.element.index) && this.setState({ change: this.state && this.state.change === 'showCode' ? null : 'showCode' })}>Code</a>}
-                            </AsyncValue>
-                            {_this.renderChangeButton('index')}
-                        </section>
-                        <h5 className="DFOHostingTitle">&#128242; Index</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Front-End code of the Application</OkBoomer>
-                    </li>
-                    <li>
+                    <li className="TheDappInfo05">
+                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions</h5>
                         <section className="DFOTitleSection">
                             <a className="LinkVisualStandard" href="javascript:;" onClick={() => _this.emit('section/change', 'Functions')}>
                                 <AsyncValue>
@@ -150,114 +157,118 @@ var Overview = React.createClass({
                                 </AsyncValue>
                             </a>
                         </section>
-                        <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions</h5>
                         <OkBoomer okBoomer={_this.props.okBoomer}>The number of Back-End Functions of this Application</OkBoomer>
                     </li>
-                </ul>
-                {_this.renderChanger(['index'])}
-                {this.state && this.state.change === 'showCode' && <section className="IndexShowCode">
-                    <section className="IndexShowCodeEditorBox">
-                        <h5>Distributed Layer</h5>
-                        <Editor lang="html" readonly="true" link={_this.props.element.link} firstCode={_this.props.element.link ? undefined : "Distributed Index is actually unset"} />
-                    </section>
-                    <section className="IndexShowCodeEditorBox">
-                        <h5>Decentralized Layer</h5>
-                        <Editor lang="html" readonly="true" first={_this.props.element.index} firstCode={_this.props.element.index ? undefined : "Decentralized Index is actually unset"} />
-                    </section>
-                </section>}
-                <ul className="DFOHosting">
-                    <li>
+                    <li className="TheDappInfo05">
+                    <h5 className="DFOHostingTitle">&#128242; Front-end</h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.symbol}</a>}
+                                {<a className="LinkVisualButton" href="javascript:;" onClick={() => (_this.props.element.link || _this.props.element.index) && this.setState({ change: this.state && this.state.change === 'showCode' ? null : 'showCode' })}>Code</a>}
                             </AsyncValue>
+                            {_this.renderChangeButton('index')}
                         </section>
-                        <h5 className="DFOHostingTitle DFOHostingTitle2">&#128587; Voting Token</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Back-End Functions of this Application</OkBoomer>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The Front-End code of the Application</OkBoomer>
                     </li>
-                    <li>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside></a>}
-                            </AsyncValue>
+                    {_this.renderChanger(['index'])}
+                    {this.state && this.state.change === 'showCode' && <section className="IndexShowCode">
+                        <section className="IndexShowCodeEditorBox">
+                            <h5>Distributed Layer</h5>
+                            <Editor lang="html" readonly="true" link={_this.props.element.link} firstCode={_this.props.element.link ? undefined : "Distributed Index is actually unset"} />
                         </section>
-                        <h5 className="DFOHostingTitle DFOHostingTitle2">&#x1F4B0; Supply</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Existing Voting Token Total Supply of this DFO</OkBoomer>
-                    </li>
-                    <li>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <span>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol} ({window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)})</aside></span>}
-                            </AsyncValue>
+                        <section className="IndexShowCodeEditorBox">
+                            <h5>Decentralized Layer</h5>
+                            <Editor lang="html" readonly="true" first={_this.props.element.index} firstCode={_this.props.element.index ? undefined : "Decentralized Index is actually unset"} />
                         </section>
-                        <h5 className="DFOHostingTitle DFOHostingTitle2">&#x1F468;&#x200D;&#x1F468;&#x200D;&#x1F467;&#x200D;&#x1F467; Community Supply</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Supply of Voting Tokens Held by this DFO's Community Wallet</OkBoomer>
-                    </li>
+                    </section>}
                 </ul>
                 <ul className="DFOHosting">
-                    <li>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward !== undefined && <span>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside></span>}
-                            </AsyncValue>
-                            {_this.renderChangeButton('surveySingleReward')}
-                        </section>
-                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Dev Incentives</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward for every single Successful Proposal to the Issuer</OkBoomer>
-                    </li>
-                    <li>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.quorum !== undefined && <span>{window.fromDecimals(_this.props.element.quorum, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol} ({window.tokenPercentage(_this.props.element.quorum, _this.props.element.totalSupply)})</aside></span>}
-                            </AsyncValue>
-                            {_this.renderChangeButton('quorum')}
-                        </section>
-                        <h5 className="DFOHostingTitle">&#127984; Quorum</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voters to win a Proposal in therms of percentage of Voting Tokens Staked and the Total Supply</OkBoomer>
-                    </li>
-                    <li>
+                <section className="HostingCategoryTitle">
+                        <h2>Governance Rules</h2>
+                </section>
+                <li className="TheDappInfo2">
+                        <h5 className="DFOHostingTitle">&#127984; Regular Proposals:</h5>
                         <section className="DFOTitleSection">
                             {_this.props.element.blocks === undefined && <LoaderMinimino />}
-                            {_this.props.element.blocks !== undefined && <span>{_this.props.element.blocks} <aside>Blocks</aside></span>}
-                            {_this.renderChangeButton('proposalLength')}
+                            {_this.props.element.blocks !== undefined && <p className="DFOLabelTitleInfo">Lenght: <b>{_this.props.element.blocks}</b><aside> Blocks </aside> {_this.renderChangeButton('proposalLength')}</p>}
                         </section>
-                        <h5 className="DFOHostingTitle">&#x23F0; Proposal Length</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Blocks from the beginning to the end of a Proposal</OkBoomer>
-                    </li>
-                </ul>
-                {_this.renderChanger(['surveySingleReward', 'quorum', 'proposalLength'])}
-                <ul className="DFOHosting">
-                    <li>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The duration of a Proposal</OkBoomer>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.minimumStaking !== undefined && <span>{window.fromDecimals(_this.props.element.minimumStaking, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol} ({window.tokenPercentage(_this.props.element.minimumStaking, _this.props.element.totalSupply)})</aside></span>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.quorum !== undefined && <p className="DFOLabelTitleInfo">Quorum: <b>{window.tokenPercentage(_this.props.element.quorum, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.quorum, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('quorum')}</p>}
                             </AsyncValue>
-                            {_this.renderChangeButton('proposalStake')}
                         </section>
-                        <h5 className="DFOHostingTitle">&#x1F3EF; Proposal Stake</h5>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Tokens used by voters to reach the a positive result</OkBoomer>
+                        <section className="DFOTitleSection">
+                            <AsyncValue>
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.minimumStaking !== undefined && <p className="DFOLabelTitleInfo">Generation Stake: <b>{window.tokenPercentage(_this.props.element.minimumStaking, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.minimumStaking, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('proposalStake')}</p>}
+                            </AsyncValue>
+                        </section>
                         <OkBoomer okBoomer={_this.props.okBoomer}>The minimum of Voting Tokens Staked to create a Proposal</OkBoomer>
                     </li>
-                    <li>
+                    <li className="TheDappInfo2">
+                        <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Proposals:</h5>
                         <section className="DFOTitleSection">
                             {_this.props.element.minimumBlockNumberForEmergencySurvey === undefined && <LoaderMinimino />}
-                            {_this.props.element.minimumBlockNumberForEmergencySurvey !== undefined && <span>{_this.props.element.minimumBlockNumberForEmergencySurvey} <aside>Blocks</aside></span>}
-                            {_this.renderChangeButton('emergencyLength')}
+                            {_this.props.element.minimumBlockNumberForEmergencySurvey !== undefined && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyLength')} Length: <b>{_this.props.element.minimumBlockNumberForEmergencySurvey}</b> <aside>Blocks</aside></p>}
                         </section>
-                        <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Length</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Blocks from the beginning to the end of an Emergency Proposal</OkBoomer>
-                    </li>
-                    <li>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The duration of an Emergency Proposal</OkBoomer>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.emergencySurveyStaking && <span>{window.fromDecimals(_this.props.element.emergencySurveyStaking, _this.props.element.decimals)} <aside className="DFOOverviewPerch">{_this.props.element.symbol} ({window.tokenPercentage(_this.props.element.emergencySurveyStaking, _this.props.element.totalSupply)})</aside></span>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.emergencySurveyStaking && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyPenalty')} Penalty fee: <b>{window.tokenPercentage(_this.props.element.emergencySurveyStaking, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.emergencySurveyStaking, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside></p>}
                             </AsyncValue>
-                            {_this.renderChangeButton('emergencyPenalty')}
                         </section>
-                        <h5 className="DFOHostingTitle">&#x2696;&#xFE0F; Emergency Penalty</h5>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum of Voting Tokens Staked to create an Emergency Proposal. If the proposal Fail All Staked Tokens will be liquidated</OkBoomer>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum of Voting Tokens Staked to create an Emergency Proposal. If the proposal Faila, all of the Staked Tokens will be liquidated</OkBoomer>
                     </li>
+                    {_this.renderChanger(['proposalStake', 'emergencyLength', 'emergencyPenalty','quorum', 'proposalLength'])}
+                    
                 </ul>
-                {_this.renderChanger(['proposalStake', 'emergencyLength', 'emergencyPenalty'])}
+                <ul className="DFOHosting">
+                <section className="HostingCategoryTitle">
+                        <h2>{_this.props.element.name} Wallet</h2>
+                </section>
+                    <li className="TheDappInfo3">
+                        <h5 className="DFOHostingTitle">&#129518; Assets:</h5>
+                        <section className="DFOTitleSection">
+                            <AsyncValue>
+                            {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>({window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)})</b><aside><b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol}</aside></p>}
+                            </AsyncValue>
+                        </section>
+                        <section className="DFOTitleSection">
+                        <p className="DFOLabelTitleInfo"><b>10</b><aside> ETH</aside></p>
+                        </section>
+                        <section className="DFOTitleSection">
+                        <p className="DFOLabelTitleInfo"><b>10</b><aside> USDC</aside></p>
+                        </section>
+                        <section className="DFOTitleSection">
+                        <p className="DFOLabelTitleInfo"><b>10</b><aside> BUIDL</aside></p>
+                        </section>
+                        <section className="DFOTitleSection">
+                        </section>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The Supply of Voting Tokens Held by this DFO's Community Wallet</OkBoomer>
+                    </li>
+                    <li className="TheDappInfo3">
+                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Rewards:</h5>
+                        <section className="DFOTitleSection">
+                            <AsyncValue>
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward !== undefined && <p className="DFOLabelTitleInfo"> Proposal: <b>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)}</b> <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside> {_this.renderChangeButton('surveySingleReward')}</p>}
+                            </AsyncValue>
+                        </section>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward for every single Successful Proposal to the Issuer</OkBoomer>
+                    </li>
+                    <li className="TheDappInfo05">
+                        <h5 className="DFOHostingTitle">&#129302; Core:</h5>
+                        <section className="DFOTitleSection">
+                            <a className="LinkVisualButton" href="javascript:;">Code</a>
+                            {_this.renderChangeButton('surveySingleReward')}
+                        </section>
+                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
+                        <section className="DFOTitleSection">
+                            <a className="LinkVisualButton" href="javascript:;">Etherscan</a>
+                        </section>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward for every single Successful Proposal to the Issuer</OkBoomer>
+                    </li>
+                    {_this.renderChanger(['surveySingleReward'])}
+                </ul>
             </section>
         );
     }
