@@ -34,7 +34,7 @@ var VotingTokenData = React.createClass({
     },
     render() {
         return (<section>
-            <p><span>2 of 3 | Voting Token</span><br></br>The Voting Token of a DFO is an ERC20 Token. In DFOs, the Voting Token is needed both to add, update or kill functionalities, both to edit the front-end, making the community of token holders the owners and governor of the dapp.</p>
+            <p><span>2 of 3 | Voting Token</span><br></br>The Voting Token of a DFO is an ERC20 Token. The Voting Token is the key to rule the DFO functionalities and its assets. If you lose your voting tokens, there is no way to be part of the future DFO's decisions.</p>
              <section className="DeployNewWhat">
                     <div className="InsertTokenName">
                         <label htmlFor="tokenSymbol">Symbol:</label>

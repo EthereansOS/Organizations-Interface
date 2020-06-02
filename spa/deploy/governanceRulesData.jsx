@@ -165,8 +165,7 @@ var GovernanceRulesData = React.createClass({
     },
     renderEmergencySuite() {
         return ([
-            <h5>Emergency</h5>,
-            <p className="EmergencyDescription">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To be sure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fail, the Proposer will lose it.</p>,
+            <p className="EmergencyDescription">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.</p>,
             this.renderSurveyEmergencyLength(),
             this.renderSurveyEmergencyPenalty()
         ]);
@@ -178,7 +177,7 @@ var GovernanceRulesData = React.createClass({
                 <p>
                     <span>3 of 3 | Governance</span>
                     <br/>
-                    Its time to choose the Governance Rules! All Governance Rules can be changed anytime via Proposals.
+                    Its time to choose the Governance Rules! All Governance Rules can be changed anytime via proposals.
                     <br/>
                     <a className={"EditDFOYo EditDFOYoBl" + (this.state && this.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => this.setState({ okBoomer: !(this.state && this.state.okBoomer) })}>Info</a>
                 </p>
@@ -187,14 +186,14 @@ var GovernanceRulesData = React.createClass({
                         <li className={element === "OpenBasic" ? "selected" : undefined}>
                             <a href="javascript:;" onClick={this.onClick}>
                                 <h6>Open Basic</h6>
-                                <p>Anyone can propose updates. Token Holders can vote based on Staked Tokens for a Proposal.</p>
+                                <p>Anyone can propose updates. Voting Token Holders can vote by staking their tokens.</p>
                             </a>
                             <span className="SelectedTriangle"></span>
                         </li>
                         <li className={element === "HodlersDriven" ? "selected" : undefined}>
                             <a href="javascript:;" onClick={this.onClick}>
                                 <h6>Hodlers Driven</h6>
-                                <p>Token Holders can propose updates and vote based on Staked Tokens for a Proposal.</p>
+                                <p>Only Voting Tokens Holders can propose updates.</p>
                             </a>
                             <span className="SelectedTriangle"></span>
                         </li>

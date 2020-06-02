@@ -12,9 +12,11 @@ var DFOList = React.createClass({
             'ethereum/ping': () => this.controller.loadList(true),
             'search': search => this.setState({ search, key: null }),
             'element/update': this.updateElement,
-            'balances/refresh': this.controller.refreshBalances
+            'balances/refresh': this.controller.refreshBalances,
+            'okBommer/toggle': this.toggleOkBoomer
         };
     },
+    toggleOkBoomer () {var _this = this; this.dfoElement.setState({ okBoomer: !(this.dfoElement.state && this.dfoElement.state.okBoomer)}, () => _this.forceUpdate())},
     updateElement(element) {
         delete element.updating;
         this.controller.updateInfo(element);
@@ -124,7 +126,6 @@ var DFOList = React.createClass({
                                     </section>
                                 </a>
                                 {_this.state && _this.state.key === it.key && <section className="DFOEditKill">
-                                    <a className={"EditDFOYo EditDFOYoBl" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.dfoElement.setState({ okBoomer: !(_this.dfoElement.state && _this.dfoElement.state.okBoomer) }, () => _this.forceUpdate())}>Info</a>
                                     <WalletEnablerButton href="javascript:;" className={"EditDFOYo" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.edit ? ' Editing' : '')} onClick={() => _this.dfoElement.setState({ edit: !(_this.dfoElement.state && _this.dfoElement.state.edit) }, () => _this.forceUpdate())}>Edit</WalletEnablerButton>
                                     <a href="javascript:;" className="CloseDFOYo" onClick={() => {delete it.functionalities; _this.setState({ key: null })}}>&#x2612;</a>
                                 </section>}

@@ -86,7 +86,7 @@ var Overview = React.createClass({
         );
     },
     renderSurveySingleRewardChanger() {
-        return this.renderDefaultChanger("The amount of Voting Tokens set as a single reward for every Accepted Proposal.", "Dev Incentives", "surveySingleReward", window.fromDecimals(this.props.element.surveySingleReward, this.props.element.decimals));
+        return this.renderDefaultChanger("The number of Voting Tokens as a reward to the issuer for every single Successful Proposal.", "Dev Incentives", "surveySingleReward", window.fromDecimals(this.props.element.surveySingleReward, this.props.element.decimals));
     },
     renderProposalLengthChanger() {
         return this.renderDefaultChanger("Every survey has a length expressed in Blocks. Here you can set the duration of Surveys for this DFO.", "Proposal Length", "proposalLength", this.props.element.blocks);
@@ -95,10 +95,10 @@ var Overview = React.createClass({
         return this.renderDefaultChanger("The length in Blocks for Emergency Surveys.", "Emergency Length", "minimumBlockNumberForEmergencySurvey", this.props.element.minimumBlockNumberForEmergencySurvey);
     },
     renderEmergencyPenaltyChanger() {
-        return this.renderDefaultChanger("The Fee that Emergency Proposal Issuer must stake to propose it and lost if the Proposal fails.", "Emergency Penalty", "emergencySurveyStaking", window.fromDecimals(this.props.element.emergencySurveyStaking, this.props.element.decimals));
+        return this.renderDefaultChanger("The Fee that Emergency Proposal Issuer must stake to propose it. This stake will be lost if the Proposal fails.", "Emergency Penalty", "emergencySurveyStaking", window.fromDecimals(this.props.element.emergencySurveyStaking, this.props.element.decimals));
     },
     renderQuorumChanger() {
-        return this.renderDefaultChanger("The Quorum is minimum token Staken by voters in a survey to reach the success status.", "Quorum", "quorum", window.fromDecimals(this.props.element.quorum, this.props.element.decimals));
+        return this.renderDefaultChanger("The Quorum is a minimum number of Voting Tokens staked in a survey to reach the success status.", "Quorum", "quorum", window.fromDecimals(this.props.element.quorum, this.props.element.decimals));
     },
     renderProposalStakeChanger() {
         return this.renderDefaultChanger("The minimum of Token Stacked needed to create a new Proposal.", "Proposal Stake", "minimumStaking", window.fromDecimals(this.props.element.minimumStaking, this.props.element.decimals));
@@ -140,7 +140,7 @@ var Overview = React.createClass({
                         </section>
                     </li>
                     <li className="TheDappInfo1">
-                    <h5 className="DFOHostingTitle">&#128302; Domain</h5>
+                    <h5 className="DFOHostingTitle">&#128302; Domain <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo">ENS: <a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
@@ -149,7 +149,7 @@ var Overview = React.createClass({
                         <OkBoomer okBoomer={_this.props.okBoomer}>A perpetual unique Web3-Based Name Service to reach this Application</OkBoomer>
                     </li>
                     <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions</h5>
+                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions </h5>
                         <section className="DFOTitleSection">
                             <a className="LinkVisualStandard" href="javascript:;" onClick={() => _this.emit('section/change', 'Functions')}>
                                 <AsyncValue>
@@ -157,10 +157,9 @@ var Overview = React.createClass({
                                 </AsyncValue>
                             </a>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Back-End Functions of this Application</OkBoomer>
                     </li>
                     <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle">&#128242; Front-end</h5>
+                    <h5 className="DFOHostingTitle">&#128242; Front-end <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {<a className="LinkVisualButton" href="javascript:;" onClick={() => (_this.props.element.link || _this.props.element.index) && this.setState({ change: this.state && this.state.change === 'showCode' ? null : 'showCode' })}>Code</a>}
@@ -186,7 +185,7 @@ var Overview = React.createClass({
                         <h2>Governance Rules</h2>
                 </section>
                 <li className="TheDappInfo2">
-                        <h5 className="DFOHostingTitle">&#127984; Regular Proposals:</h5>
+                        <h5 className="DFOHostingTitle">&#127984; Regular Proposals: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
                         <section className="DFOTitleSection">
                             {_this.props.element.blocks === undefined && <LoaderMinimino />}
                             {_this.props.element.blocks !== undefined && <p className="DFOLabelTitleInfo">Lenght: <b>{_this.props.element.blocks}</b><aside> Blocks </aside> {_this.renderChangeButton('proposalLength')}</p>}
@@ -197,16 +196,16 @@ var Overview = React.createClass({
                                 {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.quorum !== undefined && <p className="DFOLabelTitleInfo">Quorum: <b>{window.tokenPercentage(_this.props.element.quorum, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.quorum, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('quorum')}</p>}
                             </AsyncValue>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Tokens used by voters to reach the a positive result</OkBoomer>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voting Tokens staked by voters to reach the a positive result.</OkBoomer>
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.minimumStaking !== undefined && <p className="DFOLabelTitleInfo">Generation Stake: <b>{window.tokenPercentage(_this.props.element.minimumStaking, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.minimumStaking, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('proposalStake')}</p>}
                             </AsyncValue>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum of Voting Tokens Staked to create a Proposal</OkBoomer>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voting Tokens staked to create a Proposal.</OkBoomer>
                     </li>
                     <li className="TheDappInfo2">
-                        <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Proposals:</h5>
+                        <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Proposals: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
                         <section className="DFOTitleSection">
                             {_this.props.element.minimumBlockNumberForEmergencySurvey === undefined && <LoaderMinimino />}
                             {_this.props.element.minimumBlockNumberForEmergencySurvey !== undefined && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyLength')} Length: <b>{_this.props.element.minimumBlockNumberForEmergencySurvey}</b> <aside>Blocks</aside></p>}
@@ -217,7 +216,7 @@ var Overview = React.createClass({
                                 {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.emergencySurveyStaking && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyPenalty')} Penalty fee: <b>{window.tokenPercentage(_this.props.element.emergencySurveyStaking, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.emergencySurveyStaking, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside></p>}
                             </AsyncValue>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum of Voting Tokens Staked to create an Emergency Proposal. If the proposal Faila, all of the Staked Tokens will be liquidated</OkBoomer>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The Fee that Emergency Proposal Issuer must stake to propose it. This stake will be lost if the Proposal fails.</OkBoomer>
                     </li>
                     {_this.renderChanger(['proposalStake', 'emergencyLength', 'emergencyPenalty','quorum', 'proposalLength'])}
                     
@@ -244,16 +243,15 @@ var Overview = React.createClass({
                         </section>
                         <section className="DFOTitleSection">
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Supply of Voting Tokens Held by this DFO's Community Wallet</OkBoomer>
                     </li>
                     <li className="TheDappInfo3">
-                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Rewards:</h5>
+                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Rewards: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward !== undefined && <p className="DFOLabelTitleInfo"> Proposal: <b>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)}</b> <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside> {_this.renderChangeButton('surveySingleReward')}</p>}
                             </AsyncValue>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward for every single Successful Proposal to the Issuer</OkBoomer>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward to the issuer for every single Successful Proposal.</OkBoomer>
                     </li>
                     <li className="TheDappInfo05">
                         <h5 className="DFOHostingTitle">&#129302; Core:</h5>
@@ -265,7 +263,6 @@ var Overview = React.createClass({
                         <section className="DFOTitleSection">
                             <a className="LinkVisualButton" href="javascript:;">Etherscan</a>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward for every single Successful Proposal to the Issuer</OkBoomer>
                     </li>
                     {_this.renderChanger(['surveySingleReward'])}
                 </ul>
