@@ -79,6 +79,7 @@ var SequentialOps = React.createClass({
         editor && _this.props.initialContext && (_this.props.initialContext.editor = editor);
         _this.children = _this.children || _this.props.children;
         return(<div>
+            <aside>Before leaving this page, make all the transactions listed. Otherwise the DFO will not be created successfully</aside>
             {_this.ctx.title && <h3>{_this.ctx.title}</h3>}
             <ol>
                 {_this.children.map((it, i) => <li key={i}>
