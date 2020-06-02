@@ -94,7 +94,7 @@ var DFOList = React.createClass({
                                             </figure>
                                             <section>
                                             <h6>{window.walletAddress.substring(0, 20)}...</h6>
-                                            <h5><aside>Balance: </aside><AsyncValue>{window.fromDecimals(it.myBalanceOf, it.decimals)}</AsyncValue><aside> {it.symbol}</aside></h5>
+                                            <h5><aside>Balance: <AsyncValue>{window.fromDecimals(it.myBalanceOf, it.decimals)}</AsyncValue> {it.symbol}</aside></h5>
                                         </section>
                                     </section>}
                                 </a>
