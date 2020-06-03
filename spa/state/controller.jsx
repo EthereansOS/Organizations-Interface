@@ -6,7 +6,8 @@ var StateController = function (view) {
         context.view.setState({stateElements: null, stateElementsAmount: null}, async function() {
             var stateElements = [];
             context.view.setState({stateElements, stateElementsAmount: parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getStateSize))});
-            var json = JSON.parse(await window.blockchainCall(context.view.props.element.stateHolder.methods.toJSON));
+            var json = await window.blockchainCall(context.view.props.element.stateHolder.methods.toJSON);
+            json = JSON.parse(json.endsWith(',]') ? (json.substring(0, json.lastIndexOf(',]')) + ']') : json);
             for(var i in json) {
                 var element = json[i];
                 var methodName = 'get' + element.type.substring(0, 1).toUpperCase() + element.type.substring(1);

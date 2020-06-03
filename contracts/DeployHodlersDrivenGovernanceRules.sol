@@ -16,7 +16,7 @@ contract DeployHodlersDrivenGovernanceRules {
 
     address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
-    uint256 private _getSurveyMinimumStakingSourceLocationId = 106;
+    uint256 private _getSurveyMinimumStakingSourceLocationId = 49;
 
     function onStart(address, address) public {
     }

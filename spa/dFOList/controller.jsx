@@ -53,29 +53,33 @@ var DFOListController = function (view) {
         }
         element.updating = true;
 
-        var votingToken = await window.blockchainCall(element.dFO.methods.getToken);
-        var stateHolderAddress = await window.blockchainCall(element.dFO.methods.getStateHolderAddress);
-        var functionalitiesManagerAddress = await window.blockchainCall(element.dFO.methods.getMVDFunctionalitiesManagerAddress);
-        var walletAddress = element.dFO.options.address;
+        var votingTokenAddress;
+        var stateHolderAddress;
+        var functionalitiesManagerAddress;
+        element.walletAddress = element.dFO.options.address;
 
         try {
-            walletAddress = await window.blockchainCall(element.dFO.methods.getMVDWalletAddress);
+            var delegates = await window.blockchainCall(element.dFO.methods.getDelegates);
+            votingTokenAddress = delegates[0];
+            stateHolderAddress = delegates[2];
+            functionalitiesManagerAddress = delegates[4];
+            element.walletAddress = delegates[5];
         } catch(e) {
+            votingTokenAddress = await window.blockchainCall(element.dFO.methods.getToken);
+            stateHolderAddress = await window.blockchainCall(element.dFO.methods.getStateHolderAddress);
+            functionalitiesManagerAddress = await window.blockchainCall(element.dFO.methods.getMVDFunctionalitiesManagerAddress);
         }
 
-        element.token = window.newContract(window.context.votingTokenAbi, votingToken);
-        element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
-        element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
-        element.walletAddress = walletAddress;
+        element.token = window.newContract(window.context.votingTokenAbi, votingTokenAddress);
         element.name = await window.blockchainCall(element.token.methods.name);
         element.symbol = await window.blockchainCall(element.token.methods.symbol);
         element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
         element.decimals = await window.blockchainCall(element.token.methods.decimals);
+        element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
+        element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
         element.functionalitiesAmount = parseInt(await window.blockchainCall(element.functionalitiesManager.methods.getFunctionalitiesAmount));
         element.lastUpdate = element.startBlock;
-        element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.getNetworkElement('dfoAddress'));
-        element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.dFO.options.address);
-        element.myBalanceOf = !window.walletAddress ? 0 : await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress);
+        context.refreshBalances(element);
         element.minimumBlockNumberForEmergencySurvey = '0';
         element.emergencySurveyStaking = '0';
 
@@ -113,6 +117,11 @@ var DFOListController = function (view) {
                 element !== window.dfoHub && (element.ens = await window.blockchainCall(window.dfoHubENSResolver.methods.subdomain, element.dFO.options.originalAddress));
             } catch(e) {
             }
+            element.hardCap = '0'
+            try {
+                element.hardCap = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getVotesHardCap', '0x'));
+            } catch(e) {
+            }
             element.ens = element.ens || '';
             try {
                 context && context.view && setTimeout(function() {
@@ -124,25 +133,35 @@ var DFOListController = function (view) {
         return element;
     };
 
-    context.refreshBalances = async function refreshBalances(element) {
-        element && (element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.dfoHub.walletAddress));
-        element && (element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.walletAddress));
-        element && (element.walletETH = await window.web3.eth.getBalance(element.walletAddress));
-        element && (element.walletBUIDL = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, element.walletAddress));
-        element && (element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement('usdcTokenAddress')).methods.balanceOf, element.walletAddress));
-        window.walletAddress && element && (element.myBalanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress));
-        element && context.view.forceUpdate();
+    context.refreshBalances = async function refreshBalances(element, silent) {
+        if(!element) {
+            return;
+        }
+        element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.dfoHub.walletAddress);
+        element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.walletAddress);
+        element.walletETH = await window.web3.eth.getBalance(element.walletAddress);
+        element.walletBUIDL = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, element.walletAddress);
+        element.walletUSDC = '0';
+        try {
+            element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdcTokenAddress")).methods.balanceOf, element.walletAddress);
+        } catch(e) {
+        }
+        element.myBalanceOf = window.walletAddress ? await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress) : '0';
+        if(silent === true) {
+            return;
+        }
+        context.view.forceUpdate();
         setTimeout(function () {
             var keys = Object.keys(window.list);
             keys.map(async function (key, i) {
-                if (element && element.key === key) {
+                if (element.key === key) {
                     return;
                 }
                 var e = window.list[key];
                 if (!e.token) {
                     return;
                 }
-                e.myBalanceOf = await window.blockchainCall(e.token.methods.balanceOf, window.walletAddress);
+                e.myBalanceOf = window.walletAddress ? await window.blockchainCall(e.token.methods.balanceOf, window.walletAddress) : '0';
                 i === keys.length - 1 && context.view.forceUpdate();
             });
         });

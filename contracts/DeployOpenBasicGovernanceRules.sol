@@ -16,14 +16,14 @@ contract DeployOpenBasicGovernanceRules {
 
     address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
-    uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 58;
+    uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 2;
     uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 1;
     uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 0;
 
     uint256 private _surveyResultValidatorSourceLocationId = 62;
 
     uint256 private _getIndexSourceLocationId = 50;
-    uint256 private _getQuorumSourceLocationId = 45;
+    uint256 private _getQuorumSourceLocationId = 51;
 
     function onStart(address, address) public {
     }

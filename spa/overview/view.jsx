@@ -203,6 +203,12 @@ var Overview = React.createClass({
                             </AsyncValue>
                         </section>
                         <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voting Tokens staked to create a Proposal.</OkBoomer>
+                        <section className="DFOTitleSection">
+                            <AsyncValue>
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.hardCap !== undefined && <p className="DFOLabelTitleInfo">Hard Cap: <b>{window.tokenPercentage(_this.props.element.hardCap, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.hardCap, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('proposalStake')}</p>}
+                            </AsyncValue>
+                        </section>
+                        <OkBoomer okBoomer={_this.props.okBoomer}>If a proposal reaches a fixed number of voting tokens (example the 90% of the total Token supply) for “Approve” or “Disapprove” it, the proposal automatically ends, independently from the duration rule.</OkBoomer>
                     </li>
                     <li className="TheDappInfo2">
                         <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Proposals: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
