@@ -141,7 +141,11 @@ var NewProposal = React.createClass({
     componentDidMount() {
         var _this = this;
         _this.onReplace();
-        window.loadFunctionalities(_this.props.element, undefined, true).then(() => _this.forceUpdate());
+        window.loadFunctionalities(_this.props.element, undefined, true);
+        try {
+            blockchainCall(_this.props.element.functionalitiesManager.methods.functionalityNames).then(JSON.parse).then(functionalityNames => _this.props.element.functionalityNames = functionalityNames).then(() => _this.forceUpdate()).catch(e => {});
+        } catch(e) {
+        }
     },
     onReplace(e) {
         e && e.preventDefault(true) && e.stopPropagation(true);
@@ -219,8 +223,8 @@ var NewProposal = React.createClass({
                     <input id="replacesCheck" type="checkbox" ref={ref => ref && (ref.checked = ref.disabled = (functionality || this.props.delete || this.props.oneTimeCode || this.props.oneTimeProposal) ? true : false) && (ref.checked = this.props.oneTimeProposal ? false : ref.checked)} onChange={e => {this.functionalityReplace.value = ""; this.functionalityReplace.disabled = !e.currentTarget.checked; e.currentTarget.checked ? $(this.functionalityReplace).show() : $(this.functionalityReplace).hide()}}/>
                     <select id="functionalityReplace" onChange={this.onReplace} ref={ref => {this.functionalityReplace = ref; ref && (ref.value = (functionality && functionality.codeName || '')); ref && functionality && functionality.codeName ? $(ref).show() : $(ref).hide()}} disabled>
                         <option value="">Replacing Functionality</option>
-                        {this.props.element.functionalities && Object.keys(this.props.element.functionalities).map(key => {
-                            var it = _this.props.element.functionalities[key];
+                        {this.props.element.functionalityNames && Object.keys(this.props.element.functionalityNames).map(key => {
+                            var it = _this.props.element.functionalityNames[key];
                             return (<option key={it.codeName} value={it.codeName}>{it.codeName}</option>);
                         })}
                     </select>

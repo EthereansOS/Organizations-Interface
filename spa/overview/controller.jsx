@@ -216,4 +216,34 @@ var OverviewController = function (view) {
             functionalityOutputParameters: data.surveySingleReward ? '["uint256"]' : '',
         }, template, undefined, descriptions, updates);
     };
+
+    context.votesHardCapChange = function votesHardCapChange(data) {
+        var originalVotesHardCap = window.numberToString(data.votesHardCap);
+        var votesHardCapString = window.toDecimals(data.votesHardCap, context.view.props.element.decimals);
+        data.votesHardCap = parseInt(votesHardCapString);
+        if(data.votesHardCap === parseInt(context.view.props.element.votesHardCap)) {
+            return;
+        }
+        if(isNaN(data.votesHardCap) || data.votesHardCap < 0) {
+            return context.view.emit('message', 'You must specify a number greater than or equal to 0 to proceed', 'error');
+        }
+        if(data.votesHardCap > parseInt(context.view.props.element.totalSupply)) {
+            return context.view.emit('message', 'Specified amount exceedes Total Voting Token Supply', 'error');
+        }
+        var descriptions = ['DFO Hub - Utilities - Get Votes Hard Cap', 'If a proposal reaches a fixed number of voting tokens (example the 90% of the total Token supply) for "Approve" or "Disapprove" it, the proposal automatically ends, independently from the duration rule.'];
+        var updates = ['Setting Votes Hard Cap value to ' + originalVotesHardCap + ' ' + context.view.props.element.symbol];
+        !context.view.props.element.votesHardCap && descriptions.push(updates[0]);
+        if(data.votesHardCap === 0) {
+            updates = ['Clearing Votes Hard Cap'];
+        }
+        var template = !data.votesHardCap ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('getValue()').join('getVotesHardCap()').split('type').join('uint256').split('value').join(votesHardCapString));
+        window.sendGeneratedProposal(context.view.props.element, {
+            title: updates[0],
+            functionalityName: data.votesHardCap ? 'getVotesHardCap' : '',
+            functionalityMethodSignature: data.votesHardCap ? 'getVotesHardCap()' : '',
+            functionalitySubmitable: false,
+            functionalityReplace: (data.votesHardCap === 0 || parseInt(context.view.props.element.votesHardCap)) ? 'getVotesHardCap' : '',
+            functionalityOutputParameters: data.votesHardCap ? '["uint256"]' : '',
+        }, template, undefined, descriptions, updates);
+    };
 };

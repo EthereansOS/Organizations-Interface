@@ -2,6 +2,48 @@ var FunctionsController = function (view) {
     var context = this;
     context.view = view;
 
+    context.loadFunctionalities = function loadFunctionalities() {
+        var element = context.view.props.element;
+        if(!context.view || !context.view.mountDate) {
+            return;
+        }
+        var mountedDate = context.view.mountDate;
+        var loop = async function loop(functionalityName) {
+            var functionality = context.view.state.functionalities[functionalityName] = JSON.parse(await window.blockchainCall(context.view.props.element.functionalitiesManager.methods.functionalityToJSON, functionalityName));
+            if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                return;
+            }
+            functionality.inputParameters = [];
+            try {
+                functionality.inputParameters = functionality.methodSignature.split(functionality.methodSignature.substring(0, functionality.methodSignature.indexOf('(') + 1)).join('').split(')').join('');
+                functionality.inputParameters = functionality.inputParameters ? functionality.inputParameters.split(',') : [];
+            } catch (e) {}
+            try {
+                functionality.code = functionality.code || await window.loadContent(functionality.sourceLocationId, functionality.sourceLocation);
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+            } catch (e) {}
+            functionality.description = window.extractHTMLDescription(functionality.code);
+            functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
+            if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                return;
+            }
+            context.view.setState({functionalities: context.view.state.functionalities});
+            setTimeout(async function() {
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+                functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+                context.view.setState({functionalities: context.view.state.functionalities});
+            }, 300);
+        };
+        context.view.state.functionalityNames.forEach(loop);
+    };
+
     context.call = async function call(type, codeName, inputParameters, args, returnAbiParametersArray, needsSender) {
         inputParameters && needsSender && type !== 'read' && args.unshift(0);
         inputParameters && needsSender && args.unshift(window.voidEthereumAddress);

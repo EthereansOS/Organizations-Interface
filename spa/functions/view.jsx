@@ -5,13 +5,27 @@ var Functions = React.createClass({
     requiredScripts: [
         'spa/loaderMini.jsx'
     ],
+    getInitialState() {
+        return {
+            functionalities: {},
+            functionalityNames: []
+        };
+    },
     change(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.emit('section/change', 'New Proposal', { codeName: e.target.dataset.codename, delete: e.target.dataset.delete })
     },
     componentDidMount() {
         var _this = this;
-        window.loadFunctionalities(_this.props.element, () => _this.forceUpdate()).then(() => _this.forceUpdate());
+        _this.mountDate = new Date().getTime() + "_" + Math.random();
+        try {
+            blockchainCall(_this.props.element.functionalitiesManager.methods.functionalityNames).then(JSON.parse).then(functionalityNames => _this.setState({functionalityNames: _this.props.element.functionalityNames = functionalityNames}, _this.controller.loadFunctionalities)).catch(e => window.loadFunctionalities(_this.props.element, () => _this.setState({functionalityNames: _this.props.element.functionalityNames, functionalities: _this.props.element.functionalities})).then(() => _this.forceUpdate()));
+        } catch(e) {
+            window.loadFunctionalities(_this.props.element, () => _this.setState({functionalities: _this.props.element.functionalities})).then(() => _this.forceUpdate());
+        }
+    },
+    componentWillUnmount() {
+        delete this.mountDate;
     },
     onClick(e, element) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -58,12 +72,15 @@ var Functions = React.createClass({
         var defaultDesc = 'Deploy a new DFO - Part 1: Clone all utility contracts. Deploy, BUIDL and Govern Decentralized Flexible Organizations, for a new Censorship-Resilient wave of Unstoppable dapps. DFOs are based on a new Microservices Style Developing, upgradable by voting, without needs to fork it. Basically, without points of failure and an entity to trust.';
         return (
             <section className="DFOOverview">
-                {this.props.element.functionalities && <ul className="DFOFunctionList">
-                    {Object.keys(this.props.element.functionalities).map(key => {
-                        var it = _this.props.element.functionalities[key];
+                {_this.state.functionalityNames && <ul className="DFOFunctionList">
+                    {_this.state.functionalityNames.map(key => {
+                        var it = _this.state.functionalities[key];
+                        if(!it) {
+                            return null;
+                        }
                         var length = 0;
                         var more = true;
-                        it.description = it.description || defaultDesc;
+                        it.description = it.description || (it.methodSignature || it.code ? 'Loading Description...' : 'No description available');
                         try {
                             length = it.description.length > window.descriptionWordLimit ? window.descriptionWordLimit : it.description.length;
                             more = this.state && this.state.more === it.codeName;
@@ -72,7 +89,8 @@ var Functions = React.createClass({
                         return (
                             <li key={it.codeName}>
                                 <section className="DFOFunctionEmoji">
-                                    <h4 title={(!it.compareErrors || it.compareErrors.length === 0) ? '' : ('There are some problems in this functionality:\n' + (it.compareErrors.join(';\n').trim()))} ref={ref => ref && (ref.innerHTML = (!it.compareErrors || it.compareErrors.length === 0) ? '&#128736;&#65039;' : '&#9763;&#65039;')}></h4>
+                                    {it.compareErrors === undefined && <LoaderMinimino />}
+                                    {it.compareErrors && <h4 title={(!it.compareErrors || it.compareErrors.length === 0) ? '' : ('There are some problems in this functionality:\n' + (it.compareErrors.join(';\n').trim()))} ref={ref => ref && (ref.innerHTML = (!it.compareErrors || it.compareErrors.length === 0) ? '&#128736;&#65039;' : '&#9763;&#65039;')}></h4>}
                                 </section>
                                 <section className="DFOFunctionTitle">
                                     <h5>{it.codeName}</h5>
@@ -87,13 +105,13 @@ var Functions = React.createClass({
                                 <section className="DFOBtnViewSection">
                                     <section className="DFOFxTools">
                                         {it.code && <a className={"LinkVisualButton" + (this.state && this.state.opened === ('code_' + it.codeName) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.setState({ opened: _this.state && _this.state.opened === ('code_' + it.codeName) ? null : ('code_' + it.codeName) })}>Code</a>}
-                                        <a className={"LinkVisualButton" + (this.state && this.state.opened === ('query_' + it.codeName) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.setState({ opened: _this.state && _this.state.opened === ('query_' + it.codeName) ? null : ('query_' + it.codeName) })}>Query</a>
+                                        {it.methodSignature && <a className={"LinkVisualButton" + (this.state && this.state.opened === ('query_' + it.codeName) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.setState({ opened: _this.state && _this.state.opened === ('query_' + it.codeName) ? null : ('query_' + it.codeName) })}>Query</a>}
                                     </section>
-                                    {_this.props.edit && <section className="DFOFxTools">
+                                    {it.methodSignature && _this.props.edit && <section className="DFOFxTools">
                                         <a className="LinkVisualButton LinkVisualButtonB" href="javascript:;" data-codename={it.codeName} onClick={this.change}>Change</a>
                                         {it.codeName !== 'getMinimumBlockNumberForSurvey' && it.codeName !== 'getMinimumBlockNumberForEmergencySurvey' && it.codeName !== 'getEmergencySurveyStaking' && it.codeName !== 'checkSurveyResult' && <a className="LinkVisualButton LinkVisualButtonB" href="javascript:;" data-codename={it.codeName} onClick={this.controller.deleteFunction}>Delete</a>}
                                     </section>}
-                                    <a className="LinkVisualClassic" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>
+                                    {it.location && <a className="LinkVisualClassic" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>}
                                 </section>
                                 {this.state && this.state.opened === ('code_' + it.codeName) && <section className="DFOFunctionQuery">
                                     <Editor firstCode={it.code} />
@@ -105,7 +123,7 @@ var Functions = React.createClass({
                                         </section>
                                         <section className="DFOBtnReadSection">
                                             {this.renderInput(it)}
-                                            {it.codeName !== 'fairInflation' && !it.isInternal && it.submitable && <a className="LinkVisualButton RwWrite" onClick={e => _this.onClick(e, it)}>Write</a>}
+                                            {(it.codeName !== 'fairInflation' || _this.props.element.symbol === 'BUIDL') && !it.isInternal && it.submitable && <a className="LinkVisualButton RwWrite" onClick={e => _this.onClick(e, it)}>Submit</a>}
                                             {!it.isInternal && !it.submitable && <a className="LinkVisualButton RwRead" onClick={e => _this.onClick(e, it)}>Read</a>}
                                             {it.isInternal && <span className="RwIntern">Internal</span>}
                                         </section>
@@ -117,7 +135,7 @@ var Functions = React.createClass({
                             </li>);
                     })}
                 </ul>}
-                {(!this.props.element.functionalities || Object.keys(this.props.element.functionalities).length !== this.props.element.functionalitiesAmount) && <LoaderMini message="Loading Functionalities" />}
+                {((!_this.state.functionalityNames || _this.state.functionalityNames.length === 0) && (!this.props.element.functionalities || Object.keys(this.props.element.functionalities).length !== this.props.element.functionalitiesAmount)) && <LoaderMini message="Loading Functionalities" />}
             </section>
         );
     }

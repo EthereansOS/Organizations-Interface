@@ -336,6 +336,12 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
     }
     element.waiters = [];
     return new Promise(async function(ok) {
+        try {
+            element.functionalityNames = JSON.parse(await blockchainCall(element.functionalitiesManager.methods.functionalityNames));
+            callback && callback();
+        } catch(e) {
+            element.functionalityNames = [];
+        }
         var functionalitiesJSON = await blockchainCall(element.functionalitiesManager.methods.functionalitiesToJSON);
         var functionalities = window.parseFunctionalities(functionalitiesJSON);
         var keys = Object.keys(functionalities);
@@ -348,6 +354,8 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
         element.functionalities = element.functionalities || {};
         for (var i in keys) {
             var key = keys[i];
+            element.functionalityNames.push(key);
+            callback && callback();
             var functionality = functionalities[key];
             if (element && functionality.codeName === 'getMinimumBlockNumberForSurvey') {
                 element.getMinimumBlockNumberForSurvey = functionality;
@@ -360,6 +368,7 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
                 functionality.inputParameters = functionality.methodSignature.split(functionality.methodSignature.substring(0, functionality.methodSignature.indexOf('(') + 1)).join('').split(')').join('');
                 functionality.inputParameters = functionality.inputParameters ? functionality.inputParameters.split(',') : [];
             } catch (e) {}
+            callback && callback();
             try {
                 functionality.code = functionality.code || await window.loadContent(functionality.sourceLocationId, functionality.sourceLocation);
             } catch (e) {}
@@ -678,7 +687,7 @@ window.extractHTMLDescription = function extractHTMLDescription(code, updateFirs
     return description;
 }
 
-window.searchForCodeErrors = async function searchForCodeErrors(location, code, codeName, methodSignature, replaces) {
+window.searchForCodeErrors = async function searchForCodeErrors(location, code, codeName, methodSignature, replaces, noCode) {
     var knownFunctionalities = {
         "getMinimumBlockNumberForSurvey" : true,
         "getMinimumBlockNumberForEmergencySurvey" : true,
@@ -687,7 +696,8 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
         "getSurveySingleReward" : true,
         "getSurveyMinimumStaking" : true,
         "getIndex" : true,
-        "getLink" : true
+        "getLink" : true,
+        "getVotesHardCap" : true
     };
     var errors = [];
     var comments = code ? window.extractComment(code) : {};
@@ -709,7 +719,7 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
     if (codeName && !methodSignature) {
         errors.push('Missing method signature!');
     }
-    if (!location || !code) {
+    if (!location || !code || noCode === true) {
         return errors;
     }
     try {

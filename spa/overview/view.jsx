@@ -103,6 +103,9 @@ var Overview = React.createClass({
     renderProposalStakeChanger() {
         return this.renderDefaultChanger("The minimum of Token Stacked needed to create a new Proposal.", "Proposal Stake", "minimumStaking", window.fromDecimals(this.props.element.minimumStaking, this.props.element.decimals));
     },
+    renderVotesHardCapChanger() {
+        return this.renderDefaultChanger('If a proposal reaches a fixed number of voting tokens (example the 90% of the total Token supply) for "Approve" or "Disapprove" it, the proposal automatically ends, independently from the duration rule.', "Hard Cap", "votesHardCap", window.fromDecimals(this.props.element.votesHardCap, this.props.element.decimals));
+    },
     renderDefaultChanger(text, label, id, defaultValue) {
         return (
             <ul>
@@ -182,13 +185,13 @@ var Overview = React.createClass({
                 </ul>
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
-                        <h2>Governance Rules</h2>
+                    <h2>Governance Rules</h2>
                 </section>
                 <li className="TheDappInfo2">
                         <h5 className="DFOHostingTitle">&#127984; Regular Proposals: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
                         <section className="DFOTitleSection">
                             {_this.props.element.blocks === undefined && <LoaderMinimino />}
-                            {_this.props.element.blocks !== undefined && <p className="DFOLabelTitleInfo">Lenght: <b>{_this.props.element.blocks}</b><aside> Blocks </aside> {_this.renderChangeButton('proposalLength')}</p>}
+                            {_this.props.element.blocks !== undefined && <p className="DFOLabelTitleInfo">Length: <b>{_this.props.element.blocks}</b><aside> Blocks </aside> {_this.renderChangeButton('proposalLength')}</p>}
                         </section>
                         <OkBoomer okBoomer={_this.props.okBoomer}>The duration of a Proposal</OkBoomer>
                         <section className="DFOTitleSection">
@@ -205,7 +208,7 @@ var Overview = React.createClass({
                         <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voting Tokens staked to create a Proposal.</OkBoomer>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.hardCap !== undefined && <p className="DFOLabelTitleInfo">Hard Cap: <b>{window.tokenPercentage(_this.props.element.hardCap, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.hardCap, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('proposalStake')}</p>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.votesHardCap !== undefined && <p className="DFOLabelTitleInfo">Hard Cap: <b>{window.tokenPercentage(_this.props.element.votesHardCap, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.votesHardCap, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('votesHardCap')}</p>}
                             </AsyncValue>
                         </section>
                         <OkBoomer okBoomer={_this.props.okBoomer}>If a proposal reaches a fixed number of voting tokens (example the 90% of the total Token supply) for “Approve” or “Disapprove” it, the proposal automatically ends, independently from the duration rule.</OkBoomer>
@@ -224,8 +227,7 @@ var Overview = React.createClass({
                         </section>
                         <OkBoomer okBoomer={_this.props.okBoomer}>The Fee that Emergency Proposal Issuer must stake to propose it. This stake will be lost if the Proposal fails.</OkBoomer>
                     </li>
-                    {_this.renderChanger(['proposalStake', 'emergencyLength', 'emergencyPenalty','quorum', 'proposalLength'])}
-                    
+                    {_this.renderChanger(['proposalStake', 'emergencyLength', 'emergencyPenalty','quorum', 'proposalLength', 'votesHardCap'])}
                 </ul>
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
@@ -242,7 +244,7 @@ var Overview = React.createClass({
                             <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside></p>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 18)}</b><aside> USDC</aside></p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside></p>
                         </section>
                         {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
                             <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside></p>
@@ -261,7 +263,6 @@ var Overview = React.createClass({
                         <h5 className="DFOHostingTitle">&#129302; Core:</h5>
                         <section className="DFOTitleSection">
                             <a className="LinkVisualButton" target="_blank" href={window.getNetworkElement("etherscanURL") + "address/" + _this.props.element.dFO.options.address}>Etherscan</a>
-                            {_this.renderChangeButton('surveySingleReward')}
                         </section>
                         <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
                         <section className="DFOTitleSection">

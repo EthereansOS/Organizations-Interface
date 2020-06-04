@@ -117,9 +117,9 @@ var DFOListController = function (view) {
                 element !== window.dfoHub && (element.ens = await window.blockchainCall(window.dfoHubENSResolver.methods.subdomain, element.dFO.options.originalAddress));
             } catch(e) {
             }
-            element.hardCap = '0'
+            element.votesHardCap = '0'
             try {
-                element.hardCap = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getVotesHardCap', '0x'));
+                element.votesHardCap = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getVotesHardCap', '0x'));
             } catch(e) {
             }
             element.ens = element.ens || '';

@@ -67,7 +67,7 @@ var DeployDFO = React.createClass({
                             data.governanceRules !== 'OpenBasic' && params.push('uint256') && values.push(window.toDecimals(data.governanceRules === 'CommunityDriven' ? data.surveySingleReward : data.surveyMinStake, 18));
                             var payload = window.web3.eth.abi.encodeParameters(params, values);
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, ('deploy' + data.governanceRules + 'GovernanceRules'), payload).then(response => {
-                                data.functionaltiesManagerAddress = window.formatDFOLogs(response.events.Event, "DFOCollateralContractsCloned(address_indexed,address)").raw.data[0];
+                                data.functionalitiesManagerAddress = window.formatDFOLogs(response.events.Event, "DFOCollateralContractsCloned(address_indexed,address)").raw.data[0];
                             })
                         }
                     }, {
@@ -80,7 +80,7 @@ var DeployDFO = React.createClass({
                                 data.mvdFunctionalityProposalManagerAddress,
                                 data.stateHolder,
                                 data.functionaltyModelsManagerAddress,
-                                data.functionaltiesManagerAddress,
+                                data.functionalitiesManagerAddress,
                                 data.mvdWalletAddress,
                                 data.ensDomain.toLowerCase()
                             ]);
