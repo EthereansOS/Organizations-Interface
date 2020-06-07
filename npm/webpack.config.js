@@ -3,14 +3,14 @@ const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 
-var ASSET_PATH = '/assets/plugins/monaco.editor/';
+var ASSET_PATH = 'assets/plugins/monaco.editor/';
 
 module.exports = {
     mode: 'production',
     entry: './monaco.editor.js',
     output: {
         globalObject: 'self',
-        path: path.resolve(__dirname, '..' + ASSET_PATH),
+        path: path.resolve(__dirname, '../' + ASSET_PATH),
         filename: 'monaco.editor.min.js',
         publicPath: ASSET_PATH
     },
