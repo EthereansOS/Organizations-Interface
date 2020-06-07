@@ -2,9 +2,8 @@ var ProposalController = function (view) {
     var context = this;
     context.view = view;
 
-    context.proposalTopic = window.web3.utils.sha3('Proposal(address)');
-    context.proposalSetTopic = window.web3.utils.sha3('ProposalSet(address,bool)');
     context.transferTopic = window.web3.utils.sha3('Transfer(address,address,uint256)');
+    context.functionalitySetTopic = window.web3.utils.sha3('FunctionalitySet(string,address,string,address,uint256,address,bool,string,bool,bool,address)');
 
     context.loadSurvey = async function loadSurvey() {
         var element = context.view.props.element;
@@ -61,7 +60,7 @@ var ProposalController = function (view) {
                 survey.terminationData && (survey.resultBlock = survey.terminationData.blockNumber);
                 if (survey.withdrawed === undefined && parseInt(survey.myVotes) > 0) {
                     survey.withdrawed = true;
-                    if(window.walletAddress && survey.raisedBy === element.dFO.options.address.toLowerCase()) {
+                    if (window.walletAddress && survey.raisedBy === element.dFO.options.address.toLowerCase()) {
                         var transfer = await window.getLogs({
                             address: element.token.options.address,
                             topics: [
@@ -93,28 +92,7 @@ var ProposalController = function (view) {
                 context.view.setState({ survey });
             }
 
-            if (survey.replaces && !survey.replacesCode) {
-                var sourceLocationId = survey.replacedCodeSourceLocationId;
-                var sourceLocation = survey.replacedCodeSourceLocation;
-                if (!survey.terminated) {
-                    var functionalityData = await window.blockchainCall(window.dfoHub.functionalitiesManager.methods.getFunctionalityData, 'deployDFO');
-                    if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
-                        return;
-                    }
-                    sourceLocation = functionalityData[3];
-                    sourceLocationId = functionalityData[4];
-                }
-                try {
-                    survey.replacesCode = await window.loadContent(sourceLocationId, sourceLocation);
-                } catch (ex) {
-                }
-                if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
-                    return;
-                }
-                survey.description = window.extractHTMLDescription(survey.code, true);
-            }
-
-            if(!survey.compareErrors) {
+            if (!survey.compareErrors) {
                 survey.compareErrors = await window.searchForCodeErrors(survey.location, survey.code, survey.codeName, survey.methodSignature, survey.replaces, true);
                 if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
@@ -131,76 +109,54 @@ var ProposalController = function (view) {
         }
     };
 
-    context.updateErrors = async function updateErrors(data, name) {
-        if (data === undefined) {
-            await context.updateErrors((context.view.state && context.view.state.surveys) || null, "surveys");
-            return context.updateErrors((context.view.state && context.view.state.terminatedSurveys) || null, "terminatedSurveys");
-        }
-        if (data === null) {
+    context.tryLoadDiff = async function tryLoadDiff() {
+
+        var element = context.view.props.element;
+        if (!context.view || !context.view.mountDate || element !== context.view.props.element) {
             return;
         }
-        var state = {};
-        state[name] = data;
-        var keys = Object.keys(data);
-        for (var i in keys) {
-            var survey = data[keys[i]];
-            if (survey.replacesCode || (survey.codeName && !survey.replaces) || (!survey.codeName && !survey.replaces && survey.compareErrors)) {
-                if (!survey.compareErrors) {
-                    survey.compareErrors = [];
-                    context.view.setState(state);
+        var mountedDate = context.view.mountDate;
+        var survey = {};
+        Object.keys(context.view.state.survey).forEach(key => survey[key] = context.view.state.survey[key]);
+        if (!survey.replaces || survey.replacesCode !== undefined) {
+            return;
+        }
+        try {
+            var sourceLocationId = survey.replacedCodeSourceLocationId;
+            var sourceLocation = survey.replacedCodeSourceLocation;
+            if (!survey.terminated) {
+                var functionalityData = await window.blockchainCall(window.dfoHub.functionalitiesManager.methods.getFunctionalityData, survey.replaces);
+                if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
                 }
-                continue;
-            }
-            if (survey.compareErrors) {
-                continue;
-            }
-            survey.compareErrors = [];
-            if (survey.codeName && survey.replaces) {
-                await window.loadFunctionalities(context.view.props.element, undefined, true);
-                for (var z in context.view.props.element.functionalities) {
-                    var functionality = context.view.props.element.functionalities[z];
-                    if (survey.replaces === functionality.codeName) {
-                        survey.replacesCode = functionality.code;
-                        break;
-                    }
+                sourceLocation = functionalityData[3];
+                sourceLocationId = functionalityData[4];
+            } else {
+                var transactionReceipt = await window.web3.eth.getTransactionReceipt(survey.terminationTransactionHash);
+                if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
                 }
-            }
-            if (survey.terminationTransactionHash) {
-                var logs;
-                try {
-                    logs = (await window.web3.eth.getTransactionReceipt(survey.terminationTransactionHash)).logs;
-                    if (!logs || logs.length < 2) {
+                for(var log of transactionReceipt.logs) {
+                    if(log.topics[0].toLowerCase() !== context.functionalitySetTopic.toLowerCase()) {
                         continue;
                     }
-                    try {
-                        logs = window.web3.eth.abi.decodeParameters(["uint256", "address", "address", "bool", "string", "bool", "bool", "address", "uint256"], logs[1].data)[7];
-                    } catch (e) {
-                        try {
-                            logs = window.web3.eth.abi.decodeParameters(["uint256", "address", "address", "bool", "string", "bool", "bool", "address", "uint256"], logs[2].data)[7];
-                        } catch (ex) {
-                            logs = survey.address;
-                        }
-                    }
-                } catch (e) {
-                    logs = undefined;
+                    var data = window.web3.eth.abi.decodeParameters(["string", "string", "address", "uint256", "bool", "string", "bool", "bool"], log.data);
+                    sourceLocation = data[2];
+                    sourceLocationId = data[3];
+                    break;
                 }
-                if (!logs || logs === window.voidEthereumAddress) {
-                    continue;
-                }
-                var proposal = window.newContract(window.context.propsalAbi, logs);
-                if (!proposal.data) {
-                    proposal.data = await window.blockchainCall(proposal.methods.toJSON);
-                    proposal.data = JSON.parse(proposal.data.split('"returnAbiParametersArray":,').join('"returnAbiParametersArray":[],'));
-                }
-                try {
-                    proposal.data.code = (!proposal.data.codeName && proposal.data.replaces) ? undefined : proposal.data.code || await window.loadContent(proposal.data.sourceLocationId, proposal.data.sourceLocation);
-                } catch (ex) {
-                }
-                survey.replacesCode = survey.replaces ? proposal.data.code : undefined;
             }
-            survey.compareErrors = await window.searchForCodeErrors(survey.location, survey.code, survey.codeName, survey.methodSignature, survey.replaces);
-            survey.code === survey.replacesCode && (delete survey.replacesCode);
-            context.view.setState(state);
+            try {
+                survey.replacesCode = await window.loadContent(sourceLocationId, sourceLocation);
+            } catch (ex) {
+                survey.replacesCode = null;
+            }
+            if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                return;
+            }
+            context.view.setState({ survey });
+        } catch (e) {
+            console.error(e);
         }
     };
 

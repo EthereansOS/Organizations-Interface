@@ -64,7 +64,7 @@ var Proposal = React.createClass({
                 {it.surveyEnd && !it.terminationData && <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>}
                 {it.terminationData && !it.withdrawed && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
                 <a className={"LinkVisualButton" + (_this.props.toggle === ('info_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('info_' + it.key) ? null : ('info_' + it.key))}>Info</a>
-                {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key))}>Code</a>}
+                {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
             </section>
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.address} target="_blank">Proposal</a>
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>
@@ -104,7 +104,7 @@ var Proposal = React.createClass({
             <p>End Block:<a target="_blank" href={window.getNetworkElement('etherscanURL') + 'block/' + it.endBlock}>{it.endBlock}</a></p>
             {!it.surveyEnd && <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.toggle === ('vote_' + it.key) ? ' Editing' : '')} onClick={() => _this.emit('toggle', _this.props.toggle === ('vote_' + it.key) ? null : ('vote_' + it.key))}>Vote</WalletEnablerButton>}
             {it.surveyEnd && !it.terminated && <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>}
-            {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key))}>Code</a>}
+            {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>
         </section>];
         _this.props.toggle === 'vote_' + it.key && rendered.push(<section className="ProposalVote">
