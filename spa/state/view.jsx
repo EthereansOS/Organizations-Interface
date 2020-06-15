@@ -73,7 +73,7 @@ var State = React.createClass({
             </div>
             {_this.props.edit && (!_this.state || !_this.state.changeAll) && <a className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.change === it.name ? " Editing" : "")} href="javascript:;" onClick={() => _this.setState({ change: _this.state && _this.state.change === it.name ? null : it.name })}>Change</a>}
             <h6 className="DFOSingleStateV">
-                {(!_this.props.edit || !_this.state || (_this.state.change !== it.name && !_this.state.changeAll)) && (it.type !== 'address' ? <span>{it.value}</span> : <a href={window.getNetworkElement("etherscanURL") + "address/" + it.value} target="_blank">{it.value}</a>)}
+                {(!_this.props.edit || !_this.state || (_this.state.change !== it.name && !_this.state.changeAll)) && (it.type !== 'address' ? <span>{it.value === true ? 'true' : it.value === 'false' ? 'false' : it.value}</span> : <a href={window.getNetworkElement("etherscanURL") + "address/" + it.value} target="_blank">{it.value}</a>)}
                 {_this.props.edit && _this.state && (_this.state.change === it.name || _this.state.changeAll) && it.type !== 'bool' && <input type={it.type === 'uint256' ? 'number' : 'text'} min="0" ref={ref => ref && (ref.value = it.value)} />}
                 {_this.props.edit && _this.state && (_this.state.change === it.name || _this.state.changeAll) && it.type === 'bool' && <form>
                     <label>
