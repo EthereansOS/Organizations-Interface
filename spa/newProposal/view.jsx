@@ -223,10 +223,7 @@ var NewProposal = React.createClass({
                     <input id="replacesCheck" type="checkbox" ref={ref => ref && (ref.checked = ref.disabled = (functionality || this.props.delete || this.props.oneTimeCode || this.props.oneTimeProposal) ? true : false) && (ref.checked = this.props.oneTimeProposal ? false : ref.checked)} onChange={e => {this.functionalityReplace.value = ""; this.functionalityReplace.disabled = !e.currentTarget.checked; e.currentTarget.checked ? $(this.functionalityReplace).show() : $(this.functionalityReplace).hide()}}/>
                     <select id="functionalityReplace" onChange={this.onReplace} ref={ref => {this.functionalityReplace = ref; ref && (ref.value = (functionality && functionality.codeName || '')); ref && functionality && functionality.codeName ? $(ref).show() : $(ref).hide()}} disabled>
                         <option value="">Replacing Functionality</option>
-                        {this.props.element.functionalityNames && Object.keys(this.props.element.functionalityNames).map(key => {
-                            var it = _this.props.element.functionalityNames[key];
-                            return (<option key={it.codeName} value={it.codeName}>{it.codeName}</option>);
-                        })}
+                        {this.props.element.functionalityNames && this.props.element.functionalityNames.map(it => <option key={it} value={it}>{it}</option>)}
                     </select>
                     {this.contractConstructor && this.contractConstructor.inputs.length > 0 && <div>
                         <p>Constructor arguments</p>

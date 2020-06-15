@@ -6,6 +6,7 @@ var DFOListController = function (view) {
     context.dfoDeployedEvent = "DFODeployed(address_indexed,address)";
 
     context.loadList = async function loadList(refreshBalances) {
+        context.alreadyLoaded = {};
         (context.running = true) && context.loadEvents();
         refreshBalances && context.refreshBalances();
     };
@@ -25,8 +26,11 @@ var DFOListController = function (view) {
             fromBlock: '' + fromBlock,
             toBlock: '' + toBlock
         });
-        for (var i in logs) {
-            var log = logs[i];
+        for (var log of logs) {
+            if(context.alreadyLoaded[log.data[0].toLowerCase()]) {
+                continue;
+            }
+            context.alreadyLoaded[log.data[0].toLowerCase()] = true;
             var key = log.blockNumber + '_' + log.id;
             !window.list[key] && (window.list[key] = {
                 key,
