@@ -194,11 +194,12 @@ window.getData = function getData(root, checkValidation) {
     children.length === 0 && (children = root.children('input,select,textarea'));
     children.each(function(i, input) {
         var id = input.id || i;
-        input.type && input.type !== 'checkbox' && (data[id] = input.value.split(' ').join(''));
+        input.type && input.type !== 'checkbox' && (data[id] = input.value);
         input.type === 'number' && (data[id] = parseFloat(data[id]));
         input.type === 'number' && isNaN(data[id]) && (data[id] = parseFloat(input.dataset.defaultValue));
-        input.type === 'checkbox' && (data[id] = input.checked);
+        (input.type === 'checkbox' || input.type === 'radio') && (data[id] = input.checked);
         !input.type || input.type === 'hidden' && (data[id] = $(input).val());
+        input.type === 'file' && (data[id] = input.files);
         if (checkValidation) {
             if (!data[id]) {
                 throw "Data is mandatory";
@@ -219,8 +220,9 @@ window.setData = function setData(root, data) {
     children.length === 0 && (children = root.children('input,select,textarea'));
     children.each(function(i, input) {
         var id = input.id || i;
-        input.type && input.type !== 'checkbox' && $(input).val(data[id]);
-        input.type && input.type === 'checkbox' && (input.checked = data[id] === true);
+        !input.type || input.type !== 'checkbox' && input.type !== 'radio' && input.type !== 'file' && $(input).val(data[id]);
+        input.type && (input.type === 'checkbox' || input.type === 'radio') && (input.checked = data[id] === true);
+        input.type === 'file' && (input.files = data[id]);
     });
 };
 
