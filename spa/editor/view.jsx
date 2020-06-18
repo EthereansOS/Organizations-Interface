@@ -47,7 +47,7 @@ var Editor = React.createClass({
                 modified: monaco.editor.createModel(_this.props.secondCode || '', 'sol')
             });
         }
-        ref && _this.props.link && window.fetch(_this.props.link).then(call => call.text()).then(data => _this.editor && _this.editor.setValue(data)).catch(() => _this.editor.setValue('Unable to show the code... Something shady is happening here.'));
+        ref && _this.props.link && window.fetch(_this.props.link, {mode: 'no-cors'}).then(call => call.text()).then(data => _this.editor && _this.editor.setValue(data)).catch(() => _this.editor.setValue('Unable to show the code... Something shady is happening here.'));
         ref && _this.props.compileAtStart && _this.enqueue(_this.tryCompile, 500);
     },
     commentChanged(comment, type) {
