@@ -200,7 +200,7 @@ var NewProposal = React.createClass({
                     <p>If you're deploying a new perpetual functionality, be sure to add both onStart(address,address) and onStop(address) into the Smart Contract.</p>
                 </section>
                 <section className="SideViewCode">
-                    <Editor ref={this.onEditor} className="NewProposalCode" readonly={this.props.delete || this.props.oneTimeCode} firstCode={this.props.oneTimeCode} compileAtStart={this.props.oneTimeCode !== undefined && this.props.oneTimeCode !== null}/>
+                    <Editor ref={this.onEditor} className="NewProposalCode" readonly={this.props.delete || this.props.oneTimeCode} sourceLocation={this.props.sourceLocation} sourceLocationId={this.props.sourceLocationId} firstCode={this.props.oneTimeCode} compileAtStart={this.props.oneTimeCode !== undefined && this.props.oneTimeCode !== null}/>
                 </section>
                 <section className="DFOItOptions">
                     <p>Name</p>

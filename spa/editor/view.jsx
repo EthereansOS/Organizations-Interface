@@ -49,6 +49,7 @@ var Editor = React.createClass({
         }
         ref && _this.props.link && window.fetch(_this.props.link, {mode: 'no-cors'}).then(call => call.text()).then(data => _this.editor && _this.editor.setValue(data)).catch(() => _this.editor.setValue('Unable to show the code... Something shady is happening here.'));
         ref && _this.props.compileAtStart && _this.enqueue(_this.tryCompile, 500);
+        ref && _this.props.sourceLocationId && _this.loadContent(_this.props.sourceLocationId, _this.props.sourceLocation);
     },
     commentChanged(comment, type) {
         var code = window.putComment(this.editor.getValue(), type, comment);

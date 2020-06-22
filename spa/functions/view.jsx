@@ -13,7 +13,15 @@ var Functions = React.createClass({
     },
     change(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        this.emit('section/change', 'New Proposal', { codeName: e.target.dataset.codename, delete: e.target.dataset.delete })
+        var target = e.target;
+        var _this = this;
+        var change = function change() {
+            if(!_this.state.functionalities[target.dataset.codename].sourceLocationId === undefined) {
+                return setTimeout(change, 100);
+            }
+            _this.emit('section/change', 'New Proposal', { codeName: target.dataset.codename, sourceLocation: _this.state.functionalities[target.dataset.codename].sourceLocation, sourceLocationId: _this.state.functionalities[target.dataset.codename].sourceLocationId, delete: target.dataset.delete });
+        }
+        change();
     },
     componentDidMount() {
         var _this = this;
