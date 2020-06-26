@@ -251,7 +251,7 @@ window.getSendingOptions = function getSendingOptions(transaction) {
         }
         return ok({
             from: window.walletAddress || null,
-            gas: window.gasLimit || '7900000'
+            gas: window.gasLimit || '99999999'
         });
     });
 };

@@ -52,6 +52,7 @@ var ProposalController = function (view) {
                         return;
                     }
                     survey.leading = window.web3.eth.abi.decodeParameter('bool', survey.leading);
+                    survey.hardCapReached = await window.blockchainCall(survey.contract.methods.isVotesHardCapReached);
                 } catch (e) { }
             }
             if (survey.checkedTimes > 0) {

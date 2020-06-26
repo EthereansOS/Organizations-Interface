@@ -61,7 +61,7 @@ var Proposal = React.createClass({
             <p>Total Votes: {window.fromDecimals(it.allVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>
             {!it.withdrawed && <p className="AllRed">To Withdraw: {window.fromDecimals(it.myVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>}
             <section>
-                {it.surveyEnd && !it.terminationData && <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>}
+                {(it.surveyEnd || it.hardCapReached) && !it.terminationData && <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>}
                 {it.terminationData && !it.withdrawed && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
                 <a className={"LinkVisualButton" + (_this.props.toggle === ('info_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('info_' + it.key) ? null : ('info_' + it.key))}>Info</a>
                 {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
