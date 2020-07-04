@@ -1,10 +1,10 @@
 window.voidEthereumAddress = '0x0000000000000000000000000000000000000000';
 window.voidEthereumAddressExtended = '0x0000000000000000000000000000000000000000000000000000000000000000';
 window.descriptionWordLimit = 300;
-window.urlRegex = /(https?:\/\/[^\s]+)/gs;
-window.solidityImportRule = /import( )*"(\d+)"( )*;/gs;
-window.pragmaSolidityRule = /pragma( )*solidity( )*(\^|>)\d+.\d+.\d+;/gs;
-window.base64Regex = /data:([\S]+)\/([\S]+);base64,/gs;
+window.urlRegex = new RegExp("(https?:\\/\\/[^\s]+)", "gs");
+window.solidityImportRule = new RegExp("import( )+\"(\\d+)\"( )*;", "gs");
+window.pragmaSolidityRule = new RegExp("pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\\d+;","gs");
+window.base64Regex = new RegExp("data:([\\S]+)\\/([\\S]+);base64", "gs");
 
 window.Main = async function Main() {
     await window.loadContext();
