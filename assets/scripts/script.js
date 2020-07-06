@@ -399,10 +399,8 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
 
 window.parseFunctionalities = function parseFunctionalities(functionalitiesJSON) {
     try {
-        functionalitiesJSON = functionalitiesJSON.trim();
-        var functs = JSON.parse(!functionalitiesJSON.endsWith(',') ? functionalitiesJSON : functionalitiesJSON.substring(0, functionalitiesJSON.length - 1) + ']');
         var functionalities = {};
-        functs.map(it => functionalities[it.codeName] = it);
+        JSON.parse((functionalitiesJSON.endsWith(',]') ? (functionalitiesJSON.substring(0, functionalitiesJSON.lastIndexOf(',]')) + ']') : functionalitiesJSON).trim()).forEach(it => functionalities[it.codeName] = it);
         return functionalities;
     } catch (e) {
         console.error(e);
