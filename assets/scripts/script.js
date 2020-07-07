@@ -110,6 +110,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                     startBlock: window.getNetworkElement('deploySearchStart')
                 };
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
+                window.wethAddress = await window.blockchainCall((window.uniSwapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress)).methods.WETH);
                 try {
                     window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));
                 } catch (e) {}
@@ -413,7 +414,7 @@ window.indexMain = function indexMain() {
     window.Boot();
 };
 
-window.fromDecimals = function fromDecimals(n, d) {
+window.fromDecimals = function fromDecimals(n, d, noFormat) {
     n = (n && n.value || n);
     d = (d && d.value || d);
     if(!n || !d) {
@@ -422,14 +423,16 @@ window.fromDecimals = function fromDecimals(n, d) {
     var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
     var symbol = window.toEthereumSymbol(decimals);
     if(symbol) {
-        return window.web3.utils.fromWei((typeof n).toLowerCase() === 'string' ? n : window.numberToString(n), symbol);
+        var result = window.web3.utils.fromWei((typeof n).toLowerCase() === 'string' ? n : window.numberToString(n), symbol);
+        return noFormat === true ? result : window.formatMoney(result);
     }
     var number = (typeof n).toLowerCase() === 'string' ? parseInt(n) : n;
     if (!number || this.isNaN(number)) {
         return '0';
     }
     var nts = parseFloat(window.numberToString((number / (decimals < 2 ? 1 : Math.pow(10, decimals)))));
-    return window.numberToString(Math.round(nts * 100) / 100);
+    nts = window.numberToString(Math.round(nts * 100) / 100);
+    return noFormat === true ? nts : window.formatMoney(nts);
 };
 
 window.toDecimals = function toDecimals(n, d) {
@@ -1011,4 +1014,80 @@ window.dumpFunctionalities = async function dumpFunctionalities(dfo) {
     var entries = ["        IMVDFunctionalitiesManager functionalitiesManager = IMVDFunctionalitiesManager(address(0));"];
     entries.push(...Object.values(dfo.functionalities).map(it => `functionalitiesManager.addFunctionality("${it.codeName}", ${window.web3.utils.toChecksumAddress(it.sourceLocation)}, ${it.sourceLocationId}, ${window.web3.utils.toChecksumAddress(it.location)}, ${it.submitable}, "${it.methodSignature}", '${JSON.stringify(it.returnAbiParametersArray)}', ${it.isInternal}, ${it.needsSender});`));
     return entries.join('\n        ');
+};
+
+window.formatMoney = function formatMoney(value, decPlaces, thouSeparator, decSeparator) {
+    value = (typeof value).toLowerCase() !== 'number' ? parseFloat(value) : value;
+    var n = value,
+        decPlaces = isNaN(decPlaces = Math.abs(decPlaces)) ? 2 : decPlaces,
+        decSeparator = decSeparator == undefined ? "." : decSeparator,
+        thouSeparator = thouSeparator == undefined ? "," : thouSeparator,
+        sign = n < 0 ? "-" : "",
+        i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + "",
+        j = (j = i.length) > 3 ? j % 3 : 0;
+    return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
+};
+
+window.AJAXRequest = function AJAXRequest(link, timeout, toU) {
+    var toUpload = toU !== undefined && toU !== null && typeof toU !== 'string' ? JSON.stringify(toU) : toU;
+    var xmlhttp = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+    return new Promise(function(ok, ko) {
+        var going = true;
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                if (going) {
+                    going = false;
+                    var response = xmlhttp.responseText;
+                    try {
+                        response = JSON.parse(response);
+                    } catch(e) {
+                    }
+                    ok(response);
+                }
+                try {
+                    xmlhttp.abort();
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+        xmlhttp.onloadend = function onloadend() {
+            if(xmlhttp.status == 404) {
+                return ko(404);
+            }
+        };
+        xmlhttp.open(toUpload ? 'POST' : 'GET', link + (link.indexOf('?') === -1 ? '?' : '&') + ('cached_' + new Date().getTime()) + '=' + (new Date().getTime()), true);
+        try {
+            toUpload ? xmlhttp.send(toUpload) : xmlhttp.send();
+        } catch(e) {
+            return ko(e);
+        }
+        (timeout !== undefined && timeout !== null) && setTimeout(function() {
+            if (!going) {
+                return;
+            }
+            going = false;
+            try {
+                xmlhttp.abort();
+            } catch (e) {
+                console.error(e);
+            }
+            ko();
+        }, timeout);
+    });
+};
+
+window.getEthereumPrice = async function getEthereumPrice() {
+    if(window.lastEthereumPrice && window.lastEthereumPrice.requestExpires > new Date().getTime() && window.lastEthereumPrice.price !== 0) {
+        return window.lastEthereumPrice.price;
+    }
+    var price = 0;
+    try {
+        price = (await window.AJAXRequest(window.context.coingeckoEthereumPriceURL))[0].current_price;
+    } catch(e) {
+    }
+    return (window.lastEthereumPrice = {
+        price,
+        requestExpires : new Date().getTime() + window.context.coingeckoEthereumPriceRequestInterval
+    }).price;
 };

@@ -231,23 +231,24 @@ var Overview = React.createClass({
                 </ul>
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
-                        <h2>{_this.props.element.name} Wallet</h2>
+                    <h2>{_this.props.element.name} Wallet</h2>
                 </section>
                     <li className="TheDappInfo3">
                         <h5 className="DFOHostingTitle">&#129518; Assets:</h5>
+                        {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <h6>Total: $ {_this.props.element.walletCumulativeDollar}</h6>}
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside></p>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside>{parseFloat(_this.props.element.communityTokensDollar) > 0 && <span> ($ {_this.props.element.communityTokensDollar})</span>}</p>}
                             </AsyncValue>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside></p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside>{parseFloat(_this.props.element.walletETHDollar) > 0 && <span> ($ {_this.props.element.walletETHDollar})</span>}</p>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside></p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span> ($ {_this.props.element.walletUSDCDollar})</span>}</p>
                         </section>
                         {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside></p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside>{parseFloat(_this.props.element.walletBUIDLDollar) > 0 && <span> ($ {_this.props.element.walletBUIDLDollar})</span>}</p>
                         </section>}
                     </li>
                     <li className="TheDappInfo3">
@@ -266,7 +267,7 @@ var Overview = React.createClass({
                         </section>
                         <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
                         <section className="DFOTitleSection">
-                            <a className="LinkVisualButton" target="_blank" href={window.getNetworkElement("etherscanURL") + "address/" + _this.props.element.walletAddress}>Etherscan</a>
+                            <a className="LinkVisualButton" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>Etherscan</a>
                         </section>
                     </li>
                     {_this.renderChanger(['surveySingleReward'])}
