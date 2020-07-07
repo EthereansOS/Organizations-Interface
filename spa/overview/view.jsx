@@ -141,6 +141,11 @@ var Overview = React.createClass({
                                 {_this.props.element.symbol && _this.props.element.totalSupply && <p className="DFOLabelTitleInfo">Supply: <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
                         </section>
+                        <section className="DFOTitleSection">
+                            <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton">&#129412; Info</a>
+                            {"\u00a0"}
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton">&#129412; Swap</a>
+                        </section>
                     </li>
                     <li className="TheDappInfo1">
                     <h5 className="DFOHostingTitle">&#128302; Domain <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>

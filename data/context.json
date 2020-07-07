@@ -5,6 +5,8 @@
     },
     "etherscanURL": "https://etherscan.io/",
     "etherscanURLRopsten": "https://ropsten.etherscan.io/",
+    "uniSwapInfoURL" : "https://uniswap.info/token/",
+    "uniSwapSwapURL" : "https://app.uniswap.org/#/swap?inputCurrency=",
     "coingeckoEthereumPriceURL": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum",
     "coingeckoEthereumPriceRequestInterval": 600000,
     "defaultOcelotTokenAddress": "0x9784b427ecb5275c9300ea34adef57923ab170af",
