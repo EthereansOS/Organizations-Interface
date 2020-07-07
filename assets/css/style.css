@@ -88,6 +88,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span {color: #292929; margin: 3px 0; font-size: 20px; line-height: 1.1; width: 100%; display: inline-block; font-weight: bold;}	.DFOOpened .DFOOverview .DFOHosting .TheDappInfo05 .DFOTitleSection {width: 160px;}
 .DFOOpened .DFOOverview .DFOHosting .TheDappInfo3 .DFOTitleSection {width: 325px;}
 .DFOOpened .DFOOverview .DFOHosting .TheDappInfo2 .DFOTitleSection {width: 420px;}
+.TheDappInfo3 h6 {font-size: 16px;font-weight: bold;}
 .DFOOpened .DFOOverview .DFOHosting .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #f1f1f1;background-color: #888888;position: relative;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfo {color: #292929; margin: 3px 0; font-size: 16px; line-height: 1.1; width: 100%; display: inline-block; min-height: 25px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span {color: #292929; margin: 3px 0; font-size: 16px; line-height: 1.1; width: 100%; display: inline-block; font-weight: bold;}
@@ -356,6 +357,8 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 @keyframes rotate {100% {-webkit-transform: rotate(360deg);transform: rotate(360deg);}}
 .LoaderChainPush .lds-ellipsis div {background-color: #8d40ff;}
 .Editing {background-color: #7901ff; color: #f1f1f1;}
+.LinkVisualUni {background-color: rgb(255, 0, 122); font-weight: bold;}
+.USDVALUE {font-size: 14px !important; font-weight: normal !important;}
 .DarkMode, .DarkMode .ProposalVote, .DarkMode .NewProposalIndex .DFOItOptions input[type="text"], .DarkMode .NewProposalIndex .DFOItOptions textarea, .DarkMode .NewProposalIndex .DFOItOptions select, .DarkMode .DFOFunctionQuery, .DarkMode .InsertDfoName input, .DarkMode .InsertDfoSubdomain input, .DarkMode .InsertTokenName input, .DarkMode .InsertTokenSupply input, .DarkMode .InsertSurveyLength input, .DarkMode .InsertSurveyQuorum .SurveyQuorumHow, .DarkMode .InsertSurveyMinStake input, .DarkMode .InsertSurveySingleReward input, .DarkMode .InsertSurveyCommunityStake input, .DarkMode .sequentialOps, .DarkMode .DFOFunctionIndexIcon, .DarkMode .MainLoaderAll .sequentialOps, .DarkMode .InsertSurveyEmergencyLength input, .DarkMode .InsertSurveyEmergencyPenalty input, .DarkMode .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input {background-color: #000000;}
 .DarkMode .DFOInfo .DFOOpened, .DarkMode .DFOOpened .DFONavigator, .DarkMode .DFOOpened .DFONavigator li, .DarkMode .Explorer, .DarkMode .DFOOpened .DFONavigator li a, .DarkMode .DFOList, .DarkMode header .SearchLi input,.DarkMode header .SearchLi a, .DarkMode .MainLoader {background-color:#292929;}
 .DarkMode .HeaderDFO {background-color: #010101;}
@@ -366,10 +369,10 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DarkMode .DFOGovernanceSelector ul .selected, .DarkMode .BrandLiInfo {background-color: #8653f6;}
 .DarkMode .sequentialOps, .DarkMode .MainLoaderAll .sequentialOps, .DarkMode .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input {border:  2px solid #191919;}
 .DarkMode header .SearchLi a, .DarkMode header .SearchLi input {border-radius: 0;}
-.DarkMode header .SearchLi input  {border: none; height: 30px;}
+.DarkMode header .SearchLi input {border: none; height: 30px;}
 .DarkMode .DFOList .DFOLister .DFOInfo, .DarkMode .sequentialOps ol li, .DarkMode .MainLoaderAll .sequentialOps ol li {border-bottom: 1px solid #616060;}
 .DarkMode .ProposalsActiveIndex > ul > li, .DarkMode .ProposalsOldIndex > ul > li, .DarkMode .DraftsActiveIndex > ul > li, .DarkMode .DraftsOldIndex > ul > li {border-bottom:1px solid #191919 ;}
-.DarkMode .DFOOpened .DFOOverview .DFOHosting h2, .DarkMode .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionTitle h5, .DarkMode .ProposalBio h5, .DarkMode .DFOOpened .DFOOverview .DFOHosting h2,.DarkMode .ProposalsActiveIndex > h2, .DarkMode .ProposalsOldIndex > h2, .DarkMode .NavDeploy > h2 > b {color: #8653f6; font-weight: bold;}
+.DarkMode .DFOOpened .DFOOverview .DFOHosting h2, .DarkMode .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionTitle h5, .DarkMode .ProposalBio h5, .DarkMode .DFOOpened .DFOOverview .DFOHosting h2,.DarkMode .ProposalsActiveIndex > h2, .DarkMode .ProposalsOldIndex > h2, .DarkMode .NavDeploy > h2 > b, .DarkMode .TheDappInfo3 h6 {color: #8653f6; font-weight: bold;}
 .DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}	.DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}
 .DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #545454 !important;z-index: 10000;}	.DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #8653f6 !important;z-index: 10000;}
 .DFONavigatorAfter {position: fixed; top: 130px; left:0; z-index: 10000;}

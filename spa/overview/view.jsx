@@ -142,9 +142,9 @@ var Overview = React.createClass({
                             </AsyncValue>
                         </section>
                         <section className="DFOTitleSection">
-                            <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton">&#129412; Info</a>
+                            <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
                             {"\u00a0"}
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                         </section>
                     </li>
                     <li className="TheDappInfo1">
@@ -240,20 +240,20 @@ var Overview = React.createClass({
                 </section>
                     <li className="TheDappInfo3">
                         <h5 className="DFOHostingTitle">&#129518; Assets:</h5>
-                        {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <h6>Total: $ {_this.props.element.walletCumulativeDollar}</h6>}
+                        {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <h6>Tot Tracked: ${_this.props.element.walletCumulativeDollar}</h6>}
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside>{parseFloat(_this.props.element.communityTokensDollar) > 0 && <span> ($ {_this.props.element.communityTokensDollar})</span>}</p>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside>{parseFloat(_this.props.element.communityTokensDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.communityTokensDollar}</span>}</p>}
                             </AsyncValue>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside>{parseFloat(_this.props.element.walletETHDollar) > 0 && <span> ($ {_this.props.element.walletETHDollar})</span>}</p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside>{parseFloat(_this.props.element.walletETHDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletETHDollar}</span>}</p>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span> ($ {_this.props.element.walletUSDCDollar})</span>}</p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletUSDCDollar}</span>}</p>
                         </section>
                         {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside>{parseFloat(_this.props.element.walletBUIDLDollar) > 0 && <span> ($ {_this.props.element.walletBUIDLDollar})</span>}</p>
+                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside>{parseFloat(_this.props.element.walletBUIDLDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletBUIDLDollar}</span>}</p>
                         </section>}
                     </li>
                     <li className="TheDappInfo3">
