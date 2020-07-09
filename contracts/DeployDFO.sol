@@ -10,10 +10,15 @@
  * (e.g. if Governance type is Community Driven, the new DFO expected to receive the chosen amount of voting tokens set to pay
  * rewards for successful surveys). As a final step, this Functionality also sets up the chosen ENS for this DFO.
  */
+/* Update:
+ * Correct reclaim
+ */
 pragma solidity ^0.6.0;
 
 contract DeployDFO {
 
+    uint256 constant private DOMAIN_ID = 26462834956419126467027313759401618380915230190462237878347296505689869422264;
+    address constant private ENS_TOKEN_ADDRESS = 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85;
     bytes32 constant private DOMAIN_NODE = 0x4710df84d2a5a23c87ad560f1151bd82497aab22e9c95162daa7c219d4a1ef78;
     ENS constant private ENS_CONTROLLER = ENS(0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e);
     bytes4 constant private ENS_ADDRESS_INTERFACE_ID = 0x213b9eb8;
@@ -40,8 +45,12 @@ contract DeployDFO {
 
             IMVDProxy(proxy = clone(msg.sender)).init(votingToken, mvdFunctionalityProposalManagerAddress, stateHolderAddress, mvdFunctionalityModelsManagerAddress, mvdFunctionalitiesManagerAddress, walletAddress);
             senderProxy.transfer(walletAddress, proxyBalance - votingTokenAmountForHub, votingToken);
-            senderProxy.emitEvent("DFODeployed(address_indexed,address)", abi.encodePacked(sender), bytes(""), abi.encode(proxy));
+            _emitEvent(proxy, sender);
             setupENS(senderProxy, proxy, toLowerCase(ens));
+    }
+
+    function _emitEvent(address proxy, address sender) private {
+        IMVDProxy(msg.sender).emitEvent("DFODeployed(address_indexed,address_indexed,address,address)", abi.encodePacked(proxy), abi.encodePacked(sender), abi.encode(proxy, sender));
     }
 
     function setupENS(IMVDProxy senderProxy, address proxy, string memory ens) private {
@@ -53,9 +62,15 @@ contract DeployDFO {
 
         address domainOwner = ENS_CONTROLLER.owner(DOMAIN_NODE);
 
+        if(domainOwner != address(this)) {
+            senderProxy.transfer721(address(this), DOMAIN_ID, "", true, ENS_TOKEN_ADDRESS);
+            IERC721(ENS_TOKEN_ADDRESS).reclaim(DOMAIN_ID, address(this));
+            IERC721(ENS_TOKEN_ADDRESS).transferFrom(address(this), senderProxy.getMVDWalletAddress(), DOMAIN_ID);
+        }
+
         address resolverAddress = ENS_CONTROLLER.resolver(DOMAIN_NODE);
 
-        senderProxy.submit("callENS", abi.encode(address(0), 0, abi.encodeWithSignature("setSubnodeRecord(bytes32,bytes32,address,address,uint64)", DOMAIN_NODE, subdomainLabel, resolverAddress == address(0) ? domainOwner : address(this), resolverAddress, 0)));
+        ENS_CONTROLLER.setSubnodeRecord(DOMAIN_NODE, subdomainLabel, resolverAddress == address(0) ? domainOwner : address(this), resolverAddress, 0);
 
         if(resolverAddress == address(0)) {
             return;
@@ -106,13 +121,16 @@ contract DeployDFO {
         return string(str);
     }
 
-
     function toLowerCase(string memory str) private pure returns(string memory) {
         bytes memory bStr = bytes(str);
         for (uint i = 0; i < bStr.length; i++) {
             bStr[i] = bStr[i] >= 0x41 && bStr[i] <= 0x5A ? bytes1(uint8(bStr[i]) + 0x20) : bStr[i];
         }
         return string(bStr);
+    }
+
+    function onERC721Received(address,address,uint256,bytes memory) public returns (bytes4) {
+        return 0x150b7a02;
     }
 }
 
@@ -130,6 +148,7 @@ interface IMVDProxy {
     function transfer(address receiver, uint256 value, address token) external;
     function read(string calldata codeName, bytes calldata data) external view returns(bytes memory returnData);
     function submit(string calldata codeName, bytes calldata data) external payable returns(bytes memory returnData);
+    function transfer721(address receiver, uint256 tokenId, bytes calldata data, bool safe, address token) external;
     function emitEvent(string calldata eventSignature, bytes calldata firstIndex, bytes calldata secondIndex, bytes calldata data) external;
 }
 
@@ -138,9 +157,15 @@ interface ENS {
     function owner(bytes32 node) external view returns (address);
     function setOwner(bytes32 node, address ownerAddress) external;
     function recordExists(bytes32 node) external view returns (bool);
+    function setSubnodeRecord(bytes32 node, bytes32 label, address owner, address resolver, uint64 ttl) external;
 }
 
 interface IResolver {
     function supportsInterface(bytes4 interfaceID) external returns(bool);
     function setAddr(string calldata ensDomain, address a) external;
+}
+
+interface IERC721 {
+    function reclaim(uint256 id, address owner) external;
+    function transferFrom(address _from, address _to, uint256 _tokenId) external payable;
 }

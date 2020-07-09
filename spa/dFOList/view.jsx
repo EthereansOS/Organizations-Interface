@@ -53,7 +53,14 @@ var DFOList = React.createClass({
                 this.setState({ search: null, key: list[0].key });
             }
         }
-        return list;
+        return this.sortList(list);
+    },
+    sortList(list) {
+        return Object.values(list).sort((first, second) => {;
+            var a = parseInt(first.key.substring(0, first.key.indexOf("_")));
+            var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
+            return a < b ? 1 : a > b ? -1 : 0;
+        });
     },
     componentDidUpdate() {
         this.emit('index/fullscreen', this.state && this.state.key !== undefined && this.state.key !== null);

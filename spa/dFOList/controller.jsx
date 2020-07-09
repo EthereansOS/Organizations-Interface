@@ -4,6 +4,7 @@ var DFOListController = function (view) {
 
     context.blockSearchSize = 40000;
     context.dfoDeployedEvent = "DFODeployed(address_indexed,address)";
+    context.newDfoDeployedEvent = "DFODeployed(address_indexed,address_indexed,address,address)";
 
     context.loadList = async function loadList(refreshBalances) {
         context.alreadyLoaded = {};
@@ -11,18 +12,31 @@ var DFOListController = function (view) {
         refreshBalances && context.refreshBalances();
     };
 
-    context.loadEvents = async function loadEvents(topics, fromBlock, lastBlockNumber) {
-        if (!context.running || (lastBlockNumber && lastBlockNumber === fromBlock)) {
+    context.loadEvents = async function loadEvents(topics, toBlock, lastBlockNumber) {
+        if (!context.running || toBlock === window.getNetworkElement("deploySearchStart")) {
             delete context.running;
             return context.view.forceUpdate();
         }
-        fromBlock = fromBlock || context.getLatestSearchBlock();
         lastBlockNumber = lastBlockNumber || await web3.eth.getBlockNumber();
-        var toBlock = fromBlock + context.blockSearchSize;
-        toBlock = toBlock > lastBlockNumber ? lastBlockNumber : toBlock;
+        toBlock = toBlock || lastBlockNumber;
+        var fromBlock = toBlock - context.blockSearchSize;
+        var startBlock = window.getNetworkElement("deploySearchStart");
+        fromBlock = fromBlock > startBlock ? startBlock : toBlock;
+        var newEventLogs = await context.getLogs(fromBlock, toBlock, context.newDfoDeployedEvent);
+        var oldEventLogs = await context.getLogs(fromBlock, toBlock, context.dfoDeployedEvent);
+        (newEventLogs.length > 0 || oldEventLogs.length > 0) && setTimeout(() => {
+            try {
+                context.view.forceUpdate();
+            } catch (e) {
+            }
+        });
+        setTimeout(() => context.loadEvents(topics, fromBlock, lastBlockNumber));
+    }
+
+    context.getLogs = async function getLogs(fromBlock, toBlock, event) {
         var logs = await window.getDFOLogs({
             address: window.dfoHub.dFO.options.allAddresses,
-            event: context.dfoDeployedEvent,
+            event,
             fromBlock: '' + fromBlock,
             toBlock: '' + toBlock
         });
@@ -38,14 +52,8 @@ var DFOListController = function (view) {
                 dFO: await window.loadDFO(log.data[0])
             });
         }
-        logs.length > 0 && setTimeout(() => {
-            try {
-                context.view.forceUpdate();
-            } catch (e) {
-            }
-        });
-        setTimeout(() => context.loadEvents(topics, toBlock, lastBlockNumber));
-    }
+        return logs;
+    };
 
     context.getLatestSearchBlock = function getLatestSearchBlock() {
         return (window.list && Object.keys(window.list).length > 0 && Math.max(...Object.keys(window.list).map(it => parseInt(it.split('_')[0])))) || window.getNetworkElement('deploySearchStart');
