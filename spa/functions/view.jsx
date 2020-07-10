@@ -81,7 +81,7 @@ var Functions = React.createClass({
         return (
             <section className="DFOOverview">
                 {_this.state.functionalityNames && <ul className="DFOFunctionList">
-                    {_this.state.functionalityNames.map(key => {
+                    {Object.keys(_this.state.functionalities).map(key => {
                         var it = _this.state.functionalities[key];
                         if(!it) {
                             return null;

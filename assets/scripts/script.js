@@ -236,7 +236,10 @@ window.getSendingOptions = function getSendingOptions(transaction) {
     return new Promise(async function(ok, ko) {
         if (transaction) {
             var address = await window.getAddress();
-            return transaction.estimateGas({
+            return window.bypassEstimation ? ok({
+                from: address,
+                gas: window.gasLimit || '7900000'
+            }) : transaction.estimateGas({
                     from: address,
                     gasPrice: window.web3.utils.toWei("13", "gwei")
                 },

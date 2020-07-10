@@ -26,6 +26,7 @@ var FunctionsController = function (view) {
             } catch (e) {}
             functionality.description = window.extractHTMLDescription(functionality.code);
             functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
+            functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.name, functionality.compareErrors.join(' - '));
             if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                 return;
             }
@@ -35,6 +36,7 @@ var FunctionsController = function (view) {
                     return;
                 }
                 functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
+                functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.name, functionality.compareErrors.join(' - '));
                 if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }

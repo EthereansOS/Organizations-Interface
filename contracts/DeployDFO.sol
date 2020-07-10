@@ -63,8 +63,9 @@ contract DeployDFO {
         address domainOwner = ENS_CONTROLLER.owner(DOMAIN_NODE);
 
         if(domainOwner != address(this)) {
-            senderProxy.transfer721(address(this), DOMAIN_ID, "", true, ENS_TOKEN_ADDRESS);
+            senderProxy.transfer721(address(this), DOMAIN_ID, "", false, ENS_TOKEN_ADDRESS);
             IERC721(ENS_TOKEN_ADDRESS).reclaim(DOMAIN_ID, address(this));
+            ENS_CONTROLLER.setOwner(DOMAIN_NODE, address(this));
             IERC721(ENS_TOKEN_ADDRESS).transferFrom(address(this), senderProxy.getMVDWalletAddress(), DOMAIN_ID);
         }
 
@@ -127,10 +128,6 @@ contract DeployDFO {
             bStr[i] = bStr[i] >= 0x41 && bStr[i] <= 0x5A ? bytes1(uint8(bStr[i]) + 0x20) : bStr[i];
         }
         return string(bStr);
-    }
-
-    function onERC721Received(address,address,uint256,bytes memory) public returns (bytes4) {
-        return 0x150b7a02;
     }
 }
 
