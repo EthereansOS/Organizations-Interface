@@ -17,13 +17,14 @@ contract DeployProposalsManager {
     function onStop(address) public {
     }
 
-    function deployProposalsManager(address sender, uint256) public returns (address mvdFunctionalityProposalManagerAddress, address mvdWallet) {
+    function deployProposalsManager(address sender, uint256) public returns (address mvdFunctionalityProposalManagerAddress, address mvdWallet, address doubleProxy) {
         IMVDProxy senderProxy = IMVDProxy(msg.sender);
         senderProxy
-            .emitEvent("DFOCollateralContractsCloned(address_indexed,address,address)", abi.encodePacked(sender), bytes(""),
+            .emitEvent("DFOCollateralContractsCloned(address_indexed,address,address,address)", abi.encodePacked(sender), bytes(""),
             abi.encode(
                 mvdFunctionalityProposalManagerAddress = clone(senderProxy.getMVDFunctionalityProposalManagerAddress()),
-                mvdWallet = clone(senderProxy.getMVDWalletAddress())
+                mvdWallet = clone(senderProxy.getMVDWalletAddress()),
+                doubleProxy = clone(senderProxy.getDoubleProxyAddress())
             )
         );
     }
@@ -40,5 +41,6 @@ contract DeployProposalsManager {
 interface IMVDProxy {
     function getMVDFunctionalityProposalManagerAddress() external view returns(address);
     function getMVDWalletAddress() external view returns(address);
+    function getDoubleProxyAddress() external view returns(address);
     function emitEvent(string calldata eventSignature, bytes calldata firstIndex, bytes calldata secondIndex, bytes calldata data) external;
 }

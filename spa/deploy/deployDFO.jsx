@@ -49,9 +49,10 @@ var DeployDFO = React.createClass({
                         call: function (data) {
                             var payload = window.web3.eth.abi.encodeParameters(['address', 'uint256'], [window.voidEthereumAddress, 0]);
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployProposalsManager', payload).then(response => {
-                                response = window.formatDFOLogs(response.events.Event, "DFOCollateralContractsCloned(address_indexed,address,address)").raw.data;
+                                response = window.formatDFOLogs(response.events.Event, "DFOCollateralContractsCloned(address_indexed,address,address,address)").raw.data;
                                 data.mvdFunctionalityProposalManagerAddress = response[0];
                                 data.mvdWalletAddress = response[1];
+                                data.doubleProxyAddress = response[2];
                             });
                         }
                     }, {
@@ -73,7 +74,7 @@ var DeployDFO = React.createClass({
                     }, {
                         name: "Deploy New DFO",
                         call: function (data) {
-                            var payload = window.web3.eth.abi.encodeParameters(['address', 'uint256', 'address', 'address', 'address', 'address', 'address', 'address', 'string'], [
+                            var payload = window.web3.eth.abi.encodeParameters(['address', 'uint256', 'address', 'address', 'address', 'address', 'address', 'address', 'address', 'string'], [
                                 window.voidEthereumAddress,
                                 0,
                                 data.votingToken,
@@ -82,6 +83,7 @@ var DeployDFO = React.createClass({
                                 data.functionaltyModelsManagerAddress,
                                 data.functionalitiesManagerAddress,
                                 data.mvdWalletAddress,
+                                data.doubleProxyAddress,
                                 data.ensDomain.toLowerCase()
                             ]);
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployDFO', payload).then(response => {

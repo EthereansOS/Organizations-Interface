@@ -71,7 +71,15 @@ var DFOListController = function (view) {
         element.walletAddress = element.dFO.options.address;
 
         try {
-            var delegates = await window.blockchainCall(element.dFO.methods.getDelegates);
+            var delegates = await window.web3.eth.call({
+                to: element.dFO.options.address,
+                data: element.dFO.methods.getDelegates().encodeABI()
+            });
+            try {
+                delegates = window.web3.eth.abi.decodeParameter("address[]", delegates);
+            } catch(e) {
+                delegates = window.web3.eth.abi.decodeParameters(["address","address","address","address","address","address"], delegates);
+            }
             votingTokenAddress = delegates[0];
             stateHolderAddress = delegates[2];
             functionalitiesManagerAddress = delegates[4];

@@ -31,22 +31,31 @@ contract DeployDFO {
 
     function deployDFO(
         address sender, uint256,
-        address votingToken, address mvdFunctionalityProposalManagerAddress, address stateHolderAddress, address mvdFunctionalityModelsManagerAddress, address mvdFunctionalitiesManagerAddress, address walletAddress,
+        address votingToken, address mvdFunctionalityProposalManagerAddress, address stateHolderAddress, address mvdFunctionalityModelsManagerAddress, address mvdFunctionalitiesManagerAddress, address walletAddress, address doubleProxyAddress,
         string memory ens) public returns (address proxy) {
             IMVDProxy senderProxy = IMVDProxy(msg.sender);
 
-            require(compareContracts(votingToken, senderProxy.getToken()) == 1, "Not original Voting Token");
-            IVotingToken tkn = IVotingToken(votingToken);
+            uint256 forNewProxy = _transferToken(senderProxy, votingToken);
 
-            uint256 proxyBalance = tkn.balanceOf(senderProxy.getMVDWalletAddress());
-            uint256 votingTokenAmountForHub = toUint256(senderProxy.read("getVotingTokenAmountForHub", abi.encode(tkn.totalSupply())));
-
-            require(proxyBalance >= votingTokenAmountForHub, "Insufficient tokens amount for DFOHub!");
-
-            IMVDProxy(proxy = clone(msg.sender)).init(votingToken, mvdFunctionalityProposalManagerAddress, stateHolderAddress, mvdFunctionalityModelsManagerAddress, mvdFunctionalitiesManagerAddress, walletAddress);
-            senderProxy.transfer(walletAddress, proxyBalance - votingTokenAmountForHub, votingToken);
+            IMVDProxy(proxy = _createProxy(votingToken, mvdFunctionalityProposalManagerAddress, stateHolderAddress, mvdFunctionalityModelsManagerAddress, mvdFunctionalitiesManagerAddress, walletAddress, doubleProxyAddress));
+            senderProxy.transfer(walletAddress, forNewProxy, votingToken);
             _emitEvent(proxy, sender);
             setupENS(senderProxy, proxy, toLowerCase(ens));
+    }
+
+    function _transferToken(IMVDProxy senderProxy, address votingToken) private returns(uint256) {
+        require(compareContracts(votingToken, senderProxy.getToken()) == 1, "Not original Voting Token");
+        IVotingToken tkn = IVotingToken(votingToken);
+
+        uint256 proxyBalance = tkn.balanceOf(senderProxy.getMVDWalletAddress());
+        uint256 votingTokenAmountForHub = toUint256(senderProxy.read("getVotingTokenAmountForHub", abi.encode(tkn.totalSupply())));
+
+        require(proxyBalance >= votingTokenAmountForHub, "Insufficient tokens amount for DFOHub!");
+        return proxyBalance - votingTokenAmountForHub;
+    }
+
+    function _createProxy(address votingToken, address mvdFunctionalityProposalManagerAddress, address stateHolderAddress, address mvdFunctionalityModelsManagerAddress, address mvdFunctionalitiesManagerAddress, address walletAddress, address doubleProxyAddress) private returns(address proxy) {
+        IMVDProxy(proxy = clone(msg.sender)).init(votingToken, mvdFunctionalityProposalManagerAddress, stateHolderAddress, mvdFunctionalityModelsManagerAddress, mvdFunctionalitiesManagerAddress, walletAddress, doubleProxyAddress);
     }
 
     function _emitEvent(address proxy, address sender) private {
@@ -137,7 +146,7 @@ interface IVotingToken {
 }
 
 interface IMVDProxy {
-    function init(address votingTokenAddress, address functionalityProposalManagerAddress, address stateHolderAddress, address functionalityModelsManagerAddress, address functionalitiesManagerAddress, address walletAddress) external;
+    function init(address votingTokenAddress, address functionalityProposalManagerAddress, address stateHolderAddress, address functionalityModelsManagerAddress, address functionalitiesManagerAddress, address walletAddress, address doubleProxyAddress) external;
 
     function getMVDWalletAddress() external view returns(address);
     function getToken() external view returns(address);
