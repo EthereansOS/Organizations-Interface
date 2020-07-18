@@ -25,9 +25,6 @@ window.newContract = function newContract(abi, address) {
 };
 
 window.blockchainSetup = async function blockchainSetup() {
-    if (typeof window.ethereum === 'undefined') {
-        return;
-    }
     try {
         window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
         window.ethereum && window.ethereum.on && window.ethereum.on('networkChanged', window.onEthereumUpdate);
@@ -95,7 +92,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
             var update = false;
             if (!window.networkId || window.networkId !== await window.web3.eth.net.getId()) {
                 delete window.contracts;
-                window.web3 = new window.Web3Browser(window.web3.currentProvider);
+                window.web3 = new window.Web3Browser((window.web3 && window.web3.currentProvider) || window.context.infuraNode);
                 window.web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
                 window.web3.eth.transactionBlockTimeout = 999999999;
                 window.web3.eth.transactionPollingTimeout = new Date().getTime();

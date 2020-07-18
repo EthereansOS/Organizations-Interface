@@ -18,6 +18,7 @@
     "usdcTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     "usdcTokenAddressRopsten": "0xBc1EF4dddFAcb08e80C368eE2AAD69265775DCb9",
     "uniSwapV2RouterAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    "infuraNode" : "https://mainnet.infura.io/v3/5e302428cc5e41a188dc717dc6f34a5b",
     "deploySearchStart": 9779603,
     "deploySearchStartRopsten": 7465062,
     "blockSearchSection" : 9000000,
