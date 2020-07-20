@@ -1,4 +1,4 @@
-var DFOElement = React.createClass({
+var Dapp = React.createClass({
     requiredModules: [
         'spa/overview'
     ],
@@ -35,10 +35,8 @@ var DFOElement = React.createClass({
         return (
             <section className="DFOOpened">
                 <ul className="DFONavigator DFONavigatorAfter">
-                    <li><a href="javascript:;" onClick={this.onClick} className="selected">Overview</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>Dapp</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>Proposals</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>New Proposal</a></li>
+                    <li><a href="javascript:;" onClick={this.onClick} className="selected">Functions</a></li>
+                    <li><a href="javascript:;" onClick={this.onClick}>State</a></li>
                 </ul>
                 {React.createElement(window[this.state.element], props)}
             </section>
