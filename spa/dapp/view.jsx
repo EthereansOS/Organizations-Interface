@@ -1,10 +1,10 @@
 var Dapp = React.createClass({
     requiredModules: [
-        'spa/overview'
+        'spa/functions'
     ],
     getInitialState() {
         return {
-            element: 'Overview'
+            element: 'Functions'
         }
     },
     getDefaultSubscriptions() {
@@ -34,7 +34,7 @@ var Dapp = React.createClass({
         props.okBoomer = this.state && this.state.okBoomer;
         return (
             <section className="DFOOpened">
-                <ul className="DFONavigator DFONavigatorAfter">
+                <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
                     <li><a href="javascript:;" onClick={this.onClick} className="selected">Functions</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>State</a></li>
                 </ul>
