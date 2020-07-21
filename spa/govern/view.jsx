@@ -35,6 +35,7 @@ var Govern = React.createClass({
         return (
             <section className="DFOOpened">
                 <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
+                <li><a href="javascript:;" onClick={this.onClick}>Rules</a></li>
                     <li><a href="javascript:;" onClick={this.onClick} className="selected">Proposals</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>New Proposal</a></li>
                 </ul>
