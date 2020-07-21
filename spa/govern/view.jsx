@@ -1,10 +1,10 @@
-var DFOElement = React.createClass({
+var Govern = React.createClass({
     requiredModules: [
-        'spa/overview'
+        'spa/proposals'
     ],
     getInitialState() {
         return {
-            element: 'Overview'
+            element: 'Proposals'
         }
     },
     getDefaultSubscriptions() {
@@ -34,11 +34,9 @@ var DFOElement = React.createClass({
         props.okBoomer = this.state && this.state.okBoomer;
         return (
             <section className="DFOOpened">
-                <ul className="DFONavigator DFONavigatorAfter">
-                    <li><a href="javascript:;" onClick={this.onClick} className="selected">Overview</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>Dapp</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>DeFi</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>Govern</a></li>
+                <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
+                    <li><a href="javascript:;" onClick={this.onClick} className="selected">Proposals</a></li>
+                    <li><a href="javascript:;" onClick={this.onClick}>New Proposal</a></li>
                 </ul>
                 {React.createElement(window[this.state.element], props)}
             </section>
