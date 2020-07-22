@@ -82,18 +82,36 @@ var Token = React.createClass({
                     </section>
                     <li className="TheDappInfo05">
                         <section className="DFOTitleSection">
+                            <figure className="VerifiedIcon">
+                                <img src="assets/img/buidlv2-logo.png"></img>
+                            </figure>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo05">
+                        <section className="DFOTitleSection">
                         <h5 className="DFOHostingTitle">Ticker:</h5>
                             <AsyncValue>
                                 {_this.props.element.symbol && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.symbol}</a></p>}
                             </AsyncValue>
                         </section>
                         <section className="DFOTitleSection">
-                        </section>
-                        {/*<section className="DFOTitleSection">
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
                             {"\u00a0"}
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                        </section> */}
+                        </section>
+                        <section className="DFOTitleSection">
+                        </section>
+                        
+                    </li>
+                    <li className="TheDappInfo05">
+                        <section className="DFOTitleSection">
+                        <h5 className="DFOHostingTitle">Voting Power:</h5>
+                            <AsyncValue>
+                                +1
+                            </AsyncValue>
+                        </section>
+                        <section className="DFOTitleSection">
+                        </section>
                     </li>
                     <li className="TheDappInfo1">
                     <section className="DFOTitleSection">
@@ -106,16 +124,6 @@ var Token = React.createClass({
                                 {_this.props.element.symbol && _this.props.element.totalSupply && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
                     </section>
-                    </li>
-                    <li className="TheDappInfo05">
-                        <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle">Power:</h5>
-                            <AsyncValue>
-                                +1
-                            </AsyncValue>
-                        </section>
-                        <section className="DFOTitleSection">
-                        </section>
                     </li>
                 </ul>
                 <ul className="DFOHosting">
