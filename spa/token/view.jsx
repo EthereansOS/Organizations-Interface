@@ -89,19 +89,15 @@ var Token = React.createClass({
                     </li>
                     <li className="TheDappInfo05">
                         <section className="DFOTitleSection">
+                        <h5 className="DFOHostingTitle">Name:</h5>
+                            <AsyncValue>
+                                {_this.props.element.symbol && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.name}</a></p>}
+                            </AsyncValue>
                         <h5 className="DFOHostingTitle">Ticker:</h5>
                             <AsyncValue>
                                 {_this.props.element.symbol && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.symbol}</a></p>}
                             </AsyncValue>
                         </section>
-                        <section className="DFOTitleSection">
-                            <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
-                            {"\u00a0"}
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                        </section>
-                        <section className="DFOTitleSection">
-                        </section>
-                        
                     </li>
                     <li className="TheDappInfo05">
                         <section className="DFOTitleSection">
@@ -121,100 +117,146 @@ var Token = React.createClass({
                         </AsyncValue>
                         <h5 className="DFOHostingTitle">DFO Wallet Supply: </h5>
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)}</a></p>}
+                                {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.balanceOf, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
+                    </section>
+                    </li>
+                    <li className="TheDappInfo025">
+                    <section className="DFOTitleSection">
+                            <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
+                            <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
                     </section>
                     </li>
                 </ul>
                 <ul className="DFOHosting">
-                <section className="HostingCategoryTitle">
-                    <h2>DEX Liquidity</h2>
-                </section>
-                <li className="TheDappInfo2">
-                        <h5 className="DFOHostingTitle">&#127984; Regular Proposals: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
+                    <section className="HostingCategoryTitle">
+                        <h2>Dex Liquidity</h2>
+                    </section>
+                    <li className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
-                            {_this.props.element.blocks === undefined && <LoaderMinimino />}
-                            {_this.props.element.blocks !== undefined && <p className="DFOLabelTitleInfo">Length: <b>{_this.props.element.blocks}</b><aside> Blocks </aside> {_this.renderChangeButton('proposalLength')}</p>}
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The duration of a Proposal</OkBoomer>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.quorum !== undefined && <p className="DFOLabelTitleInfo">Quorum: <b>{window.tokenPercentage(_this.props.element.quorum, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.quorum, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('quorum')}</p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voting Tokens staked by voters to reach the a positive result.</OkBoomer>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.minimumStaking !== undefined && <p className="DFOLabelTitleInfo">Generation Stake: <b>{window.tokenPercentage(_this.props.element.minimumStaking, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.minimumStaking, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('proposalStake')}</p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The minimum number of Voting Tokens staked to create a Proposal.</OkBoomer>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.votesHardCap !== undefined && <p className="DFOLabelTitleInfo">Hard Cap: <b>{window.tokenPercentage(_this.props.element.votesHardCap, _this.props.element.totalSupply)}</b><aside><b> ({window.fromDecimals(_this.props.element.votesHardCap, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside> {_this.renderChangeButton('votesHardCap')}</p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>If a proposal reaches a fixed number of voting tokens (example the 90% of the total Token supply) for “Approve” or “Disapprove” it, the proposal automatically ends, independently from the duration rule.</OkBoomer>
                     </li>
-                    <li className="TheDappInfo2">
-                        <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Proposals: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
+                    <li className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
-                            {_this.props.element.minimumBlockNumberForEmergencySurvey === undefined && <LoaderMinimino />}
-                            {_this.props.element.minimumBlockNumberForEmergencySurvey !== undefined && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyLength')} Length: <b>{_this.props.element.minimumBlockNumberForEmergencySurvey}</b> <aside>Blocks</aside></p>}
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The duration of an Emergency Proposal</OkBoomer>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.emergencySurveyStaking && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyPenalty')} Penalty fee: <b>{window.tokenPercentage(_this.props.element.emergencySurveyStaking, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.emergencySurveyStaking, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside></p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Fee that Emergency Proposal Issuer must stake to propose it. This stake will be lost if the Proposal fails.</OkBoomer>
                     </li>
-                    {_this.renderChanger(['proposalStake', 'emergencyLength', 'emergencyPenalty','quorum', 'proposalLength', 'votesHardCap'])}
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
+                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
+                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
+                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                        </section>
+                    </li>
+
                 </ul>
-                <ul className="DFOHosting">
-                <section className="HostingCategoryTitle">
-                    <h2>{_this.props.element.name} Wallet</h2>
-                </section>
-                    <li className="TheDappInfo3">
-                        <h5 className="DFOHostingTitle">&#129518; Assets:</h5>
-                        {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <h6>Tot Tracked: ${_this.props.element.walletCumulativeDollar}</h6>}
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside>{parseFloat(_this.props.element.communityTokensDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.communityTokensDollar}</span>}</p>}
-                            </AsyncValue>
-                        </section>
-                        <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside>{parseFloat(_this.props.element.walletETHDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletETHDollar}</span>}</p>
-                        </section>
-                        <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletUSDCDollar}</span>}</p>
-                        </section>
-                        {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside>{parseFloat(_this.props.element.walletBUIDLDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletBUIDLDollar}</span>}</p>
-                        </section>}
-                    </li>
-                    <li className="TheDappInfo3">
-                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Rewards: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward !== undefined && <p className="DFOLabelTitleInfo"> Proposal: <b>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)}</b> <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside> {_this.renderChangeButton('surveySingleReward')}</p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward to the issuer for every single Successful Proposal.</OkBoomer>
-                    </li>
-                    <li className="TheDappInfo05">
-                        <h5 className="DFOHostingTitle">&#129302; Core:</h5>
-                        <section className="DFOTitleSection">
-                            <a className="LinkVisualButton" target="_blank" href={window.getNetworkElement("etherscanURL") + "address/" + _this.props.element.dFO.options.address}>Etherscan</a>
-                        </section>
-                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
-                        <section className="DFOTitleSection">
-                            <a className="LinkVisualButton" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>Etherscan</a>
-                        </section>
-                    </li>
-                    {_this.renderChanger(['surveySingleReward'])}
-                </ul>
+                
             </section>
         );
     }
