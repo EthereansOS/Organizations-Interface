@@ -90,7 +90,8 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOHosting .TheDappInfosub .DFOTitleSection span {width: auto !important;}
 .DFOOpened .DFOOverview .DFOHosting .HostingCategoryTitle h2 span {font-size: 18px;}
 .DFOWalletBalanceSingleT {width: 100%; text-align: left;}
-.DFOWalletBalanceSingleT img {width: 20px; height: 20px; display: inline-block; vertical-align: middle; margin: 0px 5px;}
+.DFOWalletBalanceSingleT img, .DFOWalletBalanceSingleT aside {width: 20px; height: 20px;font-size: 20px; display: inline-block; vertical-align: middle; margin: 0px 5px;}
+.DFOWalletBalanceSingleT img {border-radius: 50%;}
 .DFOWalletBalanceSingleT h3 {font-size: 16px;display: inline-block; vertical-align: middle; font-weight: bold;}
 
 
