@@ -78,10 +78,33 @@ var Wallet = React.createClass({
             <section className="DFOOverview">
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
-                    <h2>{_this.props.element.name} Assets {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <span>(${_this.props.element.walletCumulativeDollar})</span>}</h2>
+                    <h2>{_this.props.element.name} Balances {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <span>(Tracked: ${_this.props.element.walletCumulativeDollar})</span>}</h2>
                 </section>
+                <li className="TheDappInfo1 TheDappInfoSub">
+                    <section className="DFOTitleSection">
+                        <section className="DFOWalletBalanceSingleT">
+                            <img src="assets/img/eth-logo.png"></img>
+                            <h3>ETH {parseFloat(_this.props.element.walletETHDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletETHDollar})</span>}</h3>
+                        </section>
+                        <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b></h5>
+                        <br></br>
+                        <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
+                        <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
+                    </section>
+                </li>
+                <li className="TheDappInfo1 TheDappInfoSub">
+                    <section className="DFOTitleSection">
+                        <section className="DFOWalletBalanceSingleT">
+                            <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("usdcTokenAddress") + "/logo.png"}></img>
+                            <h3>USDC {parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletUSDCDollar})</span>}</h3>
+                        </section>
+                        <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b></h5>
+                        <br></br>
+                        <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
+                        <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
+                    </section>
+                </li>
                     <li className="TheDappInfo3">
-                        {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <h6>Total Tracked value: ${_this.props.element.walletCumulativeDollar}</h6>}
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside>{parseFloat(_this.props.element.communityTokensDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.communityTokensDollar}</span>}</p>}
@@ -91,9 +114,10 @@ var Wallet = React.createClass({
                             <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside>{parseFloat(_this.props.element.walletETHDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletETHDollar}</span>}</p>
                         </section>
                         <section className="DFOTitleSection">
-                            <figure>
+                            <section className="DFOWalletBalanceSingleT">
                                 <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("usdcTokenAddress") + "/logo.png"}></img>
-                            </figure>
+                                <h3>USDC</h3>
+                            </section>
                             <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletUSDCDollar}</span>}</p>
                         </section>
                         {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
