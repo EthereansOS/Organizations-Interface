@@ -92,7 +92,7 @@ var Wallet = React.createClass({
                         </section>
                         <section className="DFOTitleSection">
                             <figure>
-                                <img src={window.getNetworkElement("trustwalletimgURL") + window.getNetworkElement("usdcTokenAddress") + "/logo.png"}></img>
+                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("usdcTokenAddress") + "/logo.png"}></img>
                             </figure>
                             <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletUSDCDollar}</span>}</p>
                         </section>
