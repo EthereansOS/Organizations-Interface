@@ -112,14 +112,14 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span aside {display: inline; font-size: 12px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection p aside {display: inline; font-size: 11px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection figure, .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection figure img {width: 70px; height: 70px;}
-.DFOOpened .DFOOverview .DFOFunctionList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 80px;}
-.DFOOpened .DFOOverview .DFOFunctionList li {width: 100%; display: inline-block; text-decoration: none; padding: 0; margin: 0 0 20px 0;list-style-type:none; vertical-align: top; text-align: left;}
+.DFOOpened .DFOOverview .DFOFunctionList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 40px;}
+.DFOOpened .DFOOverview .DFOFunctionList li {width: 100%; display: inline-block; text-decoration: none; margin: 0 0 20px 0;list-style-type:none; vertical-align: top; text-align: left; background-color: #dadada; padding: 20px 0; border-radius: 28px;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionEmoji {width: 25px; min-height: 60px;margin: 0 5px 0 15px; vertical-align: top; display: inline-block;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionEmoji h4 {font-size: 22px;color: #292929;line-height: 1.1; word-break: break-all;display: inline-block; margin: 10px 0px;}
 .DFOOpened .DFOOverview .DFOFunctionList li  .DFOFunctionTitle {width: 230px;margin: 0 40px 0 0; vertical-align: top; display: inline-block; min-height: 60px;}
 .DFOOpened .DFOOverview .DFOFunctionList li  .DFOFunctionTitle h5 {font-size: 18px;font-weight: bold;color: #292929;line-height: 1.1; word-break: break-all;display: inline-block; margin: 10px 0px;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription {width: 470px;margin: 0 20px 0 0; vertical-align: top; display: inline-block; }
-.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p {font-size: 14px;color: #292929;line-height: 1.3;display: inline-block; margin: 10px 0px;}
+.DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p {font-size: 14px;color: #292929;line-height: 1.3;display: inline; margin: 10px 0px; word-break: break-all;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p > a {text-decoration: underline;color: #888888;font-weight: bold;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate {width: 110px;margin: 0 0 0 35px; vertical-align: top; display: inline-block; text-align: center;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate h6 {font-size: 13px; margin: 5px 0 0 0;display: inline-block; font-weight: bold;}
@@ -129,10 +129,10 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .OkBoomer .BoomerTriangle {position: absolute;top: -8px;left: 46%;text-align: center;padding:0;width: 0;}
 .BoomerTriangle {width: 0;height: 0;border-style: solid;border-width: 0 4.5px 9px 4.5px;border-color: transparent transparent #888888 transparent; display: inline-block; position: absolute;}
 
-.DFOOpened .DFOOverview .DFOStateList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 80px;}
+.DFOOpened .DFOOverview .DFOStateList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 40px;}
 .state h2 {font-size: 15px;}
-.DFOOpened .DFOOverview .DFOStateList li {width: 100%; display: inline-block; text-decoration: none; padding: 0; margin: 0 0 20px 0;list-style-type:none; vertical-align: top; text-align: left;}
-.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState {width: 850px; display: block; margin: 20px auto; text-align: center;}
+.DFOOpened .DFOOverview .DFOStateList li {width: 100%; display: inline-block; text-decoration: none; padding: 0; margin: 0 0 5px 0;list-style-type:none; vertical-align: top; text-align: left;}
+.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState {width: 850px; display: block; margin: 20px auto; text-align: center; padding: 20px 0; background-color: #dadada; border-radius: 28px;}
 .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateTN {width: 350px;display: inline-block; margin: 0 40px 0 0; vertical-align: top;text-align: left;}
 .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateN {width: 350px; display: inline-block; margin: 0; font-size: 16px; font-weight: bold; word-break: break-all; vertical-align: top;}
 .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateT {width: 350px; display: inline-block; margin: 10px 0 0 0; font-size: 13px;  word-break: break-all; vertical-align: top;}
@@ -182,7 +182,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .ProposalsOldIndex {width: 100%; margin: 10px 0 0 0;}
 .ProposalsActiveIndex h4, .ProposalsOldIndex h4, .DraftsActiveIndex h4, .DraftsOldIndex h4 {font-size: 20px;}
 .ProposalsActiveIndex > ul, .ProposalsOldIndex > ul, .DraftsActiveIndex > ul, .DraftsOldIndex > ul {width: 100%; padding: 0; display: inline-block; text-decoration: none; text-align: center;}
-.ProposalsActiveIndex > ul > li, .ProposalsOldIndex > ul > li, .DraftsActiveIndex > ul > li, .DraftsOldIndex > ul > li {width: 100%; display: inline-block; text-decoration: none; padding:  15px 0 0 0;margin: 25px 0 0 0;; vertical-align: top; text-align: left; border-bottom: 1px solid #f1f1f1;}
+.ProposalsActiveIndex > ul > li, .ProposalsOldIndex > ul > li, .DraftsActiveIndex > ul > li, .DraftsOldIndex > ul > li {width: 100%; display: inline-block; text-decoration: none; padding:  20px 0 20px 0;margin: 25px 0 0 0;; vertical-align: top; text-align: left; border-radius: 28px; background-color: #dadada;}
 .ProposalAction {width: 150px;margin: 0 20px 0 0; vertical-align: top; text-align: center; float: right;}
 .DraftAction {width: 150px;margin: 0 0 0 0; vertical-align: top; text-align: center; float: right;}
 .ProposalAction h6 {font-size: 15px; color: #292929; font-weight: bold; vertical-align: top;margin: 0;}
@@ -352,7 +352,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .NoWeb3 .DisclamerWeb3 p {font-size: 16px; color: #000000; line-height: 1.4;}
 .NoWeb3 .DisclamerWeb3 p a {font-size: 15px; color: #ff00ff; font-weight: bold; padding: 0 3px;}
 .NoWeb3 .DisclamerWeb3 p a:hover {color: #ffffff; background-color: #ff00ff; text-decoration: none;}
-.ComEXTLink {width: 100%; margin-top: 10px; display: inline-block; text-align: center;}
+.ComEXTLink {width: 100%; margin-top: 10px; display: inline-block; text-align: left;}
 .NoWeb3, .BrandLi {font-family: "Courier New", "Lucida Console", "Courier", "Times", "Arial" !important;}
 .BODL {font-weight: bold !important;}
 .DFOFunctionQuery .NewProposaleditor {width: 990px;}

@@ -37,6 +37,7 @@ var DeFi = React.createClass({
                 <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
                     <li><a href="javascript:;" onClick={this.onClick} className="selected">Wallet</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>Token</a></li>
+                    <li><a href="javascript:;" onClick={this.onClick}>DeFi Offering</a></li>
                 </ul>
                 {React.createElement(window[this.state.element], props)}
             </section>
