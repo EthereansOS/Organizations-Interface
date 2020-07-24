@@ -3,6 +3,7 @@ var Wallet = React.createClass({
         'spa/editor'
     ],
     requiredScripts: [
+        'spa/loader.jsx',
         'spa/loaderMini.jsx',
         'spa/okBoomer.jsx',
         'spa/loaderMinimino'
@@ -26,11 +27,7 @@ var Wallet = React.createClass({
         this.controller[this.state.change + 'Change'](data);
     },
     componentDidMount() {
-        var _this = this;
-        window.blockchainCall(_this.props.element.dFO.methods.read, 'getMinimumBlockNumberForSurvey', '0x').then(blocks => {
-            _this.props.element.blocks = window.web3.eth.abi.decodeParameters(['uint256'], blocks)[0];
-            _this.forceUpdate();
-        });
+        this.controller.loadWallets();
     },
     renderChangeButton(name) {
         var _this = this;
@@ -78,122 +75,22 @@ var Wallet = React.createClass({
             <section className="DFOOverview">
                 <ul className="DFOHosting">
                     <section className="HostingCategoryTitle">
-                        <h2>{_this.props.element.name} Balances {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <span>(Tracked: ${_this.props.element.walletCumulativeDollar})</span>} <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a></h2>
+                        <h2>{_this.props.element.name} Balances {(!_this.state || _this.state.cumulativeAmountDollar === undefined || _this.state.cumulativeAmountDollar === null) ? <LoaderMinimino/> : <span>(Tracked: ${window.formatMoney(_this.state.cumulativeAmountDollar)})</span>} <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a></h2>
                     </section>
-                    <AsyncValue>
-                        {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && 
-                            <li className="TheDappInfo1 TheDappInfoSub">
-                                <section className="DFOTitleSection">
-                                    <section className="DFOWalletBalanceSingleT">
-                                        <aside>&#129689;</aside>
-                                        <h3>{_this.props.element.symbol} {parseFloat(_this.props.element.communityTokensDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.communityTokensDollar})</span>}</h3>
-                                    </section>
-                                    <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b></h5>
-                                    <br></br>
-                                    <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                                    <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                                        
-                                </section>
-                            </li>
-                        }
-                    </AsyncValue>
-                    {_this.props.element !== window.dfoHub && 
-                    <li className="TheDappInfo1 TheDappInfoSub">
+                    {(!_this.state || !_this.state.tokens) && <LoaderMinimino/>}
+                    {_this.state && _this.state.tokens && _this.state.tokens.map(it => it.amount !== 0 && <li key={it.address} className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("buidlTokenAddress") + "/logo.png"}></img>
-                                <h3>buidl {parseFloat(_this.props.element.walletBUIDLDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletBUIDLDollar})</span>}</h3>
+                                <img src={it.address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : it.token === window.dfoHub.token ? 'assets/img/buidlv2-logo.png' : window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(it.address))}></img>
+                                <h3>{it.symbol} {it.amountDollars === undefined ? <LoaderMinimino/> : !it.amountDollars ? undefined : <span className="DFOLabelTitleInfosmall"> (${window.formatMoney(it.amountDollars)})</span>}</h3>
                             </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b></h5>
-                            <br></br>
+                            {it.amount !== undefined && <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(it.amount, it.decimals)}</b></h5>}
+                            {it.amount === undefined && <LoaderMinimino/>}
+                            <br/>
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
                         </section>
-                    </li>}
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src="assets/img/eth-logo.png"></img>
-                                <h3>ETH {parseFloat(_this.props.element.walletETHDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletETHDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("usdcTokenAddress") + "/logo.png"}></img>
-                                <h3>USDC {parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletUSDCDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("daiTokenAddress") + "/logo.png"}></img>
-                                <h3>DAI {parseFloat(_this.props.element.walletDAIDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletDAIDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 18)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("rsvTokenAddress") + "/logo.png"}></img>
-                                <h3>RSV {parseFloat(_this.props.element.walletRSVDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletRSVDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 18)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("usdtTokenAddress") + "/logo.png"}></img>
-                                <h3>USDT {parseFloat(_this.props.element.walletUSDTDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletUSDTDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 18)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("wethTokenAddress") + "/logo.png"}></img>
-                                <h3>WETH {parseFloat(_this.props.element.walletWETHDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletWETHDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 18)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <section className="DFOWalletBalanceSingleT">
-                                <img src={window.getNetworkElement("trustwalletImgUrl") + window.getNetworkElement("wbtcTokenAddress") + "/logo.png"}></img>
-                                <h3>WBTC {parseFloat(_this.props.element.walletWBTCDollar) > 0 && <span className="DFOLabelTitleInfosmall"> (${_this.props.element.walletWBTCDollar})</span>}</h3>
-                            </section>
-                            <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.props.element.walletUSDC, 18)}</b></h5>
-                            <br></br>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Swap Proposal</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Pool Proposal</a>
-                        </section>
-                    </li>
+                    </li>)}
                 </ul>
             </section>
         );
