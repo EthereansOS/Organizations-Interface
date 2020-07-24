@@ -123,6 +123,9 @@ var Overview = React.createClass({
     },
     render() {
         var _this = this;
+        if(!_this.props.element.token) {
+            return <LoaderMini/>
+        }
         return (
             <section className="DFOOverview">
                 <ul className="DFOHosting">

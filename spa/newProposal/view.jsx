@@ -184,7 +184,7 @@ var NewProposal = React.createClass({
             window.SolidityUtilities.getCompilers()
                 .then(c => Object.keys(c.releases)[0])
                 .then(r => {
-                    var array = JSON.parse(JSON.stringify(window.context.voidOneTimeProposal));
+                    var array = JSON.parse(JSON.stringify(window.context.oneTimeProposalTemplate));
                     array.unshift("");
                     array.unshift("pragma solidity ^" + r + ";");
                     _this.enqueue(() => _this.editor.editor.setValue(array.join('\n')), 300);

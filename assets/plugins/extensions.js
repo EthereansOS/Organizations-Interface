@@ -195,6 +195,18 @@ if(!String.prototype.fromWhen) {
     }
 }
 
+String.prototype.toLines = function toLines() {
+    var realSplit = this.trim().split('\n');
+    var split = [];
+    for(var i = 0; i < realSplit.length; i++) {
+        if(realSplit[i].trim() === 'null' || realSplit[i].trim() === 'undefined') {
+            continue;
+        }
+        split.push(realSplit[i]);
+    }
+    return split;
+}
+
 var base_url = document.location.protocol +
     '//' +
     document.location.hostname +

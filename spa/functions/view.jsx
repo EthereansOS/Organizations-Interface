@@ -27,7 +27,7 @@ var Functions = React.createClass({
         var _this = this;
         _this.mountDate = new Date().getTime() + "_" + Math.random();
         try {
-            blockchainCall(_this.props.element.functionalitiesManager.methods.functionalityNames).then(JSON.parse).then(functionalityNames => _this.setState({functionalityNames: _this.props.element.functionalityNames = functionalityNames}, _this.controller.loadFunctionalities)).catch(e => window.loadFunctionalities(_this.props.element, () => _this.setState({functionalityNames: _this.props.element.functionalityNames, functionalities: _this.props.element.functionalities})).then(() => _this.forceUpdate()));
+            window.loadFunctionalityNames(_this.props.element).then(functionalityNames => _this.setState({functionalityNames: _this.props.element.functionalityNames = functionalityNames}, _this.controller.loadFunctionalities)).catch(e => window.loadFunctionalities(_this.props.element, () => _this.setState({functionalityNames: _this.props.element.functionalityNames, functionalities: _this.props.element.functionalities})).then(() => _this.forceUpdate()));
         } catch(e) {
             window.loadFunctionalities(_this.props.element, () => _this.setState({functionalities: _this.props.element.functionalities})).then(() => _this.forceUpdate());
         }
@@ -77,7 +77,6 @@ var Functions = React.createClass({
     },
     render() {
         var _this = this;
-        var defaultDesc = 'Deploy a new DFO - Part 1: Clone all utility contracts. Deploy, BUIDL and Govern Decentralized Flexible Organizations, for a new Censorship-Resilient wave of Unstoppable dapps. DFOs are based on a new Microservices Style Developing, upgradable by voting, without needs to fork it. Basically, without points of failure and an entity to trust.';
         return (
             <section className="DFOOverview">
                 {_this.state.functionalityNames && <ul className="DFOFunctionList">

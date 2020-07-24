@@ -42,18 +42,27 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
     var votingToken = window.voidEthereumAddress;
 
     try {
-        votingToken = (await window.blockchainCall(dfo.methods.getDelegates))[0];
+        var delegates = await window.web3.eth.call({
+            to: element.dFO.options.address,
+            data: element.dFO.methods.getDelegates().encodeABI()
+        });
+        try {
+            delegates = window.web3.eth.abi.decodeParameter("address[]", delegates);
+        } catch(e) {
+            delegates = window.web3.eth.abi.decodeParameters(["address","address","address","address","address","address"], delegates);
+        }
+        votingToken = delegates[0];
     } catch(e) {
     }
 
-    if(votingToken === window.voidEthereumAddress) {
+    if(!votingToken || votingToken === window.voidEthereumAddress) {
         try {
             votingToken = await window.blockchainCall(dfo.methods.getToken);
         } catch (e) {
         }
     }
 
-    if(votingToken === window.voidEthereumAddress) {
+    if(!votingToken || votingToken === window.voidEthereumAddress) {
         var logs = await window.getLogs({
             address,
             topics: [
@@ -321,6 +330,12 @@ window.sendBlockchainTransaction = function sendBlockchainTransaction(transactio
     });
 };
 
+window.loadFunctionalityNames = async function loadFunctionalityNames(element) {
+    var functionalityNames = await window.blockchainCall(element.functionalitiesManager.methods.functionalityNames);
+    functionalityNames = JSON.parse((functionalityNames.endsWith(',]') ? (functionalityNames.substring(0, functionalityNames.lastIndexOf(',]')) + ']') : functionalityNames).trim());
+    return functionalityNames;
+};
+
 window.loadFunctionalities = function loadFunctionalities(element, callback, ifNecessary) {
     if (!element) {
         return new Promise(ok => ok());
@@ -340,7 +355,7 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
     element.waiters = [];
     return new Promise(async function(ok) {
         try {
-            element.functionalityNames = JSON.parse(await blockchainCall(element.functionalitiesManager.methods.functionalityNames));
+            element.functionalityNames = await window.loadFunctionalityNames(element);
             callback && callback();
         } catch(e) {
             element.functionalityNames = [];
@@ -831,7 +846,7 @@ window.formatDFOLogs = function formatDFOLogs(logVar, event) {
     return logVar.length ? logs : logVar;
 };
 
-window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, template, lines, descriptions, updates) {
+window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, template, lines, descriptions, updates, prefixedLines, postFixedLines) {
     var initialContext = {
         element,
         functionalityName: '',
@@ -846,10 +861,12 @@ window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, temp
         lines,
         descriptions,
         updates,
+        prefixedLines,
+        postFixedLines,
         sequentialOps: template && [{
             name: 'Generating Smart Contract proposal',
             async call(data) {
-                var generatedAndCompiled = await window.generateAndCompileContract(data.template, data.lines, data.descriptions, data.updates);
+                var generatedAndCompiled = await window.generateAndCompileContract(data.template, data.lines, data.descriptions, data.updates, data.prefixedLines, data.postFixedLines);
                 data.sourceCode = generatedAndCompiled.sourceCode;
                 data.selectedContract = generatedAndCompiled.selectedContract;
             }
@@ -861,12 +878,27 @@ window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, temp
     window.showProposalLoader(initialContext);
 };
 
-window.generateAndCompileContract = async function generateAndCompileContract(sourceCode, lines, descriptions, updates) {
+window.generateAndCompileContract = async function generateAndCompileContract(sourceCode, lines, descriptions, updates, prefixedLines, postFixedLines) {
     sourceCode = JSON.parse(JSON.stringify(sourceCode));
+    var bodyStart = 3;
+    for(var i = 0; i < sourceCode.length; i++) {
+        if(sourceCode[i].trim().toLowerCase() === 'function_body') {
+            bodyStart = i;
+            sourceCode.splice(bodyStart, 1);
+            break;
+        }
+    }
 
     if (lines && lines.length) {
         for (var i = lines.length - 1; i >= 0; i--) {
-            sourceCode.splice(4, 0, '        ' + lines[i]);
+            lines[i] !== 'undefined' && lines[i] !== 'null' && sourceCode.splice(bodyStart, 0, '        ' + lines[i]);
+        }
+    }
+
+    if (prefixedLines && prefixedLines.length) {
+        sourceCode.splice(2, 0, "");
+        for (var i = prefixedLines.length - 1; i >= 0; i--) {
+            prefixedLines[i] !== 'undefined' && prefixedLines[i] !== 'null' && sourceCode.splice(2, 0, '    ' + prefixedLines[i]);
         }
     }
 
@@ -889,6 +921,11 @@ window.generateAndCompileContract = async function generateAndCompileContract(so
     }
     sourceCode.unshift('/* Description:');
 
+    if (postFixedLines && postFixedLines.length) {
+        sourceCode.push('');
+        postFixedLines.forEach(it => sourceCode.push(it));
+    }
+
     sourceCode = sourceCode.join('\n');
     return {
         sourceCode,
@@ -907,7 +944,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
         }
     });
-    (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template)) && sequentialOps.push({
+    (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template || initialContext.functionalitySourceId || initialContext.sourceCode)) && sequentialOps.push({
         name: "Deploying Smart Contract",
         async call(data) {
             if (data.contractName && data.functionalitySourceId && data.selectedSolidityVersion) {
@@ -1090,4 +1127,8 @@ window.getEthereumPrice = async function getEthereumPrice() {
         price,
         requestExpires : new Date().getTime() + window.context.coingeckoEthereumPriceRequestInterval
     }).price;
+};
+
+window.shortenWord = function shortenWord(word, charsAmount) {
+    return word ? word.substring(0, word.length < (charsAmount = charsAmount || window.context.defaultCharsAmount) ? word.length : charsAmount) + (word.length < charsAmount ? '' : '...') : "";
 };
