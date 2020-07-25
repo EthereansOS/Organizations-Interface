@@ -86,8 +86,8 @@ var DeFiOffering = React.createClass({
                             <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
                             <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
                             <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Remove Liquidity</a>
+                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Add Liquidity</a>
                         </section>
                     </li>
                     <li className="TheDappInfo1 TheDappInfoSub">
