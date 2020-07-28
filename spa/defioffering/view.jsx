@@ -78,6 +78,54 @@ var DeFiOffering = React.createClass({
             <section className="DFOOverview">
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
+                        <h2>Liquidity Staking</h2>
+                </section>
+                    <li className="TheDappInfoAll TheDappInfoSub">
+                        <section className="TheDappInfo1">
+                            <section className="DFOTitleSection">
+                                <h5 className="DFOHostingTitle"><img src="assets/img/buidlv2-logo.png"></img><b>buidl</b> for 1 Year</h5>
+                                <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>50%</b></h5>
+                                <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
+                                <p className="DFOLabelTitleInfosmall">DEX: &#129412; V2 </p>
+                            </section>
+                        </section>
+                        <section className="TheDappInfo1">
+                            <section className="DFOTitleSection">
+                                <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
+                                <a className="DFOHostingTag"><img src="assets/img/buidlv2-logo.png"></img>ETH</a>
+                                <a className="DFOHostingTag"><img src="assets/img/buidlv2-logo.png"></img>WBTC</a>
+                                <a className="DFOHostingTag"><img src="assets/img/buidlv2-logo.png"></img>USDC</a>
+                                <a className="DFOHostingTag"><img src="assets/img/buidlv2-logo.png"></img>ARTE</a>
+                                <a className="DFOHostingTag"><img src="assets/img/buidlv2-logo.png"></img>USDT</a>
+                            </section>
+                        </section>
+                        <section className="TheDappInfo1">
+                            <section className="DFOTitleSection">
+                                <h5 className="DFOHostingTitle"><b>Status:</b></h5>
+                                <span className="DFOHostingTitleS">Staked:</span>
+                                <p className="DFOLabelTitleInfosmall"><b>5,200</b></p>
+                                <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
+                                <p className="DFOLabelTitleInfosmall DFOHostingTitleG"><b>15,200</b></p>
+                                <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
+                                <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
+                            </section>
+                        </section>
+                    </li>
+                </ul>
+                <ul className="DFOHosting">
+                <section className="HostingCategoryTitle">
+                        <h2>Fixed Inflation</h2>
+                </section>
+                    <li className="TheDappInfo1 TheDappInfoSub">
+                        <section className="DFOTitleSection">
+                            <span className="DFOLabelTitleInfosmall">~Daily (85403985 Blocks)</span>
+                            <h5 className="DFOHostingTitle"><b>150 buidl</b> for ETH</h5>
+                            <span className="DFOLabelTitleInfosmall">&#129412; <b>V2</b> <a href="">0xewetrwr405u03hg80h8g...</a></span>
+                        </section>
+                    </li>
+                </ul>
+                <ul className="DFOHosting">
+                <section className="HostingCategoryTitle">
                         <h2>Dex Open Liquidity</h2>
                     </section>
                     <li className="TheDappInfo1 TheDappInfoSub">
