@@ -350,6 +350,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconText {width: 120px; background-color: #191919; color: #9e9e9e; border: 1px solid #000000; height: 20px; margin-left: 10px;display: inline-block;}
 .DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconUpload {width: 120px; color: #9e9e9e;height: 20px; margin-left: 10px;display: inline-block;}
 .DFOFunctionIndexIcon aside {padding: 15px 0;}
+.StakeBigBoss {width: 100%; position: fixed; top: 0; left: 0; background-color: #7901ff; opacity: 0.9; }
 .NavDeploy > h2 {line-height: 1.3; font-size: 40px; font-weight: normal;}
 .NoWeb3 {width: 100%; text-align: center; min-width: 990px; margin-top: 140px;}
 .NoWeb3 h1 {font-size: 200px;margin: 30px auto;}

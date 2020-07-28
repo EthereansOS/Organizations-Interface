@@ -101,11 +101,10 @@ var DeFiOffering = React.createClass({
                         </section>
                         <section className="TheDappInfo1">
                             <section className="DFOTitleSection">
-                                <h5 className="DFOHostingTitle"><b>Status:</b></h5>
                                 <span className="DFOHostingTitleS">Staked:</span>
-                                <p className="DFOLabelTitleInfosmall"><b>5,200</b></p>
+                                <h5 className="DFOHostingTitle"><b>5,200</b></h5>
                                 <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
-                                <p className="DFOLabelTitleInfosmall DFOHostingTitleG"><b>15,200</b></p>
+                                <h5 className="DFOHostingTitle DFOHostingTitleG"><b>15,200</b></h5>
                                 <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
                                 <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
                             </section>
