@@ -72,6 +72,10 @@ var Token = React.createClass({
             </ul>
         );
     },
+    toggleMintBurn(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this.setState({mintBurn : this.state && this.state.mintBurn === e.currentTarget.innerText ? null : e.currentTarget.innerText});
+    },
     render() {
         var _this = this;
         return (
@@ -89,11 +93,11 @@ var Token = React.createClass({
                     </li>
                     <li className="TheDappInfo05">
                         <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle">Name:</h5>
+                            <h5 className="DFOHostingTitle">Name:</h5>
                             <AsyncValue>
-                                {_this.props.element.symbol && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.name}</a></p>}
+                                {_this.props.element.name && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.name}</a></p>}
                             </AsyncValue>
-                        <h5 className="DFOHostingTitle">Ticker:</h5>
+                            <h5 className="DFOHostingTitle">Ticker:</h5>
                             <AsyncValue>
                                 {_this.props.element.symbol && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.symbol}</a></p>}
                             </AsyncValue>
@@ -101,7 +105,7 @@ var Token = React.createClass({
                     </li>
                     <li className="TheDappInfo05">
                         <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle">Voting Power:</h5>
+                            <h5 className="DFOHostingTitle">Voting Power:</h5>
                             <AsyncValue>
                                 +1
                             </AsyncValue>
@@ -110,24 +114,33 @@ var Token = React.createClass({
                         </section>
                     </li>
                     <li className="TheDappInfo1">
-                    <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle">Existing Supply:  </h5>
-                        <AsyncValue>
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle">Existing Supply:  </h5>
+                            <AsyncValue>
                                 {_this.props.element.symbol && _this.props.element.totalSupply && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)}</a></p>}
-                        </AsyncValue>
-                        <h5 className="DFOHostingTitle">DFO Wallet Supply: </h5>
+                            </AsyncValue>
+                            <h5 className="DFOHostingTitle">DFO Wallet Supply: </h5>
                             <AsyncValue>
                                 {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.balanceOf, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
-                    </section>
+                        </section>
                     </li>
                     <li className="TheDappInfo025">
-                    <section className="DFOTitleSection">
+                        <section className="DFOTitleSection">
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
-                    </section>
+                            <a href="javascript:;" onClick={this.toggleMintBurn} className="LinkVisualButton LinkVisualEthscan">Mint</a>
+                            <a href="javascript:;" onClick={this.toggleMintBurn} className="LinkVisualButton LinkVisualEthscan">Burn</a>
+                            {this.state && this.state.mintBurn && <section>
+                                <label>
+                                    Amount to {this.state.mintBurn}
+                                    <input type="number" min="0" ref={ref => this.input = ref} />
+                                </label>
+                                <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.controller[this.state.mintBurn.toLowerCase()](this.input.value)}>{this.state.mintBurn}</a>
+                            </section>}
+                        </section>
                     </li>
                 </ul>
                 <ul className="DFOHosting">
@@ -254,9 +267,7 @@ var Token = React.createClass({
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
                         </section>
                     </li>
-
                 </ul>
-                
             </section>
         );
     }
