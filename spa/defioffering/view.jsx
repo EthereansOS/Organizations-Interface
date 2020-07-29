@@ -105,7 +105,7 @@ var DeFiOffering = React.createClass({
                                 <h5 className="DFOHostingTitle"><b>5,200</b></h5>
                                 <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
                                 <h5 className="DFOHostingTitle DFOHostingTitleG"><b>15,200</b></h5>
-                                <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
+                                <a href="javascript;" className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
                                 <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
                             </section>
                         </section>
