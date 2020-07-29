@@ -67,7 +67,7 @@ window.burn = async function burn(view, amount, tokenAddress, mine) {
     if(parseInt(amountWei) > parseInt(balanceOf)) {
         return view.emit('message', 'Specified amount to burn is greater than the total available balance', 'error');
     }
-    await context['burn' + (mine ? 'Mine' : 'Proposal')](view, token, amountWei, amount);
+    await window['burn' + (mine ? 'Mine' : 'Proposal')](view, token, amountWei, amount);
 };
 
 window.burnMine = async function burnMine(view, token, amountWei) {

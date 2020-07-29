@@ -939,10 +939,16 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
     window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
     (!initialContext.functionalitySourceId && (initialContext.sourceCode || initialContext.template)) && sequentialOps.push({
         name: "Publishing Smart Contract Code",
-        async call(data) {
+        async call(data, bypass) {
+            if(bypass) {
+                data.functionalitySourceId = '0';
+                data.functionalitySourceLocation = window.voidEthereumAddress;
+                return;
+            }
             data.functionalitySourceId = await window.mint(window.split(data.sourceCode), undefined, true);
             data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
-        }
+        },
+        bypassable : true
     });
     (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template || initialContext.functionalitySourceId || initialContext.sourceCode)) && sequentialOps.push({
         name: "Deploying Smart Contract",
