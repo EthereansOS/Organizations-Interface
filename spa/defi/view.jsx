@@ -28,10 +28,6 @@ var DeFi = React.createClass({
         });
     },
     render() {
-        var props = this.state.props || {};
-        props.element = this.props.element;
-        props.edit = this.state && this.state.edit;
-        props.okBoomer = this.state && this.state.okBoomer;
         return (
             <section className="DFOOpened">
                 <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
@@ -39,7 +35,7 @@ var DeFi = React.createClass({
                     <li><a href="javascript:;" onClick={this.onClick}>Token</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>DeFi Offering</a></li>
                 </ul>
-                {React.createElement(window[this.state.element], props)}
+                {React.createElement(window[this.state.element], this.props)}
             </section>
         );
     }

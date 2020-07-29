@@ -5,7 +5,8 @@ var Token = React.createClass({
     requiredScripts: [
         'spa/loaderMini.jsx',
         'spa/okBoomer.jsx',
-        'spa/loaderMinimino'
+        'spa/loaderMinimino.jsx',
+        'assets/scripts/uniswapOps.js'
     ],
     uploadFile(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -74,7 +75,7 @@ var Token = React.createClass({
     },
     toggleMintBurn(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        this.setState({mintBurn : this.state && this.state.mintBurn === e.currentTarget.innerText ? null : e.currentTarget.innerText});
+        this.setState({mintBurnMethod: e.currentTarget.dataset.function, mintBurn : this.state && this.state.mintBurn === e.currentTarget.innerText ? null : e.currentTarget.innerText});
     },
     render() {
         var _this = this;
@@ -131,14 +132,14 @@ var Token = React.createClass({
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
-                            <a href="javascript:;" onClick={this.toggleMintBurn} className="LinkVisualButton LinkVisualEthscan">Mint</a>
-                            <a href="javascript:;" onClick={this.toggleMintBurn} className="LinkVisualButton LinkVisualEthscan">Burn</a>
-                            {this.state && this.state.mintBurn && <section>
+                            {this.props.edit && <a href="javascript:;" data-function="mintNewTokens" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Mint' ? 'EditDFOYo Editing' : '')}>Mint</a>}
+                            {this.props.edit && <a href="javascript:;" data-function="burn" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Burn' ? 'EditDFOYo Editing' : '')}>Burn</a>}
+                            {this.props.edit && this.state && this.state.mintBurn && <section>
                                 <label>
                                     Amount to {this.state.mintBurn}
                                     <input type="number" min="0" ref={ref => this.input = ref} />
                                 </label>
-                                <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.controller[this.state.mintBurn.toLowerCase()](this.input.value)}>{this.state.mintBurn}</a>
+                                <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window[this.state.mintBurnMethod](this, this.input.value)}>{this.state.mintBurn}</a>
                             </section>}
                         </section>
                     </li>
