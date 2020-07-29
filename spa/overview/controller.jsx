@@ -643,66 +643,6 @@ interface IERC20 {
         });
     };
 
-    context.swap = async function swap(amount, from, to) {
-        from && (from = window.web3.utils.toChecksumAddress(from));
-        to && (to = window.web3.utils.toChecksumAddress(to));
-        if(!from && !to) {
-            return context.view.emit('message', 'You must specifiy at least an address', 'error');
-        }
-        var amountNormal = amount;
-        var decimals = !from ? 18 : parseInt(await window.blockchainCall(window.newContract(window.context.votingTokenAbi, from).methods.decimals));
-        amount = window.toDecimals((amount + '').split(',').join(''), decimals);
-        if(parseInt(amount) > parseInt(await (!from ? window.web3.eth.getBalance(context.view.props.element.walletAddress) : window.blockchainCall(window.newContract(window.context.votingTokenAbi, from).methods.balanceOf, context.view.props.element.walletAddress)))) {
-            return context.view.emit('message', 'Insufficient amount to swap', 'error');
-        }
-        var postFixedLines = `
-interface IERC20 {
-    function approve(address spender, uint256 amount) external returns (bool);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-}
-
-interface IMVDProxy {
-    function getMVDWalletAddress() external view returns(address);
-    function transfer(address receiver, uint256 value, address token) external;
-}
-
-interface IUniswapV2Router {
-    function WETH() external pure returns (address);
-    function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts);
-    function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts);
-    function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts);
-    function swapExactETHForTokens(uint amountOutMin, address[] calldata path, address to, uint deadline) external payable returns (uint[] memory amounts);
-}
-`.toLines();
-        var prefixedLines = (from ? '' : `
-receive() external payable {
-}
-`).toLines();
-        var lines = `
-IMVDProxy proxy = IMVDProxy(msg.sender);
-proxy.transfer(address(this), ${amount}, ${from ? from : `address(0)`});
-address dfoWalletAddress = proxy.getMVDWalletAddress();
-IUniswapV2Router uniswapV2Router = IUniswapV2Router(${window.web3.utils.toChecksumAddress(window.context.uniSwapV2RouterAddress)});
-address[] memory path = new address[](2);
-path[0] = ${from ? from : `uniswapV2Router.WETH()`};
-path[1] = ${to ? to : `uniswapV2Router.WETH()`};
-${!from ? null : `IERC20(${from}).approve(${window.web3.utils.toChecksumAddress(window.context.uniSwapV2RouterAddress)}, ${amount});`}
-uint[] memory result = uniswapV2Router.swapExact${from ? 'Tokens' : 'ETH'}For${to ? 'Tokens' : 'ETH'}${from ? '' : `{value: ${amount}}`}(${from ? `${amount}, ` : ''}uniswapV2Router.getAmountsOut(${amount}, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
-if(${amount} > result[0]) {
-    ${from ? `IERC20(${from}).transfer(dfoWalletAddress, ` : `payable(dfoWalletAddress).transfer(`}${amount} - result[0]);
-}
-`.toLines();
-        var descriptions = [`Swapping ${amountNormal} ${from ? await window.blockchainCall(window.newContract(window.context.votingTokenAbi, from).methods.symbol) : 'ETH'}`];
-        window.sendGeneratedProposal(context.view.props.element, {
-            title: descriptions[0],
-            functionalityName: '',
-            functionalityMethodSignature: 'callOneTime(address)',
-            functionalitySubmitable: false,
-            functionalityReplace: '',
-            functionalityOutputParameters: '[]',
-        }, window.context.oneTimeProposalTemplate, lines, descriptions, undefined, prefixedLines, postFixedLines);
-    };
-
     context.stake = async function stake(startBlock, pools, tiers, stakingContractAddress) {
         var selectedSolidityVersion = Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
         for(var i = 0; i < pools.length; i++) {
