@@ -7,10 +7,9 @@ var FixedInflationEdit = React.createClass({
     },
     deleteSwapCouple(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-
+        
     },
     onBlockLimitChange(e) {
-        //e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.setState({blockLimit: parseInt(e.currentTarget.dataset.value)});
     },
     render() {
