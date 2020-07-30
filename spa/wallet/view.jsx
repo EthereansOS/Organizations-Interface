@@ -29,7 +29,7 @@ var Wallet = React.createClass({
             <p>Propose to swap:</p>
             <label>
                 <input ref={ref => this.amount = ref} type="number"/>
-                <span>{it.symbol}</span>
+                <span>{element.simbol}</span>
             </label>
             <label>
             <p>for:</p>
