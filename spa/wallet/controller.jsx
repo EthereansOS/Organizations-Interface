@@ -73,21 +73,10 @@ var WalletController = function (view) {
             } catch(e) {
             }
             cumulativeAmountDollar += token.amountDollars;
-            token.logo = await context.loadLogo(token.address);
+            token.logo = await window.loadLogo(token.address);
             tokens[i] = token;
             context.view.setState({tokens});
         }
         context.view.setState({cumulativeAmountDollar, tokens});
-    };
-
-    context.loadLogo = async function loadLogo(address) {
-        address = window.web3.utils.toChecksumAddress(address);
-        var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : address.toLowerCase() === window.dfoHub.token.options.address.toLowerCase() ? 'assets/img/buidlv2-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
-        try {
-            await window.AJAXRequest(logo);
-        } catch(e) {
-            logo = 'assets/img/default-logo.png';
-        }
-        return logo;
     };
 };

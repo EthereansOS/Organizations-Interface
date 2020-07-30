@@ -47,7 +47,7 @@ var StakeController = function (view) {
     };
 
     context.calculateReserves = async function calculateReserves(secondToken, i) {
-        var pair = window.newContract(window.context.UniswapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, window.buidlToken.options.address, secondToken.options.address));
+        var pair = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, window.buidlToken.options.address, secondToken.options.address));
         var buidlPosition  = (await window.blockchainCall(pair.methods.token0)).toLowerCase() === window.buidlToken.options.address.toLowerCase() ? 0 : 1;
         var otherPosition = buidlPosition == 0 ? 1 : 0;
         var reserves = await window.blockchainCall(pair.methods.getReserves);

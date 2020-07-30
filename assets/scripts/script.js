@@ -1138,3 +1138,14 @@ window.getEthereumPrice = async function getEthereumPrice() {
 window.shortenWord = function shortenWord(word, charsAmount) {
     return word ? word.substring(0, word.length < (charsAmount = charsAmount || window.context.defaultCharsAmount) ? word.length : charsAmount) + (word.length < charsAmount ? '' : '...') : "";
 };
+
+window.loadLogo = async function loadLogo(address) {
+    address = window.web3.utils.toChecksumAddress(address);
+    var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : address.toLowerCase() === window.dfoHub.token.options.address.toLowerCase() ? 'assets/img/buidlv2-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
+    try {
+        await window.AJAXRequest(logo);
+    } catch(e) {
+        logo = 'assets/img/default-logo.png';
+    }
+    return logo;
+};

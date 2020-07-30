@@ -32,21 +32,10 @@ var TokenPickerController = function (view) {
                     name: await window.blockchainCall(token.methods.name),
                     symbol: await window.blockchainCall(token.methods.symbol),
                     decimals: await window.blockchainCall(token.methods.decimals),
-                    logo: await context.loadLogo(address)
+                    logo: await window.loadLogo(address)
                 });
                 view.setState({ uniswapPairs });
             }
         }
-    };
-
-    context.loadLogo = async function loadLogo(address) {
-        address = window.web3.utils.toChecksumAddress(address);
-        var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : address.toLowerCase() === window.dfoHub.token.options.address.toLowerCase() ? 'assets/img/buidlv2-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
-        try {
-            await window.AJAXRequest(logo);
-        } catch (e) {
-            logo = 'assets/img/default-logo.png';
-        }
-        return logo;
     };
 };
