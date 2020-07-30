@@ -40,7 +40,8 @@ var TokenPicker = React.createClass({
     },
     renderSelection() {
         var list = this.getList();
-        return (<section className="PikaPikaYaYa" tabindex="-1" onBlur={this.toggle}>
+        return (<section className="PikaPikaYaYa" tabindex="-1">
+            <a href="javascript:;" onClick={() => this.setState({show: false})}><h2><b>X</b></h2></a>
             <section className="PikaPikaSearch">
                 <input onFocus={this.toggle} ref={ref => this.input = ref} type="text" placeholder="Search Name/Address" onKeyUp={this.onType} onChange={this.onType}/>
             </section>
