@@ -289,8 +289,23 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .Main .MainMsg_error {background-color: #ff0000;}
 .Main .MainMsg_success {background-color: #00ff00;}
 .Main .MainMsg a {font-size: 16px; color: #000000; font-weight: bold;}
-.BravPicciot {width: 88%; background-color: #d6d6d6; padding: 10px 5%;}
-.BravPicciot p {font-size: 13px; color: #f1f1f1 !important;}
+.BravPicciot {width: 78%; background-color: #4d4954; padding: 20px 10%; border-radius: 28px; display: inline-block; margin: 10px auto; position: relative;}
+.BravPicciot input {width: 100px; background-color: #000000; border: none; font-size: 14px; padding: 5px 10px; color: #ffffff; margin: 10px 10px 10px 5px; border-radius: 10px;}
+.BravPicciot p {font-size: 14px !important; color: #f1f1f1 !important;}
+.BravPicciot span {color: #f1f1f1 !important; font-size: 15px !important;}
+.PikaPikaYaYa {position: absolute; width: 185px; height: 220px; overflow: hidden; background-color: #000000;}
+.PikaPikaSearch {position: absolute !important; top:0 !important; left: 0 !important; width: 185px !important; height: 40px !important; font-size: 13px; color: #f1f1f1; text-align: center;}
+.PikaPikaSearch input {width: 185px !important; height: 30px !important; font-size: 13px; color: #f1f1f1; margin: 0 !important; padding: 10px; display: inline-block; border-bottom: 1px solid #7901ff; border-radius: 0;}
+.PikaPikaFind {position: absolute; top:30px; left: 0; width: 185px; height: 190px; overflow-x: hidden; overflow-y: scroll; background-color: #2f2f2f;}
+.PikaPikaSelectedBoomer {width: 100%; background-color: #2f2f2f; margin: 5px 0; padding: 5px 0; border: 1px solid #000000; display: block;}
+.PikaPikaSelectedBoomer img {width: 30px; height: 30px; display: inline-block; margin: 0 10px; vertical-align: middle;}
+.PikaPikaSelectedBoomer p {width: 120px !important; height: 20px !important; display: inline-block !important; color: #f1f1f1 !important; font-size: 12px !important; vertical-align: middle;}
+.PikaPikaSelectedBoomer p b {font-size: 14px;}
+.PikaPikaFindaaaaaaaaa {width: 100%; display: inline-block; margin: 10px 0; border-bottom: 1px solid #000000;}
+.PikaPikaFindaaaaaaaaa img {width: 30px; height: 30px; display: inline-block; margin: 0 10px; vertical-align: middle;}
+.PikaPikaFindaaaaaaaaa p {width: 120px !important; height: 20px !important; display: inline-block !important; color: #f1f1f1 !important; font-size: 12px !important; vertical-align: middle;}
+.PikaPikaFindaaaaaaaaa p b {font-size: 14px;}
+.tokenPicker .tokenpickerSelector {font-size: 13px; background-color: #7901ff; color: #f1f1f1; font-weight: bold; text-decoration: none; padding: 5px 8px; display: inline-block; max-width: 90px; margin: 10px 0;}
 .BrandLiInfo {background-color: #000000;color: #ffffff !important;border-radius: 99px;width: 20px;height: 20px;display: inline-block; font-family: "arial";}
 .sequentialOps {width: 600px; padding: 25px; background-color: #ffffff; border: 2px solid #bbbbbb;display: inline-block; max-height: 500px; overflow: auto;}
 .sequentialOps h3 {font-size: 23px; width: 100%; display: inline-block; text-align: center; font-weight: bold; margin: 10px auto;}
@@ -366,6 +381,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .BODL {font-weight: bold !important;}
 .DFOFunctionQuery .NewProposaleditor {width: 990px;}
 .AllViewCode .NewProposaleditor {width: 990px;}
+.LinkVisualButtonBIGGA {width: 100%; display: inline-block; font-size: 13px; padding: 8px 0; margin: 8px 0 !important;}
 .lds-ellipsis {display: inline-block;position: relative;width: 80px;height: 35px;}
 .lds-ellipsis div {position: absolute;top: 10px;width: 13px;height: 13px;border-radius: 50%;background: #7901ff;animation-timing-function: cubic-bezier(0, 1, 1, 0);}
 .lds-ellipsis div:nth-child(1) {left: 8px;animation: lds-ellipsis1 0.6s infinite;}

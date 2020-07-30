@@ -28,14 +28,14 @@ var Wallet = React.createClass({
         return(<section className="BravPicciot">
             <p>Propose to swap:</p>
             <label>
-                <input ref={ref => this.amount = ref} type="number"/>
-                <span>{element.simbol}</span>
+                <input ref={ref => this.amount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$"/>
+                <span>{element.symbol}</span>
             </label>
             <label>
             <p>for:</p>
                 <TokenPicker ref={ref => this.tokenPicker = ref} tokenAddress={element.address}/>
             </label>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.controller.swap(this.amount.value, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address)}>Swap</a>
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => this.controller.swap(this.amount.value, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address)}>Swap</a>
         </section>);
     },
     renderPoolProposal(element) {
@@ -44,14 +44,12 @@ var Wallet = React.createClass({
             <section>
                 <label>
                     Amount:
-                {'\u00a0'}
                     <input ref={ref => this.firstAmount = ref} type="number" />
                 </label>
             </section>
             <section>
                 <label>
                     Token:
-                {'\u00a0'}
                     <TokenPicker ref={ref => this.tokenPicker = ref} tokenAddress={element.address} />
                 </label>
             </section>

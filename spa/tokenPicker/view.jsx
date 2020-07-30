@@ -40,16 +40,15 @@ var TokenPicker = React.createClass({
     },
     renderSelection() {
         var list = this.getList();
-        return (<section tabindex="-1" onBlur={this.toggle}>
-            <section>
-                <input onFocus={this.toggle} ref={ref => this.input = ref} type="text" placeholder="Type your Ethereum address here.." onKeyUp={this.onType} onChange={this.onType}/>
+        return (<section className="PikaPikaYaYa" tabindex="-1" onBlur={this.toggle}>
+            <section className="PikaPikaSearch">
+                <input onFocus={this.toggle} ref={ref => this.input = ref} type="text" placeholder="Search Name/Address" onKeyUp={this.onType} onChange={this.onType}/>
             </section>
-            <section>
+            <section className="PikaPikaFind">
                 {!list && <h4>Loading tokens...</h4>}
                 {list && list.length === 0 && <h4>No results found</h4>}
-                {list && list.map(it => <a key={it.address} href="javascript:;" data-item={JSON.stringify(it)}>
+                {list && list.map(it => <a className="PikaPikaFindaaaaaaaaa" key={it.address} href="javascript:;" data-item={JSON.stringify(it)}>
                     <img src={it.logo}/>
-                    {'\u00a0'}
                     <p>{it.name} ({it.symbol})</p>
                 </a>)}
             </section>
@@ -61,12 +60,11 @@ var TokenPicker = React.createClass({
         }
         return (<section tabindex="-1" onFocus={this.toggle}>
             {(!this.state || !this.state.selected) && <section>
-                <a href="javascript:;">Select a token...</a>
+                <a className="tokenpickerSelector" href="javascript:;">Select</a>
             </section>}
-            {(this.state && this.state.selected) && <section>
+            {(this.state && this.state.selected) && <section className="PikaPikaSelectedBoomer">
                 <img src={this.state.selected.logo}/>
-                {'\u00a0'}
-                <p>{this.state.selected.name} ({this.state.selected.symbol})</p>
+                <p>{this.state.selected.name} <b>({this.state.selected.symbol})</b></p>
             </section>}
         </section>);
     }
