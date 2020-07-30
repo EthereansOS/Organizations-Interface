@@ -57,7 +57,7 @@ var SequentialOps = React.createClass({
         });
     },
     componentDidMount() {
-        (this.props.start + '') === 'true' && this.go();
+        //(this.props.start + '') === 'true' && this.go();
     },
     onCancel(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
