@@ -24,23 +24,21 @@ var Wallet = React.createClass({
         });
     },
     renderSwapProposal(element) {
-        return(<section>
-            <h3>Swap Proposal</h3>
+        return(<section className="BravPicciot">
+            <p>Propose to swap:</p>
             <label>
-                Amount:
-                {'\u00a0'}
                 <input ref={ref => this.amount = ref} type="number"/>
+                <span>{it.symbol}</span>
             </label>
             <label>
-                Token:
-                {'\u00a0'}
+            <p>for:</p>
                 <TokenPicker ref={ref => this.tokenPicker = ref} tokenAddress={element.address}/>
             </label>
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.controller.swap(this.amount.value, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address)}>Swap</a>
         </section>);
     },
     renderPoolProposal(element) {
-        return(<section>
+        return(<section className="BravPicciot">
             <h3>Pool Proposal</h3>
             <label>
                 Amount:
