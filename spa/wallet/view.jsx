@@ -38,9 +38,9 @@ var Wallet = React.createClass({
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => this.controller.swap(this.amount.value, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address)}>Swap</a>
         </section>);
     },
-    renderPoolProposal(element) {
+    /*renderPoolProposal(element) {
         return(<section className="BravPicciot">
-            <h3>Pool Proposal</h3>
+            <p>Propose to swap:</p>
             <section>
                 <label>
                     Amount:
@@ -55,7 +55,7 @@ var Wallet = React.createClass({
             </section>
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window.addToPool(this, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address, this.firstAmount.value)}>Add to Pool</a>
         </section>);
-    },
+    },*/
     renderTransferProposal(element) {
         return (<section>
             <h3>Transfer Proposal</h3>

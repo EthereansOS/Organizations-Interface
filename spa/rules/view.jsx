@@ -124,70 +124,7 @@ var Rules = React.createClass({
     render() {
         var _this = this;
         return (
-            <section className="DFOOverview">
-                <ul className="DFOHosting">
-                    <section className="HostingCategoryTitle">
-                        <h2>Decentralized Application</h2>
-                    </section>
-                    <li className="TheDappInfo1">
-                        <h5 className="DFOHostingTitle">&#128587; Voting Token</h5>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && <p className="DFOLabelTitleInfo">Ticker: <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank">{_this.props.element.symbol}</a></p>}
-                            </AsyncValue>
-                        </section>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && <p className="DFOLabelTitleInfo">Supply: <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.totalSupply, _this.props.element.decimals)}</a></p>}
-                            </AsyncValue>
-                        </section>
-                        <section className="DFOTitleSection">
-                            <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
-                            {"\u00a0"}
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1">
-                    <h5 className="DFOHostingTitle">&#128302; Domain <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo">ENS: <a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>A perpetual unique Web3-Based Name Service to reach this Application</OkBoomer>
-                    </li>
-                    <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions </h5>
-                        <section className="DFOTitleSection">
-                            <a className="LinkVisualStandard" href="javascript:;" onClick={() => _this.emit('section/change', 'Functions')}>
-                                <AsyncValue>
-                                    {_this.props.element.functionalitiesAmount}
-                                </AsyncValue>
-                            </a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle">&#128242; Front-end <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {<a className="LinkVisualButton" href="javascript:;" onClick={() => (_this.props.element.link || _this.props.element.index) && this.setState({ change: this.state && this.state.change === 'showCode' ? null : 'showCode' })}>Code</a>}
-                            </AsyncValue>
-                            {_this.renderChangeButton('index')}
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Front-End code of the Application</OkBoomer>
-                    </li>
-                    {_this.renderChanger(['index'])}
-                    {this.state && this.state.change === 'showCode' && <section className="IndexShowCode">
-                        <section className="IndexShowCodeEditorBox">
-                            <h5>Distributed Layer</h5>
-                            <Editor lang="html" readonly="true" link={_this.props.element.link} firstCode={_this.props.element.link ? undefined : "Distributed Index is actually unset"} />
-                        </section>
-                        <section className="IndexShowCodeEditorBox">
-                            <h5>Decentralized Layer</h5>
-                            <Editor lang="html" readonly="true" first={_this.props.element.index} firstCode={_this.props.element.index ? undefined : "Decentralized Index is actually unset"} />
-                        </section>
-                    </section>}
-                </ul>
+            <section className="DFOOverview">                   
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
                     <h2>Governance Rules</h2>
