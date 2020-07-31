@@ -124,6 +124,15 @@ var Token = React.createClass({
                             <AsyncValue>
                                 {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.balanceOf, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
+                            {this.props.edit && <a href="javascript:;" data-function="mintNewTokens" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Mint' ? 'EditDFOYo Editing' : '')}>Mint</a>}
+                            {this.props.edit && <a href="javascript:;" data-function="burn" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Burn' ? 'EditDFOYo Editing' : '')}>Burn</a>}
+                            {this.props.edit && this.state && this.state.mintBurn && <section className="BravPicciot">
+                                <label>
+                                    <p>Propose to {this.state.mintBurn}</p>
+                                    <input type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" min="0" ref={ref => this.input = ref} />
+                                </label>
+                                <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window[this.state.mintBurnMethod](this, this.input.value)}>{this.state.mintBurn}</a>
+                            </section>}
                         </section>
                     </li>
                     <li className="TheDappInfo025">
@@ -132,15 +141,6 @@ var Token = React.createClass({
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
-                            {this.props.edit && <a href="javascript:;" data-function="mintNewTokens" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Mint' ? 'EditDFOYo Editing' : '')}>Mint</a>}
-                            {this.props.edit && <a href="javascript:;" data-function="burn" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Burn' ? 'EditDFOYo Editing' : '')}>Burn</a>}
-                            {this.props.edit && this.state && this.state.mintBurn && <section>
-                                <label>
-                                    Amount to {this.state.mintBurn}
-                                    <input type="number" min="0" ref={ref => this.input = ref} />
-                                </label>
-                                <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window[this.state.mintBurnMethod](this, this.input.value)}>{this.state.mintBurn}</a>
-                            </section>}
                         </section>
                     </li>
                 </ul>
