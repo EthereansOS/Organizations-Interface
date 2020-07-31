@@ -13,7 +13,8 @@ var DFOList = React.createClass({
             'search': search => this.setState({ search, key: null }),
             'element/update': this.updateElement,
             'balances/refresh': this.controller.refreshBalances,
-            'okBommer/toggle': this.toggleOkBoomer
+            'okBommer/toggle': this.toggleOkBoomer,
+            'edit/toggle' : (edit, callback) => this.dfoElement.setState({edit}, callback)
         };
     },
     toggleOkBoomer () {var _this = this; this.dfoElement.setState({ okBoomer: !(this.dfoElement.state && this.dfoElement.state.okBoomer)}, () => _this.forceUpdate())},

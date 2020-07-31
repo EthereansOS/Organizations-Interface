@@ -26,18 +26,18 @@ var FixedInflationView = React.createClass({
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
                 <h2>Fixed Inflation</h2>
-                {_this.props.edit && <a href="javascript:;" onClick={() => _this.setState({editing : !(_this.state && _this.state.editing)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.editing ? 'EditDFOYo Editing' : '')}>Edit</a>}
+                {_this.props.edit && <a href="javascript:;" onClick={() => _this.setState({edit : !(_this.state && _this.state.edit)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
             </section>
-            {(!this.state || !this.state.editing) && (!this.props || !this.props.fixedInflationData) && <LoaderMinimino/>}
-            {(!this.state || !this.state.editing) && this.props && this.props.fixedInflationData && Object.keys(this.props.fixedInflationData).length === 0 && <h4>No Fixed inflation data <a href="javascript:;" onClick={() => _this.setState({editing : !(_this.state && _this.state.editing)})} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
-            {(!this.state || !this.state.editing) && this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples && this.props.fixedInflationData.swapCouples.length > 0 && this.props.fixedInflationData.swapCouples.map(it => <li className="TheDappInfo1 TheDappInfoSub">
+            {(!this.state || !this.state.edit) && (!this.props || !this.props.fixedInflationData) && <LoaderMinimino/>}
+            {(!this.state || !this.state.edit) && this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples.length === 0 && <h4>No Fixed inflation data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({edit: true}))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
+            {(!this.state || !this.state.edit) && this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples && this.props.fixedInflationData.swapCouples.length > 0 && this.props.fixedInflationData.swapCouples.map(it => <li className="TheDappInfo1 TheDappInfoSub">
                 <section className="DFOTitleSection">
                     <span className="DFOLabelTitleInfosmall">{timeTier}</span>
                     <h5 className="DFOHostingTitle"><img src={it.from.logo}/><b>{window.fromDecimals(it.amount, it.from.decimals)} {it.from.symbol}</b> for <img src={it.to.logo}/>{it.to.symbol}</h5>
                     <span className="DFOLabelTitleInfosmall">&#129412; <b>V2</b> <a href={`${window.getNetworkElement('etherscanURL')}address/${it.pairAddress}`} target="_blank">{window.shortenWord(it.pairAddress, 16)}</a></span>
                 </section>
             </li>)}
-            {this.state && this.state.editing && React.createElement(FixedInflationEdit, props)}
+            {this.props && this.props.edit && this.state && this.state.edit && React.createElement(FixedInflationEdit, props)}
         </ul>);
     }
 });

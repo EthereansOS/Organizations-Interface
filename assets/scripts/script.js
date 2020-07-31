@@ -1149,3 +1149,62 @@ window.loadLogo = async function loadLogo(address) {
     }
     return logo;
 };
+
+window.loadWallets = async function loadWallets(element, callback, alsoLogo) {
+    window.preloadedTokens = window.preloadedTokens || await window.AJAXRequest('data/walletData.json');
+    var network = window.context.ethereumNetwork[window.networkId];
+    var tokens = JSON.parse(JSON.stringify(window.preloadedTokens["tokens" + (network || "")]));
+    for(var i = 0; i < tokens.length; i++) {
+        var token = window.newContract(window.context.votingTokenAbi, tokens[i]);
+        tokens[i] = {
+            token,
+            address : window.web3.utils.toChecksumAddress(tokens[i]),
+            name : await window.blockchainCall(token.methods.name),
+            symbol : await window.blockchainCall(token.methods.symbol),
+            decimals : await window.blockchainCall(token.methods.decimals),
+            logo : !alsoLogo ? undefined : await window.loadLogo(token.options.address)
+        };
+    }
+    element !== window.dfoHub && tokens.unshift({
+        token : window.dfoHub.token,
+        address : window.web3.utils.toChecksumAddress(window.dfoHub.token.options.address),
+        name : window.dfoHub.name,
+        symbol : window.dfoHub.symbol,
+        decimals : window.dfoHub.decimals,
+        logo : !alsoLogo ? undefined : await window.loadLogo(window.dfoHub.token.options.address)
+    });
+    tokens.unshift({
+        token : window.newContract(window.context.votingTokenAbi, window.voidEthereumAddress),
+        address: window.voidEthereumAddress,
+        name: "Ethereum",
+        symbol: "ETH",
+        decimals: 18,
+        logo : !alsoLogo ? undefined : await window.loadLogo(window.voidEthereumAddress)
+    });
+    tokens.unshift({
+        token : element.token,
+        address : window.web3.utils.toChecksumAddress(element.token.options.address),
+        name : element.name,
+        symbol : element.symbol,
+        decimals : element.decimals,
+        logo : !alsoLogo ? undefined : await window.loadLogo(element.token.options.address)
+    });
+    callback && callback(tokens);
+    var values = Object.values(window.list);
+    for(var it of values) {
+        var address = window.web3.utils.toChecksumAddress(it.token.options.address);
+        if((it === window.dfoHub || it === element)) {
+            return;
+        }
+        var entry = {
+            token : it.token,
+            address,
+            name: it.name,
+            symbol: it.symbol,
+            decimals: it.decimals,
+            logo : !alsoLogo ? undefined : await window.loadLogo(it.token.options.address)
+        };
+        it !== window.dfoHub && it !== element && tokens.push(entry);
+    }
+    callback && callback(tokens);
+};

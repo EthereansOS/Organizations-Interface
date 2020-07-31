@@ -5,56 +5,7 @@ var WalletController = function (view) {
     context.pairCreatedTopic = window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
 
     context.loadWallets = async function loadWallets() {
-        window.preloadedTokens = window.preloadedTokens || await window.AJAXRequest('data/walletData.json');
-        var network = window.context.ethereumNetwork[window.networkId];
-        var tokens = JSON.parse(JSON.stringify(window.preloadedTokens["tokens" + (network || "")]));
-        for(var i = 0; i < tokens.length; i++) {
-            var token = window.newContract(window.context.votingTokenAbi, tokens[i]);
-            tokens[i] = {
-                token,
-                address : window.web3.utils.toChecksumAddress(tokens[i]),
-                name : await window.blockchainCall(token.methods.name),
-                symbol : await window.blockchainCall(token.methods.symbol),
-                decimals : await window.blockchainCall(token.methods.decimals)
-            };
-        }
-        context.view.props.element !== window.dfoHub && tokens.unshift({
-            token : window.dfoHub.token,
-            address : window.web3.utils.toChecksumAddress(window.dfoHub.token.options.address),
-            name : window.dfoHub.name,
-            symbol : window.dfoHub.symbol,
-            decimals : window.dfoHub.decimals
-        });
-        tokens.unshift({
-            token : window.newContract(window.context.votingTokenAbi, window.voidEthereumAddress),
-            address: window.voidEthereumAddress,
-            name: "Ethereum",
-            symbol: "ETH",
-            decimals: 18
-        });
-        tokens.unshift({
-            token : context.view.props.element.token,
-            address : window.web3.utils.toChecksumAddress(context.view.props.element.token.options.address),
-            name : context.view.props.element.name,
-            symbol : context.view.props.element.symbol,
-            decimals : context.view.props.element.decimals
-        });
-        context.view.setState({tokens});
-        Object.values(window.list).forEach(it => {
-            var address = window.web3.utils.toChecksumAddress(it.token.options.address);
-            if((it === window.dfoHub || it === context.view.props.element)) {
-                return;
-            }
-            var entry = {
-                token : it.token,
-                address,
-                name: it.name,
-                symbol: it.symbol,
-                decimals: it.decimals
-            };
-            it !== window.dfoHub && it !== context.view.props.element && tokens.push(entry);
-        });
-        context.view.setState({tokens});
+        await window.loadWallets(context.view.props.element, tokens => context.view.setState({tokens}));
         context.calculateAmounts();
     };
 

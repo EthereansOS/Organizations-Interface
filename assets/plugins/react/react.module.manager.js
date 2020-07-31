@@ -263,14 +263,13 @@ var ReactModuleManager = function() {
     return {
         createElement: function(viewName) {
             return createElementInternal({
-                viewName: viewName,
-                createNew: false,
+                viewName,
                 arguments: arguments
             })
         },
         createElementNew: function(viewName) {
             return createElementInternal({
-                viewName: viewName,
+                viewName,
                 createNew: true,
                 arguments: arguments
             })

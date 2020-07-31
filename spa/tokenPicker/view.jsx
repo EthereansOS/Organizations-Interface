@@ -10,11 +10,17 @@ var TokenPicker = React.createClass({
     },
     toggle(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        if(e.type === 'blur' && e.relatedTarget && e.relatedTarget.tagName === 'A' && e.relatedTarget.dataset.item) {
-            var item = JSON.parse(e.relatedTarget.dataset.item);
+        if(e.type === 'click' || (e.type === 'blur' && e.relatedTarget && e.relatedTarget.tagName === 'A' && e.relatedTarget.dataset.item)) {
+            var _this = this;
+            var item = JSON.parse((e.type==='click' ? e.currentTarget : e.relatedTarget).dataset.item);
             this.input.value = item.address;
-            this.setState({selected: item, show: null, search: null});
+            this.setState({selected: item, show: null, search: null}, function() {
+                _this.props.onChange && _this.props.onChange(item);
+            });
             return;
+        }
+        if(e.type === 'blur') {
+            this.setState({show: null});
         }
         if(this.state && this.state.show && (e.type === 'focus' || (e.relatedTarget !== undefined && e.relatedTarget !== null))) {
             return;
@@ -36,7 +42,9 @@ var TokenPicker = React.createClass({
         return list;
     },
     componentDidMount() {
-        this.controller.loadUniswapPairs(this);
+        this.props.tokenAddress && this.controller.loadUniswapPairs(this, this.props.tokenAddress);
+        var _this = this;
+        this.props.element && window.loadWallets(_this.props.element, uniswapPairs => _this.setState({uniswapPairs}), true);
     },
     renderSelection() {
         var list = this.getList();
@@ -47,7 +55,7 @@ var TokenPicker = React.createClass({
             <section className="PikaPikaFind">
                 {!list && <h4>Loading tokens...</h4>}
                 {list && list.length === 0 && <h4>No results found</h4>}
-                {list && list.map(it => <a className="PikaPikaFindaaaaaaaaa" key={it.address} href="javascript:;" data-item={JSON.stringify(it)}>
+                {list && list.map(it => <a className="PikaPikaFindaaaaaaaaa" key={it.address} onClick={this.toggle} href="javascript:;" data-item={JSON.stringify(it)}>
                     <img src={it.logo}/>
                     <p>{it.name} ({it.symbol})</p>
                 </a>)}
