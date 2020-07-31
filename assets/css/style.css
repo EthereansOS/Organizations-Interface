@@ -109,7 +109,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOHosting .TheDappInfo2 .DFOTitleSection {width: 420px;}
 .TheDappInfo3 h6 {font-size: 16px;font-weight: bold;}
 .DFOOpened .DFOOverview .DFOHosting .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #f1f1f1;background-color: #888888;position: relative;}
-.DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfo {color: #292929; margin: 3px 0; font-size: 12px; line-height: 1.1; width: 100%; display: inline-block; min-height: 25px;}
+.DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfo {color: #292929; margin: 3px 0; font-size: 12px; line-height: 1.1; width: 100%; display: inline-block; min-height: 20px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfoM {color: #292929; margin: 3px 0; font-size: 20px; line-height: 1.1; width: 100%; display: inline-block; min-height: 25px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfosmall {font-size: 13px; font-weight: normal;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection span {color: #292929; margin: 3px 0; font-size: 16px; line-height: 1.1; width: 100%; display: inline-block; font-weight: bold;}
@@ -244,6 +244,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .AllViewCode {width: 100%; height: 600px; background-color: #545454; display: inline-block; margin:0;}
 .ProposalsOldIndex .ProposalVoteINFO {width: 100%;}
 .ProposalsOldIndex .ProposalVoteToken {width: 470px;}
+.LinkVisualEthscan {float: none !important;}
 .ProposalsOldIndex .ProposalPoolReview .ProposalPoolReviewPercentage {width: 410px;}
 .SideViewCode {width: 700px; display: inline-block; background-color: #292929; margin: 20px 0 0px 0; vertical-align: top;min-height: 600px;}
 .NewProposaleditor {width: 700px; display: inline-block; background-color: #292929; height: 600px; text-align: left;}
@@ -256,6 +257,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOHosting .LinkVisualStandard aside {font-size: 12px; display: inline;}
 .DFOHosting .LinkVisualStandardO {font-weight: normal;}
 .DFOHosting .LinkVisualButton {margin: 3px 5px;}
+.MiiiiFunctionalities span {margin-left: 20px !important;}
 .DFOHosting .EditDFOYoYO {background-color: #8d40ff;color: #ffffff;padding: 2px 6px;border-radius: 50%;font-size: 11px;font-weight: bold;display: inline-block;vertical-align: top;margin: 4px 0px 0px 0px;text-decoration: none;}
 .LinkVisualButtonB {background-color: #007bff;}	.LinkVisualButtonB {background-color: #007bff;}
 .LinkVisualButtonU {background-color: #ff00ff;}	.LinkVisualButtonU {background-color: #ff00ff;}
