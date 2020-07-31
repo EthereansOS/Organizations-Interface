@@ -38,7 +38,7 @@ var DFOElement = React.createClass({
                     <li><a href="javascript:;" onClick={this.onClick} className="selected">Overview</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>Dapp</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>DeFi</a></li>
-                    <li><a href="javascript:;" onClick={this.onClick}>Govern</a></li>
+                    <li><a href="javascript:;" onClick={this.onClick}>Governance</a></li>
                 </ul>
                 {React.createElement(window[this.state.element], props)}
             </section>

@@ -1,4 +1,4 @@
-var GovernController = function(view) {
+var GovernanceController = function(view) {
     var context = this;
     context.view = view;
 };

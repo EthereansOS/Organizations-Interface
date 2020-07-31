@@ -1,4 +1,4 @@
-var Govern = React.createClass({
+var Governance = React.createClass({
     requiredModules: [
         'spa/proposals'
     ],
