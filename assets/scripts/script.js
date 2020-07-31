@@ -1194,7 +1194,7 @@ window.loadWallets = async function loadWallets(element, callback, alsoLogo) {
     for(var it of values) {
         var address = window.web3.utils.toChecksumAddress(it.token.options.address);
         if((it === window.dfoHub || it === element)) {
-            return;
+            continue;
         }
         var entry = {
             token : it.token,

@@ -83,7 +83,7 @@ var Wallet = React.createClass({
                         <h2>{_this.props.element.name} Balances {(!_this.state || _this.state.cumulativeAmountDollar === undefined || _this.state.cumulativeAmountDollar === null) ? <LoaderMinimino /> : <span>(Tracked: ${window.formatMoney(_this.state.cumulativeAmountDollar)})</span>} <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a></h2>
                     </section>
                     {(!_this.state || !_this.state.tokens) && <LoaderMinimino />}
-                    {_this.state && _this.state.tokens && _this.state.tokens.map(it => it.amount !== '0' && <li key={it.address} className="TheDappInfo1 TheDappInfoSub">
+                    {_this.state && _this.state.tokens && _this.state.tokens.map(it => it.amount !== undefined && it.amount !== '0' && <li key={it.address} className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <section className="DFOWalletBalanceSingleT">
                                 <img src={it.logo}></img>

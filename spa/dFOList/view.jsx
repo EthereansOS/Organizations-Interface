@@ -7,6 +7,7 @@ var DFOList = React.createClass({
         'spa/asyncValue.jsx'
     ],
     getDefaultSubscriptions() {
+        var _this = this;
         return {
             'ethereum/update': () => this.forceUpdate(this.controller.loadList),
             'ethereum/ping': () => this.controller.loadList(true),
@@ -14,7 +15,7 @@ var DFOList = React.createClass({
             'element/update': this.updateElement,
             'balances/refresh': this.controller.refreshBalances,
             'okBommer/toggle': this.toggleOkBoomer,
-            'edit/toggle' : (edit, callback) => this.dfoElement.setState({edit}, callback)
+            'edit/toggle' : (edit, callback) => this.dfoElement.setState({edit}, _this.forceUpdate(callback))
         };
     },
     toggleOkBoomer () {var _this = this; this.dfoElement.setState({ okBoomer: !(this.dfoElement.state && this.dfoElement.state.okBoomer)}, () => _this.forceUpdate())},
