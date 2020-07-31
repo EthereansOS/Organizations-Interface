@@ -106,6 +106,7 @@ var DFOListController = function (view) {
         }
 
         element.token = window.newContract(window.context.votingTokenAbi, votingTokenAddress);
+        element.logo = await window.loadLogo(votingTokenAddress);
         element.name = await window.blockchainCall(element.token.methods.name);
         element.symbol = await window.blockchainCall(element.token.methods.symbol);
         element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
