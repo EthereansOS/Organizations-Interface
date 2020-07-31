@@ -95,7 +95,7 @@ var Wallet = React.createClass({
                             {it.amount === undefined && <LoaderMinimino />}
                             <br />
                             {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='swap' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.swapProposal === it.address ? 'EditDFOYo Editing' : '')}>Swap Proposal</a>}
-                            {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='pool' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.poolProposal === it.address ? 'EditDFOYo Editing' : '')}>Pool Proposal</a>}
+                            {/*{_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='pool' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.poolProposal === it.address ? 'EditDFOYo Editing' : '')}>Pool Proposal</a>}*/}
                             {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='transfer' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.transferProposal === it.address ? 'EditDFOYo Editing' : '')}>Transfer</a>}
                             {_this.state && _this.state.swapProposal === it.address && _this.renderSwapProposal(it)}
                             {_this.state && _this.state.poolProposal === it.address && _this.renderPoolProposal(it)}
