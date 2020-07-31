@@ -939,6 +939,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
     window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
     (!initialContext.functionalitySourceId && (initialContext.sourceCode || initialContext.template)) && sequentialOps.push({
         name: "On-Chain Smart Contract Validation | ",
+        description : 'Ascanapower In the Sky Forevah',
         async call(data, bypass) {
             if(bypass) {
                 data.functionalitySourceId = '0';
