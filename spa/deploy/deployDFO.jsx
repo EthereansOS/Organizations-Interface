@@ -87,7 +87,7 @@ var DeployDFO = React.createClass({
                                 data.ensDomain.toLowerCase()
                             ]);
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployDFO', payload).then(response => {
-                                data.response = window.formatDFOLogs(response.events.Event, "DFODeployed(address_indexed,address)").raw.data[0];
+                                data.response = window.formatDFOLogs(response.events.Event, "DFODeployed(address_indexed,address_indexed,address,address)").raw.data[0];
                             }).then(() => _this.emit("dfo/deploy", window.newContract(window.context.proxyAbi, data.response)));
                         }
                     }]}

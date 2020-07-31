@@ -14,7 +14,7 @@ var FixedInflationEdit = React.createClass({
         this.setState({ swapCouples: this.state.swapCouples }, function () {
             _this.swapCoupleAmount.value = window.fromDecimals(deleted.amount, deleted.from.decimals);
             _this.tokenPickerA.setState({ selected: deleted.from }, function () {
-                _this.tokenPickerB.controller.loadUniswapPairs(_this.tokenPickerB, deleted.from.address);
+                window.loadUniswapPairs(_this.tokenPickerB, deleted.from.address);
                 _this.tokenPickerB.setState({ selected: deleted.to });
                 _this.tokenPickerBLabel.style.display = 'block';
             });
@@ -39,7 +39,7 @@ var FixedInflationEdit = React.createClass({
             return this.emit('message', 'You must select a destination token', 'error');
         }
         var amount = this.swapCoupleAmount.value.split(',').join('');
-        if (isNaN(parseFloat(amount)) ||parseFloat(amount) <= 0) {
+        if (isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
             return this.emit('message', 'You must insert a valid positive amount', 'error');
         }
         amount = window.toDecimals(amount, from.decimals);
@@ -61,20 +61,21 @@ var FixedInflationEdit = React.createClass({
     proposeNewFixedInflation(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.emit('message');
-        if(!this.state || !this.state.blockLimit) {
+        var blockLimit = parseInt((this.customBlockLimit && this.customBlockLimit.value) || (this.state && this.state.blockLimit))
+        if (isNaN(blockLimit) || blockLimit <= 0) {
             return this.emit('message', 'You must choose a block limit', 'error');
         }
         var swapCouples = (this.state && this.state.swapCouples) || [];
-        if(swapCouples.length === 0) {
+        if (swapCouples.length === 0) {
             return this.emit('message', 'You must insert at least a swap couple', 'error');
         }
         var fixedInflation = {
-            blockLimit : this.state.blockLimit,
-            swapCouples : swapCouples.map(it => {
+            blockLimit: this.state.blockLimit,
+            swapCouples: swapCouples.map(it => {
                 return {
-                    from : it.from.address,
+                    from: it.from.address,
                     to: it.to.address,
-                    amount : it.amount
+                    amount: it.amount
                 };
             })
         };
@@ -90,7 +91,7 @@ var FixedInflationEdit = React.createClass({
                 </label>
                 <label>
                     <p>From:</p>
-                    <TokenPicker ref={ref => this.tokenPickerA = ref} element={this.props.element} onChange={token => (this.tokenPickerBLabel.style.display = token ? 'block' : 'none') && _this.tokenPickerB.controller.loadUniswapPairs(_this.tokenPickerB, token.address)} />
+                    <TokenPicker ref={ref => this.tokenPickerA = ref} element={this.props.element} onChange={token => (this.tokenPickerBLabel.style.display = token ? 'block' : 'none') && window.loadUniswapPairs(_this.tokenPickerB, token.address)} />
                 </label>
                 <label ref={ref => (this.tokenPickerBLabel = ref) && (ref.style.display = this.tokenPickerA && this.tokenPickerA.state && this.tokenPickerA.state.selected ? 'block' : 'none')}>
                     <p>To:</p>
@@ -111,8 +112,9 @@ var FixedInflationEdit = React.createClass({
                 <p>Block Limit</p>
                 <select onChange={this.onTierChange}>
                     {Object.keys(window.context.blockTiers).map(it => <option key={it} value={it}>{it}</option>)}
+                    <option value="Custom">Custom</option>
                 </select>
-                <ul>
+                {(!this.state || this.state.tier !== 'Custom') && <ul>
                     {window.context.blockTiers[(this.state && this.state.tier) || Object.keys(window.context.blockTiers)[0]].map(it => <li key={it}>
                         <label>
                             {it}
@@ -120,7 +122,13 @@ var FixedInflationEdit = React.createClass({
                             <input type="radio" data-value={it} name="blockLimit" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockLimit === it)} />
                         </label>
                     </li>)}
-                </ul>
+                </ul>}
+                {this.state && this.state.tier === 'Custom' && <section>
+                    <label>
+                        <p>Value:</p>
+                        <input type="number" min="1" placeholder="Custom block number..." ref={ref => this.customBlockLimit = ref}/>
+                    </label>
+                </section>}
             </section>
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.proposeNewFixedInflation}>Propose new Fixed Inflation</a>
         </section>);
