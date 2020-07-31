@@ -90,7 +90,7 @@ var SequentialOps = React.createClass({
                 {_this.children.map((it, i) => <li key={i} className={'child-' + i}>
                     <label>
                         {it.bypassable && <input type="checkbox" className="include" ref={ref => ref && (ref.checked = !it.bypass)} disabled={it.ok}/>}
-                        <p>{it.name}</p>
+                        <p><b>{it.name}</b> <span className="Pistombrillo">{it.description}</span></p>
                         <span className={it.loading ? "loaderMinimino" : ""}>
                             {it.ok && <span>&#9989;</span>}
                             {it.ko && <span>&#9940;</span>}

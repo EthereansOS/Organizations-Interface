@@ -938,7 +938,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
     delete initialContext.sequentialOps;
     window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
     (!initialContext.functionalitySourceId && (initialContext.sourceCode || initialContext.template)) && sequentialOps.push({
-        name: "Publishing Smart Contract Code",
+        name: "On-Chain Smart Contract Validation | ",
         async call(data, bypass) {
             if(bypass) {
                 data.functionalitySourceId = '0';

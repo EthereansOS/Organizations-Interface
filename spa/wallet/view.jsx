@@ -57,23 +57,21 @@ var Wallet = React.createClass({
         </section>);
     },*/
     renderTransferProposal(element) {
-        return (<section>
-            <h3>Transfer Proposal</h3>
+        return (<section className="BravPicciot">
+            <p>Propose to Transfer:</p>
             <section>
                 <label>
-                    Amount:
-                {'\u00a0'}
-                    <input ref={ref => this.amount = ref} type="number" />
+                    <input ref={ref => this.amount = ref} type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" />
+                    <span>{element.symbol}</span>
                 </label>
             </section>
             <section>
                 <label>
-                    To:
-                {'\u00a0'}
-                    <input ref={ref => this.to = ref} type="text" />
+                    <span>To:</span>
+                    <input className="MarioTorginiProposal" ref={ref => this.to = ref} type="text" placeholder="Address"/>
                 </label>
             </section>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window.transfer(this, element.address, this.amount.value, this.to.value)}>Transfer</a>
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => window.transfer(this, element.address, this.amount.value, this.to.value)}>Transfer</a>
         </section>);
     },
     render() {
@@ -94,7 +92,7 @@ var Wallet = React.createClass({
                             {it.amount !== undefined && <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(it.amount, it.decimals)}</b></h5>}
                             {it.amount === undefined && <LoaderMinimino />}
                             <br />
-                            {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='swap' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.swapProposal === it.address ? 'EditDFOYo Editing' : '')}>Swap Proposal</a>}
+                            {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='swap' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.swapProposal === it.address ? 'EditDFOYo Editing' : '')}>Swap</a>}
                             {/*{_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='pool' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.poolProposal === it.address ? 'EditDFOYo Editing' : '')}>Pool Proposal</a>}*/}
                             {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='transfer' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.transferProposal === it.address ? 'EditDFOYo Editing' : '')}>Transfer</a>}
                             {_this.state && _this.state.swapProposal === it.address && _this.renderSwapProposal(it)}
