@@ -3,7 +3,7 @@ window.voidEthereumAddressExtended = '0x0000000000000000000000000000000000000000
 window.descriptionWordLimit = 300;
 window.urlRegex = new RegExp("(https?:\\/\\/[^\s]+)", "gs");
 window.solidityImportRule = new RegExp("import( )+\"(\\d+)\"( )*;", "gs");
-window.pragmaSolidityRule = new RegExp("pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\\d+;","gs");
+window.pragmaSolidityRule = new RegExp("pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\\d+;", "gs");
 window.base64Regex = new RegExp("data:([\\S]+)\\/([\\S]+);base64", "gs");
 
 window.Main = async function Main() {
@@ -48,21 +48,19 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
         });
         try {
             delegates = window.web3.eth.abi.decodeParameter("address[]", delegates);
-        } catch(e) {
-            delegates = window.web3.eth.abi.decodeParameters(["address","address","address","address","address","address"], delegates);
+        } catch (e) {
+            delegates = window.web3.eth.abi.decodeParameters(["address", "address", "address", "address", "address", "address"], delegates);
         }
         votingToken = delegates[0];
-    } catch(e) {
-    }
+    } catch (e) {}
 
-    if(!votingToken || votingToken === window.voidEthereumAddress) {
+    if (!votingToken || votingToken === window.voidEthereumAddress) {
         try {
             votingToken = await window.blockchainCall(dfo.methods.getToken);
-        } catch (e) {
-        }
+        } catch (e) {}
     }
 
-    if(!votingToken || votingToken === window.voidEthereumAddress) {
+    if (!votingToken || votingToken === window.voidEthereumAddress) {
         var logs = await window.getLogs({
             address,
             topics: [
@@ -82,12 +80,12 @@ window.getLogs = async function(a, endOnFirstResult) {
     args.fromBlock = args.fromBlock || (window.getNetworkElement('deploySearchStart') + '');
     args.toBlock = args.toBlock || (await window.web3.eth.getBlockNumber() + '');
     var to = parseInt(args.toBlock);
-    while(parseInt(args.fromBlock) <= to) {
+    while (parseInt(args.fromBlock) <= to) {
         var newTo = parseInt(args.fromBlock) + window.context.blockSearchSection;
         newTo = newTo <= to ? newTo : to;
         args.toBlock = newTo + '';
         logs.push(...(await window.web3.eth.getPastLogs(args)));
-        if(logs.length > 0 && endOnFirstResult === true) {
+        if (logs.length > 0 && endOnFirstResult === true) {
             return logs;
         }
         args.fromBlock = (parseInt(args.toBlock) + 1) + '';
@@ -357,7 +355,7 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
         try {
             element.functionalityNames = await window.loadFunctionalityNames(element);
             callback && callback();
-        } catch(e) {
+        } catch (e) {
             element.functionalityNames = [];
         }
         var functionalitiesJSON = await blockchainCall(element.functionalitiesManager.methods.functionalitiesToJSON);
@@ -432,12 +430,12 @@ window.indexMain = function indexMain() {
 window.fromDecimals = function fromDecimals(n, d, noFormat) {
     n = (n && n.value || n);
     d = (d && d.value || d);
-    if(!n || !d) {
+    if (!n || !d) {
         return "0";
     }
     var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
     var symbol = window.toEthereumSymbol(decimals);
-    if(symbol) {
+    if (symbol) {
         var result = window.web3.utils.fromWei((typeof n).toLowerCase() === 'string' ? n : window.numberToString(n), symbol);
         return noFormat === true ? result : window.formatMoney(result);
     }
@@ -453,12 +451,12 @@ window.fromDecimals = function fromDecimals(n, d, noFormat) {
 window.toDecimals = function toDecimals(n, d) {
     n = (n && n.value || n);
     d = (d && d.value || d);
-    if(!n || !d) {
+    if (!n || !d) {
         return "0";
     }
     var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
     var symbol = window.toEthereumSymbol(decimals);
-    if(symbol) {
+    if (symbol) {
         return window.web3.utils.toWei((typeof n).toLowerCase() === 'string' ? n : window.numberToString(n), symbol);
     }
     var number = (typeof n).toLowerCase() === 'string' ? parseInt(n) : n;
@@ -574,7 +572,7 @@ window.numberToString = function numberToString(num, locale) {
     if (num === undefined || num === null) {
         num = 0;
     }
-    if((typeof num).toLowerCase() === 'string') {
+    if ((typeof num).toLowerCase() === 'string') {
         return num;
     }
     let numStr = String(num);
@@ -707,15 +705,15 @@ window.extractHTMLDescription = function extractHTMLDescription(code, updateFirs
 
 window.searchForCodeErrors = async function searchForCodeErrors(location, code, codeName, methodSignature, replaces, noCode) {
     var knownFunctionalities = {
-        "getMinimumBlockNumberForSurvey" : true,
-        "getMinimumBlockNumberForEmergencySurvey" : true,
-        "getEmergencySurveyStaking" : true,
-        "getQuorum" : true,
-        "getSurveySingleReward" : true,
-        "getSurveyMinimumStaking" : true,
-        "getIndex" : true,
-        "getLink" : true,
-        "getVotesHardCap" : true
+        "getMinimumBlockNumberForSurvey": true,
+        "getMinimumBlockNumberForEmergencySurvey": true,
+        "getEmergencySurveyStaking": true,
+        "getQuorum": true,
+        "getSurveySingleReward": true,
+        "getSurveyMinimumStaking": true,
+        "getIndex": true,
+        "getLink": true,
+        "getVotesHardCap": true
     };
     var errors = [];
     var comments = code ? window.extractComment(code) : {};
@@ -881,8 +879,8 @@ window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, temp
 window.generateAndCompileContract = async function generateAndCompileContract(sourceCode, lines, descriptions, updates, prefixedLines, postFixedLines) {
     sourceCode = JSON.parse(JSON.stringify(sourceCode));
     var bodyStart = 3;
-    for(var i = 0; i < sourceCode.length; i++) {
-        if(sourceCode[i].trim().toLowerCase() === 'function_body') {
+    for (var i = 0; i < sourceCode.length; i++) {
+        if (sourceCode[i].trim().toLowerCase() === 'function_body') {
             bodyStart = i;
             sourceCode.splice(bodyStart, 1);
             break;
@@ -939,9 +937,9 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
     window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
     (!initialContext.functionalitySourceId && (initialContext.sourceCode || initialContext.template)) && sequentialOps.push({
         name: "On-Chain Smart Contract Validation | ",
-        description : 'Ascanapower In the Sky Forevah',
+        description: 'Ascanapower In the Sky Forevah',
         async call(data, bypass) {
-            if(bypass) {
+            if (bypass) {
                 data.functionalitySourceId = '0';
                 data.functionalitySourceLocation = window.voidEthereumAddress;
                 return;
@@ -949,7 +947,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             data.functionalitySourceId = await window.mint(window.split(data.sourceCode), undefined, true);
             data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
         },
-        bypassable : true
+        bypassable: true
     });
     (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template || initialContext.functionalitySourceId || initialContext.sourceCode)) && sequentialOps.push({
         name: "Deploying Smart Contract",
@@ -1045,9 +1043,9 @@ window.toEthereumSymbol = function toEthereumSymbol(decimals) {
     };
     var d = "1" + (new Array(decimals + 1)).join('0');
     var values = Object.entries(symbols);
-    for(var i in values) {
+    for (var i in values) {
         var symbol = values[i];
-        if(symbol[1] === d) {
+        if (symbol[1] === d) {
             return symbol[0];
         }
     }
@@ -1084,8 +1082,7 @@ window.AJAXRequest = function AJAXRequest(link, timeout, toU) {
                     var response = xmlhttp.responseText;
                     try {
                         response = JSON.parse(response);
-                    } catch(e) {
-                    }
+                    } catch (e) {}
                     ok(response);
                 }
                 try {
@@ -1096,14 +1093,14 @@ window.AJAXRequest = function AJAXRequest(link, timeout, toU) {
             }
         }
         xmlhttp.onloadend = function onloadend() {
-            if(xmlhttp.status == 404) {
+            if (xmlhttp.status == 404) {
                 return ko(404);
             }
         };
         xmlhttp.open(toUpload ? 'POST' : 'GET', link + (link.indexOf('?') === -1 ? '?' : '&') + ('cached_' + new Date().getTime()) + '=' + (new Date().getTime()), true);
         try {
             toUpload ? xmlhttp.send(toUpload) : xmlhttp.send();
-        } catch(e) {
+        } catch (e) {
             return ko(e);
         }
         (timeout !== undefined && timeout !== null) && setTimeout(function() {
@@ -1122,17 +1119,16 @@ window.AJAXRequest = function AJAXRequest(link, timeout, toU) {
 };
 
 window.getEthereumPrice = async function getEthereumPrice() {
-    if(window.lastEthereumPrice && window.lastEthereumPrice.requestExpires > new Date().getTime() && window.lastEthereumPrice.price !== 0) {
+    if (window.lastEthereumPrice && window.lastEthereumPrice.requestExpires > new Date().getTime() && window.lastEthereumPrice.price !== 0) {
         return window.lastEthereumPrice.price;
     }
     var price = 0;
     try {
         price = (await window.AJAXRequest(window.context.coingeckoEthereumPriceURL))[0].current_price;
-    } catch(e) {
-    }
+    } catch (e) {}
     return (window.lastEthereumPrice = {
         price,
-        requestExpires : new Date().getTime() + window.context.coingeckoEthereumPriceRequestInterval
+        requestExpires: new Date().getTime() + window.context.coingeckoEthereumPriceRequestInterval
     }).price;
 };
 
@@ -1145,7 +1141,7 @@ window.loadLogo = async function loadLogo(address) {
     var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : address.toLowerCase() === window.dfoHub.token.options.address.toLowerCase() ? 'assets/img/buidlv2-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
     try {
         await window.AJAXRequest(logo);
-    } catch(e) {
+    } catch (e) {
         logo = 'assets/img/default-logo.png';
     }
     return logo;
@@ -1155,57 +1151,111 @@ window.loadWallets = async function loadWallets(element, callback, alsoLogo) {
     window.preloadedTokens = window.preloadedTokens || await window.AJAXRequest('data/walletData.json');
     var network = window.context.ethereumNetwork[window.networkId];
     var tokens = JSON.parse(JSON.stringify(window.preloadedTokens["tokens" + (network || "")]));
-    for(var i = 0; i < tokens.length; i++) {
+    for (var i = 0; i < tokens.length; i++) {
         var token = window.newContract(window.context.votingTokenAbi, tokens[i]);
         tokens[i] = {
             token,
-            address : window.web3.utils.toChecksumAddress(tokens[i]),
-            name : await window.blockchainCall(token.methods.name),
-            symbol : await window.blockchainCall(token.methods.symbol),
-            decimals : await window.blockchainCall(token.methods.decimals),
-            logo : !alsoLogo ? undefined : await window.loadLogo(token.options.address)
+            address: window.web3.utils.toChecksumAddress(tokens[i]),
+            name: await window.blockchainCall(token.methods.name),
+            symbol: await window.blockchainCall(token.methods.symbol),
+            decimals: await window.blockchainCall(token.methods.decimals),
+            logo: !alsoLogo ? undefined : await window.loadLogo(token.options.address)
         };
     }
     element !== window.dfoHub && tokens.unshift({
-        token : window.dfoHub.token,
-        address : window.web3.utils.toChecksumAddress(window.dfoHub.token.options.address),
-        name : window.dfoHub.name,
-        symbol : window.dfoHub.symbol,
-        decimals : window.dfoHub.decimals,
-        logo : !alsoLogo ? undefined : await window.loadLogo(window.dfoHub.token.options.address)
+        token: window.dfoHub.token,
+        address: window.web3.utils.toChecksumAddress(window.dfoHub.token.options.address),
+        name: window.dfoHub.name,
+        symbol: window.dfoHub.symbol,
+        decimals: window.dfoHub.decimals,
+        logo: !alsoLogo ? undefined : await window.loadLogo(window.dfoHub.token.options.address)
     });
     tokens.unshift({
-        token : window.newContract(window.context.votingTokenAbi, window.voidEthereumAddress),
+        token: window.newContract(window.context.votingTokenAbi, window.voidEthereumAddress),
         address: window.voidEthereumAddress,
         name: "Ethereum",
         symbol: "ETH",
         decimals: 18,
-        logo : !alsoLogo ? undefined : await window.loadLogo(window.voidEthereumAddress)
+        logo: !alsoLogo ? undefined : await window.loadLogo(window.voidEthereumAddress)
     });
     tokens.unshift({
-        token : element.token,
-        address : window.web3.utils.toChecksumAddress(element.token.options.address),
-        name : element.name,
-        symbol : element.symbol,
-        decimals : element.decimals,
-        logo : !alsoLogo ? undefined : await window.loadLogo(element.token.options.address)
+        token: element.token,
+        address: window.web3.utils.toChecksumAddress(element.token.options.address),
+        name: element.name,
+        symbol: element.symbol,
+        decimals: element.decimals,
+        logo: !alsoLogo ? undefined : await window.loadLogo(element.token.options.address)
     });
     callback && callback(tokens);
     var values = Object.values(window.list);
-    for(var it of values) {
+    for (var it of values) {
         var address = window.web3.utils.toChecksumAddress(it.token.options.address);
-        if((it === window.dfoHub || it === element)) {
+        if ((it === window.dfoHub || it === element)) {
             continue;
         }
         var entry = {
-            token : it.token,
+            token: it.token,
             address,
             name: it.name,
             symbol: it.symbol,
             decimals: it.decimals,
-            logo : !alsoLogo ? undefined : await window.loadLogo(it.token.options.address)
+            logo: !alsoLogo ? undefined : await window.loadLogo(it.token.options.address)
         };
         it !== window.dfoHub && it !== element && tokens.push(entry);
     }
     callback && callback(tokens);
+};
+
+window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
+    window.pairCreatedTopic = window.pairCreatedTopic || window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
+    address = window.web3.utils.toChecksumAddress(address || view.props.tokenAddress);
+    view.address = address;
+    view.setState({ uniswapPairs: null, selected: null });
+    var wethAddress = window.web3.utils.toChecksumAddress(await window.blockchainCall(window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress).methods.WETH));
+    if (address !== view.address) {
+        return;
+    }
+    if (address === window.voidEthereumAddress) {
+        view.address = address = wethAddress;
+    }
+    var myToken = window.web3.eth.abi.encodeParameter('address', address);
+    var logs = await window.getLogs({
+        address: window.context.uniSwapV2FactoryAddress,
+        fromBlock: '0',
+        topics: [
+            window.pairCreatedTopic,
+            [myToken]
+        ]
+    });
+    if (address !== view.address) {
+        return;
+    }
+    var uniswapPairs = [];
+    for (var log of logs) {
+        for (var topic of log.topics) {
+            if (topic === window.pairCreatedTopic || topic.toLowerCase() === myToken.toLowerCase()) {
+                continue;
+            }
+            var pairToken = window.newContract(window.context.uniSwapV2PairAbi, window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
+            var token0 = window.web3.utils.toChecksumAddress(await window.blockchainCall(pairToken.methods.token0));
+            var reserves = await window.blockchainCall(pairToken.methods.getReserves);
+            var addr = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameter('address', topic));
+            var token = window.newContract(window.context.votingTokenAbi, addr);
+            uniswapPairs.push({
+                address: addr,
+                token,
+                pairToken,
+                mainReserve: reserves[address === token0 ? 0 : 1],
+                otherReserve: reserves[address === token0 ? 1 : 0],
+                name: addr === wethAddress ? 'Ethereum' : await window.blockchainCall(token.methods.name),
+                symbol: addr === wethAddress ? 'ETH' : await window.blockchainCall(token.methods.symbol),
+                decimals: addr === wethAddress ? '18' : await window.blockchainCall(token.methods.decimals),
+                logo: await window.loadLogo(addr === wethAddress ? window.voidEthereumAddress : addr)
+            });
+            if (address !== view.address) {
+                return;
+            }
+            view.enqueue(() => view.setState({ uniswapPairs }));
+        }
+    }
 };

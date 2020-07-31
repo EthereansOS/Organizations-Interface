@@ -32,6 +32,7 @@ var Token = React.createClass({
             _this.props.element.blocks = window.web3.eth.abi.decodeParameters(['uint256'], blocks)[0];
             _this.forceUpdate();
         });
+        window.loadUniswapPairs(this, _this.props.element.token.options.address);
     },
     renderChangeButton(name) {
         var _this = this;
@@ -75,7 +76,7 @@ var Token = React.createClass({
     },
     toggleMintBurn(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        this.setState({mintBurnMethod: e.currentTarget.dataset.function, mintBurn : this.state && this.state.mintBurn === e.currentTarget.innerText ? null : e.currentTarget.innerText});
+        this.setState({ mintBurnMethod: e.currentTarget.dataset.function, mintBurn: this.state && this.state.mintBurn === e.currentTarget.innerText ? null : e.currentTarget.innerText });
     },
     render() {
         var _this = this;
@@ -148,126 +149,22 @@ var Token = React.createClass({
                     <section className="HostingCategoryTitle">
                         <h2>Dex Liquidity</h2>
                     </section>
-                    <li className="TheDappInfo1 TheDappInfoSub">
+                    {!this.state || !this.state.uniswapPairs && <LoaderMinimino/>}
+                    {this.state && this.state.uniswapPairs && this.state.uniswapPairs.length === 0 && <p>No Uniswap V2 pair found</p>}
+                    {this.state && this.state.uniswapPairs && this.state.uniswapPairs.map(it => <li key={it.pairToken.options.address} className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                            <h5 className="DFOHostingTitle">&#129412; V2 <b>{_this.props.element.symbol} - {it.symbol}</b></h5>
+                            <span className="DFOLabelTitleInfosmall">{window.fromDecimals(it.mainReserve, _this.props.element.decimals)} {_this.props.element.symbol}</span>
+                            {'\u00a0'}
+                            -
+                            {'\u00a0'}
+                            <span className="DFOLabelTitleInfosmall"> {window.fromDecimals(it.otherReserve, it.decimals)} {it.symbol}</span>
+                            {false && <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>}
+                            <br/>
+                            <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapPoolURLTemplate.format(_this.props.element.token.options.address, it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
                         </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo1 TheDappInfoSub">
-                        <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle">&#129412; V2 <b>ETH - buidl</b></h5>
-                            <span className="DFOLabelTitleInfosmall">24,100.55 ETH -</span>
-                            <span className="DFOLabelTitleInfosmall"> 60,600.55 buidl</span>
-                            <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
-                        </section>
-                    </li>
+                    </li>)}
                 </ul>
             </section>
         );

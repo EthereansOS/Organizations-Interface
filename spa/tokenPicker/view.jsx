@@ -42,7 +42,7 @@ var TokenPicker = React.createClass({
         return list;
     },
     componentDidMount() {
-        this.props.tokenAddress && this.controller.loadUniswapPairs(this, this.props.tokenAddress);
+        this.props.tokenAddress && window.loadUniswapPairs(this, this.props.tokenAddress);
         var _this = this;
         this.props.element && window.loadWallets(_this.props.element, uniswapPairs => _this.setState({uniswapPairs}), true);
     },

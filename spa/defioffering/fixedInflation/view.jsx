@@ -26,7 +26,7 @@ var FixedInflationView = React.createClass({
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
                 <h2>Fixed Inflation</h2>
-                {_this.props.edit && <a href="javascript:;" onClick={() => _this.setState({edit : !(_this.state && _this.state.edit)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
+                {this.props.edit && <a href="javascript:;" onClick={() => _this.setState({edit : !(_this.state && _this.state.edit)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
             </section>
             {(!this.state || !this.state.edit) && (!this.props || !this.props.fixedInflationData) && <LoaderMinimino/>}
             {(!this.state || !this.state.edit) && this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples.length === 0 && <h4>No Fixed inflation data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({edit: true}))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
