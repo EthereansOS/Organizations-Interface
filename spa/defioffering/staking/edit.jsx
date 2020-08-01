@@ -159,7 +159,7 @@ var StakingEdit = React.createClass({
                             {Object.keys(_this.props.stakingData.blockTiers).map(it => <option key={it} value={it} selected={_this.state.tier === it}>{it}</option>)}
                             <option value="Custom" selected={_this.state.tier === 'Custom'}>Custom</option>
                         </select>
-                        {(!this.state || this.state.tier !== 'Custom') && <p>{_this.props.stakingData.blockTiers[this.state.tier]} Weeks</p>}
+                        {(this.state && this.state.tier && this.state.tier !== 'Custom') && <p>{_this.props.stakingData.blockTiers[this.state.tier].weeks} Weeks</p>}
                         {(!this.state || this.state.tier !== 'Custom') && <ul>
                             {_this.props.stakingData.blockTiers[(this.state && this.state.tier) || Object.keys(_this.props.stakingData.blockTiers)[0]].averages.map(it => <li key={it}>
                                 <label>

@@ -11,7 +11,7 @@ var StakingView = React.createClass({
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
                 <h2>Liquidity Staking</h2>
-                {this.props.edit && <a href="javascript:;" onClick={() => _this.setState({ edit: !(_this.state && _this.state.edit) })} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
+                {false && this.props.edit && <a href="javascript:;" onClick={() => _this.setState({ edit: !(_this.state && _this.state.edit) })} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
             </section>
             {(!this.state || !this.state.edit) && (!this.props || !this.props.stakingData) && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.tiers.length === 0 && <h4>No Staking data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({ edit: true }))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
@@ -41,7 +41,7 @@ var StakingView = React.createClass({
                         <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
                         <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.remainingToStake, _this.props.element.decimals)}</b></h5>
                         <a href={window.getNetworkElement('etherscanURL') + 'address/' + this.props.stakingData.stakingManager.options.address} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
-                        <a href="javascript:;" target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
+                        <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
                     </section>
                 </section>
             </li>)}
