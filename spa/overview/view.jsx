@@ -163,6 +163,7 @@ var Overview = React.createClass({
                         <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
                         <section className="DFOTitleSection">
                             <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View</a>
+                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a>
                         </section>
                     </li>
                     <li className="TheDappInfo1">
@@ -243,12 +244,12 @@ var Overview = React.createClass({
                         <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
                     </li>
                     <li className="TheDappInfo1">
-                        <h5 className="DFOHostingTitle">&#129518; Fixed Inflation: </h5>
+                        <h5 className="DFOHostingTitle">&#128424; Fixed Inflation:</h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
                         <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">More</a>
                         </section>
-                        <h5 className="DFOHostingTitle">&#129412; Liquidity Staking: </h5>
+                        <h5 className="DFOHostingTitle">&#129412; Liquidity Staking:</h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
                         <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">More</a>
