@@ -3,6 +3,9 @@ var Stake = React.createClass({
         'spa/loader.jsx',
         'spa/bigLoader.jsx'
     ],
+    requiredModules: [
+        'spa/stakingInfo'
+    ],
     getDefaultSubscriptions() {
         return {
             'ethereum/ping': this.componentDidMount
@@ -25,7 +28,7 @@ var Stake = React.createClass({
     changeSecond(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         var split = e.currentTarget.value.split("_");
-        this.logo.src = "assets/img/" + split[1] + "-logo.png";
+        this.logo.src = this.props.stakingData.pairs[split[0]].logo
         this.controller.calculateOther("firstAmount", parseInt(this.pool.value.split('_')[0]), this.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
         this.controller.calculateApprove(parseInt(this.pool.value.split('_')[0]));
     },
@@ -59,15 +62,18 @@ var Stake = React.createClass({
     componentDidMount() {
         window.walletAddress && this.controller.calculateApprove(parseInt(this.pool.value.split('_')[0]));
     },
+    firstTier(section) {
+        $(section).children('.SelectedDutrationStake').length === 0 && $($(section).children()[0]).addClass('SelectedDutrationStake');
+    },
     render() {
         var _this = this;
-        return (<section className="StakeBigBoss">
+        return (<section className="StakeBigBoss" style={{"position" : 'fixed'}}>
             <section className="boxAYOR">
             </section>
             {this.state && this.state.staked && <section className="boxAYORT">
                 <section className="boxAYORTTEXT">
                     <h2>&#127881; &#129385; Staked! &#129385; &#127881;</h2>
-                    <p>You have succesfully staked <b>{this.state.staked.amount}</b> buidl for <b>{this.state.staked.period}!</b> Check the <a href="javascript:;" onClick={() => this.emit('view/change', 'Status')}>Status</a> page to manage your Staking Position. </p>
+                    <p>You have succesfully staked <b>{this.state.staked.amount}</b> {this.props.element.symbol} for <b>{this.state.staked.period}!</b> Check the <a href="javascript:;" onClick={() => this.emit('view/change', 'Status')}>Status</a> page to manage your Staking Position. </p>
                 </section>
             </section>}
             <section className="switchBox">
@@ -75,45 +81,41 @@ var Stake = React.createClass({
                 <section className="switchTools">
                     <a data-target="firstAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>
                     <input ref={ref => this.firstAmount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="firstAmount" onChange={this.onChangeAmount} />
-                    <aside className="switchLink" target="_blank">buidl</aside>
-                    <img src="assets/img/buidl-logo.png" />
+                    <aside className="switchLink" target="_blank">{this.props.element.symbol}</aside>
+                    <img src={this.props.element.logo}/>
                 </section>
                 <section className="switchTools switchTools2">
                     {false && <a data-target="secondAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>}
                     <input className="ETHUSDBLOW" ref={ref => this.secondAmount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="secondAmount" onChange={this.onChangeAmount} disabled />
                     <select ref={ref => this.pool = ref} className="switchLink" target="_blank" onChange={this.changeSecond}>
-                        <option value="0_eth" selected>eth</option>
-                        <option value="1_usdc">usdc</option>
+                        {this.props.stakingData.pairs.map((it, i) => <option key={it.address} value={i + "_" + it.symbol}>{it.symbol}</option>)}
                     </select>
-                    <img ref={ref => this.logo = ref} src="assets/img/eth-logo.png" />
+                    <img ref={ref => this.logo = ref} src={this.props.stakingData.pairs[0].logo}/>
                 </section>
                 <h3>&#9203; Duration</h3>
-                <section className="switchTools">
-                    <a data-tier="0" className="TimetoStake" href="javascript:;" onClick={this.onTier}>3 Month</a>
-                    <a data-tier="1" className="TimetoStake SelectedDutrationStake" href="javascript:;" onClick={this.onTier}>6 Months</a>
-                    <a data-tier="2" className="TimetoStake" href="javascript:;" onClick={this.onTier}>9 Months</a>
-                    <a data-tier="3" className="TimetoStake" href="javascript:;" onClick={this.onTier}>1 Year</a>
+                <section className="switchTools" ref={this.firstTier}>
+                    {this.props.stakingData.tiers.map((it, i) => <a key={it.tierKey} data-tier={i} className="TimetoStake" href="javascript:;" onClick={this.onTier}>{it.tierKey}</a>)}
                 </section>
                 <h3>&#127873; Total Reward</h3>
                 <section className="switchTools">
                     <span ref={ref => this.reward = ref} className="switchFinal">0</span>
-                    <aside className="switchLink" >buidl</aside>
-                    <img src="/assets/img/buidl-logo.png"></img>
+                    <aside className="switchLink">{this.props.element.symbol}</aside>
+                    <img src={this.props.element.logo}></img>
                 </section>
                 <h3 className="switchWeek">Weekly</h3>
                 <section className="switchTools switchToolsWeek">
                     <span ref={ref => this.splittedReward = ref} className="switchFinal">0</span>
-                    <aside className="switchLink" >buidl</aside>
-                    <img src="/assets/img/buidl-logo.png"></img>
+                    <aside className="switchLink">{this.props.element.symbol}</aside>
+                    <img src={this.props.element.logo}/>
                 </section>
                 <section className="switchActions">
-                    {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target="buidl" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>Approve buidl</a>}
-                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target="usdc" href="javascript:;" className="switchAction active" onClick={this.approve}>Approve usdc</a>}
+                    {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target={this.props.element.symbol} href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>Approve {this.props.element.symbol}</a>}
+                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target={this.props.element.symbol} href="javascript:;" className="switchAction active" onClick={this.approve}>Approve {this.props.element.symbol}</a>}
                     {window.walletAddress && <a href="javascript:;" className={"switchAction" + (!this.state.approveFirst && !this.state.approveSecond ? " active" : "")} onClick={this.stake}>Stake</a>}
                     {!window.walletAddress && <a href="javascript:;" onClick={() => window.ethereum.enable().then(() => window.getAddress()).then(() => _this.emit('ethereum/ping'))} className="switchAction active">Connect</a>}
                 </section>
-                <p>By Staking buidl you'll earn from the Uniswap V2 Trading fees + the Staking Reward. Staking buidl you're adding liquidity to Uniswap V2 and you'll recevie Pool Tokens.</p>
-                <p>Disclamer: Staking buidl is an irreversible action, you'll be able to redeem your locked Uniswap V2 tokens only after the selected locking period. Do it at your own risk</p>
+                <p>By Staking {this.props.element.symbol} you'll earn from the Uniswap V2 Trading fees + the Staking Reward. Staking {this.props.element.symbol} you're adding liquidity to Uniswap V2 and you'll recevie Pool Tokens.</p>
+                <p>Disclamer: Staking {this.props.element.symbol} is an irreversible action, you'll be able to redeem your locked Uniswap V2 tokens only after the selected locking period. Do it at your own risk</p>
             </section>
             <section>
                 <section className="statusBox">
@@ -124,12 +126,12 @@ var Stake = React.createClass({
                         <section className="statusPosition">
                             <h3>{it.poolAmountFromDecimals}</h3>
                             <h6 className="statusUni">&#129412; <a href="">Uniswap-V2</a></h6>
-                            <h6><b>{it.poolPosition === '0' ? "ETH" : "USDC"}-buidl</b></h6>
+                            <h6><b>{this.props.stakingData.pairs[it.poolPosition].symbol}-{this.props.element.symbol}</b></h6>
                         </section>
                         <section className="statusPosition">
-                            <h5>{window.fromDecimals(it.reward, 18)} <img src="/assets/img/buidl-logo.png"></img></h5>
+                            <h5>{window.fromDecimals(it.reward, window.props.element.decimals)} <img src={this.props.element.logo}></img></h5>
                             <h6>Locked Reward</h6>
-                            <h5><b>{window.fromDecimals(it.cumulativeReward, 18)}</b> <img src="/assets/img/buidl-logo.png"></img></h5>
+                            <h5><b>{window.fromDecimals(it.cumulativeReward, window.props.element.decimals)}</b> <img src={this.props.element.logo}></img></h5>
                             <h6>&#127873; Redeemable</h6>
                             <a className={it.cumulativeReward !== '0' && !it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.redeem(e, it.tier, it.position)}>Redeem</a>
                         </section>
@@ -145,10 +147,7 @@ var Stake = React.createClass({
                 <section className="statusBox">
                     <h2>&#129385; Status:</h2>
                     <section className="statusAll">
-                        <StakingInfo tier="0" title="3 Months" />
-                        <StakingInfo tier="1" title="6 Months" />
-                        <StakingInfo tier="2" title="9 Months" />
-                        <StakingInfo tier="3" title="1 Year" />
+                        {this.props.stakingData.tiers.map((it, i) => <StakingInfo tier={i} title={it.tierKey} stake={_this.props.stakingData.stakingManager} element={_this.props.element}/>)}
                     </section>
                 </section>
             </section>

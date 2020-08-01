@@ -89,7 +89,7 @@ var Token = React.createClass({
                     <li className="TheDappInfo05">
                         <section className="DFOTitleSection">
                             <figure className="VerifiedIcon">
-                                <img src="assets/img/buidlv2-logo.png"></img>
+                                <img src={this.props.element.logo}></img>
                             </figure>
                         </section>
                     </li>

@@ -118,7 +118,8 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 try {
                     window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));
                 } catch (e) {}
-
+                window.uniswapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
+                window.uniswapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress);
                 window.list = {
                     DFO: window.dfoHub
                 };

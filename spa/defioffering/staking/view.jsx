@@ -3,11 +3,21 @@ var StakingView = React.createClass({
         'spa/loaderMinimino.jsx',
         'spa/defioffering/staking/edit.jsx'
     ],
+    requiredModules: [
+        'spa/stake'
+    ],
+    showStake(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this.setState({fullscreen : true});
+    },
     render() {
         var _this = this;
         var props = {};
         this.props && Object.entries(this.props).forEach(entry => props[entry[0]] = entry[1]);
         this.state && Object.entries(this.state).forEach(entry => props[entry[0]] = entry[1]);
+        if(props.fullscreen) {
+            return React.createElement(Stake, props);
+        }
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
                 <h2>Liquidity Staking</h2>
@@ -40,8 +50,8 @@ var StakingView = React.createClass({
                         <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.staked, _this.props.element.decimals)}</b></h5>
                         <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
                         <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.remainingToStake, _this.props.element.decimals)}</b></h5>
-                        <a href={window.getNetworkElement('etherscanURL') + 'address/' + this.props.stakingData.stakingManager.options.address} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
-                        <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
+                        <a onClick={this.showStake} className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
+                        <a href="javascript:;" target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
                     </section>
                 </section>
             </li>)}
