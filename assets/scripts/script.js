@@ -1282,10 +1282,44 @@ window.loadTokenInfos = async function loadTokenInfos(addresses, wethAddress) {
 window.calculateTimeTier = function calculateTimeTier(blockLimit) {
     var tiers = Object.entries(window.context.blockTiers);
     for (var tier of tiers) {
-        var steps = tier[1];
+        var steps = tier[1].averages;
         if (blockLimit >= steps[0] && blockLimit <= steps[2]) {
             return `~${tier[0].firstLetterToUpperCase()} (${blockLimit} blocks)`;
         }
     }
     return `${blockLimit} blocks`;
+};
+
+window.getTierKey = function getTierKey(blockLimit) {
+    var tiers = Object.entries(window.context.blockTiers);
+    for (var tier of tiers) {
+        var steps = tier[1].averages;
+        if (blockLimit >= steps[0] && blockLimit <= steps[2]) {
+            return tier[0];
+        }
+    }
+    return 'Custom';
+};
+
+window.calculateMultiplierAndDivider = function calculateMultiplierAndDivider(p) {
+    p = (typeof p).toLowerCase() === 'string' ? parseFloat(p) : p;
+    p = p / 100;
+    var percentage = window.formatMoney(p, 9, '') .split('.');
+    var arr = [];
+    arr[0] = percentage[0];
+    var i;
+    for(i = percentage[1].length - 1; i >= 0; i--) {
+        if(percentage[1][i] !== '0') {
+            break;
+        }
+    }
+    var afterFloat = percentage[1].substring(0, i === percentage[1].length ? i : (i + 1));
+    arr[0] += afterFloat;
+    arr[0] = window.numberToString(parseInt(arr[0]));
+    arr[1] = '1';
+    for(var i = 0; i < afterFloat.length; i++) {
+        arr[1] += '0';
+    }
+    arr[1] = window.numberToString(parseInt(arr[1]));
+    return arr;
 };

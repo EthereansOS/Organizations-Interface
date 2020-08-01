@@ -297,14 +297,14 @@ window.fixedInflation = async function fixedInflation(view, fixedInflation) {
     var title = ((functionalityReplace ? 'Replace' : 'New') + ' Fixed Inflation');
     var sourceCode = `
 /* Discussion:
-* https://${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth?ensd=${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth
-*/
+ * https://${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth?ensd=${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth
+ */
 /* Description:
-* ${title}
-*/
+ * ${title}
+ */
 ${!functionalityReplace ? null : `/* Update:
-* New code
-*/`}
+ * New code
+ */`}
 pragma solidity ^${selectedSolidityVersion[0]};
 
 contract FixedInflationFunctionality {
@@ -489,8 +489,6 @@ window.stake = async function stake(view, startBlock, pools, tiers, stakingContr
         rewardMultipliers.push(it.rewardMultiplier);
         rewardDividers.push(it.rewardDivider);
         rewardSplitTranches.push(it.rewardSplitTranche);
-        it.minCap = window.toDecimals(it.minCap, 18);
-        it.hardCap = window.toDecimals(it.hardCap, 18);
     });
     var dFOStakeSourceCode = (await window.AJAXRequest('data/StakingContractTemplate.sol')).format(selectedSolidityVersion[0], window.web3.utils.toChecksumAddress(window.context.uniSwapV2FactoryAddress), window.web3.utils.toChecksumAddress(window.context.uniSwapV2RouterAddress));
     var functionalityReplace = '';
@@ -500,14 +498,14 @@ window.stake = async function stake(view, startBlock, pools, tiers, stakingContr
         contract = window.web3.utils.toChecksumAddress(contract);
         return `
 /* Discussion:
-* https://${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth?ensd=${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth
-*/
+ * https://${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth?ensd=${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth
+ */
 /* Description:
-* ${title}
-*/
+ * ${title}
+ */
 ${!functionalityReplace ? null : `/* Update:
-* New code
-*/`}
+ * New code
+ */`}
 pragma solidity ^${selectedSolidityVersion[0]};
 
 contract StakingTransferFunctionality {
