@@ -84,8 +84,9 @@ var FixedInflationEdit = React.createClass({
     render() {
         var _this = this;
         return (<section>
-            <section>
-                <p>Block Limit</p>
+            <section className="TheDappInfo05">
+                <section className="BravPicciot">
+                <h5>Block Limit</h5>
                 <select onChange={this.onTierChange}>
                     {Object.keys(window.context.blockTiers).map(it => <option key={it} value={it}>{it}</option>)}
                     <option value="Custom">Custom</option>
@@ -93,9 +94,8 @@ var FixedInflationEdit = React.createClass({
                 {(!this.state || this.state.tier !== 'Custom') && <ul>
                     {window.context.blockTiers[(this.state && this.state.tier) || Object.keys(window.context.blockTiers)[0]].map(it => <li key={it}>
                         <label>
-                            {it}
-                            {'\u00a0'}
-                            <input type="radio" data-value={it} name="blockLimit" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockLimit === it)} />
+                        <input className="AMeMoPiach" type="radio" data-value={it} name="blockLimit" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockLimit === it)} />
+                        <span><b>{it}</b></span>
                         </label>
                     </li>)}
                 </ul>}
@@ -105,12 +105,13 @@ var FixedInflationEdit = React.createClass({
                         <input type="number" min="1" placeholder="Custom block number..." ref={ref => this.customBlockLimit = ref}/>
                     </label>
                 </section>}
+                </section>
             </section>
             <section className="TheDappInfo1">
                 <section className="BravPicciot">
                     <h5>Add pair:</h5>
                     <label>
-                        <input ref={ref => this.swapCoupleAmount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" />
+                        <input ref={ref => this.swapCoupleAmount = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" />
                     </label>
                     <label>
                         <p>From:</p>
@@ -120,18 +121,20 @@ var FixedInflationEdit = React.createClass({
                         <p>To:</p>
                         <TokenPicker ref={ref => this.tokenPickerB = ref} />
                     </label>
-                    <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.addSwapCouple}>Add Pair</a>
+                    <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonG LinkVisualButtonBIGGA" onClick={this.addSwapCouple}>Add Pair</a>
                 </section>
             </section>
-            <ul>
+            <ul className="TheDappInfo1">
                 {this.state.swapCouples.map((it, i) => <li key={i} className="TheDappInfo1 TheDappInfoSub">
                     <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle"><img src={it.from.logo} /><b>{window.fromDecimals(it.amount, it.from.decimals)} {it.from.symbol}</b> for <img src={it.to.logo} />{it.to.symbol}</h5>
+                        <h5 className="DFOHostingTitle TorginiOpenCode"><img src={it.from.logo} /><b>{window.fromDecimals(it.amount, it.from.decimals)} {it.from.symbol}</b> for <img src={it.to.logo} />{it.to.symbol}</h5>
                         <a href="javascript;" data-key={i} onClick={this.deleteSwapCouple}><aside className="ChiudiQuella">X</aside></a>
                     </section>
                 </li>)}
             </ul>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.proposeNewFixedInflation}>Propose new Fixed Inflation</a>
+            <section className="TheDappInfo1">
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGAMaNNTROP" onClick={this.proposeNewFixedInflation}>Propose new Fixed Inflation</a>
+            </section>
         </section>);
     }
 });

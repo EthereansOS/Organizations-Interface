@@ -61,7 +61,7 @@ var Wallet = React.createClass({
             <p>Propose to Transfer:</p>
             <section>
                 <label>
-                    <input ref={ref => this.amount = ref} type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" />
+                    <input ref={ref => this.amount = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" />
                     <span>{element.symbol}</span>
                 </label>
             </section>

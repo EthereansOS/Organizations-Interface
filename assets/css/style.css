@@ -1,6 +1,6 @@
 body {width: 100%; position: relative;line-height:1;position: relative; margin:0px auto;  line-height:1; padding:0px 0; font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif !important;}
 h1, h2, h3, h4, h5, h6 {font-weight: normal;}
-.bravPicciot p, a, h1, h2, h3, h4, h5, h6 {margin-block-start: 0em;margin-block-end: 0em;margin-inline-start: 0px;margin-inline-end: 0px;}
+.bravPicciot p, .BravPicciot a,.BravPicciot h1,.BravPicciot h2,.BravPicciot h3,.BravPicciot h4,.BravPicciot h5,.BravPicciot h6 {margin-block-start: 0em;margin-block-end: 0em;margin-inline-start: 0px;margin-inline-end: 0px;}
 ul, li, ol {padding-inline-start:0; list-style-type:none;}
 button {border: none;}
 input, textarea, button, a {border-radius: 2px;}
@@ -261,9 +261,12 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOHosting .LinkVisualButton {margin: 3px 5px;}
 .MiiiiFunctionalities span {margin-left: 20px !important;}
 .DFOHosting .EditDFOYoYO {background-color: #8d40ff;color: #ffffff;padding: 2px 6px;border-radius: 50%;font-size: 11px;font-weight: bold;display: inline-block;vertical-align: top;margin: 4px 0px 0px 0px;text-decoration: none;}
-.LinkVisualButtonB {background-color: #007bff;}	.LinkVisualButtonB {background-color: #007bff;}
-.LinkVisualButtonU {background-color: #ff00ff;}	.LinkVisualButtonU {background-color: #ff00ff;}
+.LinkVisualButtonB {background-color: #007bff;}	
+.LinkVisualButtonG {background-color: #00bd3a;}	
+.LinkVisualButtonU {background-color: #ff00ff;}	
 .LinkVisualButtonO {background-color: #ffb004;}
+.TorginiOpenCode {font-size: 14px !important;}
+.TorginiOpenCode img {width: 15px !important; height: 15px !important;}
 .TheDappInfo2 .LinkVisualButton, .TheDappInfo3 .LinkVisualButton {float: right; margin: 0px 30px 0px 0px;}
 .DFOFxTools {width: 70px; margin: 5px 5px 0 0; display: inline-block; vertical-align: top;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOBtnViewSection .LinkVisualButton {margin: 5px 0 0 0;}
@@ -295,9 +298,12 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .Main .MainMsg a {font-size: 16px; color: #000000; font-weight: bold;}
 .BravPicciot {width: 78%; background-color: #4d4954; padding: 20px 10%; border-radius: 28px; display: inline-block; margin: 10px auto; position: relative;}
 .BravPicciot input {width: 100px; background-color: #000000; border: none; font-size: 14px; padding: 5px 10px; color: #ffffff; margin: 10px 10px 10px 5px; border-radius: 10px;}
+.BravPicciot .AMeMoPiach {width: 10px; display: inline-block; margin: 5px 0;}
+.BravPicciot select {width: 100px; background-color: #000000; border: none; font-size: 14px; padding: 5px 10px; color: #ffffff; margin: 10px 10px 10px 5px; border-radius: 10px;}
 .MarioTorginiProposal {width: 140px !important;margin-left: 10px !important;}
 .BravPicciot p {font-size: 14px !important; color: #f1f1f1 !important;}
 .BravPicciot span {color: #f1f1f1 !important; font-size: 15px !important;}
+.BravPicciot span b {min-width: 110px; display: inline-block; margin-left: 10px;}
 .BravPicciot h5 {color: #f1f1f1 !important; font-size: 20px !important; padding: 5px 5px 5px 5px; line-height: 1;margin-block-start: 0em;margin-block-end: 0em;margin-inline-start: 0px;margin-inline-end: 0px;}
 .PikaPikaYaYa {position: absolute; width: 185px; height: 220px; overflow: hidden; background-color: #000000;}
 .PikaPikaSearch {position: absolute !important; top:0 !important; left: 0 !important; width: 185px !important; height: 40px !important; font-size: 13px; color: #f1f1f1; text-align: center;}
@@ -432,6 +438,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DarkMode .DFOOpened .DFOOverview .DFOHosting .TheDappInfosub .DFOTitleSection {background-color: #292929;}
 .TheDappInfosub {position: relative;}
 .ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff;}
+.LinkVisualButtonBIGGAMaNNTROP {font-size: 14px; height: auto; padding: 10px; width: 100%;}
 
 .DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}	.DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}
 .DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #545454 !important;z-index: 10000;}	.DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #8653f6 !important;z-index: 10000;}

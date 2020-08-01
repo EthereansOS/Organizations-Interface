@@ -130,7 +130,7 @@ var Token = React.createClass({
                             {this.props.edit && this.state && this.state.mintBurn && <section className="BravPicciot">
                                 <label>
                                     <p>Propose to {this.state.mintBurn}</p>
-                                    <input type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" min="0" ref={ref => this.input = ref} />
+                                    <input type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" min="0" ref={ref => this.input = ref} />
                                 </label>
                                 <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window[this.state.mintBurnMethod](this, this.input.value)}>{this.state.mintBurn}</a>
                             </section>}
