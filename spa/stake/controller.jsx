@@ -9,16 +9,17 @@ var StakeController = function (view) {
         var buidlAllowance = parseInt(await window.blockchainCall(window.dfoHub.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
         var approveFirst = buidlAllowance === 0 || buidlAllowance < buidlBalance;
         var approveSecond = false;
-        if(i !== 0) {
+        var pool = context.view.props.stakingData.pairs[i];
+        if(pool.symbol === 'ETH') {
             var secondBalance =  parseInt((await context.getSecondTokenData(i)).balance);
-            var secondAllowance = parseInt(await window.blockchainCall(window.usdcToken.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
+            var secondAllowance = parseInt(await window.blockchainCall(pool.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
             approveSecond = secondAllowance === 0 || secondAllowance < secondBalance;
         }
         context.view.setState({approveFirst, approveSecond});
     };
 
     context.approve = async function approve(target) {
-        var token = window[target + 'Token'];
+        var token = target === 'mine' ? context.view.props.element.token : context.view.props.stakingData.pairs[context.view.domRoot.children().find('.SelectedDutrationStake')[0].dataset.index].token;
         await window.blockchainCall(token.methods.approve, context.view.props.stakingData.stakingManager.options.address, await window.blockchainCall(token.methods.totalSupply));
         context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]));
     };
@@ -40,7 +41,7 @@ var StakeController = function (view) {
         var reserves = await context.calculateReserves((await context.getSecondTokenData(i, true)).token, i);
         var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? 6 : 18));
         value = new UniswapFraction(value.toSignificant(100).split('.')[0]);
-        var otherVal = value.divide(10 ** (target === 'firstAmount' && i == 1 ? 6 : 18)).toSignificant(6);
+        var otherVal = value.divide(10 ** (target === 'firstAmount' && context.view.props.stakingData.pairs[i].decimals)).toSignificant(6);
         context.view[target === 'firstAmount' ? 'secondAmount' : 'firstAmount'].value = window.formatMoney(otherVal, otherVal.split('.')[1] && otherVal.split('.')[1].length);
         target === "firstAmount" && context.calculateReward(tier);
         return value;
@@ -75,9 +76,10 @@ var StakeController = function (view) {
     };
 
     context.getSecondTokenData = async function getSecondTokenData(i, tokenOnly) {
+        var pool = context.view.props.stakingData.pairs[i];
         return {
-            token : context.view.props.stakingData.pairs[i].token,
-            balance : tokenOnly === true ? '0' : await (i == 0 ? window.web3.eth.getBalance(window.walletAddress) : window.blockchainCall(window.usdcToken.methods.balanceOf, window.walletAddress))
+            token : pool.token,
+            balance : tokenOnly === true ? '0' : await (pool.symbol === 'ETH' ? window.web3.eth.getBalance(window.walletAddress) : window.blockchainCall(pool.token.methods.balanceOf, window.walletAddress))
         };
     };
 

@@ -88,7 +88,7 @@ var Stake = React.createClass({
                     {false && <a data-target="secondAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>}
                     <input className="ETHUSDBLOW" ref={ref => this.secondAmount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="secondAmount" onChange={this.onChangeAmount} disabled />
                     <select ref={ref => this.pool = ref} className="switchLink" target="_blank" onChange={this.changeSecond}>
-                        {this.props.stakingData.pairs.map((it, i) => <option key={it.address} value={i + "_" + it.symbol}>{it.symbol}</option>)}
+                        {this.props.stakingData.pairs.map((it, i) => <option key={it.address} data-index={i} value={i + "_" + it.symbol}>{it.symbol}</option>)}
                     </select>
                     <img ref={ref => this.logo = ref} src={this.props.stakingData.pairs[0].logo}/>
                 </section>
@@ -100,7 +100,7 @@ var Stake = React.createClass({
                 <section className="switchTools">
                     <span ref={ref => this.reward = ref} className="switchFinal">0</span>
                     <aside className="switchLink">{this.props.element.symbol}</aside>
-                    <img src={this.props.element.logo}></img>
+                    <img src={this.props.element.logo}/>
                 </section>
                 <h3 className="switchWeek">Weekly</h3>
                 <section className="switchTools switchToolsWeek">
@@ -109,8 +109,8 @@ var Stake = React.createClass({
                     <img src={this.props.element.logo}/>
                 </section>
                 <section className="switchActions">
-                    {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target={this.props.element.symbol} href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>Approve {this.props.element.symbol}</a>}
-                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target={this.props.element.symbol} href="javascript:;" className="switchAction active" onClick={this.approve}>Approve {this.props.element.symbol}</a>}
+                    {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target="mine" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>Approve {this.props.element.symbol}</a>}
+                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target="other" href="javascript:;" className="switchAction active" onClick={this.approve}>Approve {this.props.element.symbol}</a>}
                     {window.walletAddress && <a href="javascript:;" className={"switchAction" + (!this.state.approveFirst && !this.state.approveSecond ? " active" : "")} onClick={this.stake}>Stake</a>}
                     {!window.walletAddress && <a href="javascript:;" onClick={() => window.ethereum.enable().then(() => window.getAddress()).then(() => _this.emit('ethereum/ping'))} className="switchAction active">Connect</a>}
                 </section>
