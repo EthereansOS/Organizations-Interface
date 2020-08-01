@@ -936,8 +936,8 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
     delete initialContext.sequentialOps;
     window.functionalitySourceId && (initialContext.functionalitySourceId = window.functionalitySourceId);
     (!initialContext.functionalitySourceId && (initialContext.sourceCode || initialContext.template)) && sequentialOps.push({
-        name: "On-Chain Smart Contract Validation | ",
-        description: 'Ascanapower In the Sky Forevah',
+        name: "On-Chain Smart Contract Validation",
+        description: 'Deploying a Smart Contract validation, the code will be save in the Ethereum Blockchain via base64. This action is expensive, but in some cases very important.',
         async call(data, bypass) {
             if (bypass) {
                 data.functionalitySourceId = '0';

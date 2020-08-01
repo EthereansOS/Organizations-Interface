@@ -154,25 +154,35 @@ var Overview = React.createClass({
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                         </section>
                     </li>
+                    <li className="TheDappInfo05">
+                    <h5 className="DFOHostingTitle">&#129302; Core:</h5>
+                        <section className="DFOTitleSection">
+                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "address/" + _this.props.element.dFO.options.address}>&#128142; Etherscan</a>
+                        </section>
+                        <br></br>
+                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
+                        <section className="DFOTitleSection">
+                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View</a>
+                        </section>
+                    </li>
                     <li className="TheDappInfo1">
-                    <h5 className="DFOHostingTitle">&#128302; Domain <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
+                    <h5 className="DFOHostingTitle">&#128302; ENS: </h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo">ENS: <a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
+                                {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
                             </AsyncValue>
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>A perpetual unique Web3-Based Name Service to reach this Application</OkBoomer>
-                        <h5 className="DFOHostingTitle">&#128242; Front-end <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
+                        <br></br>
+                        <h5 className="DFOHostingTitle">&#128242; Front-end: </h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {<a className="LinkVisualButton" href="javascript:;" onClick={() => (_this.props.element.link || _this.props.element.index) && this.setState({ change: this.state && this.state.change === 'showCode' ? null : 'showCode' })}>Code</a>}
                             </AsyncValue>
                             {_this.renderChangeButton('index')}
                         </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The Front-End code of the Application</OkBoomer>
                     </li>
                     <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions </h5>
+                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions: </h5>
                         <section className="DFOTitleSection">
                             <p className="LinkVisualStandard MiiiiFunctionalities" href="javascript:;" onClick={() => _this.emit('section/change', 'Functions')}>
                                 <AsyncValue>
@@ -180,16 +190,6 @@ var Overview = React.createClass({
                                 </AsyncValue>
                             </p>
                             <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
-                        </section>
-                    </li>
-                    <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle">&#129302; Core:</h5>
-                        <section className="DFOTitleSection">
-                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "address/" + _this.props.element.dFO.options.address}>&#128142; Etherscan</a>
-                        </section>
-                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
-                        <section className="DFOTitleSection">
-                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View</a>
                         </section>
                     </li>
                     {_this.renderChanger(['index'])}
@@ -225,20 +225,20 @@ var Overview = React.createClass({
                         <h5 className="DFOHostingTitle">&#129518; Assets: </h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside></p>}
+                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo DFOLabelTitleInfoS"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside></p>}
                             </AsyncValue>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside></p>
+                            <p className="DFOLabelTitleInfo DFOLabelTitleInfoS"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside></p>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside></p>
+                            <p className="DFOLabelTitleInfo DFOLabelTitleInfoS"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside></p>
                         </section>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletDAI, 18)}</b><aside> DAI</aside></p>
+                            <p className="DFOLabelTitleInfo DFOLabelTitleInfoS"><b>{window.fromDecimals(_this.props.element.walletDAI, 18)}</b><aside> DAI</aside></p>
                         </section>
                         {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside></p>
+                            <p className="DFOLabelTitleInfo DFOLabelTitleInfoS"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside></p>
                         </section>}
                         <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
                     </li>
@@ -246,49 +246,14 @@ var Overview = React.createClass({
                         <h5 className="DFOHostingTitle">&#129518; Fixed Inflation: </h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">More</a>
                         </section>
                         <h5 className="DFOHostingTitle">&#129412; Liquidity Staking: </h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">More</a>
                         </section>
                     </li>
-                </ul>
-                <ul className="DFOHosting">
-                <section className="HostingCategoryTitle">
-                    <h2>{_this.props.element.name} Wallet</h2>
-                </section>
-                    <li className="TheDappInfo3">
-                        <h5 className="DFOHostingTitle">&#129518; Assets:</h5>
-                        {parseFloat(_this.props.element.walletCumulativeDollar) > 0 && <h6>Tot Tracked: ${_this.props.element.walletCumulativeDollar}</h6>}
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.communityTokens && <p className="DFOLabelTitleInfo"><b>{window.tokenPercentage(_this.props.element.communityTokens, _this.props.element.totalSupply)}</b><aside> (<b>{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</b> {_this.props.element.symbol})</aside>{parseFloat(_this.props.element.communityTokensDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.communityTokensDollar}</span>}</p>}
-                            </AsyncValue>
-                        </section>
-                        <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletETH, 18)}</b><aside> ETH</aside>{parseFloat(_this.props.element.walletETHDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletETHDollar}</span>}</p>
-                        </section>
-                        <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletUSDC, 6)}</b><aside> USDC</aside>{parseFloat(_this.props.element.walletUSDCDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletUSDCDollar}</span>}</p>
-                        </section>
-                        {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside>{parseFloat(_this.props.element.walletBUIDLDollar) > 0 && <span className="USDVALUE"> ${_this.props.element.walletBUIDLDollar}</span>}</p>
-                        </section>}
-                    </li>
-                    <li className="TheDappInfo3">
-                        <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Rewards: <a className={"EditDFOYoYO" + (_this.dfoElement && _this.dfoElement.state && _this.dfoElement.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('okBommer/toggle')}>i</a></h5>
-                        <section className="DFOTitleSection">
-                            <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.totalSupply && _this.props.element.surveySingleReward !== undefined && <p className="DFOLabelTitleInfo"> Proposal: <b>{window.fromDecimals(_this.props.element.surveySingleReward, _this.props.element.decimals)}</b> <aside className="DFOOverviewPerch">{_this.props.element.symbol}</aside> {_this.renderChangeButton('surveySingleReward')}</p>}
-                            </AsyncValue>
-                        </section>
-                        <OkBoomer okBoomer={_this.props.okBoomer}>The number of Voting Tokens as a reward to the issuer for every single Successful Proposal.</OkBoomer>
-                    </li>
-                    <li className="TheDappInfo05">
-                    </li>
-                    {_this.renderChanger(['surveySingleReward'])}
                 </ul>
             </section>
         );
