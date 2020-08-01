@@ -15,12 +15,13 @@ var StakingView = React.createClass({
             </section>
             {(!this.state || !this.state.edit) && (!this.props || !this.props.stakingData) && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.tiers.length === 0 && <h4>No Staking data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({ edit: true }))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
-            {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.tiers && this.props.stakingData.tiers.length > 0 && this.props.stakingData.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
+            {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.tiers && this.props.stakingData.tiers.length > 0 && this.props.stakingData.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
                 <section className="TheDappInfo1">
                     <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for {it.time}</h5>
+                        <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
                         <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
                         <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
+                        <p className="DFOHostingTitle">Total Lock: <b>{it.blockNumber}</b> Blocks</p>
                         <p className="DFOLabelTitleInfosmall">DEX: &#129412; V2 </p>
                     </section>
                 </section>
