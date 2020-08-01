@@ -7,15 +7,7 @@ var FixedInflationView = React.createClass({
         if(!this.props || !this.props.fixedInflationData || !this.props.fixedInflationData.blockLimit) {
             return '';
         }
-        var blockLimit = this.props.fixedInflationData.blockLimit;
-        var tiers = Object.entries(window.context.blockTiers);
-        for(var tier of tiers) {
-            var steps = tier[1];
-            if(blockLimit >= steps[0] && blockLimit <= steps[2]) {
-                return `~${tier[0].firstLetterToUpperCase()} (${blockLimit} blocks)`;
-            }
-        }
-        return `${blockLimit} blocks`;
+        return window.calculateTimeTier(this.props.fixedInflationData.blockLimit);
     },
     render() {
         var timeTier = this.calculateTimeTier();

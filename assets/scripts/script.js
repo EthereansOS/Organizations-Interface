@@ -1223,8 +1223,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
         address: window.context.uniSwapV2FactoryAddress,
         fromBlock: '0',
         topics: [
-            window.pairCreatedTopic,
-            [myToken]
+            window.pairCreatedTopic, [myToken]
         ]
     });
     if (address !== view.address) {
@@ -1238,24 +1237,89 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
             }
             var pairToken = window.newContract(window.context.uniSwapV2PairAbi, window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
             var token0 = window.web3.utils.toChecksumAddress(await window.blockchainCall(pairToken.methods.token0));
-            var reserves = await window.blockchainCall(pairToken.methods.getReserves);
-            var addr = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameter('address', topic));
-            var token = window.newContract(window.context.votingTokenAbi, addr);
-            uniswapPairs.push({
-                address: addr,
-                token,
-                pairToken,
-                mainReserve: reserves[address === token0 ? 0 : 1],
-                otherReserve: reserves[address === token0 ? 1 : 0],
-                name: addr === wethAddress ? 'Ethereum' : await window.blockchainCall(token.methods.name),
-                symbol: addr === wethAddress ? 'ETH' : await window.blockchainCall(token.methods.symbol),
-                decimals: addr === wethAddress ? '18' : await window.blockchainCall(token.methods.decimals),
-                logo: await window.loadLogo(addr === wethAddress ? window.voidEthereumAddress : addr)
-            });
             if (address !== view.address) {
                 return;
             }
+            var reserves = await window.blockchainCall(pairToken.methods.getReserves);
+            if (address !== view.address) {
+                return;
+            }
+            var addr = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameter('address', topic));
+            var tokenInfo = await window.loadTokenInfos(addr, wethAddress);
+            if (address !== view.address) {
+                return;
+            }
+            tokenInfo.pairToken = pairToken;
+            tokenInfo.mainReserve = reserves[address === token0 ? 0 : 1];
+            tokenInfo.otherReserve = reserves[address === token0 ? 1 : 0];
+            uniswapPairs.push(tokenInfo);
             view.enqueue(() => view.setState({ uniswapPairs }));
         }
     }
+};
+
+window.loadTokenInfos = async function loadTokenInfos(addresses, wethAddress) {
+    wethAddress = wethAddress || await window.blockchainCall(window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress).methods.WETH);
+    wethAddress = window.web3.utils.toChecksumAddress(wethAddress);
+    var single = (typeof addresses).toLowerCase() === 'string';
+    addresses = single ? [addresses] : addresses;
+    var tokens = [];
+    for (var address of addresses) {
+        address = window.web3.utils.toChecksumAddress(address);
+        var token = window.newContract(window.context.votingTokenAbi, address);
+        tokens.push({
+            address,
+            token,
+            name: address === wethAddress ? 'Ethereum' : await window.blockchainCall(token.methods.name),
+            symbol: address === wethAddress ? 'ETH' : await window.blockchainCall(token.methods.symbol),
+            decimals: address === wethAddress ? '18' : await window.blockchainCall(token.methods.decimals),
+            logo: await window.loadLogo(address === wethAddress ? window.voidEthereumAddress : address)
+        });
+    }
+    return single ? tokens[0] : tokens;
+};
+
+window.calculateTimeTier = function calculateTimeTier(blockLimit) {
+    var tiers = Object.entries(window.context.blockTiers);
+    for (var tier of tiers) {
+        var steps = tier[1].averages;
+        if (blockLimit >= steps[0] && blockLimit <= steps[2]) {
+            return `~${tier[0].firstLetterToUpperCase()} (${blockLimit} blocks)`;
+        }
+    }
+    return `${blockLimit} blocks`;
+};
+
+window.getTierKey = function getTierKey(blockLimit) {
+    var tiers = Object.entries(window.context.blockTiers);
+    for (var tier of tiers) {
+        var steps = tier[1].averages;
+        if (blockLimit >= steps[0] && blockLimit <= steps[2]) {
+            return tier[0];
+        }
+    }
+    return 'Custom';
+};
+
+window.calculateMultiplierAndDivider = function calculateMultiplierAndDivider(p) {
+    p = (typeof p).toLowerCase() === 'string' ? parseFloat(p) : p;
+    p = p / 100;
+    var percentage = window.formatMoney(p, 9, '') .split('.');
+    var arr = [];
+    arr[0] = percentage[0];
+    var i;
+    for(i = percentage[1].length - 1; i >= 0; i--) {
+        if(percentage[1][i] !== '0') {
+            break;
+        }
+    }
+    var afterFloat = percentage[1].substring(0, i === percentage[1].length ? i : (i + 1));
+    arr[0] += afterFloat;
+    arr[0] = window.numberToString(parseInt(arr[0]));
+    arr[1] = '1';
+    for(var i = 0; i < afterFloat.length; i++) {
+        arr[1] += '0';
+    }
+    arr[1] = window.numberToString(parseInt(arr[1]));
+    return arr;
 };

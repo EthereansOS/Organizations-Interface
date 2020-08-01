@@ -1,9 +1,11 @@
 var FixedInflationEdit = React.createClass({
     getInitialState() {
-        return {
-            swapCouples: (this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples && this.props.fixedInflationData.swapCouples.length > 0 && this.props.fixedInflationData.swapCouples) || [],
+        var state = {
+            swapCouples : [],
             blockLimit: (this.props && this.props.fixedInflationData && this.props.fixedInflationData.blockLimit) || 0
         };
+        this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples && this.props.fixedInflationData.swapCouples.forEach(it => state.swapCouples.push(it));
+        return state;
     },
     deleteSwapCouple(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -92,7 +94,7 @@ var FixedInflationEdit = React.createClass({
                     <option value="Custom">Custom</option>
                 </select>
                 {(!this.state || this.state.tier !== 'Custom') && <ul>
-                    {window.context.blockTiers[(this.state && this.state.tier) || Object.keys(window.context.blockTiers)[0]].map(it => <li key={it}>
+                    {window.context.blockTiers[(this.state && this.state.tier) || Object.keys(window.context.blockTiers)[0]].averages.map(it => <li key={it}>
                         <label>
                         <input className="AMeMoPiach" type="radio" data-value={it} name="blockLimit" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockLimit === it)} />
                         <span><b>{it}</b></span>
