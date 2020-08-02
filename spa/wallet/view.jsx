@@ -66,7 +66,7 @@ var Wallet = React.createClass({
             return this.emit('message', 'You must insert a valid ethereum address', 'error');
         }
         var amount = window.formatMoney(this.amount.value.split(',').join(''));
-        if(parseInt(amount) <= 0) {
+        if(parseFloat(amount.split(',').join('')) <= 0) {
             return this.emit('message', 'Amount must be greater than zero', 'error');
         }
         var tos = (this.state && this.state.tos) || [];

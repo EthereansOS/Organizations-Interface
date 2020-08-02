@@ -133,12 +133,12 @@ window.transfer = async function transfer(view, tokenAddress, amounts, sendTos, 
     tokenAddress = tokenAddress ? window.web3.utils.toChecksumAddress(tokenAddress) : tokenAddress;
     var symbol = 'ETH';
     try {
-        tokenAddress && (symbol = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, tokenAddress).methods.symbol));
+        tokenAddress && tokenAddress != window.voidEthereumAddress && tokenAddress !== window.wethAddress && (symbol = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, tokenAddress).methods.symbol));
     } catch(e) {
         symbol = 'NFT'
     }
     var walletAddress = await window.blockchainCall(view.props.element.dFO.methods.getMVDWalletAddress);
-    var balanceOf = !tokenAddress ? await window.web3.eth.getBalance(walletAddress) : await window.blockchainCall(window.newContract(window.context.votingTokenAbi, tokenAddress).methods.balanceOf, walletAddress);
+    var balanceOf = symbol === 'ETH' ? await window.web3.eth.getBalance(walletAddress) : await window.blockchainCall(window.newContract(window.context.votingTokenAbi, tokenAddress).methods.balanceOf, walletAddress);
     if(!tokenId && parseInt(amountWei) > parseInt(balanceOf)) {
         return view.emit('message', 'Specified amount to transfer is greater than the total available balance', 'error');
     }

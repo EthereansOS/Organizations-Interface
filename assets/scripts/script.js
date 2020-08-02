@@ -120,6 +120,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 } catch (e) {}
                 window.uniswapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
                 window.uniswapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress);
+                window.wethAddress = window.web3.utils.toChecksumAddress(await window.blockchainCall(window.uniswapV2Router.methods.WETH));
                 window.list = {
                     DFO: window.dfoHub
                 };
