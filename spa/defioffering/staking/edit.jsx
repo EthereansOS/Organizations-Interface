@@ -5,7 +5,8 @@ var StakingEdit = React.createClass({
     getInitialState() {
         var state = {
             tiers: [],
-            pairs: []
+            pairs: [],
+            blockNumber: (this.props.blockTiers && Object.values(this.props.blockTiers)[0].averages[1]) || null
         };
         /*this.props && this.props.stakingData && this.props.stakingData.tiers && this.props.stakingData.tiers.forEach(it => state.tiers.push(it));
         this.props && this.props.stakingData && this.props.stakingData.pairs && this.props.stakingData.pairs.forEach(it => state.pairs.push(it));*/
@@ -90,7 +91,8 @@ var StakingEdit = React.createClass({
     },
     onTierChange(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        this.setState({ blockNumber: null, tier: e.currentTarget.value });
+        var blockNumber = this.props.blockTiers[e.currentTarget.value].averages[1];
+        this.setState({ blockNumber, tier: e.currentTarget.value });
     },
     onBlockLimitChange(e) {
         this.setState({ blockNumber: parseInt(e.currentTarget.dataset.value) });

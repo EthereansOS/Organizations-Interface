@@ -2,7 +2,7 @@ var FixedInflationEdit = React.createClass({
     getInitialState() {
         var state = {
             swapCouples : [],
-            blockLimit: (this.props && this.props.fixedInflationData && this.props.fixedInflationData.blockLimit) || 0
+            blockLimit: (this.props && this.props.fixedInflationData && this.props.fixedInflationData.blockLimit) || Object.values(window.context.blockTiers)[0].averages[1]
         };
         this.props && this.props.fixedInflationData && this.props.fixedInflationData.swapCouples && this.props.fixedInflationData.swapCouples.forEach(it => state.swapCouples.push(it));
         return state;
@@ -24,7 +24,8 @@ var FixedInflationEdit = React.createClass({
     },
     onTierChange(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        this.setState({ blockLimit: null, tier: e.currentTarget.value });
+        var blockLimit = window.context.blockTiers[e.currentTarget.value].averages[1];
+        this.setState({ blockLimit, tier: e.currentTarget.value });
     },
     onBlockLimitChange(e) {
         this.setState({ blockLimit: parseInt(e.currentTarget.dataset.value) });
