@@ -140,7 +140,7 @@ window.transfer = async function transfer(view, tokenAddress, amounts, sendTos, 
     var walletAddress = await window.blockchainCall(view.props.element.dFO.methods.getMVDWalletAddress);
     var balanceOf = !tokenAddress ? await window.web3.eth.getBalance(walletAddress) : await window.blockchainCall(window.newContract(window.context.votingTokenAbi, tokenAddress).methods.balanceOf, walletAddress);
     if(!tokenId && parseInt(amountWei) > parseInt(balanceOf)) {
-        return view.emit('message', 'Specified amount to burn is greater than the total available balance', 'error');
+        return view.emit('message', 'Specified amount to transfer is greater than the total available balance', 'error');
     }
     if(tokenId) {
         var erc721 = window.newContract(window.context.ERC721Abi, tokenAddress);

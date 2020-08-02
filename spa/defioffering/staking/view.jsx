@@ -6,6 +6,11 @@ var StakingView = React.createClass({
     requiredModules: [
         'spa/stake'
     ],
+    getDefaultSubscriptions() {
+        return {
+            'stake/close' : () => this.setState({fullscreen : null})
+        };
+    },
     showStake(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.setState({fullscreen : true});

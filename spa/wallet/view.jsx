@@ -19,7 +19,9 @@ var Wallet = React.createClass({
             if (!address || !type || oldAddress === address) {
                 return;
             }
-            var state = {};
+            var state = {
+                tos: []
+            };
             state[type + 'Proposal'] = address;
             _this.setState(state);
         });
@@ -56,7 +58,55 @@ var Wallet = React.createClass({
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => window.addToPool(this, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address, this.firstAmount.value)}>Add to Pool</a>
         </section>);
     },*/
+    addTos(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this.emit('message');
+        var address = this.to.value;
+        if(!window.isEthereumAddress(address)) {
+            return this.emit('message', 'You must insert a valid ethereum address', 'error');
+        }
+        var amount = window.formatMoney(this.amount.value.split(',').join(''));
+        if(parseInt(amount) <= 0) {
+            return this.emit('message', 'Amount must be greater than zero', 'error');
+        }
+        var tos = (this.state && this.state.tos) || [];
+        tos.push({
+            address,
+            amount
+        });
+        var _this = this;
+        _this.setState({tos}, function() {
+            _this.amount.value = '';
+            _this.to.value = '';
+        });
+    },
+    deleteTo(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        var i = parseInt(e.currentTarget.dataset.index);
+        var deleted = this.state.tos[i];
+        this.state.tos.splice(i, 1);
+        var _this = this;
+        _this.setState({tos : this.state.tos}, function() {
+            _this.amount.value = deleted.amount;
+            _this.to.value = deleted.address;
+        });
+    },
+    transfer(e, element) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        var amounts = [];
+        var sendTos = [];
+        this.emit('message');
+        if(this.state.tos.length === 0) {
+            return this.emit('message', 'You Must insert at least a recipient', 'error');
+        }
+        this.state.tos.forEach(it => {
+            amounts.push(it.amount);
+            sendTos.push(it.address);
+        });
+        window.transfer(this, element.address, amounts, sendTos);
+    },
     renderTransferProposal(element) {
+        var _this = this;
         return (<section className="BravPicciot">
             <p>Propose to Transfer:</p>
             <section>
@@ -71,7 +121,15 @@ var Wallet = React.createClass({
                     <input className="MarioTorginiProposal" ref={ref => this.to = ref} type="text" placeholder="Address"/>
                 </label>
             </section>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => window.transfer(this, element.address, this.amount.value, this.to.value)}>Transfer</a>
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.addTos}>Add</a>
+            {this.state && this.state.tos && <section>
+                {this.state.tos.map((it, i) => <section key={it.address + "_" + it.amount}>
+                    <a href="javascript:;" data-index={i} onClick={_this.deleteTo}>X</a>
+                    Send {it.amount} {element.symbol} to {it.address}
+                </section>)}
+            </section>}
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={e => this.transfer(e, element)}>Transfer</a>
+            {false && <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => window.transfer(this, element.address, this.amount.value, this.to.value)}>Transfer</a>}
         </section>);
     },
     render() {

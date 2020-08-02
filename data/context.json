@@ -46,46 +46,46 @@
     "stateHolderTypes": ["address", "bool", "string", "uint256"],
     "blockTiers" : {
         "Daily" : {
-            "averages" : [3600, 1, 6300]
+            "averages" : [5800, 6400, 7000]
         },
         "Weekly" : {
-            "averages" : [6301, 2, 10000]
+            "averages" : [43500, 48000, 52500]
         },
         "Monthly" : {
-            "averages" : [10001, 3, 100000],
+            "averages" : [174000, 192000, 210000],
             "weeks" : 4
         },
         "3 Months" : {
-            "averages" : [571500 , 3, 571501],
+            "averages" : [522000 , 576000, 630000],
             "weeks" : 12
         },
         "6 Months" : {
-            "averages" : [1143000, 3, 1143001],
+            "averages" : [1044000, 1152000, 1260000],
             "weeks" : 24
         },
         "9 Months" : {
-            "averages" : [1714500, 3, 1714501],
+            "averages" : [1566000, 1728000, 1890000],
             "weeks" : 36
         },
         "1 Year" : {
-            "averages" : [2286000, 3, 2286001],
+            "averages" : [2088000, 2304000, 2520000],
             "weeks" : 48
         },
         "2 Years" : {
-            "averages" : [4572000, 3, 4572001],
+            "averages" : [4176000, 4608000, 5040000],
             "weeks" : 96
         },
         "3 Years" : {
-            "averages" : [4572000, 3, 4572001],
-            "weeks" : 96
+            "averages" : [6264000, 6912000, 7560000],
+            "weeks" : 144
         },
         "4 Years" : {
-            "averages" : [4572000, 3, 4572001],
-            "weeks" : 96
+            "averages" : [8352000, 9216000, 10080000],
+            "weeks" : 192
         },
         "5 Years" : {
-            "averages" : [4572000, 3, 4572001],
-            "weeks" : 96
+            "averages" : [10440000, 11520000, 12600000],
+            "weeks" : 240
         }
     },
     "stateHolderProposalTemplate": [
