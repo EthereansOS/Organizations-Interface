@@ -515,20 +515,15 @@ contract StakingTransferFunctionality {
         IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
         stateHolder.setBool(_toStateHolderKey("staking.transfer.authorized", _toString(${contract})), true);
         ${tiers.map((it, i) => `
-        stateHolder.setUint256("staking.tiers[${i}].minCap", ${it.minCap});
-        stateHolder.setUint256("staking.tiers[${i}].hardCap", ${it.hardCap});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers[${i}].minCap", ${it.minCap});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers[${i}].hardCap", ${it.hardCap});
     `).join('\n').trim()}
-        stateHolder.setUint256("staking.tiers.length", ${tiers.length});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers.length", ${tiers.length});
     }
 
     function onStop(address) public {
         IStateHolder stateHolder = IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress());
-        stateHolder.clear(_toStateHolderKey("staking.transfer.authorized", _toString(${contract})));
-        ${tiers.map((it, i) => `
-        stateHolder.clear("staking.tiers[${i}].minCap");
-        stateHolder.clear("staking.tiers[${i}].hardCap");
-    `).join('\n').trim()}
-        stateHolder.clear("staking.tiers.length");
+        stateHolder.setBool(_toStateHolderKey("staking.transfer.authorized", _toString(${contract})), false);
     }
 
     function stakingTransfer(address sender, uint256, uint256 value, address receiver) public {
@@ -639,7 +634,6 @@ interface IStateHolder {
 }
 `.toLines();
     var lines = `
-    IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress()).clear("authorizedtotransferforstaking_${stakeAddress.toLowerCase()}");
     IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress()).setBool("staking.transfer.authorized.${stakeAddress.toLowerCase()}", false);
 `.toLines();
     var descriptions = [`Stopping Staking Manager`];
