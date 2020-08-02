@@ -174,7 +174,9 @@ var StakingEdit = React.createClass({
                             {Object.keys(_this.props.blockTiers).map(it => <option key={it} value={it} selected={_this.state.tier === it}>{it}</option>)}
                             <option value="Custom" selected={_this.state.tier === 'Custom'}>Custom</option>
                         </select>
+
                         {(!this.state || this.state.tier !== 'Custom') && <ul>
+                            <p>Blocks:</p>
                             {_this.props.blockTiers[(this.state && this.state.tier) || Object.keys(_this.props.blockTiers)[0]].averages.map(it => <li key={it}>
                                 <label>
                                     <input className="AMeMoPiach" type="radio" data-value={it} name="blockNumber" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockNumber === it)} />

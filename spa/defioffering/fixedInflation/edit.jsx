@@ -94,6 +94,7 @@ var FixedInflationEdit = React.createClass({
                     <option value="Custom">Custom</option>
                 </select>
                 {(!this.state || this.state.tier !== 'Custom') && <ul>
+                    <p>Blocks:</p>
                     {window.context.blockTiers[(this.state && this.state.tier) || Object.keys(window.context.blockTiers)[0]].averages.map(it => <li key={it}>
                         <label>
                         <input className="AMeMoPiach" type="radio" data-value={it} name="blockLimit" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockLimit === it)} />
