@@ -167,22 +167,21 @@ var StakingEdit = React.createClass({
             <section className="TheDappInfo2">
                 <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Tiers:</b></h5>
-                    <section>
-                        <p>Block Limit</p>
+                    <section className="OVaglio">
+                        <p>Locking Period:</p>
                         <select onChange={this.onTierChange}>
                             {Object.keys(_this.props.stakingData.blockTiers).map(it => <option key={it} value={it} selected={_this.state.tier === it}>{it}</option>)}
                             <option value="Custom" selected={_this.state.tier === 'Custom'}>Custom</option>
                         </select>
-                        {(this.state && this.state.tier && this.state.tier !== 'Custom') && <p>{_this.props.stakingData.blockTiers[this.state.tier].weeks} Weeks</p>}
                         {(!this.state || this.state.tier !== 'Custom') && <ul>
                             {_this.props.stakingData.blockTiers[(this.state && this.state.tier) || Object.keys(_this.props.stakingData.blockTiers)[0]].averages.map(it => <li key={it}>
                                 <label>
-                                    {it}
-                                    {'\u00a0'}
-                                    <input type="radio" data-value={it} name="blockNumber" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockNumber === it)} />
+                                    <input className="AMeMoPiach"  type="radio" data-value={it} name="blockNumber" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockNumber === it)} />
+                                    <span><b>{it}</b></span>
                                 </label>
                             </li>)}
                         </ul>}
+                        
                         {this.state && this.state.tier === 'Custom' && <section>
                             <label>
                                 <p>Value:</p>
@@ -193,19 +192,22 @@ var StakingEdit = React.createClass({
                                 <input type="number" min="1" ref={ref => this.rewardSplitTranchesInput = ref}/>
                             </label>
                         </section>}
+                        {(this.state && this.state.tier && this.state.tier !== 'Custom') && <p>{_this.props.stakingData.blockTiers[this.state.tier].weeks} Tranches (Weeks)</p>}
                     </section>
+                    <section className="OVaglio">
                     <label>
-                        <p>Hard Cap:</p>
-                        <input ref={ref => this.hardCapInput = ref} type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" onKeyUp={this.onHardCapChange} />
+                        <p>Max Simultaneous Stake:</p>
+                        <input ref={ref => this.hardCapInput = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" onKeyUp={this.onHardCapChange} />
                     </label>
                     <label>
-                        <p>Min Cap:</p>
-                        <input ref={ref => this.minCapInput = ref} type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" disabled />
+                        <p>Min to Stake:</p>
+                        <input ref={ref => this.minCapInput = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" disabled />
                     </label>
                     <label>
                         <p>Reward Percentage:</p>
-                        <span><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" max="100" placeHoder="Insert a percentage"/> {'\u00a0'} %</span>
+                        <aside><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" max="100" placeHoder="Insert a percentage"/> %</aside>
                     </label>
+                    </section>
                     <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.addTier}>Add</a>
                     {/*{this.state && this.state.tiers && <ul>
                         {this.state.tiers.map((it, i) => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
