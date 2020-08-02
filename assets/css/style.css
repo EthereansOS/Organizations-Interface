@@ -305,7 +305,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .BravPicciot span {color: #f1f1f1 !important; font-size: 15px !important;}
 .BravPicciot span b {min-width: 110px; display: inline-block; margin-left: 10px;}
 .BravPicciot h5 {color: #f1f1f1 !important; font-size: 20px !important; padding: 5px 5px 5px 5px; line-height: 1;margin-block-start: 0em;margin-block-end: 0em;margin-inline-start: 0px;margin-inline-end: 0px;}
-.PikaPikaYaYa {position: absolute; width: 185px; height: 220px; overflow: hidden; background-color: #000000;}
+.PikaPikaYaYa {position: absolute; width: 185px; height: 220px; overflow: hidden; background-color: #000000; z-index: 99999999999;}
 .PikaPikaSearch {position: absolute !important; top:0 !important; left: 0 !important; width: 185px !important; height: 40px !important; font-size: 13px; color: #f1f1f1; text-align: center;}
 .PikaPikaSearch input {width: 185px !important; height: 30px !important; font-size: 13px; color: #f1f1f1; margin: 0 !important; padding: 10px; display: inline-block; border-bottom: 1px solid #7901ff; border-radius: 0;}
 .PikaPikaFind {position: absolute; top:30px; left: 0; width: 185px; height: 190px; overflow-x: hidden; overflow-y: scroll; background-color: #2f2f2f;}
