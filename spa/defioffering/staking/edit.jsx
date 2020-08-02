@@ -17,7 +17,7 @@ var StakingEdit = React.createClass({
         var deleted = this.state.tiers[i];
         this.state.tiers.splice(i, 1);
         var _this = this;
-        this.setState({ tiers: this.state.tiers, tier : deleted.tierKey, blockNumber : deleted.tierKey === 'Custom' ? deleted.blockNumber : null }, function () {
+        this.setState({ tiers: this.state.tiers, tier: deleted.tierKey, blockNumber: deleted.tierKey === 'Custom' ? deleted.blockNumber : null }, function () {
             _this.customBlockNumber && (_this.customBlockNumber.value = deleted.blockNumber);
             _this.rewardSplitTranchesInput && (_this.rewardSplitTranchesInput.value = deleted.rewardSplitTranche);
             !_this.customBlockNumber && (_this.domRoot.children().find('input[type="radio"][data-value="' + deleted.blockNumber + '"]')[0].checked = true);
@@ -32,41 +32,41 @@ var StakingEdit = React.createClass({
         var hardCap = '0';
         try {
             hardCap = window.toDecimals(this.hardCapInput.value.split(',').join(''), this.props.element.decimals);
-        } catch(e) {
+        } catch (e) {
         }
-        if(isNaN(parseInt(hardCap)) || parseInt(hardCap) <= 0) {
+        if (isNaN(parseInt(hardCap)) || parseInt(hardCap) <= 0) {
             return this.emit('message', 'Hard Cap must be a valid positive number', 'error');
         }
         var minCap = '0';
         try {
             minCap = window.toDecimals(this.minCapInput.value.split(',').join(''), this.props.element.decimals);
-        } catch(e) {
+        } catch (e) {
         }
-        if(isNaN(parseInt(minCap)) || parseInt(minCap) <= 0) {
+        if (isNaN(parseInt(minCap)) || parseInt(minCap) <= 0) {
             return this.emit('message', 'Min Cap must be a valid positive number', 'error');
         }
         var blockNumber = '0';
         try {
             blockNumber = (this.customBlockNumber ? this.customBlockNumber.value : this.domRoot.children().find('input[type="radio"]:checked')[0].dataset.value).split(',').join('');
-        } catch(e) {
+        } catch (e) {
         }
-        if(isNaN(parseInt(blockNumber)) || parseInt(blockNumber) <= 0) {
+        if (isNaN(parseInt(blockNumber)) || parseInt(blockNumber) <= 0) {
             return this.emit('message', 'Block Limit must be a valid positive number', 'error');
         }
         var rewardSplitTranche = 0;
         try {
-            rewardSplitTranche = this.rewardSplitTranchesInput ? this.rewardSplitTranchesInput.value : this.props.stakingData.blockTiers[this.state.tier].weeks;
-        } catch(e) {
+            rewardSplitTranche = this.rewardSplitTranchesInput ? this.rewardSplitTranchesInput.value : this.props.blockTiers[this.state.tier].weeks;
+        } catch (e) {
         }
-        if(this.rewardSplitTranchesInput && (isNaN(parseInt(rewardSplitTranche)) || parseInt(rewardSplitTranche) <= 0)) {
+        if (this.rewardSplitTranchesInput && (isNaN(parseInt(rewardSplitTranche)) || parseInt(rewardSplitTranche) <= 0)) {
             return this.emit('message', 'Split amount must be a valid positive number', 'error');
         }
         var percentage = 0;
         try {
             percentage = parseFloat(this.rewardPercentageInput.value.split(',').join(''));
-        } catch(e) {
+        } catch (e) {
         }
-        if(isNaN(percentage) || percentage < 1 || percentage > 100) {
+        if (isNaN(percentage) || percentage < 1 || percentage > 100) {
             return this.emit('message', 'Percentage must be a number between 1 and 100', 'error');
         }
         var tiers = (this.state && this.state.tiers) || [];
@@ -76,10 +76,11 @@ var StakingEdit = React.createClass({
             blockNumber,
             percentage,
             time: window.calculateTimeTier(blockNumber),
-            tierKey: window.getTierKey(blockNumber)
+            tierKey: window.getTierKey(blockNumber),
+            rewardSplitTranche
         });
         var _this = this;
-        this.setState({tiers, blockNumber: null, tier : null}, function () {
+        this.setState({ tiers, blockNumber: null, tier: null }, function () {
             _this.customBlockNumber && (_this.customBlockNumber.value = '');
             _this.rewardSplitTranchesInput && (_this.rewardSplitTranchesInput.value = '');
             _this.hardCapInput.value = '';
@@ -114,18 +115,18 @@ var StakingEdit = React.createClass({
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.emit('message');
         var startBlock = parseInt(this.startBlockInput.value);
-        if(isNaN(startBlock) || startBlock < 0) {
+        if (isNaN(startBlock) || startBlock < 0) {
             return this.emit('message', 'Start Block must be a number greater than 0', 'error');
         }
         var pairs = (this.state && this.state.pairs || []);
-        if(pairs.length === 0) {
+        if (pairs.length === 0) {
             return this.emit('message', 'Please select at least a pair', 'error');
         }
         var tiers = (this.state && this.state.tiers || []);
-        if(tiers.length === 0) {
+        if (tiers.length === 0) {
             return this.emit('message', 'You must add at least a tier', 'error');
         }
-        for(var tier of tiers) {
+        for (var tier of tiers) {
             tier.timeWindow = tier.blockNumber;
             var percentage = window.calculateMultiplierAndDivider(tier.percentage);
             tier.rewardMultiplier = percentage[0];
@@ -137,9 +138,9 @@ var StakingEdit = React.createClass({
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.hardCapChangeTimeout && window.clearTimeout(this.hardCapChangeTimeout);
         var _this = this;
-        this.hardCapChangeTimeout = window.setTimeout(function() {
+        this.hardCapChangeTimeout = window.setTimeout(function () {
             var value = window.formatMoney(parseFloat(_this.hardCapInput.value.split(',').join()) / 1000);
-            if(isNaN(parseFloat(value.split(',').join('')))) {
+            if (isNaN(parseFloat(value.split(',').join('')))) {
                 value = '0.00';
             }
             _this.minCapInput.value = value
@@ -147,14 +148,14 @@ var StakingEdit = React.createClass({
     },
     render() {
         var _this = this;
-        if(!_this.props.stakingData) {
-            return (<LoaderMinimino/>);
+        if (!_this.props.stakingData) {
+            return (<LoaderMinimino />);
         }
         return (<section>
             <section className="TheDappInfo1">
                 <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Start Block:</b></h5>
-                    <input type="number" ref={ref => this.startBlockInput = ref} value="0" min="0"/>
+                    <input type="number" ref={ref => (this.startBlockInput = ref) && !_this.firstTime && (_this.firstTime = true) && (ref.value = '0')} min="0" />
                     <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                     {this.state.pairs.map((it, i) => <a key={it.address} href="javascript:;" className="DFOHostingTag">
                         <img src={it.logo}></img>
@@ -170,18 +171,18 @@ var StakingEdit = React.createClass({
                     <section className="OVaglio">
                         <p>Locking Period:</p>
                         <select onChange={this.onTierChange}>
-                            {Object.keys(_this.props.stakingData.blockTiers).map(it => <option key={it} value={it} selected={_this.state.tier === it}>{it}</option>)}
+                            {Object.keys(_this.props.blockTiers).map(it => <option key={it} value={it} selected={_this.state.tier === it}>{it}</option>)}
                             <option value="Custom" selected={_this.state.tier === 'Custom'}>Custom</option>
                         </select>
                         {(!this.state || this.state.tier !== 'Custom') && <ul>
-                            {_this.props.stakingData.blockTiers[(this.state && this.state.tier) || Object.keys(_this.props.stakingData.blockTiers)[0]].averages.map(it => <li key={it}>
+                            {_this.props.blockTiers[(this.state && this.state.tier) || Object.keys(_this.props.blockTiers)[0]].averages.map(it => <li key={it}>
                                 <label>
-                                    <input className="AMeMoPiach"  type="radio" data-value={it} name="blockNumber" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockNumber === it)} />
+                                    <input className="AMeMoPiach" type="radio" data-value={it} name="blockNumber" onChange={this.onBlockLimitChange} ref={ref => ref && (ref.checked = this.state.blockNumber === it)} />
                                     <span><b>{it}</b></span>
                                 </label>
                             </li>)}
                         </ul>}
-                        
+
                         {this.state && this.state.tier === 'Custom' && <section>
                             <label>
                                 <p>Value:</p>
@@ -189,59 +190,59 @@ var StakingEdit = React.createClass({
                             </label>
                             <label>
                                 <p>Tranches amount:</p>
-                                <input type="number" min="1" ref={ref => this.rewardSplitTranchesInput = ref}/>
+                                <input type="number" min="1" ref={ref => this.rewardSplitTranchesInput = ref} />
                             </label>
                         </section>}
-                        {(this.state && this.state.tier && this.state.tier !== 'Custom') && <p>{_this.props.stakingData.blockTiers[this.state.tier].weeks} Tranches (Weeks)</p>}
+                        {(this.state && this.state.tier && this.state.tier !== 'Custom') && <p>{_this.props.blockTiers[this.state.tier].weeks} Tranches (Weeks)</p>}
                     </section>
                     <section className="OVaglio">
-                    <label>
-                        <p>Max Simultaneous Stake:</p>
-                        <input ref={ref => this.hardCapInput = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" onKeyUp={this.onHardCapChange} />
-                    </label>
-                    <label>
-                        <p>Min to Stake:</p>
-                        <input ref={ref => this.minCapInput = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" disabled />
-                    </label>
-                    <label>
-                        <p>Reward Percentage:</p>
-                        <aside><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" placeHoder="Insert a percentage"/> %</aside>
-                    </label>
+                        <label>
+                            <p>Max Simultaneous Stake:</p>
+                            <input ref={ref => this.hardCapInput = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" onKeyUp={this.onHardCapChange} />
+                        </label>
+                        <label>
+                            <p>Min to Stake:</p>
+                            <input ref={ref => this.minCapInput = ref} type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" disabled />
+                        </label>
+                        <label>
+                            <p>Reward Percentage:</p>
+                            <aside><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" placeHoder="Insert a percentage" /> %</aside>
+                        </label>
                     </section>
                     <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonG LinkVisualButtonBIGGA" onClick={this.addTier}>Add</a>
                 </section>
             </section>
             {this.state && this.state.tiers && <ul>
-                        {this.state.tiers.map((it, i) => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
-                            <section className="TheDappInfo1">
-                                <section className="DFOTitleSection">
-                                    <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for {it.time}</h5>
-                                    <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
-                                    <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
-                                    <p className="DFOLabelTitleInfosmall">DEX: &#129412; V2 </p>
-                                </section>
-                            </section>
-                            {_this.state && _this.state.pairs && <section className="TheDappInfo1">
-                                <section className="DFOTitleSection">
-                                    <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
-                                    {_this.state.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
-                                        <img src={pair.logo}></img>
-                                        {pair.symbol}
-                                    </a>)}
-                                </section>
-                            </section>}
-                            <section className="TheDappInfo05">
-                                <section className="DFOTitleSection">
-                                    <span className="DFOHostingTitleS">Min Cap:</span>
-                                    <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.minCap, _this.props.element.decimals)}</b></h5>
-                                    <span className="DFOHostingTitleS DFOHostingTitleG">Hard Cap:</span>
-                                    <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.hardCap, _this.props.element.decimals)}</b></h5>
-                                </section>
-                            </section>
-                            <a className="ChiudiQuella ChiudiQuellaGigi" data-index={i} onClick={_this.deleteTier}>X</a>
-                        </li>)}
-                    </ul>}
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGAMaNNTROPAAAA" onClick={this.proposeNewStaking}>Propose Liquidity Staking</a>
+                {this.state.tiers.map((it, i) => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
+                    <section className="TheDappInfo1">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for {it.time}</h5>
+                            <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
+                            <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
+                            <p className="DFOLabelTitleInfosmall">DEX: &#129412; V2 </p>
+                        </section>
+                    </section>
+                    {_this.state && _this.state.pairs && <section className="TheDappInfo1">
+                        <section className="DFOTitleSection">
+                            <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
+                            {_this.state.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
+                                <img src={pair.logo}/>
+                                {pair.symbol}
+                            </a>)}
+                        </section>
+                    </section>}
+                    <section className="TheDappInfo05">
+                        <section className="DFOTitleSection">
+                            <span className="DFOHostingTitleS">Min Cap:</span>
+                            <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.minCap, _this.props.element.decimals)}</b></h5>
+                            <span className="DFOHostingTitleS DFOHostingTitleG">Hard Cap:</span>
+                            <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.hardCap, _this.props.element.decimals)}</b></h5>
+                        </section>
+                    </section>
+                    <a className="ChiudiQuella ChiudiQuellaGigi" data-index={i} onClick={_this.deleteTier}>X</a>
+                </li>)}
+            </ul>}
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGAMaNNTROPAAAA" onClick={this.proposeNewStaking}>Propose New Liquidity Staking</a>
         </section>);
     }
 });
