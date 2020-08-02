@@ -6,6 +6,12 @@ var DeFiOffering = React.createClass({
         'spa/defioffering/fixedInflation/view.jsx',
         'spa/defioffering/staking/view.jsx'
     ],
+    getDefaultSubscriptions() {
+        return {
+            'staking/refresh' : this.controller.loadStakingData,
+            'fixedInflation/refresh' : this.controller.loadFixedInflationData
+        };
+    },
     componentDidMount() {
         this.controller.loadFixedInflationData();
         this.controller.loadStakingData();

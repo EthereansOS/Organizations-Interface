@@ -161,9 +161,10 @@ contract DFOStake {
     function getStakingCap(uint256 tier) public view returns(uint256, uint256) {
         IStateHolder stateHolder = IStateHolder(IMVDProxy(IDoubleProxy(_doubleProxy).proxy()).getStateHolderAddress());
         string memory tierString = _toString(tier);
+        string memory addressString = _toLowerCase(_toString(address(this)));
         return (
-            stateHolder.getUint256(string(abi.encodePacked("staking.tiers[", tierString, "].minCap"))),
-            stateHolder.getUint256(string(abi.encodePacked("staking.tiers[", tierString, "].hardCap")))
+            stateHolder.getUint256(string(abi.encodePacked("staking.", addressString, ".tiers[", tierString, "].minCap"))),
+            stateHolder.getUint256(string(abi.encodePacked("staking.", addressString, ".tiers[", tierString, "].hardCap")))
         );
     }
 
@@ -341,6 +342,14 @@ contract DFOStake {
             str[3+i*2] = alphabet[uint(uint8(value[i + 12] & 0x0f))];
         }
         return string(str);
+    }
+
+    function _toLowerCase(string memory str) private pure returns(string memory) {
+        bytes memory bStr = bytes(str);
+        for (uint i = 0; i < bStr.length; i++) {
+            bStr[i] = bStr[i] >= 0x41 && bStr[i] <= 0x5A ? bytes1(uint8(bStr[i]) + 0x20) : bStr[i];
+        }
+        return string(bStr);
     }
 }
 

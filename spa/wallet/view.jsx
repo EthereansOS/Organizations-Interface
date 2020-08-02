@@ -37,7 +37,7 @@ var Wallet = React.createClass({
             <p>for:</p>
                 <TokenPicker ref={ref => this.tokenPicker = ref} tokenAddress={element.address}/>
             </label>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => this.controller.swap(this.amount.value, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address)}>Swap</a>
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={() => window.swap(this, this.amount.value, element.address, this.tokenPicker.state && this.tokenPicker.state.selected && this.tokenPicker.state.selected.address)}>Swap</a>
         </section>);
     },
     /*renderPoolProposal(element) {

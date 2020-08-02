@@ -494,7 +494,11 @@ window.stake = async function stake(view, startBlock, pools, tiers, stakingContr
     var functionalityReplace = '';
     (await window.loadFunctionalityNames(view.props.element)).forEach(it => functionalityReplace = functionalityReplace || (it === 'stakingTransfer' ? 'stakingTransfer' : ''));
     var title = ((functionalityReplace ? 'Replace' : 'New') + ' Staking Transfer Functionality');
-    var getSourceCode = function getSourceCode(contract) {
+    functionalityReplace && (title = "New Staking Manager");
+    var getSourceCode = function getSourceCode(contract, functionalityReplace) {
+        return functionalityReplace ? getOneTimeSourceCode(contract) : getFunctionalitySourceCode(contract);
+    };
+    var getFunctionalitySourceCode = function getFunctionalitySourceCode(contract) {
         contract = window.web3.utils.toChecksumAddress(contract);
         return `
 /* Discussion:
@@ -515,20 +519,13 @@ contract StakingTransferFunctionality {
         IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
         stateHolder.setBool(_toStateHolderKey("staking.transfer.authorized", _toString(${contract})), true);
         ${tiers.map((it, i) => `
-        stateHolder.setUint256("staking.tiers[${i}].minCap", ${it.minCap});
-        stateHolder.setUint256("staking.tiers[${i}].hardCap", ${it.hardCap});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers[${i}].minCap", ${it.minCap});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers[${i}].hardCap", ${it.hardCap});
     `).join('\n').trim()}
-        stateHolder.setUint256("staking.tiers.length", ${tiers.length});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers.length", ${tiers.length});
     }
 
     function onStop(address) public {
-        IStateHolder stateHolder = IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress());
-        stateHolder.clear(_toStateHolderKey("staking.transfer.authorized", _toString(${contract})));
-        ${tiers.map((it, i) => `
-        stateHolder.clear("staking.tiers[${i}].minCap");
-        stateHolder.clear("staking.tiers[${i}].hardCap");
-    `).join('\n').trim()}
-        stateHolder.clear("staking.tiers.length");
     }
 
     function stakingTransfer(address sender, uint256, uint256 value, address receiver) public {
@@ -590,17 +587,80 @@ interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 }
 `.toLines().join('\n');
+    };
+    var getOneTimeSourceCode = function getOneTimeSourceCode(contract) {
+        contract = window.web3.utils.toChecksumAddress(contract);
+        return `
+/* Discussion:
+ * https://${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth?ensd=${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth
+ */
+/* Description:
+ * ${title}
+ */
+pragma solidity ^${selectedSolidityVersion[0]};
+
+contract StakingTransferFunctionality {
+
+    function callOneTime(address) public {
+        IMVDProxy proxy = IMVDProxy(msg.sender);
+        IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
+        stateHolder.setBool(_toStateHolderKey("staking.transfer.authorized", _toString(${contract})), true);
+        ${tiers.map((it, i) => `
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers[${i}].minCap", ${it.minCap});
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers[${i}].hardCap", ${it.hardCap});
+    `).join('\n').trim()}
+        stateHolder.setUint256("staking.${contract.toLowerCase()}.tiers.length", ${tiers.length});
+    }
+
+    function _toStateHolderKey(string memory a, string memory b) private pure returns(string memory) {
+        return _toLowerCase(string(abi.encodePacked(a, ".", b)));
+    }
+
+    function _toString(address _addr) private pure returns(string memory) {
+        bytes32 value = bytes32(uint256(_addr));
+        bytes memory alphabet = "0123456789abcdef";
+
+        bytes memory str = new bytes(42);
+        str[0] = '0';
+        str[1] = 'x';
+        for (uint i = 0; i < 20; i++) {
+            str[2+i*2] = alphabet[uint(uint8(value[i + 12] >> 4))];
+            str[3+i*2] = alphabet[uint(uint8(value[i + 12] & 0x0f))];
+        }
+        return string(str);
+    }
+
+    function _toLowerCase(string memory str) private pure returns(string memory) {
+        bytes memory bStr = bytes(str);
+        for (uint i = 0; i < bStr.length; i++) {
+            bStr[i] = bStr[i] >= 0x41 && bStr[i] <= 0x5A ? bytes1(uint8(bStr[i]) + 0x20) : bStr[i];
+        }
+        return string(bStr);
+    }
+}
+
+interface IMVDProxy {
+    function getStateHolderAddress() external view returns(address);
+    function transfer(address receiver, uint256 value, address token) external;
+}
+
+interface IStateHolder {
+    function getBool(string calldata varName) external view returns (bool);
+    function setBool(string calldata varName, bool val) external returns(bool);
+    function setUint256(string calldata varName, uint256 val) external returns(uint256);
+}
+`.toLines().join('\n');
     }
     window.showProposalLoader({
         element : view.props.element,
         contractName: 'StakingTransferFunctionality',
         selectedSolidityVersion : selectedSolidityVersion[1],
         title,
-        functionalityName: 'stakingTransfer',
-        functionalityMethodSignature: 'stakingTransfer(address,uint256,uint256,address)',
-        functionalityNeedsSender : true,
-        functionalitySubmitable: true,
-        functionalityReplace,
+        functionalityName : functionalityReplace ? '' : 'stakingTransfer',
+        functionalityMethodSignature : functionalityReplace ? 'callOneTime(address)' : 'stakingTransfer(address,uint256,uint256,address)',
+        functionalityNeedsSender : functionalityReplace ? false : true,
+        functionalitySubmitable : functionalityReplace ? false : true,
+        functionalityReplace : '',
         functionalityOutputParameters: '[]',
         stakingContractAddress,
         sourceCode : 'placeHolder',
@@ -619,9 +679,7 @@ interface IERC20 {
                     rewardDividers,
                     rewardSplitTranches
                 ];
-                data.sourceCode = getSourceCode(data.stakingContractAddress || (await window.createContract.apply(window, args)).options.address);
-                console.log(dFOStakeSourceCode);
-                console.log(data.sourceCode);
+                data.sourceCode = getSourceCode(data.stakingContractAddress || (await window.createContract.apply(window, args)).options.address, functionalityReplace);
             }
         }]
     });
@@ -639,7 +697,6 @@ interface IStateHolder {
 }
 `.toLines();
     var lines = `
-    IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress()).clear("authorizedtotransferforstaking_${stakeAddress.toLowerCase()}");
     IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress()).setBool("staking.transfer.authorized.${stakeAddress.toLowerCase()}", false);
 `.toLines();
     var descriptions = [`Stopping Staking Manager`];

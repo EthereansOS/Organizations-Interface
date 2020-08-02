@@ -283,7 +283,7 @@ window.createContract = async function createContract(abi, data) {
     });
     var contractAddress = window.getNextContractAddress && window.getNextContractAddress(from, await window.web3.eth.getTransactionCount(from));
     try {
-        contractAddress = (await window.sendBlockchainTransaction(window.web3.eth.sendTransaction({
+        contractAddress = (await window.sendBlockchainTransaction(undefined, window.web3.eth.sendTransaction({
             from,
             data: data.encodeABI(),
             gasLimit: await data.estimateGas({ from })
