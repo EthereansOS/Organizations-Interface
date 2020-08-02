@@ -5,7 +5,7 @@ var StakingInfo = React.createClass({
     ],
     getDefaultSubscriptions() {
         return {
-            'staked' : this.componentDidMount
+            'ethereum/ping' : this.componentDidMount
         };
     },
     componentDidMount() {

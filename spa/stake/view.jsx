@@ -8,7 +8,7 @@ var Stake = React.createClass({
     ],
     getDefaultSubscriptions() {
         return {
-            'ethereum/ping': this.componentDidMount
+            'ethereum/ping': this.controller.load
         };
     },
     getInitialState() {
@@ -60,10 +60,14 @@ var Stake = React.createClass({
         this.controller.stake(parseInt(this.pool.value.split('_')[0]), this.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
     },
     componentDidMount() {
-        window.walletAddress && this.controller.calculateApprove(parseInt(this.pool.value.split('_')[0]));
+        this.controller.load();
     },
     firstTier(section) {
         $(section).children('.SelectedDutrationStake').length === 0 && $($(section).children()[0]).addClass('SelectedDutrationStake');
+    },
+    getTierKey(position) {
+        var tier = this.props.stakingData.tiers[position];
+        return tier.tierKey === 'Custom' ? `${tier.blockNumber} blocks` : tier.tierKey;
     },
     render() {
         var _this = this;
@@ -129,14 +133,14 @@ var Stake = React.createClass({
                             <h6><b>{this.props.stakingData.pairs[it.poolPosition].symbol}-{this.props.element.symbol}</b></h6>
                         </section>
                         <section className="statusPosition">
-                            <h5>{window.fromDecimals(it.reward, window.props.element.decimals)} <img src={this.props.element.logo}></img></h5>
+                            <h5>{window.fromDecimals(it.reward, this.props.element.decimals)} <img src={this.props.element.logo}></img></h5>
                             <h6>Locked Reward</h6>
-                            <h5><b>{window.fromDecimals(it.cumulativeReward, window.props.element.decimals)}</b> <img src={this.props.element.logo}></img></h5>
+                            <h5><b>{window.fromDecimals(it.cumulativeReward, this.props.element.decimals)}</b> <img src={this.props.element.logo}></img></h5>
                             <h6>&#127873; Redeemable</h6>
                             <a className={it.cumulativeReward !== '0' && !it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.redeem(e, it.tier, it.position)}>Redeem</a>
                         </section>
                         <section className="statusPosition">
-                            <h4>for <b>{it.tier === 0 ? "3 Months" : it.tier === 1 ? "6 Months" : it.tier === 2 ? "9 Months" : "1 Year"}</b></h4>
+                            <h4>for <b>{_this.getTierKey(it.tier)}</b></h4>
                             <h5>&#9203; <a target="_Bloank" href={window.getNetworkElement("etherscanURL") + "block/countdown/" + it.endBlock}>{it.endBlock}</a></h5>
                             <h6>Position End Block</h6>
                             <a className={it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.withdraw(e, it.tier, it.position)}>Withdraw Position</a>

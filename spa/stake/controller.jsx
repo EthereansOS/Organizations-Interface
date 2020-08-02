@@ -125,7 +125,7 @@ var StakeController = function (view) {
                 amount : context.view.firstAmount.value,
                 period : context.view.props.stakingData.tiers[tier].tierKey
             }}, function() {
-                context.view.emit('staked');
+                context.view.emit('ethereum/ping');
             });
         } catch(e) {
             alert(e.message || e);
@@ -133,9 +133,13 @@ var StakeController = function (view) {
     };
 
     context.load = async function load() {
+        if(!window.walletAddress) {
+            return;
+        }
+        await context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]))
         var currentBlock = await window.web3.eth.getBlockNumber();
         var stakingPositions = [];
-        for(var tier = 0; tier < 4; tier++) {
+        for(var tier = 0; tier < context.view.props.stakingData.tiers.length; tier++) {
             var length = parseInt(await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.length, tier));
             for(var i = 0; i < length; i++) {
                 var rawStakingInfoData = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.stakeInfo, tier, i);
