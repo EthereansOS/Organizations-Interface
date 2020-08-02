@@ -1,4 +1,7 @@
 var StakingEdit = React.createClass({
+    requiredScripts: [
+        'spa/loaderMinimino.jsx'
+    ],
     getInitialState() {
         var state = {
             tiers: [],
@@ -55,7 +58,7 @@ var StakingEdit = React.createClass({
             rewardSplitTranche = this.rewardSplitTranchesInput ? this.rewardSplitTranchesInput.value : this.props.stakingData.blockTiers[this.state.tier].weeks;
         } catch(e) {
         }
-        if(isNaN(parseInt(rewardSplitTranche)) || parseInt(rewardSplitTranche) <= 0) {
+        if(this.rewardSplitTranchesInput && (isNaN(parseInt(rewardSplitTranche)) || parseInt(rewardSplitTranche) <= 0)) {
             return this.emit('message', 'Split amount must be a valid positive number', 'error');
         }
         var percentage = 0;
@@ -130,8 +133,23 @@ var StakingEdit = React.createClass({
         }
         window.stake(this, startBlock, pairs.map(it => it.address), tiers);
     },
+    onHardCapChange(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this.hardCapChangeTimeout && window.clearTimeout(this.hardCapChangeTimeout);
+        var _this = this;
+        this.hardCapChangeTimeout = window.setTimeout(function() {
+            var value = window.formatMoney(parseFloat(_this.hardCapInput.value.split(',').join()) / 1000);
+            if(isNaN(parseFloat(value.split(',').join('')))) {
+                value = '0.00';
+            }
+            _this.minCapInput.value = value
+        }, 300);
+    },
     render() {
         var _this = this;
+        if(!_this.props.stakingData) {
+            return (<LoaderMinimino/>);
+        }
         return (<section>
             <section className="TheDappInfo1">
                 <section className="DFOTitleSection BravPicciot">
@@ -178,7 +196,7 @@ var StakingEdit = React.createClass({
                     </section>
                     <label>
                         <p>Hard Cap:</p>
-                        <input ref={ref => this.hardCapInput = ref} type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" onChange={this.onHardCapChange} />
+                        <input ref={ref => this.hardCapInput = ref} type="text" placeholder="Ammount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" onKeyUp={this.onHardCapChange} />
                     </label>
                     <label>
                         <p>Min Cap:</p>
