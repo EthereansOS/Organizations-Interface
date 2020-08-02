@@ -101,7 +101,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOHosting .DFOHostingBig {width: 210px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOHostingMid {width: 190px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOHostingTitle {font-size: 17px;font-weight: normal; width: 100%;line-height: 1.1; word-break: break-all;display: inline-block; margin: 8px 0;}
-.DFOOpened .DFOOverview .DFOHosting .DFOHostingTag {font-size: 13px;font-weight: normal; line-height: 1.1; display: inline-block; margin: 5px 5px; background-color: #5f5f5f; padding: 8px; border-radius: 20px; color: #ffffff; text-decoration: none;}
+.DFOOpened .DFOOverview .DFOHosting .DFOHostingTag {font-size: 13px;font-weight: normal; line-height: 1.1; display: inline-block; margin: 5px 5px; background-color: #5f5f5f; padding: 8px; border-radius: 20px; color: #ffffff; text-decoration: none; position: relative;}
 .DFOOpened .DFOOverview .DFOHosting .DFOHostingTag img {width: 15px; height: 15px; display: inline-block; margin-right: 5px; vertical-align: bottom;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection {width: 100%; text-align: left; color: #292929;}	
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection p {color: #292929; margin: 3px 0; font-size: 12px;font-weight: normal; line-height: 1.1; text-decoration: none; width: 100%; display: inline-block;}	.DFOOpened .DFOOverview .DFOHosting .TheDappInfo1 .DFOTitleSection {width: 240px;}
@@ -379,6 +379,8 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconText {width: 120px; background-color: #191919; color: #9e9e9e; border: 1px solid #000000; height: 20px; margin-left: 10px;display: inline-block;}
 .DFOFunctionIndexIcon ul li section .DFOFunctionIndexIconUpload {width: 120px; color: #9e9e9e;height: 20px; margin-left: 10px;display: inline-block;}
 .DFOFunctionIndexIcon aside {padding: 15px 0;}
+.stakingEdit .TheDappInfo1, .stakingEdit .TheDappInfo2 {margin: 10px; display: inline-block;}
+.stakingEdit .TheDappInfo2 .bravPicciot,.stakingEdit .TheDappInfo1 .bravPicciot {width: 78% !important;}
 .StakeBigBoss {width: 100%; position: fixed; top: 0; left: 0; background-color: #7901ff; opacity: 0.9; }
 .NavDeploy > h2 {line-height: 1.3; font-size: 40px; font-weight: normal;}
 .NoWeb3 {width: 100%; text-align: center; min-width: 990px; margin-top: 140px;}
@@ -438,7 +440,8 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DarkMode .DFOOpened .DFOOverview .DFOHosting .TheDappInfosub .DFOTitleSection {background-color: #292929;}
 .DarkMode .DFOOpened .DFONavigator li a:hover,.DarkMode .DFOOpened .DFONavigator li .selected {background-color: #8653f6 !important;}
 .TheDappInfosub {position: relative;}
-.ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff;}
+.ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff; text-decoration: none;}
+.ChiudiQuellaGigi {top: -3px;left: -6px;}
 .LinkVisualButtonBIGGAMaNNTROP {font-size: 14px; height: auto; padding: 10px; width: 100%;}
 
 .DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}	.DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}

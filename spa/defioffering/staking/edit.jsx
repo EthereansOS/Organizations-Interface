@@ -132,26 +132,22 @@ var StakingEdit = React.createClass({
     },
     render() {
         var _this = this;
-        return (<section className="BravPicciot">
-            <section>
-                <section className="DFOTitleSection">
+        return (<section>
+            <section className="TheDappInfo1">
+                <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Start Block:</b></h5>
-                    <input type="number" ref={ref => this.startBlockInput = ref} min="0"/>
-                </section>
-            </section>
-            <section>
-                <section className="DFOTitleSection">
+                    <input type="number" ref={ref => this.startBlockInput = ref} value="0" min="0"/>
                     <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
-                    <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />
                     {this.state.pairs.map((it, i) => <a key={it.address} href="javascript:;" className="DFOHostingTag">
                         <img src={it.logo}></img>
                         {it.symbol}
-                        <a href="javascript:;" data-index={i} onClick={_this.deletePair}><h2>X</h2></a>
+                        <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>
                     </a>)}
+                    <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />
                 </section>
             </section>
-            <section>
-                <section className="DFOTitleSection">
+            <section className="TheDappInfo2">
+                <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Tiers:</b></h5>
                     <section>
                         <p>Block Limit</p>
@@ -193,7 +189,7 @@ var StakingEdit = React.createClass({
                         <span><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" max="100" placeHoder="Insert a percentage"/> {'\u00a0'} %</span>
                     </label>
                     <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.addTier}>Add</a>
-                    {this.state && this.state.tiers && <ul>
+                    {/*{this.state && this.state.tiers && <ul>
                         {this.state.tiers.map((it, i) => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
                             <section className="TheDappInfo1">
                                 <section className="DFOTitleSection">
@@ -222,7 +218,7 @@ var StakingEdit = React.createClass({
                             </section>
                             <a href="javascript:;" data-index={i} onClick={_this.deleteTier}><h2>X</h2></a>
                         </li>)}
-                    </ul>}
+                    </ul>}*/}
                 </section>
             </section>
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.proposeNewStaking}>Propose new Liquidity Staking Proposals</a>
