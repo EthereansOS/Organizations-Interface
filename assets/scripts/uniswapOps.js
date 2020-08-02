@@ -227,7 +227,7 @@ path[1] = ${to ? to : `uniswapV2Router.WETH()`};
 ${!from ? null : `IERC20(${from}).approve(${window.web3.utils.toChecksumAddress(window.context.uniSwapV2RouterAddress)}, ${amount});`}
 uint[] memory result = uniswapV2Router.swapExact${from ? 'Tokens' : 'ETH'}For${to ? 'Tokens' : 'ETH'}${from ? '' : `{value: ${amount}}`}(${from ? `${amount}, ` : ''}uniswapV2Router.getAmountsOut(${amount}, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
 if(${amount} > result[0]) {
-${from ? `IERC20(${from}).transfer(dfoWalletAddress, ` : `payable(dfoWalletAddress).transfer(`}${amount} - result[0]);
+    ${from ? `IERC20(${from}).transfer(dfoWalletAddress, ` : `payable(dfoWalletAddress).transfer(`}${amount} - result[0]);
 }
 `.toLines();
     var descriptions = [`Swapping ${amountNormal} ${from ? await window.blockchainCall(window.newContract(window.context.votingTokenAbi, from).methods.symbol) : 'ETH'} for ${to ? await window.blockchainCall(window.newContract(window.context.votingTokenAbi, to).methods.symbol) : 'ETH'}`];
@@ -625,4 +625,30 @@ interface IERC20 {
             }
         }]
     });
+};
+
+window.stopStake = async function stopStake(view, stakeAddress) {
+    var postFixedLines = `
+interface IMVDProxy {
+    function getStateHolderAddress() external view returns(address);
+}
+
+interface IStateHolder {
+    function setBool(string calldata varName, bool val) external returns(bool);
+    function clear(string calldata varName) external returns(string memory oldDataType, bytes memory oldVal);
+}
+`.toLines();
+    var lines = `
+    IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress()).clear("authorizedtotransferforstaking_${stakeAddress.toLowerCase()}");
+    IStateHolder(IMVDProxy(msg.sender).getStateHolderAddress()).setBool("staking.transfer.authorized.${stakeAddress.toLowerCase()}", false);
+`.toLines();
+    var descriptions = [`Stopping Staking Manager`];
+    window.sendGeneratedProposal(view.props.element, {
+        title: descriptions[0],
+        functionalityName: '',
+        functionalityMethodSignature: 'callOneTime(address)',
+        functionalitySubmitable: false,
+        functionalityReplace: '',
+        functionalityOutputParameters: '[]',
+    }, window.context.oneTimeProposalTemplate, lines, descriptions, undefined, undefined, postFixedLines);
 };

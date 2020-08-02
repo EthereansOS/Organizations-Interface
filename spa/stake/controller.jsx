@@ -5,8 +5,8 @@ var StakeController = function (view) {
     context.slippage = new UniswapFraction(window.context.slippageNumerator, window.context.slippageDenominator);
 
     context.calculateApprove = async function calculateApprove(i) {
-        var buidlBalance = parseInt(await window.blockchainCall(window.dfoHub.token.methods.balanceOf, window.walletAddress));
-        var buidlAllowance = parseInt(await window.blockchainCall(window.dfoHub.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
+        var buidlBalance = parseInt(await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress));
+        var buidlAllowance = parseInt(await window.blockchainCall(context.view.props.element.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
         var approveFirst = buidlAllowance === 0 || buidlAllowance < buidlBalance;
         var approveSecond = false;
         var pool = context.view.props.stakingData.pairs[i];
@@ -19,13 +19,13 @@ var StakeController = function (view) {
     };
 
     context.approve = async function approve(target) {
-        var token = target === 'mine' ? context.view.props.element.token : context.view.props.stakingData.pairs[context.view.domRoot.children().find('.SelectedDutrationStake')[0].dataset.index].token;
+        var token = target === 'mine' ? context.view.props.element.token : context.view.props.stakingData.pairs[context.view.pool.value.split('_')[0]].token;
         await window.blockchainCall(token.methods.approve, context.view.props.stakingData.stakingManager.options.address, await window.blockchainCall(token.methods.totalSupply));
         context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]));
     };
 
     context.max = async function max(target, i, tier) {
-        var buidlBalance = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, window.walletAddress);
+        var buidlBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
         if(target === 'firstAmount') {
             var tierData = (await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.getStakingInfo, tier))[1];
             parseInt(buidlBalance) > parseInt(tierData) && (buidlBalance = tierData);
@@ -49,7 +49,7 @@ var StakeController = function (view) {
 
     context.calculateReserves = async function calculateReserves(secondToken, i) {
         var pair = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, context.view.props.element.token.options.address, secondToken.options.address));
-        var buidlPosition  = (await window.blockchainCall(pair.methods.token0)).toLowerCase() === window.dfoHub.token.options.address.toLowerCase() ? 0 : 1;
+        var buidlPosition  = (await window.blockchainCall(pair.methods.token0)).toLowerCase() === context.view.props.element.token.options.address.toLowerCase() ? 0 : 1;
         var otherPosition = buidlPosition == 0 ? 1 : 0;
         var reserves = await window.blockchainCall(pair.methods.getReserves);
         reserves[buidlPosition] = i === 0 ? reserves[buidlPosition] : new UniswapFraction(reserves[buidlPosition], 1).divide(10 ** 12).toSignificant(6);
@@ -98,7 +98,7 @@ var StakeController = function (view) {
         context.view.setState({staked: null});
         var firstAmount = window.toDecimals(context.view.firstAmount.value.split(',').join(''), 18);
         var stakingInfo = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.getStakingInfo, tier);
-        var buidlBalance = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, window.walletAddress);
+        var buidlBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
         if(parseInt(firstAmount) < parseInt(stakingInfo[0])) {
             return alert("Amount to stake is less than the current min cap");
         }
