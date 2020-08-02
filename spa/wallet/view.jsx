@@ -121,11 +121,12 @@ var Wallet = React.createClass({
                     <input className="MarioTorginiProposal" ref={ref => this.to = ref} type="text" placeholder="Address"/>
                 </label>
             </section>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.addTos}>Add</a>
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonG LinkVisualButtonBIGGA" onClick={this.addTos}>Add</a>
             {this.state && this.state.tos && <section>
-                {this.state.tos.map((it, i) => <section key={it.address + "_" + it.amount}>
-                    <a href="javascript:;" data-index={i} onClick={_this.deleteTo}>X</a>
-                    Send {it.amount} {element.symbol} to {it.address}
+                {this.state.tos.map((it, i) => <section className="DFOHostingTag" key={it.address + "_" + it.amount}>
+                    <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deleteTo}>X</a>
+                    <p>Send <b>{it.amount}</b> {element.symbol}</p>
+                    <p>to <aside className="LuiQuelloLi">{it.address}</aside></p>
                 </section>)}
             </section>}
             <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={e => this.transfer(e, element)}>Transfer</a>
