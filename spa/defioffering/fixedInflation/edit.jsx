@@ -88,7 +88,7 @@ var FixedInflationEdit = React.createClass({
         return (<section>
             <section className="TheDappInfo05">
                 <section className="BravPicciot">
-                <h5>Block Limit</h5>
+                <h5>Inflate:</h5>
                 <select onChange={this.onTierChange}>
                     {Object.keys(window.context.blockTiers).map(it => <option key={it} value={it}>{it}</option>)}
                     <option value="Custom">Custom</option>
