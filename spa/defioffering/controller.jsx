@@ -62,7 +62,15 @@ var DeFiOfferingController = function (view) {
             break;
         }
         if (!stakingManager) {
-            return;
+            return context.view.setState({
+                stakingData: {
+                    stakingManager,
+                    pairs : [],
+                    tiers : [],
+                    startBlock : 0,
+                    blockTiers
+                }
+            });
         }
         var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);
         var pools = await window.blockchainCall(stakingManager.methods.tokens);
