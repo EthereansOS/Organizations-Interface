@@ -12,9 +12,6 @@ var DFOElement = React.createClass({
         this.sectionChange(e.target.innerHTML);
     },
     sectionChange(section, props) {
-        this.domRoot.children().find('a').each((i, elem) => {
-            ((elem = $(elem).removeClass('selected')).html() === section || (elem.data('alternatives') && elem.data('alternatives').indexOf(section) !== -1)) && elem.addClass('selected');
-        });
         var voice = this.controller.getVoiceOrOrganizationFirstVoice(this.state.sections[section]);
         var _this = this;
         ReactModuleLoader.load({
@@ -36,13 +33,13 @@ var DFOElement = React.createClass({
         props.props && Object.entries(props.props).forEach(entry => props[entry[0]] = entry[1]);
         delete props.props;
         return (<section className="DFOOpened">
-            {props.builtMenu && props.builtMenu.map((menu, i) => <ul key={JSON.stringify(menu)} className={"DFONavigator DFONavigatorAfter" + (i == 0 ? "" : " DFOSubNavigator")}>
+            {props.builtMenu && props.builtMenu.map((menu, i) => <ul key={i} className={"DFONavigator DFONavigatorAfter" + (i == 0 ? "" : " DFOSubNavigator")}>
                 {menu.map(it => <li key={it.name}>
-                    <a href="javascript:;" onClick={_this.onClick} className={it.selected ? 'selected' : ''}>{it.name}</a>
+                    <a href="javascript:;" onClick={_this.onClick} className={it.selected ? 'selected' : null}>{it.name}</a>
                 </li>)}
             </ul>)}
             {props.section && React.createElement(window[props.section], props)}
-            {!props.section && <LoaderMinimino />}
+            {!props.section && <LoaderMinimino/>}
         </section>);
     }
 });
