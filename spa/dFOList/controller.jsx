@@ -194,6 +194,12 @@ var DFOListController = function (view) {
         element.walletWETH = '0';
         element.walletWETHDollar = '0';
         try {
+            element.walletDAI = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("daiTokenAddress")).methods.balanceOf, element.walletAddress);
+            element.walletDAIDollar = window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("daiTokenAddress"), window.wethAddress]))[1], 18, true);
+            element.walletDAIDollar = parseFloat(window.fromDecimals(element.walletDAI, 18, true)) * parseFloat(element.walletDAIDollar) * ethereumPrice;
+        } catch(e) {
+        }
+        try {
             element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdcTokenAddress")).methods.balanceOf, element.walletAddress);
             element.walletUSDCDollar = window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', 6), [window.getNetworkElement("usdcTokenAddress"), window.wethAddress]))[1], 18, true);
             element.walletUSDCDollar = parseFloat(window.fromDecimals(element.walletUSDC, 6, true)) * parseFloat(element.walletUSDCDollar) * ethereumPrice;
@@ -201,8 +207,8 @@ var DFOListController = function (view) {
             element.walletUSDTDollar = window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', 6), [window.getNetworkElement("usdtTokenAddress"), window.wethAddress]))[1], 18, true);
             element.walletUSDTDollar = parseFloat(window.fromDecimals(element.walletUSDT, 6, true)) * parseFloat(element.walletUSDTDollar) * ethereumPrice;
             element.walletDAI = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("daiTokenAddress")).methods.balanceOf, element.walletAddress);
-            element.walletDAIDollar = window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("daiTokenAddress"), window.wethAddress]))[1], 18, true);
-            element.walletDAIDollar = parseFloat(window.fromDecimals(element.walletDAI, 18, true)) * parseFloat(element.walletDAIDollar) * ethereumPrice;
+            //element.walletDAIDollar = window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("daiTokenAddress"), window.wethAddress]))[1], 18, true);
+            //element.walletDAIDollar = parseFloat(window.fromDecimals(element.walletDAI, 18, true)) * parseFloat(element.walletDAIDollar) * ethereumPrice;
             element.walletRSV = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("rsvTokenAddress")).methods.balanceOf, element.walletAddress);
             element.walletRSVDollar = window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("rsvTokenAddress"), window.wethAddress]))[1], 18, true);
             element.walletRSVDollar = parseFloat(window.fromDecimals(element.walletRSV, 18, true)) * parseFloat(element.walletRSVDollar) * ethereumPrice;
@@ -228,6 +234,7 @@ var DFOListController = function (view) {
         element.communityTokensDollar && (element.communityTokensDollar = window.formatMoney(element.communityTokensDollar));
         element.walletETHDollar && (element.walletETHDollar = window.formatMoney(element.walletETHDollar));
         element.walletBUIDLDollar && (element.walletBUIDLDollar = window.formatMoney(element.walletBUIDLDollar));
+        element.walletDAIDollar && (element.walletDAIDollar = window.formatMoney(element.walletDAIDollar));
         element.myBalanceOf = window.walletAddress ? await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress) : '0';
         if(silent === true) {
             return;

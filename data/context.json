@@ -14,6 +14,8 @@
     "trustwalletImgURLTemplate": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/{0}/logo.png",
     "defaultOcelotTokenAddress": "0x9784b427ecb5275c9300ea34adef57923ab170af",
     "defaultOcelotTokenAddressRopsten": "0x6ae6cf934b2bd8c84d932aee75102ca2ef1bf2ce",
+    "daiTokenAddress" : "0x6b175474e89094c44da98b954eedeac495271d0f",
+    "daiTokenAddressRopsten" : "0x6b175474e89094c44da98b954eedeac495271d0f",
     "singleTokenLength" : 23000,
     "dfoAddress": "0xc3BE549499f1e504c793a6c89371Bd7A98229500",
     "dfoAddressRopsten": "0x761E02FEC5A21C6d3F284bd536dB2D2d33d5540B",
