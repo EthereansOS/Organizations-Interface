@@ -80,13 +80,13 @@ var Stake = React.createClass({
                 <h3>&#129412; + &#9203; + &#129385; = &#127873;</h3>
                 <section className="switchTools">
                     <a data-target="firstAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>
-                    <input ref={ref => this.firstAmount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="firstAmount" onChange={this.onChangeAmount} />
+                    <input ref={ref => this.firstAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="firstAmount" onChange={this.onChangeAmount}/>
                     <aside className="switchLink" target="_blank">{this.props.element.symbol}</aside>
                     <img src={this.props.element.logo}/>
                 </section>
                 <section className="switchTools switchTools2">
                     {false && <a data-target="secondAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>}
-                    <input className="ETHUSDBLOW" ref={ref => this.secondAmount = ref} type="text" placeholder="0.0" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="secondAmount" onChange={this.onChangeAmount} disabled />
+                    <input className="ETHUSDBLOW" ref={ref => this.secondAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="secondAmount" onChange={this.onChangeAmount} disabled/>
                     <select ref={ref => this.pool = ref} className="switchLink" target="_blank" onChange={this.changeSecond}>
                         {this.props.stakingData.pairs.map((it, i) => <option key={it.address} data-index={i} value={i + "_" + it.symbol}>{it.symbol}</option>)}
                     </select>
@@ -94,23 +94,23 @@ var Stake = React.createClass({
                 </section>
                 <h3>&#9203; Duration</h3>
                 <section className="switchTools" ref={this.firstTier}>
-                    {this.props.stakingData.tiers.map((it, i) => <a key={it.tierKey} data-tier={i} className="TimetoStake" href="javascript:;" onClick={this.onTier}>{it.tierKey}</a>)}
+                    {this.props.stakingData.tiers.map((it, i) => <a key={it.tierKey} data-tier={i} className="TimetoStake" href="javascript:;" onClick={this.onTier}>{it.tierKey !== 'Custom' ? it.tierKey : `For ${it.blockNumber} blocks`}</a>)}
                 </section>
                 <h3>&#127873; Total Reward</h3>
                 <section className="switchTools">
-                    <span ref={ref => this.reward = ref} className="switchFinal">0</span>
+                    <span ref={ref => this.reward = ref} className="switchFinal">{window.formatMoney(0)}</span>
                     <aside className="switchLink">{this.props.element.symbol}</aside>
                     <img src={this.props.element.logo}/>
                 </section>
                 <h3 className="switchWeek">Weekly</h3>
                 <section className="switchTools switchToolsWeek">
-                    <span ref={ref => this.splittedReward = ref} className="switchFinal">0</span>
+                    <span ref={ref => this.splittedReward = ref} className="switchFinal">{window.formatMoney(0)}</span>
                     <aside className="switchLink">{this.props.element.symbol}</aside>
                     <img src={this.props.element.logo}/>
                 </section>
                 <section className="switchActions">
                     {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target="mine" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>Approve {this.props.element.symbol}</a>}
-                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target="other" href="javascript:;" className="switchAction active" onClick={this.approve}>Approve {this.props.element.symbol}</a>}
+                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target="other" href="javascript:;" className="switchAction active" onClick={this.approve}>Approve {this.state.approveSecond}</a>}
                     {window.walletAddress && <a href="javascript:;" className={"switchAction" + (!this.state.approveFirst && !this.state.approveSecond ? " active" : "")} onClick={this.stake}>Stake</a>}
                     {!window.walletAddress && <a href="javascript:;" onClick={() => window.ethereum.enable().then(() => window.getAddress()).then(() => _this.emit('ethereum/ping'))} className="switchAction active">Connect</a>}
                 </section>

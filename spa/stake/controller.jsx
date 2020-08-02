@@ -10,10 +10,10 @@ var StakeController = function (view) {
         var approveFirst = buidlAllowance === 0 || buidlAllowance < buidlBalance;
         var approveSecond = false;
         var pool = context.view.props.stakingData.pairs[i];
-        if(pool.symbol === 'ETH') {
+        if(pool.symbol !== 'ETH') {
             var secondBalance =  parseInt((await context.getSecondTokenData(i)).balance);
             var secondAllowance = parseInt(await window.blockchainCall(pool.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
-            approveSecond = secondAllowance === 0 || secondAllowance < secondBalance;
+            approveSecond = (secondAllowance === 0 || secondAllowance < secondBalance) ? pool.symbol : false;
         }
         context.view.setState({approveFirst, approveSecond});
     };
@@ -123,12 +123,15 @@ var StakeController = function (view) {
             await window.blockchainCall(eth, context.view.props.stakingData.stakingManager.methods.stake, tier, pool + '', firstAmount, firstAmountMin, value, secondAmountMin);
             context.view.setState({staked: {
                 amount : context.view.firstAmount.value,
-                period : tier === '0' ? "3 months" : tier === '1' ? "6 months" : tier === '2' ? "9 months" : "1 year"
-            }});
+                period : context.view.props.stakingData.tiers[tier].tierKey
+            }}, function() {
+                context.view.emit('staked');
+            });
         } catch(e) {
             alert(e.message || e);
         }
     };
+
     context.load = async function load() {
         var currentBlock = await window.web3.eth.getBlockNumber();
         var stakingPositions = [];

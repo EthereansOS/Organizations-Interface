@@ -3,6 +3,11 @@ var StakingInfo = React.createClass({
         'spa/loader.jsx',
         'spa/bigLoader.jsx'
     ],
+    getDefaultSubscriptions() {
+        return {
+            'staked' : this.componentDidMount
+        };
+    },
     componentDidMount() {
         this.controller.load(this, this.props.tier);
     },
