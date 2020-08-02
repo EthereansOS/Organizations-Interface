@@ -4,13 +4,8 @@ var Governance = React.createClass({
     ],
     getInitialState() {
         return {
-            element: 'Proposals'
+            section: 'Proposals'
         }
-    },
-    getDefaultSubscriptions() {
-        return {
-            'section/change': this.sectionChange
-        };
     },
     onClick(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -24,14 +19,14 @@ var Governance = React.createClass({
         var _this = this;
         ReactModuleLoader.load({
             modules: ['spa/' + element.firstLetterToLowerCase()],
-            callback: () => _this.setState({ element, props: props || null })
+            callback: () => _this.setState({ section: element, props: props || null })
         });
     },
     render() {
-        var props = this.state.props || {};
-        props.element = this.props.element;
-        props.edit = this.state && this.state.edit;
-        props.okBoomer = this.state && this.state.okBoomer;
+        var props = {};
+        this.props && Object.entries(this.props).forEach(entry => props[entry[0]] = entry[1]);
+        this.state && Object.entries(this.state).forEach(entry => props[entry[0]] = entry[1]);
+        props.section = props.subSection || props.section;
         return (
             <section className="DFOOpened">
                 <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
@@ -39,7 +34,7 @@ var Governance = React.createClass({
                     <li><a href="javascript:;" onClick={this.onClick} className="selected">Proposals</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>New Proposal</a></li>
                 </ul>
-                {React.createElement(window[this.state.element], props)}
+                {React.createElement(window[props.section], props)}
             </section>
         );
     }

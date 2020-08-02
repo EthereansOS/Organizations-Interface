@@ -138,7 +138,7 @@ var Overview = React.createClass({
                             <AsyncValue>
                                 {_this.props.element.symbol && <p className="DFOLabelTitleInfo">Ticker: <b>{_this.props.element.symbol}</b></p>}
                             </AsyncValue>
-                            <AsyncValue>    
+                            <AsyncValue>
                                 {_this.props.element.name && <p className="DFOLabelTitleInfo">Name: <b>{_this.props.element.name}</b></p>}
                             </AsyncValue>
                         </section>
@@ -148,7 +148,7 @@ var Overview = React.createClass({
                             </AsyncValue>
                         </section>
                         <section className="DFOTitleSection">
-                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View</a>
+                            <a className="LinkVisualButton LinkVisualEthscan" href="javascript:;" onClick={() => _this.emit('section/change', 'Token')}>View</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Etherscan</a>
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
                             <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
@@ -162,7 +162,7 @@ var Overview = React.createClass({
                         <br></br>
                         <h5 className="DFOHostingTitle">&#x1F468;&#x1F3FB;&#x200D;&#x1F4BB; Wallet:</h5>
                         <section className="DFOTitleSection">
-                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View</a>
+                            <a className="LinkVisualButton LinkVisualEthscan" href="javascript:;" onClick={() => _this.emit('section/change', 'Wallet')}>View</a>
                             <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a>
                         </section>
                     </li>
@@ -185,12 +185,12 @@ var Overview = React.createClass({
                     <li className="TheDappInfo05">
                     <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions: </h5>
                         <section className="DFOTitleSection">
-                            <p className="LinkVisualStandard MiiiiFunctionalities" href="javascript:;" onClick={() => _this.emit('section/change', 'Functions')}>
+                            <p className="LinkVisualStandard MiiiiFunctionalities">
                                 <AsyncValue>
                                     {_this.props.element.functionalitiesAmount}
                                 </AsyncValue>
                             </p>
-                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
+                            <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Functions')} href="javascript:;">View All</a>
                         </section>
                     </li>
                     {_this.renderChanger(['index'])}
@@ -218,8 +218,8 @@ var Overview = React.createClass({
                         <h5 className="DFOHostingTitle">&#x1F6A8; Emergency Proposals: </h5>
                         <section className="DFOTitleSection">
                             {_this.props.element.minimumBlockNumberForEmergencySurvey === undefined && <LoaderMinimino />}
-                            {_this.props.element.minimumBlockNumberForEmergencySurvey !== undefined && <p className="DFOLabelTitleInfo">{_this.renderChangeButton('emergencyLength')} Length: <b>{_this.props.element.minimumBlockNumberForEmergencySurvey}</b> <aside>Blocks</aside></p>}
-                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
+                            {_this.props.element.minimumBlockNumberForEmergencySurvey !== undefined && <p className="DFOLabelTitleInfo">Length: <b>{_this.props.element.minimumBlockNumberForEmergencySurvey}</b> <aside>Blocks</aside></p>}
+                            <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Rules')} href="javascript:;">View All</a>
                         </section>
                     </li>
                     <li className="TheDappInfo1">
@@ -241,18 +241,18 @@ var Overview = React.createClass({
                         {_this.props.element !== window.dfoHub && <section className="DFOTitleSection">
                             <p className="DFOLabelTitleInfo DFOLabelTitleInfoS"><b>{window.fromDecimals(_this.props.element.walletBUIDL, window.dfoHub.decimals)}</b><aside> BUIDL</aside></p>
                         </section>}
-                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">View All</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Wallet')} href="javascript:;">View All</a>
                     </li>
                     <li className="TheDappInfo1">
                         <h5 className="DFOHostingTitle">&#128424; Fixed Inflation:</h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">More</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'DeFi Offering')} href="javascript:;">More</a>
                         </section>
                         <h5 className="DFOHostingTitle">&#129412; Liquidity Staking:</h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href="javascript;">More</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'DeFi Offering')} href="javascript:;">More</a>
                         </section>
                     </li>
                 </ul>

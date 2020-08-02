@@ -4,13 +4,8 @@ var DeFi = React.createClass({
     ],
     getInitialState() {
         return {
-            element: 'Wallet'
+            section: 'Wallet'
         }
-    },
-    getDefaultSubscriptions() {
-        return {
-            'section/change': this.sectionChange
-        };
     },
     onClick(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -24,10 +19,14 @@ var DeFi = React.createClass({
         var _this = this;
         ReactModuleLoader.load({
             modules: ['spa/' + element.firstLetterToLowerCase()],
-            callback: () => _this.setState({ element, props: props || null })
+            callback: () => _this.setState({ section: element, props: props || null })
         });
     },
     render() {
+        var props = {};
+        this.props && Object.entries(this.props).forEach(entry => props[entry[0]] = entry[1]);
+        this.state && Object.entries(this.state).forEach(entry => props[entry[0]] = entry[1]);
+        props.section = props.subSection || props.section;
         return (
             <section className="DFOOpened">
                 <ul className="DFONavigator DFOSubNavigator DFONavigatorAfter">
@@ -35,7 +34,7 @@ var DeFi = React.createClass({
                     <li><a href="javascript:;" onClick={this.onClick}>Token</a></li>
                     <li><a href="javascript:;" onClick={this.onClick}>DeFi Offering</a></li>
                 </ul>
-                {React.createElement(window[this.state.element], this.props)}
+                {React.createElement(window[props.section], props)}
             </section>
         );
     }
