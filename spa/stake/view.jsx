@@ -71,9 +71,8 @@ var Stake = React.createClass({
     },
     render() {
         var _this = this;
-        return (<section className="StakeBigBoss" style={{"position" : 'fixed'}}>
-            <section className="boxAYOR">
-            </section>
+        return (<section className="StakeBigBoss STAKEALL" style={{"position" : 'fixed'}}>
+            <a className="NoStakeBro" href="">Close</a>
             {this.state && this.state.staked && <section className="boxAYORT">
                 <section className="boxAYORTTEXT">
                     <h2>&#127881; &#129385; Staked! &#129385; &#127881;</h2>

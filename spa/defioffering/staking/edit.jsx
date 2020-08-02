@@ -7,8 +7,8 @@ var StakingEdit = React.createClass({
             tiers: [],
             pairs: []
         };
-        this.props && this.props.stakingData && this.props.stakingData.tiers && this.props.stakingData.tiers.forEach(it => state.tiers.push(it));
-        this.props && this.props.stakingData && this.props.stakingData.pairs && this.props.stakingData.pairs.forEach(it => state.pairs.push(it));
+        /*this.props && this.props.stakingData && this.props.stakingData.tiers && this.props.stakingData.tiers.forEach(it => state.tiers.push(it));
+        this.props && this.props.stakingData && this.props.stakingData.pairs && this.props.stakingData.pairs.forEach(it => state.pairs.push(it));*/
         return state;
     },
     deleteTier(e) {
@@ -205,11 +205,13 @@ var StakingEdit = React.createClass({
                     </label>
                     <label>
                         <p>Reward Percentage:</p>
-                        <aside><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" max="100" placeHoder="Insert a percentage"/> %</aside>
+                        <aside><input ref={ref => this.rewardPercentageInput = ref} type="number" min="0" placeHoder="Insert a percentage"/> %</aside>
                     </label>
                     </section>
-                    <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.addTier}>Add</a>
-                    {/*{this.state && this.state.tiers && <ul>
+                    <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonG LinkVisualButtonBIGGA" onClick={this.addTier}>Add</a>
+                </section>
+            </section>
+            {this.state && this.state.tiers && <ul>
                         {this.state.tiers.map((it, i) => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
                             <section className="TheDappInfo1">
                                 <section className="DFOTitleSection">
@@ -228,7 +230,7 @@ var StakingEdit = React.createClass({
                                     </a>)}
                                 </section>
                             </section>}
-                            <section className="TheDappInfo1">
+                            <section className="TheDappInfo05">
                                 <section className="DFOTitleSection">
                                     <span className="DFOHostingTitleS">Min Cap:</span>
                                     <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.minCap, _this.props.element.decimals)}</b></h5>
@@ -236,12 +238,10 @@ var StakingEdit = React.createClass({
                                     <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.hardCap, _this.props.element.decimals)}</b></h5>
                                 </section>
                             </section>
-                            <a href="javascript:;" data-index={i} onClick={_this.deleteTier}><h2>X</h2></a>
+                            <a className="ChiudiQuella ChiudiQuellaGigi" data-index={i} onClick={_this.deleteTier}>X</a>
                         </li>)}
-                    </ul>}*/}
-                </section>
-            </section>
-            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGA" onClick={this.proposeNewStaking}>Propose new Liquidity Staking Proposals</a>
+                    </ul>}
+            <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB LinkVisualButtonBIGGAMaNNTROPAAAA" onClick={this.proposeNewStaking}>Propose Liquidity Staking</a>
         </section>);
     }
 });

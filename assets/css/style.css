@@ -443,10 +443,11 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff; text-decoration: none;}
 .ChiudiQuellaGigi {top: -3px;left: -6px;}
 .LinkVisualButtonBIGGAMaNNTROP {font-size: 14px; height: auto; padding: 10px; width: 100%;}
+.LinkVisualButtonBIGGAMaNNTROPAAAA {font-size: 14px; height: auto; padding: 10px; width: 300px;}
 .BravPicciot .OVaglio {display: inline-block; width: 170px;vertical-align: top;}
 .OVaglio span {width: 100px !important; font-size: 12px !important;}
 .OVaglio aside {color: #f1f1f1;}
-
+.STAKEALL {background-color: #212121; position: fixed; top: 0; left: 0; height: 100%; width: 100%; overflow-y: scroll; overflow-x: hidden; z-index: 9999999999999999; opacity: 1 !important;}
 
 .DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}	.DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}
 .DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #545454 !important;z-index: 10000;}	.DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #8653f6 !important;z-index: 10000;}
