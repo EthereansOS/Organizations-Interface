@@ -3,6 +3,7 @@
         "1": "",
         "3": "Ropsten"
     },
+    "dappVersion" : "BETA 0.3",
     "etherscanURL": "https://etherscan.io/",
     "etherscanURLRopsten": "https://ropsten.etherscan.io/",
     "uniSwapInfoURL" : "https://uniswap.info/token/",
