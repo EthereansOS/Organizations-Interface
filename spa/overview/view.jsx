@@ -61,7 +61,7 @@ var Overview = React.createClass({
         return (
             <ul>
                 <li>
-                    <p>DFOs Front-End is designed to work in two layers, the "Distributed Layer" and the "Decentralized Layer." The Distributed Layer is a version of the Front-End deployed via IPFS or Swarn, for fast and free updates. The Decentralized Layer is a version of the Front-End via On-Chain files, expensive but critical to making a DFO Censorship Resistant. The ENS automatically redirects users to the Distributed Layer and if it's Censored to the Decentralized Layer.</p>
+                    <p className="GIGIMIO">DFOs Front-End is designed to work in two layers, the "Distributed Layer" and the "Decentralized Layer." The Distributed Layer is a version of the Front-End deployed via IPFS or Swarn, for fast and free updates. The Decentralized Layer is a version of the Front-End via On-Chain files, expensive but critical to making a DFO Censorship Resistant. The ENS automatically redirects users to the Distributed Layer and if it's Censored to the Decentralized Layer.</p>
                 </li>
                 <li>
                     <section>
