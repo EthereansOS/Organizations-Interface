@@ -60,9 +60,9 @@ var GovernanceRulesData = React.createClass({
     },
     renderSurveyLength() {
         return (
-            <div className="InsertSurveyLength">
+            <div className="InsertSurveyLength GovernSelectorPage">
                 <label htmlFor="surveyLength">Survey Length:</label>
-                <input autocomplete="off" id="surveyLength" type="number" />
+                <input className="GigiImputabene" autocomplete="off" id="surveyLength" type="number" />
                 <span>Blocks</span>
                 <OkBoomer okBoomer={this.state && this.state.okBoomer}>Every survey has a length expressed in Blocks. Here you can set the duration of Surveys for this DFO.</OkBoomer>
             </div>
@@ -70,7 +70,7 @@ var GovernanceRulesData = React.createClass({
     },
     renderSurveyQuorum() {
         return (
-            <div className="InsertSurveyQuorum">
+            <div className="InsertSurveyQuorum GovernSelectorPage">
                 <input className="SurveyQuorumYN" id="surveyQuorumCheck" type="checkbox" onChange={e => {
                     this.surveyQuorumPercentage.value = '';
                     this.surveyQuorum.innerHTML = 0;
@@ -83,11 +83,31 @@ var GovernanceRulesData = React.createClass({
             </div>
         );
     },
+    renderSurveyMaxCap() {
+        return (
+            <div className="InsertSurveyQuorum GovernSelectorPage">
+                <input className="SurveyQuorumYN" id="surveyMaxCapCheck" type="checkbox" onChange={e => {
+                    this.surveyQuorumPercentage.value = '';
+                    this.surveyQuorum.innerHTML = 0;
+                    this.surveyQuorumPercentage.disabled = !e.target.checked;
+                }} />
+                <label htmlFor="surveyQuorumCheck">Survey Max Cap:</label>
+                <input className="SurveyQuorumHow" ref={ref => (this.surveyQuorumPercentage = ref) && (ref.disabled = !this.props.allData.surveyQuorumCheck)} autocomplete="off" type="number" min="0" max="100" onChange={this.onQuorumChange}/>
+                <span>{'\u00a0'}%{'\u00a0'}<span data-value={window.numberToString(this.props.allData.surveyQuorum)} ref={ref => (this.surveyQuorum = ref) && (ref.innerHTML = window.numberToString(this.props.allData.surveyQuorum))}>0</span>{'\u00a0'}{this.props.allData.tokenSymbol}</span>
+                <OkBoomer okBoomer={this.state && this.state.okBoomer}>Reaching the Max Cap, the proposal passes independently from the Servey Lenght.</OkBoomer>
+            </div>
+        );
+    },
     renderSurveyMinStake() {
         return (
-            <div className="InsertSurveyMinStake">
-                <label htmlFor="surveyMinStake">Token Staking:</label>
-                <input autocomplete="off" id="surveyMinStake" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
+            <div className="InsertSurveyQuorum GovernSelectorPage">
+            <input className="SurveyQuorumYN" id="surveyMaxcapCheck" type="checkbox" onChange={e => {
+                this.surveyMaxcapPercentage.value = '';
+                this.surveyMaxcap.innerHTML = 0;
+                this.surveyMaxcapPercentage.disabled = !e.target.checked;
+            }} />
+                <label htmlFor="surveyMinStake GovernSelectorPage">Min Staking:</label>
+                <input autocomplete="off" id="surveyMinStake" className="GigiImputabene" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span>to Propose Updates</span>
                 <OkBoomer okBoomer={this.state && this.state.okBoomer}>The minimum of Token Stacked needed to create a new Proposal.</OkBoomer>
             </div>
@@ -95,17 +115,17 @@ var GovernanceRulesData = React.createClass({
     },
     renderSurveyEmergencyLength() {
         return (
-            <div className="InsertSurveyEmergencyLength">
+            <div className="InsertSurveyEmergencyLength GovernSelectorPage">
                 <label htmlFor="emergencySurveyLength">Emergency Length:</label>
                 <input autocomplete="off" id="emergencySurveyLength" type="number" min="1" />
                 <span>Blocks</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The length in Blocks for Emergency Surveys.</OkBoomer>
+                <OkBoomer okBoomer={this.state && this.state.okBoomer}>Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.</OkBoomer>
             </div>
         );
     },
     renderSurveyEmergencyPenalty() {
         return (
-            <div className="InsertSurveyEmergencyPenalty">
+            <div className="InsertSurveyEmergencyPenalty GovernSelectorPage">
                 <label htmlFor="emergencySurveyStaking">Penalty Fee:</label>
                 <input autocomplete="off" id="emergencySurveyStaking" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span></span>
@@ -115,25 +135,35 @@ var GovernanceRulesData = React.createClass({
     },
     renderSurveyCommunityStake() {
         return (
-            <div className="InsertSurveyCommunityStake">
-                <label htmlFor="surveyCommunityStake">Total Reward Supply:</label>
-                <input autocomplete="off" id="surveyCommunityStake" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
+            <div className="InsertSurveyQuorum GovernSelectorPage">
+            <input className="SurveyQuorumYN" id="surveyMaxcapCheck" type="checkbox" onChange={e => {
+                this.surveyMaxcapPercentage.value = '';
+                this.surveyMaxcap.innerHTML = 0;
+                this.surveyMaxcapPercentage.disabled = !e.target.checked;
+            }} />
+                <label htmlFor="surveyCommunityStake">DFO Locked Supply:</label>
+                <input autocomplete="off" className="GigiImputabene" id="surveyCommunityStake" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span></span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The amount of Voting Tokens stacked as a total community reward to BUIDL the Decentralized Application.</OkBoomer>
+                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Staking, Rewards and other Community Features).</OkBoomer>
             </div>
         );
     },
     renderSurveySingleReward() {
         return (
-            <div className="InsertSurveySingleReward">
-                <label htmlFor="surveySingleReward">Single Reward:</label>
-                <input autocomplete="off" id="surveySingleReward" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
+            <div className="InsertSurveyQuorum GovernSelectorPage">
+            <input className="SurveyQuorumYN" id="surveyMaxcapCheck" type="checkbox" onChange={e => {
+                this.surveyMaxcapPercentage.value = '';
+                this.surveyMaxcap.innerHTML = 0;
+                this.surveyMaxcapPercentage.disabled = !e.target.checked;
+            }} />
+                <label htmlFor="surveySingleReward">Activity Reward:</label>
+                <input autocomplete="off" id="surveySingleReward" className="GigiImputabene" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span>of Staked Tokens</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The amount of Voting Tokens set as a single reward for every Accepted Proposal.</OkBoomer>
+                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The amount of Voting Tokens set as a reward to the issuer for every Accepted Proposal paid automatically by the DFO Wallet.</OkBoomer>
             </div>
         );
     },
-    renderOpenBasic() {
+    /*renderOpenBasic() {
         return (
             <section className="DeployNewWhat">
                 {this.renderSurveyLength()}
@@ -162,10 +192,27 @@ var GovernanceRulesData = React.createClass({
                 {this.renderEmergencySuite()}
             </section>
         );
+    },*/
+
+    renderBasicSuite() {
+        return ([
+            <p className="WOWDescription">Basic Governance Rules</p>,
+            this.renderSurveyLength(),
+            this.renderSurveyMinStake(),
+            this.renderSurveyCommunityStake()
+        ]);
+    },
+    renderAdvancedSuite() {
+        return ([
+            <p className="WOWDescription">Advanced Governance Rules</p>,
+                this.renderSurveyQuorum(),
+                this.renderSurveyMaxCap(),
+                this.renderSurveySingleReward()
+        ]);
     },
     renderEmergencySuite() {
         return ([
-            <p className="EmergencyDescription">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.</p>,
+            <p className="WOWDescription">Emergency Governance Rules</p>,
             this.renderSurveyEmergencyLength(),
             this.renderSurveyEmergencyPenalty()
         ]);
@@ -183,7 +230,7 @@ var GovernanceRulesData = React.createClass({
                 </p>
                 <section className="DFOGovernanceSelector">
                     <ul className="DFOGovernanceType">
-                        <li className={element === "OpenBasic" ? "selected" : undefined}>
+                        {/*<li className={element === "OpenBasic" ? "selected" : undefined}>
                             <a href="javascript:;" onClick={this.onClick}>
                                 <h6>Open Basic</h6>
                                 <p>Anyone can propose updates. Voting Token Holders can vote by staking their tokens.</p>
@@ -203,7 +250,13 @@ var GovernanceRulesData = React.createClass({
                                 <p>Open Basic, but with a fixed number of Token Staked to reward the community to BUIDL the project.</p>
                             </a>
                             <span className="SelectedTriangle"></span>
-                        </li>
+                        </li>*/}
+                        <section className="DeployNewWhat">
+                            {this.renderBasicSuite()}
+                            {this.renderAdvancedSuite()}
+                            {this.renderEmergencySuite()}
+                        </section>
+
                     </ul>
                     {element && this['render' + element]()}
                 </section>
