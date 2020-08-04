@@ -87,6 +87,7 @@ var FixedInflationEdit = React.createClass({
     render() {
         var _this = this;
         return (<section>
+            <p className="WOWDescription2">Before creating a Fixed Inflation Mechanism, be sure there are already existing Uniswap V2 Liquidity pools for the DFO Voting Token. Be also assured that the DFO wallet has enough funds to cover it. The min Stake is a critical feature to ensure that the maximum number of open positions are supported by the Ethereum Virtual Machine without receiving a general "Out Of Gas" error and makes it impossible for stakers to redeem their funds.</p>
             <section className="TheDappInfo05">
                 <section className="BravPicciot">
                 <h5>Inflate:</h5>

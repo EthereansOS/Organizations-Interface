@@ -321,7 +321,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .BrandLiInfo {background-color: #000000;color: #ffffff !important;border-radius: 99px;width: 20px;height: 20px;display: inline-block; font-family: "arial";}
 .GIGIMIO {font-size: 12.5px !important;width: 311px !important;display: inline-block !important;line-height: 1.3 !important;margin-block-start: 0 !important;margin-block-end: 0 !important;margin: 10px 0 10px 0px !important;}
 .WOWDescription {display: inline-block !important; width: 100% !important; font-size: 14px !important; margin: 30px 0 15px 0; padding: 7px 0px; background-color: #8d40ff; color: #f1f1f1 !important; text-align: center !important;}
-
+.WOWDescription2 {display: inline-block !important; width: 70% !important; font-size: 14px !important; margin: 30px 0 15px 0; padding: 7px 4.5%; line-height: 1.3; background-color: #8d40ff; color: #f1f1f1 !important; text-align: center !important;}
 
 .sequentialOps {width: 600px; padding: 25px; background-color: #ffffff; border: 2px solid #bbbbbb;display: inline-block; max-height: 500px; overflow: auto;}
 .sequentialOps h3 {font-size: 23px; width: 100%; display: inline-block; text-align: center; font-weight: bold; margin: 10px auto;}

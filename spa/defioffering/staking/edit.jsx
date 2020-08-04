@@ -154,6 +154,7 @@ var StakingEdit = React.createClass({
             return (<LoaderMinimino />);
         }
         return (<section>
+            <p className="WOWDescription2">Before creating a Liquidity Staking Mechanism, be sure there are already existing Uniswap V2 Liquidity pools for the DFO Voting Token. Be also assured that the DFO wallet has enough funds to cover the rewards. The min Stake is a critical feature to ensure that the maximum number of open positions are supported by the Ethereum Virtual Machine without receiving a general "Out Of Gas" error and makes it impossible for stakers to redeem their funds.</p>
             <section className="TheDappInfo1">
                 <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Start Block:</b></h5>
