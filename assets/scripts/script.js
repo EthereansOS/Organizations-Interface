@@ -52,12 +52,20 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
             delegates = window.web3.eth.abi.decodeParameters(["address", "address", "address", "address", "address", "address"], delegates);
         }
         votingToken = delegates[0];
-    } catch (e) {}
+    } catch (e) {
+        votingToken = undefined;
+    }
 
     if (!votingToken || votingToken === window.voidEthereumAddress) {
         try {
             votingToken = await window.blockchainCall(dfo.methods.getToken);
         } catch (e) {}
+    }
+
+    try {
+        await window.blockchainCall(window.newContract(window.context.votingTokenAbi, votingToken).methods.name);
+    } catch(e) {
+        votingToken = undefined;
     }
 
     if (!votingToken || votingToken === window.voidEthereumAddress) {
