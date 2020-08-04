@@ -947,6 +947,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             if (bypass) {
                 data.functionalitySourceId = '0';
                 data.functionalitySourceLocation = window.voidEthereumAddress;
+                data.bypassFunctionalitySourceId = true;
                 return;
             }
             data.functionalitySourceId = await window.mint(window.split(data.sourceCode), undefined, true);
@@ -958,7 +959,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
         name: "Deploying Smart Contract",
         async call(data) {
             if (data.contractName && data.functionalitySourceId && data.selectedSolidityVersion) {
-                var code = await window.loadContent(data.functionalitySourceId);
+                var code = data.bypassFunctionalitySourceId ? data.sourceCode : await window.loadContent(data.functionalitySourceId);
                 var compiled = await window.SolidityUtilities.compile(code, data.selectedSolidityVersion, 200);
                 data.selectedContract = compiled[data.contractName];
             }
