@@ -80,7 +80,7 @@ var Stake = React.createClass({
                 </section>
             </section>}
             <section className="switchBox">
-                <h3>&#129412; + &#9203; + &#129385; = &#127873;</h3>
+                <h3>Stake</h3>
                 <section className="switchTools">
                     <a data-target="firstAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>
                     <input ref={ref => this.firstAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="firstAmount" onChange={this.onChangeAmount}/>
