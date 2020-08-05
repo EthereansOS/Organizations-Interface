@@ -64,7 +64,7 @@ var StakingView = React.createClass({
                             <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.staked, _this.props.element.decimals)}</b></h5>
                             <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
                             <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.remainingToStake, _this.props.element.decimals)}</b></h5>
-                            <a onClick={e => this.showStake(e, element)} className="LinkVisualButton LinkVisualUni LinkVisualPropose">&#129412; Stake Manager</a>
+                            <a href="javascript:;" onClick={e => this.showStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonG">&#129385; Stake</a>
                             <a href="javascript:;" onClick={e => this.stopStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>
                         </section>
                     </section>
