@@ -775,13 +775,12 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
             if (increment > 1) {
                 errors.push('Possible Security Issue: This contract contains more than 1 public method');
             }
-
-            if(!codeName && !replaces && !window.checkOnStartAndOnStop(compare.abi)) {
-                errors.push('Missing mandatory onStart(address,address) and onStop(address) functions');
-            }
         }
         if (compare && codeName && !window.methodSignatureMatch(methodSignature, compare)) {
             errors.push('Wrong Method signature ' + methodSignature + ' for the given contract!');
+        }
+        if(compare && codeName && !window.checkOnStartAndOnStop(compare.abi)) {
+            errors.push('Missing mandatory onStart(address,address) and onStop(address) functions');
         }
     } catch (e) {}
     return errors;
