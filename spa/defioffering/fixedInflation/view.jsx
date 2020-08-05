@@ -9,6 +9,11 @@ var FixedInflationView = React.createClass({
         }
         return window.calculateTimeTier(this.props.fixedInflationData.blockLimit);
     },
+    runFixedInflation(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        var _this = this;
+        window.blockchainCall(this.props.element.dFO.methods.submit, 'fixedInflation', '0x').catch(e => _this.emit('message', e.message || e, 'error'));
+    },
     render() {
         var timeTier = this.calculateTimeTier();
         var _this = this;
@@ -27,7 +32,7 @@ var FixedInflationView = React.createClass({
                     <span className="DFOLabelTitleInfosmall">{timeTier}</span>
                     <h5 className="DFOHostingTitle"><img src={it.from.logo}/><b>{window.fromDecimals(it.amount, it.from.decimals)} {it.from.symbol}</b> for <img src={it.to.logo}/>{it.to.symbol}</h5>
                     <span className="DFOLabelTitleInfosmall">&#129412; <b>V2</b> <a href={`${window.getNetworkElement('etherscanURL')}address/${it.pairAddress}`} target="_blank">{window.shortenWord(it.pairAddress, 16)}</a></span>
-                    <a className="LinkVisualButton LinkVisualButtonB">Execute</a>
+                    {this.props.fixedInflationData && this.props.fixedInflationData.canRun && <a className="LinkVisualButton LinkVisualButtonB" onClick={this.runFixedInflation}>Execute</a>}
                 </section>
             </li>)}
             {this.props && this.props.edit && this.state && this.state.edit && React.createElement(FixedInflationEdit, props)}
