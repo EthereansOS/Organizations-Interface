@@ -185,6 +185,7 @@ window.loadContext = async function loadContext() {
 };
 
 window.choosePage = function choosePage() {
+    window.getPage();
     var page = undefined;
     try {
         page = window.location.pathname.split('/').join('');
@@ -210,8 +211,8 @@ window.getData = function getData(root, checkValidation) {
     children.each(function(i, input) {
         var id = input.id || i;
         input.type && input.type !== 'checkbox' && (data[id] = input.value);
-        input.type === 'number' && (data[id] = parseFloat(data[id]));
-        input.type === 'number' && isNaN(data[id]) && (data[id] = parseFloat(input.dataset.defaultValue));
+        input.type === 'number' && (data[id] = parseFloat(data[id].split(',').join('')));
+        input.type === 'number' && isNaN(data[id]) && (data[id] = parseFloat((input.dataset.defaultValue || '').split(',').join('')));
         (input.type === 'checkbox' || input.type === 'radio') && (data[id] = input.checked);
         !input.type || input.type === 'hidden' && (data[id] = $(input).val());
         input.type === 'file' && (data[id] = input.files);
@@ -723,7 +724,7 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
         "getEmergencySurveyStaking": true,
         "getQuorum": true,
         "getSurveySingleReward": true,
-        "getSurveyMinimumStaking": true,
+        "getMinimumStaking": true,
         "getIndex": true,
         "getLink": true,
         "getVotesHardCap": true
@@ -774,12 +775,30 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
             if (increment > 1) {
                 errors.push('Possible Security Issue: This contract contains more than 1 public method');
             }
+
+            if(!codeName && !replaces && !window.checkOnStartAndOnStop(compare.abi)) {
+                errors.push('Missing mandatory onStart(address,address) and onStop(address) functions');
+            }
         }
         if (compare && codeName && !window.methodSignatureMatch(methodSignature, compare)) {
             errors.push('Wrong Method signature ' + methodSignature + ' for the given contract!');
         }
     } catch (e) {}
     return errors;
+};
+
+window.checkOnStartAndOnStop = function checkOnStartAndOnStop(abi) {
+    var onStart = false;
+    var onStop = false;
+    for(var voice of abi) {
+        if(!onStart) {
+            onStart = voice.type === 'function' && voice.name === 'onStart' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 2 && voice.inputs[0].type === 'address' && voice.inputs[1].type === 'address';
+        }
+        if(!onStop) {
+            onStop = voice.type === 'function' && voice.name === 'onStop' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 1 && voice.inputs[0].type === 'address';
+        }
+    }
+    return onStart && onStop;
 };
 
 window.tokenPercentage = function tokenPercentage(amount, totalSupply) {
@@ -1081,7 +1100,8 @@ window.formatMoney = function formatMoney(value, decPlaces, thouSeparator, decSe
         sign = n < 0 ? "-" : "",
         i = parseInt(n = Math.abs(+n || 0).toFixed(decPlaces)) + "",
         j = (j = i.length) > 3 ? j % 3 : 0;
-    return sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
+    var result = sign + (j ? i.substr(0, j) + thouSeparator : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thouSeparator) + (decPlaces ? decSeparator + Math.abs(n - i).toFixed(decPlaces).slice(2) : "");
+    return window.eliminateFloatingFinalZeroes(result, decSeparator);
 };
 
 window.AJAXRequest = function AJAXRequest(link, timeout, toU) {
@@ -1336,4 +1356,54 @@ window.calculateMultiplierAndDivider = function calculateMultiplierAndDivider(p)
     }
     arr[1] = window.numberToString(parseInt(arr[1]));
     return arr;
+};
+
+window.eliminateFloatingFinalZeroes = function eliminateFloatingFinalZeroes(value, decSeparator) {
+    decSeparator = decSeparator || '.';
+    if(value.indexOf(decSeparator) === -1) {
+        return value;
+    }
+    var split = value.split(decSeparator);
+    while(split[1].endsWith('0')) {
+        split[1] = split[1].substring(0, split[1].length - 1);
+    }
+    return split[1].length === 0 ? split[0] : split.join(decSeparator);
+};
+
+function getPage() {
+    var location;
+    try {
+        var search = {};
+        var splits = window.location.search.split('?');
+        for(var z in splits) {
+            var split = splits[z].trim();
+            if(split.length === 0) {
+                continue;
+            }
+            split = split.split('&');
+            for(var i in split) {
+                var data = split[i].trim();
+                if(data.length === 0) {
+                    continue;
+                }
+                data = data.split('=');
+                data[1] = window.decodeURIComponent(data[1]);
+                if(!search[data[0]]) {
+                    search[data[0]] = data[1];
+                } else {
+                    var value = search[data[0]];
+                    if(typeof value !== 'object') {
+                        value = [value];
+                    }
+                    value.push(data[1]);
+                    search[data[0]] = value;
+                }
+            }
+        }
+        window.addressBarParams = search;
+        location = window.addressBarParams.location;
+    } catch(e) {
+    }
+    window.history.pushState({},"", window.location.protocol + '//' + window.location.host);
+    return location;
 };

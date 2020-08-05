@@ -11,7 +11,7 @@ var VotingTokenData = React.createClass({
             }
             data.totalSupplyWei = window.toDecimals(data.tokenTotalSupply, 18);
             _this.retrieveVotingTokensAmountForHub(data.tokenTotalSupply).then(result => {
-                data.availableSupply = result;
+                data.availableSupply = result.available;
                 return ok(data);
             });
         }));
@@ -19,18 +19,25 @@ var VotingTokenData = React.createClass({
     retrieveVotingTokensAmountForHub(totalSupply) {
         var totalSupplyWei = window.toDecimals(totalSupply, 18);
         return window.blockchainCall(window.dfoHub.dFO.methods.read, 'getVotingTokenAmountForHub', window.web3.eth.abi.encodeParameter('uint256', totalSupplyWei)).then(result => {
-            return parseFloat(window.fromDecimals(parseInt(totalSupplyWei) - parseInt(window.web3.eth.abi.decodeParameter('uint256', result)), 18));
+            result = window.web3.eth.abi.decodeParameter('uint256', result);
+            return {
+                result,
+                available : window.web3.utils.toBN(totalSupplyWei).sub(window.web3.utils.toBN(result)).toString()
+            };
         });
     },
     onChange(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         var _this = this;
         _this.tokenSymbolLabel.innerHTML = _this.tokenSymbol.value;
-        var totalSupply = parseInt(_this.totalSupply.value);
+        var totalSupply = parseFloat(_this.totalSupply.value.split(',').join(''));
         totalSupply = isNaN(totalSupply) ? 0 : totalSupply;
         _this.retrieveVotingTokensAmountForHub(totalSupply).then(result => {
-            _this.amountForHub.innerHTML = window.fromDecimals(window.web3.utils.toBN(window.toDecimals(totalSupply, 18)).sub(window.web3.utils.toBN(window.toDecimals(result, 18))).toString(), 18);
+            _this.amountForHub.innerHTML = window.fromDecimals(result.result, 18);
         });
+    },
+    retrieveAmountPercentage(ref) {
+        ref && this.retrieveVotingTokensAmountForHub(100).then(result =>  ref.innerHTML = window.fromDecimals(result.result, 18));
     },
     render() {
         return (<section>
@@ -43,7 +50,7 @@ var VotingTokenData = React.createClass({
                     <div className="InsertTokenSupply">
                         <label htmlFor="tokenTotalSupply">Supply:</label>
                         <input id="tokenTotalSupply" type="number" min="1" ref={ref => this.totalSupply = ref} onChange={this.onChange}/>
-                        <aside><b>Generation Fee:</b> 1.5% <span>(<span ref={ref => this.amountForHub = ref}>0</span> <span ref={ref => this.tokenSymbolLabel = ref}></span>)</span></aside>
+                        <aside><b>Generation Fee:</b> <span ref={this.retrieveAmountPercentage}></span>% <span>(<span ref={ref => this.amountForHub = ref}>0</span> <span ref={ref => this.tokenSymbolLabel = ref}></span>)</span></aside>
                     </div>
             </section>
         </section>);

@@ -30,6 +30,7 @@ var NewProposalController = function(view) {
 
         data.selectedContract = context.view.selectedContract;
 
+        data.functionalityMethodSignature && data.functionalityMethodSignature !== 'callOneTime(address)' && !window.checkOnStartAndOnStop(data.selectedContract.abi) && messages.push('Functionalities must have onStart(address,address) and onStop(address) methods');
         !data.functionalityReplace && !data.functionalityName && data.functionalityMethodSignature !== 'callOneTime(address)' && messages.push('Functionality name is mandatory');
         data.functionalityName && !data.selectedContract && messages.push('You need to insert a valid SmartCotract code and choose a method.');
         data.selectedContract && data.selectedContract.bytecode === '0x' && messages.push('You need to insert a valid SmartCotract code and choose a method.');

@@ -136,7 +136,7 @@ var DFOListController = function (view) {
                 element.surveySingleReward = "0";
             }
             try {
-                element.minimumStaking = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getSurveyMinimumStaking', '0x'));
+                element.minimumStaking = window.web3.eth.abi.decodeParameter("uint256" , await window.blockchainCall(element.dFO.methods.read, 'getMinimumStaking', '0x'));
             } catch(e) {
                 element.minimumStaking = "0";
             }

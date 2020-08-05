@@ -16,14 +16,23 @@ var DeployDFO = React.createClass({
                                 !data.tokenSymbol && errors.push('Insert a valid Token Symbol');
                                 (isNaN(data.tokenTotalSupply) || data.tokenTotalSupply <= 0) && errors.push('Token Total Supply must be greater than 0');
                                 !data.ensDomain && errors.push('ENS Domain is mandatory');
-                                !data.governanceRules && errors.push('You must choose one of te proposed governance rules to continue');
-                                (isNaN(data.surveyLength) || data.surveyLength < 1) && errors.push('Survey Length must be greater than or equal to 1');
-                                (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength < 1) && errors.push('Emergency Survey Length must be greater than or equal to 1');
-                                (isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0 || data.emergencySurveyStaking > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Emergency Survey Penalty must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
-                                data.surveyQuorumCheck && (isNaN(data.surveyQuorum) || data.surveyQuorum < 0 || data.surveyQuorum > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey quorum must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
-                                data.governanceRules === 'HodlersDriven' && (isNaN(data.surveyMinStake) || data.surveyMinStake < 0 || parseFloat(data.surveyMinStake) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey minimum stake must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
-                                data.governanceRules === 'CommunityDriven' && (isNaN(data.surveyCommunityStake) || data.surveyCommunityStake < 0 || parseFloat(data.surveyCommunityStake) > _this.props.allData.availableSupply) && errors.push('Survey Community reward must be a number between 0 and ' + _this.props.allData.availableSupply);
-                                data.governanceRules === 'CommunityDriven' && (isNaN(data.surveySingleReward) || data.surveySingleReward < 0 || parseFloat(data.surveySingleReward) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey single reward must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+                                (isNaN(data.surveyLength) || data.surveyLength <= 0) && errors.push("Survey Length must be a number greater than 0");
+                                (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength <= 0) && errors.push("Emergency Survey Length must be a number greater than 0");
+                                var availableSupply = parseFloat(window.fromDecimals(data.availableSupply, 18).split(',').join(''));
+                                var calculateAvailableSupplyBasedField = function calculateAvailableSupplyBasedField(data, availableSupply, errors, fieldName, label, bypassCheck) {
+                                    if(!data[fieldName + 'Check'] && !bypassCheck) {
+                                        return;
+                                    }
+                                    var value = parseFloat(data[fieldName].split(',').join(''));
+                                    var minCheck = bypassCheck ? value < 0 : value <= 0;
+                                    (isNaN(value) || minCheck || value > availableSupply) && errors.push(`${label || _this[fieldName + 'Label'].innerHTML.split(':').join('')} must be a valid, positive number ${bypassCheck ? 'between 0 and' : 'less than'} ${window.formatMoney(availableSupply)}`);
+                                };
+                                calculateAvailableSupplyBasedField(data, availableSupply, errors, 'emergencySurveyStaking', "Penalty Fee", true);
+                                calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyQuorum', "Survey Quorum");
+                                calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyMaxCap', "Max Cap");
+                                calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyMinStake', "Min Staking");
+                                calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyCommunityStake', "DFO Locked Supply");
+                                calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveySingleReward', "Activity Reward");
                                 if (errors.length > 0) {
                                     return ko(errors);
                                 }
@@ -56,20 +65,22 @@ var DeployDFO = React.createClass({
                             });
                         }
                     }, {
-                        name: "Deploy " + _this.props.allData.governanceRulesText + " Governance Rules" + (_this.props.allData.governanceRules === 'OpenBasic' ? '' : (' | Staking ' + (_this.props.allData.governanceRules === 'HodlersDriven' ? _this.props.allData.surveyMinStake : _this.props.allData.surveyCommunityStake + ' ' + _this.props.allData.tokenSymbol + ' and releasing ' + _this.props.allData.surveySingleReward) + ' ' + _this.props.allData.tokenSymbol)),
+                        name: "Deploy Governance Rules",
                         call: function (data) {
-                            var params = ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'];
+                            var params = ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'];
                             var values = [window.voidEthereumAddress, 0,
                                 data.surveyLength,
                                 data.emergencySurveyLength,
                                 window.toDecimals(data.emergencySurveyStaking, 18),
-                                data.surveyQuorum ? window.toDecimals(data.surveyQuorum, 18) : 0
+                                data.surveyQuorum ? window.toDecimals(data.surveyQuorum, 18) : 0,
+                                data.surveyQuorum ? window.toDecimals(data.surveyMaxCap, 18) : 0,
+                                data.surveyQuorum ? window.toDecimals(data.surveyMinStake, 18) : 0,
+                                data.surveyQuorum ? window.toDecimals(data.surveySingleReward, 18) : 0
                             ];
-                            data.governanceRules !== 'OpenBasic' && params.push('uint256') && values.push(window.toDecimals(data.governanceRules === 'CommunityDriven' ? data.surveySingleReward : data.surveyMinStake, 18));
                             var payload = window.web3.eth.abi.encodeParameters(params, values);
-                            return window.blockchainCall(window.dfoHub.dFO.methods.submit, ('deploy' + data.governanceRules + 'GovernanceRules'), payload).then(response => {
+                            return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployGovernanceRules', payload).then(response => {
                                 data.functionalitiesManagerAddress = window.formatDFOLogs(response.events.Event, "DFOCollateralContractsCloned(address_indexed,address)").raw.data[0];
-                            })
+                            });
                         }
                     }, {
                         name: "Deploy New DFO",

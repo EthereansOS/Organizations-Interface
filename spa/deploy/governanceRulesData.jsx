@@ -5,215 +5,132 @@ var GovernanceRulesData = React.createClass({
     getData() {
         var _this = this;
         var data = window.getData(this.domRoot);
-        data.governanceRules = (this.state && this.state.element) || this.props.allData.governanceRules;
-        data.governanceRulesText = this.state && this.state.governanceRulesText;
-        data.surveyQuorum = parseFloat(data.surveyQuorumCheck ? this.surveyQuorum.dataset.value : undefined);
         var errors = [];
-        if (!data.governanceRules) {
-            throw ['You must choose one of te proposed governance rules to continue'];
-        }
-        var errors = [];
-        (isNaN(data.surveyLength) || data.surveyLength < 1) && errors.push('Survey Length must be greater than or equal to 1');
-        (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength < 1) && errors.push('Emergency Survey Length must be greater than or equal to 1');
-        (isNaN(data.emergencySurveyStaking) || data.emergencySurveyStaking < 0 || data.emergencySurveyStaking > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Emergency Survey Penalty must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
-        data.surveyQuorumCheck && (isNaN(data.surveyQuorum) || data.surveyQuorum < 0 || data.surveyQuorum > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey quorum must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
-        data.governanceRules === 'HodlersDriven' && (isNaN(data.surveyMinStake) || data.surveyMinStake < 0 || parseFloat(data.surveyMinStake) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey minimum stake must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
-        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveyCommunityStake) || data.surveyCommunityStake < 0 || parseFloat(data.surveyCommunityStake) > _this.props.allData.availableSupply) && errors.push('Survey Community reward must be a number between 0 and ' + _this.props.allData.availableSupply);
-        data.governanceRules === 'CommunityDriven' && (isNaN(data.surveySingleReward) || data.surveySingleReward < 0 || parseFloat(data.surveySingleReward) > parseFloat(_this.props.allData.tokenTotalSupply)) && errors.push('Survey single reward must be a number between 0 and ' + _this.props.allData.tokenTotalSupply);
+        (isNaN(data.surveyLength) || data.surveyLength <= 0) && errors.push("Survey Length must be a number greater than 0");
+        (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength <= 0) && errors.push("Emergency Survey Length must be a number greater than 0");
+        var availableSupply = parseFloat(window.fromDecimals(this.props.allData.availableSupply, 18).split(',').join(''));
+        var calculateAvailableSupplyBasedField = function calculateAvailableSupplyBasedField(data, availableSupply, errors, fieldName, label, bypassCheck) {
+            if(!data[fieldName + 'Check'] && !bypassCheck) {
+                return;
+            }
+            var value = parseFloat(data[fieldName].split(',').join(''));
+            var minCheck = bypassCheck ? value < 0 : value <= 0;
+            (isNaN(value) || minCheck || value > availableSupply) && errors.push(`${label || _this[fieldName + 'Label'].innerHTML.split(':').join('')} must be a valid, positive number ${bypassCheck ? 'between 0 and' : 'less than'} ${window.formatMoney(availableSupply)}`);
+        };
+        calculateAvailableSupplyBasedField(data, availableSupply, errors, 'emergencySurveyStaking', undefined, true);
+        calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyQuorum');
+        calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyMaxCap');
+        calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyMinStake');
+        calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveyCommunityStake');
+        calculateAvailableSupplyBasedField(data, availableSupply, errors, 'surveySingleReward');
         if (errors.length > 0) {
             throw errors;
         }
         return data;
     },
-    onClick(e) {
-        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        this.sectionChange($(e.currentTarget).children('h6').html());
-    },
-    sectionChange(governanceRulesText, props) {
-        this.domRoot.children().find('li').each((i, elem) => {
-            var $elem = $(elem).removeClass('selected');
-            $elem.children('a').children('h6').html() === governanceRulesText && $elem.addClass('selected');
-        });
-        var _this = this;
-        var element = governanceRulesText.split(' ').join('');
-        _this.setState({ element, governanceRulesText, props: props || null });
-    },
-    onQuorumChange(e) {
-        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        var surveyQuorumPercentage = parseFloat(this.surveyQuorumPercentage.value);
-        if (surveyQuorumPercentage < 0) {
-            surveyQuorumPercentage = 0;
-            this.surveyQuorumPercentage.value = surveyQuorumPercentage;
-        }
-        if (surveyQuorumPercentage > 100) {
-            surveyQuorumPercentage = 100;
-            this.surveyQuorumPercentage.value = surveyQuorumPercentage;
-        }
-        this.surveyQuorum.innerHTML = '';
-        if (isNaN(surveyQuorumPercentage)) {
-            return;
-        }
-        var result = parseInt(this.props.allData.totalSupplyWei) * (surveyQuorumPercentage * 100) / 10000;
-        result = window.fromDecimals(result, 18);
-        this.surveyQuorum.dataset.value = result;
-        this.surveyQuorum.innerHTML = result;
-    },
     renderSurveyLength() {
-        return (
-            <div className="InsertSurveyLength GovernSelectorPage">
-                <label htmlFor="surveyLength">Survey Length:</label>
-                <input className="GigiImputabene" autocomplete="off" id="surveyLength" type="number" />
-                <span>Blocks</span>
-                <p className="OkBoomer">Every survey has a length expressed in Blocks. Here you can set the duration of Surveys for this DFO.<div className="BoomerTriangle"></div></p>
-            </div>
-        );
-    },
-    renderSurveyQuorum() {
-        return (
-            <div className="InsertSurveyQuorum GovernSelectorPage">
-                <input className="SurveyQuorumYN" id="surveyQuorumCheck" type="checkbox" onChange={e => {
-                    this.surveyQuorumPercentage.value = '';
-                    this.surveyQuorum.innerHTML = 0;
-                    this.surveyQuorumPercentage.disabled = !e.target.checked;
-                }} />
-                <label htmlFor="surveyQuorumCheck">Survey Quorum:</label>
-                <input className="SurveyQuorumHow" ref={ref => (this.surveyQuorumPercentage = ref) && (ref.disabled = !this.props.allData.surveyQuorumCheck)} autocomplete="off" type="number" min="0" max="100" onChange={this.onQuorumChange} />
-                <span>{'\u00a0'}%{'\u00a0'}<span data-value={window.numberToString(this.props.allData.surveyQuorum)} ref={ref => (this.surveyQuorum = ref) && (ref.innerHTML = window.numberToString(this.props.allData.surveyQuorum))}>0</span>{'\u00a0'}{this.props.allData.tokenSymbol}</span>
-                <p className="OkBoomer">The Quorum is minimum token Staken by voters in a survey to reach the success status.<div className="BoomerTriangle"></div></p>
-            </div>
-        );
-    },
-    renderSurveyMaxCap() {
-        return (
-            <div className="InsertSurveyQuorum GovernSelectorPage">
-                <input className="SurveyQuorumYN" id="surveyMaxCapCheck" type="checkbox" onChange={e => {
-                    this.surveyQuorumPercentage.value = '';
-                    this.surveyQuorum.innerHTML = 0;
-                    this.surveyQuorumPercentage.disabled = !e.target.checked;
-                }} />
-                <label htmlFor="surveyQuorumCheck">Survey Max Cap:</label>
-                <input className="SurveyQuorumHow" ref={ref => (this.surveyQuorumPercentage = ref) && (ref.disabled = !this.props.allData.surveyQuorumCheck)} autocomplete="off" type="number" min="0" max="100" onChange={this.onQuorumChange} />
-                <span>{'\u00a0'}%{'\u00a0'}<span data-value={window.numberToString(this.props.allData.surveyQuorum)} ref={ref => (this.surveyQuorum = ref) && (ref.innerHTML = window.numberToString(this.props.allData.surveyQuorum))}>0</span>{'\u00a0'}{this.props.allData.tokenSymbol}</span>
-                <p className="OkBoomer">Reaching the Max Cap, the proposal passes independently from the Servey Lenght.<div className="BoomerTriangle"></div></p>
-            </div>
-        );
-    },
-    renderSurveyMinStake() {
-        return (
-            <div className="InsertSurveyQuorum GovernSelectorPage">
-                <input className="SurveyQuorumYN" id="surveyMaxcapCheck" type="checkbox" onChange={e => {
-                    this.surveyMinStake.value = '';
-                    this.surveyMinStake.innerHTML = 0;
-                    this.surveyMinStake.disabled = !e.target.checked;
-                }}/>
-                <label htmlFor="surveyMinStake GovernSelectorPage">Min Staking:</label>
-                <input autocomplete="off" id="surveyMinStake" className="GigiImputabene" type="number" min="1" max={this.props.allData.tokenTotalSupply} />
-                <span>to Propose Updates</span>
-                <p className="OkBoomer">The minimum of Token Stacked needed to create a new Proposal.<div className="BoomerTriangle"></div></p>
-            </div>
-        );
+        return this.renderInput("InsertSurveyLength", "", "surveyLength", "Survey Length", "", "number", "Blocks", false, "Every survey has a length expressed in Blocks. Here you can set the duration of Surveys for this DFO.");
     },
     renderSurveyEmergencyLength() {
-        return (
-            <div className="InsertSurveyEmergencyLength GovernSelectorPage">
-                <label htmlFor="emergencySurveyLength">Emergency Length:</label>
-                <input autocomplete="off" id="emergencySurveyLength" type="number" min="1" />
-                <span>Blocks</span>
-                <p className="OkBoomer">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.<div className="BoomerTriangle"></div></p>
-            </div>
-        );
+        return this.renderInput("InsertSurveyEmergencyLength", "", "emergencySurveyLength", "Emergency Length", "", "number", "Blocks", false, "Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.");
     },
     renderSurveyEmergencyPenalty() {
-        return (
-            <div className="InsertSurveyEmergencyPenalty GovernSelectorPage">
-                <label htmlFor="emergencySurveyStaking">Penalty Fee:</label>
-                <input autocomplete="off" id="emergencySurveyStaking" type="number" min="1" max={this.props.allData.tokenTotalSupply} />
-                <span></span>
-                <p className="OkBoomer">The Fee that Emergency Proposal Issuer must stake to propose it and lost if the Proposal fails. <div className="BoomerTriangle"></div></p>
-            </div>
-        );
+        return this.renderInput("InsertSurveyEmergencyPenalty", "", "emergencySurveyStaking", "Penalty Fee", "", "text", this.props.allData.tokenSymbol, true, "The Fee that Emergency Proposal Issuer must stake to propose it and lost if the Proposal fails.");
+    },
+    renderSurveyQuorum() {
+        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyQuorum", "Survey Quorum", "SurveyQuorumHow", "text", this.props.allData.tokenSymbol, true, "The Quorum is minimum token Staken by voters in a survey to reach the success status.");
+    },
+    renderSurveyMaxCap() {
+        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyMaxCap", "Max Cap", "SurveyQuorumHow", "text", this.props.allData.tokenSymbol, true, "Reaching the Max Cap, the proposal passes independently from the Survey Lenght.");
+    },
+    renderSurveyMinStake() {
+        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyMinStake", "Min Staking", "", "text", this.props.allData.tokenSymbol + " to Propose Updates", true, "The minimum of Token Staked needed to create a new Proposal.");
     },
     renderSurveyCommunityStake() {
-        return (
-            <div className="InsertSurveyQuorum GovernSelectorPage">
-                <input className="SurveyQuorumYN" id="surveyMaxcapCheck" type="checkbox" onChange={e => {
-                    this.surveyMaxcapPercentage.value = '';
-                    this.surveyMaxcap.innerHTML = 0;
-                    this.surveyMaxcapPercentage.disabled = !e.target.checked;
-                }} />
-                <label htmlFor="surveyCommunityStake">DFO Locked Supply:</label>
-                <input autocomplete="off" className="GigiImputabene" id="surveyCommunityStake" type="number" min="1" max={this.props.allData.tokenTotalSupply} />
-                <span></span>
-                <p className="OkBoomer">The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Staking, Rewards and other Community Features).<div className="BoomerTriangle"></div></p>
-            </div>
-        );
+        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyCommunityStake", "DFO Locked Supply", "", "text", this.props.allData.tokenSymbol, true, "The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Staking, Rewards and other Community Features).");
     },
     renderSurveySingleReward() {
-        return (
-            <div className="InsertSurveyQuorum GovernSelectorPage">
-                <input className="SurveyQuorumYN" id="surveyMaxcapCheck" type="checkbox" onChange={e => {
-                    this.surveyMaxcapPercentage.value = '';
-                    this.surveyMaxcap.innerHTML = 0;
-                    this.surveyMaxcapPercentage.disabled = !e.target.checked;
-                }} />
-                <label htmlFor="surveySingleReward">Activity Reward:</label>
-                <input autocomplete="off" id="surveySingleReward" className="GigiImputabene" type="number" min="1" max={this.props.allData.tokenTotalSupply} />
-                <span>of Staked Tokens</span>
-                <p className="OkBoomer">The amount of Voting Tokens set as a reward to the issuer for every Accepted Proposal paid automatically by the DFO Wallet.<div className="BoomerTriangle"></div></p>
-            </div>
-        );
+        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveySingleReward", "Activity Reward", "", "text", this.props.allData.tokenSymbol + " of staked tokens", true, "The amount of Voting Tokens set as a reward to the issuer for every Accepted Proposal paid automatically by the DFO Wallet.");
     },
-    renderInput(containerClass, checkBoxClassName, fieldName, label, description, postFixedText) {
+    onCheck(e) {
+        var fieldName = e.currentTarget.dataset.id;
+        var inputType = e.currentTarget.dataset.type;
+        this[fieldName].value = e.currentTarget.checked ? '0' : '';
+        e.target.checked && inputType === 'text' && (this[fieldName].value += '.00');
+        this[fieldName].disabled = !e.target.checked;
+        this.calculatePercentage({currentTarget: this[fieldName]});
+        e.target.checked && this[fieldName].focus();
+    },
+    inputRef(ref, fieldName, checkBoxClassName, percentage) {
+        this[fieldName] = ref;
+        if(!ref) {
+            return;
+        }
+        var allData = this.props.allData || {};
+        ref.disabled = !checkBoxClassName ? false : !allData[fieldName + 'Check'];
+        ref.value = allData[fieldName] || '';
+        percentage && (ref.onkeyup = this.calculatePercentage)
+    },
+    percentageRef(ref, fieldName) {
+        this[fieldName + 'Percentage'] = ref;
+        if(!ref) {
+            return;
+        }
+        this.calculatePercentage({
+            currentTarget : {
+                id: fieldName,
+                value : (this.props && this.props.allData && this.props.allData[fieldName]) || ''
+            }
+        });
+    },
+    calculatePercentage(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this[e.currentTarget.id + "Percentage"].innerHTML = '';
+        var value = e.currentTarget.value.split(',').join('').trim();
+        if(value === '') {
+            return;
+        }
+        var value = parseFloat(value);
+        value = isNaN(value) ? 0 : value;
+        value = (value * 100) / parseFloat(window.fromDecimals(this.props.allData.availableSupply, 18).split(',').join(''));
+        value = window.formatMoney(value);
+        this[e.currentTarget.id + "Percentage"].innerHTML = `(${value}% of total ${this.props.allData.tokenSymbol} supply)`;
+    },
+    renderInput(containerClass, checkBoxClassName, fieldName, label, inputClassName, inputType, postFixedText, percentage, description) {
         var _this = this;
-        return (
-            <div className={containerClass + " GovernSelectorPage"}>
-                {checkBoxClassName && <input className={checkBoxClassName} id={fieldName + "Check"} type="checkbox" onChange={e => {
-                    _this[fieldName].value = '';
-                    _this[fieldName].disabled = !e.target.checked;
-                }}/>}
-                <label htmlFor={fieldName}>{label}:</label>
-                <input id={fieldName} className="GigiImputabene" ref={ref => _this[fieldName] = ref} type="text" type="text" placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$"/>
-                <span>{postFixedText ? postFixedText : ''}</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>{description}</OkBoomer>
-            </div>
-        );
+        return (<div className={containerClass + " GovernSelectorPage"}>
+            {checkBoxClassName && <input className={checkBoxClassName} id={fieldName + "Check"} data-id={fieldName} data-type={inputType || 'text'} type="checkbox" onChange={this.onCheck}/>}
+            <label htmlFor={fieldName} ref={ref => _this[fieldName + "Label"] = ref}>{label}:</label>
+            <input id={fieldName} className={inputClassName || "GigiImputabene"} ref={ref => _this.inputRef(ref, fieldName, checkBoxClassName, percentage)} type={inputType || "text"} placeholder="Amount" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" min="0"/>
+            {postFixedText && <span>{postFixedText}</span>}
+            {percentage && <span ref={ref => this.percentageRef(ref, fieldName)}/>}
+            <p className="OkBoomer">{description} <div className="BoomerTriangle"/></p>
+        </div>);
     },
-    renderSuite(sectionName, params) {
+    renderSuite(sectionName) {
         var result = [<p className="WOWDescription">{sectionName}</p>];
-        params.forEach(it => result.push(this['render' + it.firstLetterToUpperCase()]));
+        if (arguments.length > 1) {
+            for (var i = 1; i < arguments.length; i++) {
+                result.push(this['render' + arguments[i].firstLetterToUpperCase()]());
+            }
+        }
         return result;
     },
     renderBasicSuite() {
-        return ([
-            <p className="WOWDescription">Basic Governance Rules</p>,
-            this.renderSurveyLength(),
-            this.renderSurveyMinStake(),
-            this.renderSurveyCommunityStake()
-        ]);
+        return this.renderSuite("Basic Governance Rules", "surveyLength", "surveyMinStake", "surveyCommunityStake");
     },
     renderAdvancedSuite() {
-        return ([
-            <p className="WOWDescription">Advanced Governance Rules</p>,
-            this.renderSurveyQuorum(),
-            this.renderSurveyMaxCap(),
-            this.renderSurveySingleReward()
-        ]);
+        return this.renderSuite("Advanced Governance Rules", "surveyQuorum", "surveyMaxCap", "surveySingleReward");
     },
     renderEmergencySuite() {
-        return ([
-            <p className="WOWDescription">Emergency Governance Rules</p>,
-            this.renderSurveyEmergencyLength(),
-            this.renderSurveyEmergencyPenalty()
-        ]);
+        return this.renderSuite("Emergency Governance Rules", "surveyEmergencyLength", "surveyEmergencyPenalty");
     },
     render() {
         return (<section>
             <p>
                 <span>3 of 3 | Governance</span>
                 <br />
-                    Its time to choose the Governance Rules! All Governance Rules can be changed anytime via proposals.
-                    <br />
-                <a className={"EditDFOYo EditDFOYoBl" + (this.state && this.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => this.setState({ okBoomer: !(this.state && this.state.okBoomer) })}>Info</a>
+                Its time to choose the Governance Rules! All Governance Rules can be changed anytime via proposals.
             </p>
             <section className="DFOGovernanceSelector">
                 <ul className="DFOGovernanceType">

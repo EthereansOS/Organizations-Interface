@@ -179,10 +179,10 @@ var OverviewController = function (view) {
         var template = !data.minimumStaking ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('uint256').split('value').join(minimumStakingString));
         window.sendGeneratedProposal(context.view.props.element, {
             title: updates[0],
-            functionalityName: data.minimumStaking ? 'getSurveyMinimumStaking' : '',
+            functionalityName: data.minimumStaking ? 'getMinimumStaking' : '',
             functionalityMethodSignature: data.minimumStaking ? 'getValue()' : '',
             functionalitySubmitable: false,
-            functionalityReplace: (data.minimumStaking === 0 || parseInt(context.view.props.element.minimumStaking)) ? 'getSurveyMinimumStaking' : '',
+            functionalityReplace: (data.minimumStaking === 0 || parseInt(context.view.props.element.minimumStaking)) ? 'getMinimumStaking' : '',
             functionalityOutputParameters: data.minimumStaking ? '["uint256"]' : '',
         }, template, undefined, descriptions, updates);
     };
