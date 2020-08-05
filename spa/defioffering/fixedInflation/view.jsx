@@ -27,6 +27,7 @@ var FixedInflationView = React.createClass({
                     <span className="DFOLabelTitleInfosmall">{timeTier}</span>
                     <h5 className="DFOHostingTitle"><img src={it.from.logo}/><b>{window.fromDecimals(it.amount, it.from.decimals)} {it.from.symbol}</b> for <img src={it.to.logo}/>{it.to.symbol}</h5>
                     <span className="DFOLabelTitleInfosmall">&#129412; <b>V2</b> <a href={`${window.getNetworkElement('etherscanURL')}address/${it.pairAddress}`} target="_blank">{window.shortenWord(it.pairAddress, 16)}</a></span>
+                    <a className="LinkVisualButton LinkVisualButtonB">Execute</a>
                 </section>
             </li>)}
             {this.props && this.props.edit && this.state && this.state.edit && React.createElement(FixedInflationEdit, props)}
