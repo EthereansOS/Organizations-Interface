@@ -64,7 +64,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="surveyLength">Survey Length:</label>
                 <input className="GigiImputabene" autocomplete="off" id="surveyLength" type="number" />
                 <span>Blocks</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>Every survey has a length expressed in Blocks. Here you can set the duration of Surveys for this DFO.</OkBoomer>
+                <p className="OkBoomer">Every survey has a length expressed in Blocks. Here you can set the duration of Surveys for this DFO.<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -79,7 +79,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="surveyQuorumCheck">Survey Quorum:</label>
                 <input className="SurveyQuorumHow" ref={ref => (this.surveyQuorumPercentage = ref) && (ref.disabled = !this.props.allData.surveyQuorumCheck)} autocomplete="off" type="number" min="0" max="100" onChange={this.onQuorumChange}/>
                 <span>{'\u00a0'}%{'\u00a0'}<span data-value={window.numberToString(this.props.allData.surveyQuorum)} ref={ref => (this.surveyQuorum = ref) && (ref.innerHTML = window.numberToString(this.props.allData.surveyQuorum))}>0</span>{'\u00a0'}{this.props.allData.tokenSymbol}</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The Quorum is minimum token Staken by voters in a survey to reach the success status.</OkBoomer>
+                <p className="OkBoomer">The Quorum is minimum token Staken by voters in a survey to reach the success status.<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -94,7 +94,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="surveyQuorumCheck">Survey Max Cap:</label>
                 <input className="SurveyQuorumHow" ref={ref => (this.surveyQuorumPercentage = ref) && (ref.disabled = !this.props.allData.surveyQuorumCheck)} autocomplete="off" type="number" min="0" max="100" onChange={this.onQuorumChange}/>
                 <span>{'\u00a0'}%{'\u00a0'}<span data-value={window.numberToString(this.props.allData.surveyQuorum)} ref={ref => (this.surveyQuorum = ref) && (ref.innerHTML = window.numberToString(this.props.allData.surveyQuorum))}>0</span>{'\u00a0'}{this.props.allData.tokenSymbol}</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>Reaching the Max Cap, the proposal passes independently from the Servey Lenght.</OkBoomer>
+                <p className="OkBoomer">Reaching the Max Cap, the proposal passes independently from the Servey Lenght.<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -109,7 +109,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="surveyMinStake GovernSelectorPage">Min Staking:</label>
                 <input autocomplete="off" id="surveyMinStake" className="GigiImputabene" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span>to Propose Updates</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The minimum of Token Stacked needed to create a new Proposal.</OkBoomer>
+                <p className="OkBoomer">The minimum of Token Stacked needed to create a new Proposal.<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -119,7 +119,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="emergencySurveyLength">Emergency Length:</label>
                 <input autocomplete="off" id="emergencySurveyLength" type="number" min="1" />
                 <span>Blocks</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.</OkBoomer>
+                <p className="OkBoomer">Emergency Proposals are designed as a Faster Proposal System for bug fixing. To ensure that users have economic disincentives to use it to fraud the community, we advise setting a High Penalty Fee, because if the Proposal Fails, the Proposer will lose it.<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -129,7 +129,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="emergencySurveyStaking">Penalty Fee:</label>
                 <input autocomplete="off" id="emergencySurveyStaking" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span></span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The Fee that Emergency Proposal Issuer must stake to propose it and lost if the Proposal fails.</OkBoomer>
+                <p className="OkBoomer">The Fee that Emergency Proposal Issuer must stake to propose it and lost if the Proposal fails. <div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -144,7 +144,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="surveyCommunityStake">DFO Locked Supply:</label>
                 <input autocomplete="off" className="GigiImputabene" id="surveyCommunityStake" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span></span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Staking, Rewards and other Community Features).</OkBoomer>
+                <p className="OkBoomer">The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Staking, Rewards and other Community Features).<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -159,7 +159,7 @@ var GovernanceRulesData = React.createClass({
                 <label htmlFor="surveySingleReward">Activity Reward:</label>
                 <input autocomplete="off" id="surveySingleReward" className="GigiImputabene" type="number" min="1" max={this.props.allData.tokenTotalSupply}/>
                 <span>of Staked Tokens</span>
-                <OkBoomer okBoomer={this.state && this.state.okBoomer}>The amount of Voting Tokens set as a reward to the issuer for every Accepted Proposal paid automatically by the DFO Wallet.</OkBoomer>
+                <p className="OkBoomer">The amount of Voting Tokens set as a reward to the issuer for every Accepted Proposal paid automatically by the DFO Wallet.<div className="BoomerTriangle"></div></p>
             </div>
         );
     },
@@ -225,8 +225,6 @@ var GovernanceRulesData = React.createClass({
                     <span>3 of 3 | Governance</span>
                     <br/>
                     Its time to choose the Governance Rules! All Governance Rules can be changed anytime via proposals.
-                    <br/>
-                    <a className={"EditDFOYo EditDFOYoBl" + (this.state && this.state.okBoomer ? ' Editing' : '')} href="javascript:;" onClick={() => this.setState({ okBoomer: !(this.state && this.state.okBoomer) })}>Info</a>
                 </p>
                 <section className="DFOGovernanceSelector">
                     <ul className="DFOGovernanceType">
