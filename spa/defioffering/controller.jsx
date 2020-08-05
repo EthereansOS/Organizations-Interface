@@ -7,6 +7,9 @@ var DeFiOfferingController = function (view) {
         var uniSwapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
         try {
             fixedInflationData.blockLimit = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fairInflation.blockLimit'));
+            fixedInflationData.lastBlock = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fairInflation.lastBlock'));
+            var currentBlock = parseInt(await window.web3.eth.getBlockNumber());
+            fixedInflationData.canRun = (fixedInflationData.blockLimit + fixedInflationData.lastBlock) >= currentBlock;
             fixedInflationData.swapCouples = [];
             var length = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fairInflation.swapCouples.length'));
             for (var i = 0; i < length; i++) {
