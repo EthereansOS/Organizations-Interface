@@ -3,20 +3,22 @@ var DeFiOfferingController = function (view) {
     context.view = view;
 
     context.loadFixedInflationData = async function loadFixedInflationData() {
+        context.view.setState({fixedInflationData : null});
         var fixedInflationData = {};
         var uniSwapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
         try {
-            fixedInflationData.blockLimit = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fairInflation.blockLimit'));
-            fixedInflationData.lastBlock = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fairInflation.lastBlock'));
+            fixedInflationData.blockLimit = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fixedInflation.blockLimit'));
+            fixedInflationData.lastBlock = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fixedInflation.lastBlock'));
+            fixedInflationData.nextBlock = fixedInflationData.blockLimit + fixedInflationData.lastBlock;
             var currentBlock = parseInt(await window.web3.eth.getBlockNumber());
-            fixedInflationData.canRun = (fixedInflationData.blockLimit + fixedInflationData.lastBlock) >= currentBlock;
+            fixedInflationData.canRun = currentBlock >= fixedInflationData.nextBlock;
             fixedInflationData.swapCouples = [];
-            var length = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fairInflation.swapCouples.length'));
+            var length = parseInt(await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, 'fixedInflation.swapCouples.length'));
             for (var i = 0; i < length; i++) {
                 var swapCouple = {
-                    from: window.web3.utils.toChecksumAddress(await window.blockchainCall(context.view.props.element.stateHolder.methods.getAddress, `fairInflation.swapCouples[${i}].from`)),
-                    to: window.web3.utils.toChecksumAddress(await window.blockchainCall(context.view.props.element.stateHolder.methods.getAddress, `fairInflation.swapCouples[${i}].to`)),
-                    amount: await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, `fairInflation.swapCouples[${i}].amount`)
+                    from: window.web3.utils.toChecksumAddress(await window.blockchainCall(context.view.props.element.stateHolder.methods.getAddress, `fixedInflation.swapCouples[${i}].from`)),
+                    to: window.web3.utils.toChecksumAddress(await window.blockchainCall(context.view.props.element.stateHolder.methods.getAddress, `fixedInflation.swapCouples[${i}].to`)),
+                    amount: await window.blockchainCall(context.view.props.element.stateHolder.methods.getUint256, `fixedInflation.swapCouples[${i}].amount`)
                 };
                 swapCouple.pairAddress = await window.blockchainCall(uniSwapV2Factory.methods.getPair, swapCouple.from, swapCouple.to);
                 swapCouple.from = {

@@ -1676,3 +1676,13 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
         });
     });
 };
+
+window.getFIBlock = async function getFIBlock(element) {
+    if(!element) {
+        window.getFIBlock(window.dfoHub);
+        return window.getFIBlock(window.list['10417092_log_61829c8c']);
+    }
+    var lastSwapBlock = parseInt(await window.blockchainCall(element.stateHolder.methods.getUint256, 'lastSwapBlock'));
+    var swapBlockLimit = parseInt(await window.blockchainCall(element.stateHolder.methods.getUint256, 'swapBlockLimit'));
+    console.log(element.name, window.getNetworkElement('etherscanURL') + 'block/countdown/' + (lastSwapBlock + swapBlockLimit));
+};

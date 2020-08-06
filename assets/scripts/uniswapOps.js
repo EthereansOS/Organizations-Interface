@@ -287,7 +287,7 @@ window.fixedInflation = async function fixedInflation(view, fixedInflation) {
     for(var i = 0; i < fixedInflation.swapCouples.length; i++){
         fixedInflation.swapCouples[i].from = window.web3.utils.toChecksumAddress(fixedInflation.swapCouples[i].from);
         fixedInflation.swapCouples[i].to = window.web3.utils.toChecksumAddress(fixedInflation.swapCouples[i].to);
-        fixedInflation.swapCouples[i].amount = window.toDecimals((fixedInflation.swapCouples[i].amount + '').split(',').join(''), 18);
+        fixedInflation.swapCouples[i].amount = fixedInflation.swapCouples[i].amount;
         transfers[fixedInflation.swapCouples[i].from] = transfers[fixedInflation.swapCouples[i].from] || {amount : '0'};
         transfers[fixedInflation.swapCouples[i].from].amount = window.web3.utils.toBN(transfers[fixedInflation.swapCouples[i].from].amount).add(window.web3.utils.toBN(fixedInflation.swapCouples[i].amount)).toString();
     }
