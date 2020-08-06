@@ -205,7 +205,15 @@ window.choosePage = async function choosePage() {
 };
 
 window.loadCustomizedPage = async function loadCustomizedPage() {
+    if(window.addressBarParams.staking) {
+        window.loadStaking();
+        return false;
+    }
+    return false;
+};
 
+window.loadStaking = async function loadStaking() {
+    
 };
 
 window.getData = function getData(root, checkValidation) {

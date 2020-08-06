@@ -67,8 +67,8 @@ var StakingEdit = React.createClass({
             percentage = parseFloat(this.rewardPercentageInput.value.split(',').join(''));
         } catch (e) {
         }
-        if (isNaN(percentage) || percentage < 1 || percentage > 100) {
-            return this.emit('message', 'Percentage must be a number between 1 and 100', 'error');
+        if (isNaN(percentage) || percentage <= 0) {
+            return this.emit('message', 'Percentage must be a positive number', 'error');
         }
         var tiers = (this.state && this.state.tiers) || [];
         tiers.push({
