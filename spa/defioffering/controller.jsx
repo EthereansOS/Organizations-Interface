@@ -45,54 +45,6 @@ var DeFiOfferingController = function (view) {
 
     context.loadStakingData = async function loadStakingData() {
         context.view.setState({ stakingData: null });
-        var blockTiers = {};
-        Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
-        var json = await window.blockchainCall(context.view.props.element.stateHolder.methods.toJSON);
-        json = JSON.parse(json.endsWith(',]') ? (json.substring(0, json.lastIndexOf(',]')) + ']') : json);
-        var stakingData = [];
-        for (var i in json) {
-            var element = json[i];
-            if (element.name.indexOf('staking.transfer.authorized.') === -1 && element.name.indexOf('authorizedtotransferforstaking_') === -1) {
-                continue;
-            }
-            var split = element.name.split('.');
-            split.length === 1 && (split = element.name.split('_'));
-            var stakingManager = window.newContract(window.context.StakeAbi, split[split.length - 1]);
-            stakingData.push(await context.setStakingManagerData(stakingManager, blockTiers));
-        }
-        context.view.setState({stakingData, blockTiers});
-    };
-
-    context.setStakingManagerData = async function setStakingManagerData(stakingManager, blockTiers) {
-        var stakingManagerData = {
-            stakingManager,
-            blockTiers
-        };
-        var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);
-        var pools = await window.blockchainCall(stakingManager.methods.tokens);
-        stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
-        var pairs = await window.loadTokenInfos(pools, window.wethAddress);
-        for (var i in pairs) {
-            pairs[i].amount = await window.blockchainCall(stakingManager.methods.totalPoolAmount, i);
-        }
-        var tiers = [];
-        for (var i = 0; i < rawTiers[0].length; i++) {
-            var tier = {
-                blockNumber: rawTiers[0][i],
-                percentage: 100 * parseFloat(rawTiers[1][i]) / parseFloat(rawTiers[2][i]),
-                rewardSplitTranche: rawTiers[3][i],
-                time: window.calculateTimeTier(rawTiers[0][i]),
-                tierKey: window.getTierKey(rawTiers[0][i])
-            };
-            var stakingInfo = await window.blockchainCall(stakingManager.methods.getStakingInfo, i);
-            tier.minCap = stakingInfo[0];
-            tier.hardCap = stakingInfo[1];
-            tier.remainingToStake = stakingInfo[2];
-            tier.staked = window.web3.utils.toBN(tier.hardCap).sub(window.web3.utils.toBN(tier.remainingToStake)).toString()
-            tiers.push(tier);
-        }
-        stakingManagerData.pairs = pairs;
-        stakingManagerData.tiers = tiers;
-        return stakingManagerData;
+        context.view.setState(await window.loadStakingData(context.view.props.element));
     };
 };

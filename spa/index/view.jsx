@@ -6,14 +6,16 @@ var Index = React.createClass({
     requiredScripts: [
         'spa/messages.jsx',
         'spa/loader.jsx',
-        'spa/walletEnablerButton.jsx'
+        'spa/walletEnablerButton.jsx',
+        'spa/noWeb3Loader.jsx'
     ],
     getDefaultSubscriptions() {
         return {
             'dfo/deploy': this.onDFO,
             'dfo/deploy/cancel': () => this.setState({ deploy: null }),
             'ethereum/ping': () => this.forceUpdate(),
-            'index/fullscreen': this.onFullscreen
+            'index/fullscreen': this.onFullscreen,
+            'stake/close' : () => this.state && this.state.optionalPage && this.setState({optionalPage : null})
         };
     },
     onFullscreen(fullscreen) {
@@ -53,6 +55,7 @@ var Index = React.createClass({
         } catch (e) {
         }
         isEthereumAddress(address) && (this.address.value = address) && this.load({target:{dataset:{timeout:"300"}}});
+        this.controller.tryLoadStaking();
     },
     toggleDarkMode(e) {
         e && e.preventDefault(true) && e.stopPropagation(true);
@@ -83,7 +86,7 @@ var Index = React.createClass({
                             </li>
                         </ul>
                     </header>
-                    <div className="BETABANNER">
+                    {!(this.state && this.state.optionalPage) && <div className="BETABANNER">
                         <section>
                             <h1>&#128123;</h1>
                             <h2>Welcome to the DFOhub <span>{window.context.dappVersion}</span></h2>
@@ -94,10 +97,11 @@ var Index = React.createClass({
                             </section>
                             <a href="javascript:;" onClick={e => $(e.currentTarget).parent().parent().hide()}>Gotcha!</a>
                         </section>
-                    </div>
+                    </div>}
                     {this.state && this.state.deploy && <Deploy/>}
                     {(!this.state || !this.state.deploy) && <DFOList/>}
                 </section>
+                {this.state && this.state.optionalPage && React.createElement(this.state.optionalPage.component, this.state.optionalPage.props)}
                 <Messages/>
                 <Loader/>
             </div>

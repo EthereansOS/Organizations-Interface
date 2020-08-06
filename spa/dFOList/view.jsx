@@ -13,7 +13,7 @@ var DFOList = React.createClass({
             'ethereum/ping': () => this.controller.loadList(true),
             'search': search => this.setState({ search, key: null }),
             'element/update': this.updateElement,
-            'balances/refresh': this.controller.refreshBalances,
+            'balances/refresh': () => window.refreshBalances(this),
             'okBommer/toggle': this.toggleOkBoomer,
             'edit/toggle' : (edit, callback) => this.dfoElement.setState({edit}, _this.forceUpdate(callback))
         };
@@ -21,7 +21,7 @@ var DFOList = React.createClass({
     toggleOkBoomer () {var _this = this; this.dfoElement.setState({ okBoomer: !(this.dfoElement.state && this.dfoElement.state.okBoomer)}, () => _this.forceUpdate())},
     updateElement(element) {
         delete element.updating;
-        this.controller.updateInfo(element);
+        window.updateInfo(this, element);
     },
     componentDidMount() {
         this.controller.loadList();
@@ -36,7 +36,7 @@ var DFOList = React.createClass({
             var element = list[i];
             if (!element.updating) {
                 list.splice(i, 1);
-                this.controller.updateInfo(element);
+                window.updateInfo(this, element);
             } else {
                 i++;
             }
