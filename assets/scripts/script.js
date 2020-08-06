@@ -64,7 +64,7 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
 
     try {
         await window.blockchainCall(window.newContract(window.context.votingTokenAbi, votingToken).methods.name);
-    } catch(e) {
+    } catch (e) {
         votingToken = undefined;
     }
 
@@ -184,9 +184,12 @@ window.loadContext = async function loadContext() {
     window.context = JSON.parse(window.context);
 };
 
-window.choosePage = function choosePage() {
+window.choosePage = async function choosePage() {
     window.getPage();
-    var page = undefined;
+    if(await window.loadCustomizedPage()) {
+        return;
+    }
+    var page;
     try {
         page = window.location.pathname.split('/').join('');
         page = page.indexOf('.html') === -1 ? undefined : page.split('.html').join('');
@@ -195,10 +198,14 @@ window.choosePage = function choosePage() {
 
     try {
         var maybePromise = window[page] && window[page]();
-        maybePromise && maybePromise.catch && maybePromise.catch(console.error);
+        maybePromise && maybePromise.catch && await maybePromise;
     } catch (e) {
         console.error(e);
     }
+};
+
+window.loadCustomizedPage = async function loadCustomizedPage() {
+
 };
 
 window.getData = function getData(root, checkValidation) {
@@ -779,7 +786,7 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
         if (compare && codeName && !window.methodSignatureMatch(methodSignature, compare)) {
             errors.push('Wrong Method signature ' + methodSignature + ' for the given contract!');
         }
-        if(compare && codeName && !window.checkOnStartAndOnStop(compare.abi)) {
+        if (compare && codeName && !window.checkOnStartAndOnStop(compare.abi)) {
             errors.push('Missing mandatory onStart(address,address) and onStop(address) functions');
         }
     } catch (e) {}
@@ -789,11 +796,11 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
 window.checkOnStartAndOnStop = function checkOnStartAndOnStop(abi) {
     var onStart = false;
     var onStop = false;
-    for(var voice of abi) {
-        if(!onStart) {
+    for (var voice of abi) {
+        if (!onStart) {
             onStart = voice.type === 'function' && voice.name === 'onStart' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 2 && voice.inputs[0].type === 'address' && voice.inputs[1].type === 'address';
         }
-        if(!onStop) {
+        if (!onStop) {
             onStop = voice.type === 'function' && voice.name === 'onStop' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 1 && voice.inputs[0].type === 'address';
         }
     }
@@ -1259,16 +1266,31 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
             window.pairCreatedTopic, [myToken]
         ]
     });
+    logs.push(...(await window.getLogs({
+        address: window.context.uniSwapV2FactoryAddress,
+        fromBlock: '0',
+        topics: [
+            window.pairCreatedTopic, 
+            [],
+            [myToken]
+        ]
+    })));
     if (address !== view.address) {
         return;
     }
     var uniswapPairs = [];
+    var alreadyAdded = {};
     for (var log of logs) {
         for (var topic of log.topics) {
             if (topic === window.pairCreatedTopic || topic.toLowerCase() === myToken.toLowerCase()) {
                 continue;
             }
-            var pairToken = window.newContract(window.context.uniSwapV2PairAbi, window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
+            var pairTokenAddress = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
+            if(alreadyAdded[pairTokenAddress]) {
+                continue;
+            }
+            alreadyAdded[pairTokenAddress] = true;
+            var pairToken = window.newContract(window.context.uniSwapV2PairAbi, pairTokenAddress);
             var token0 = window.web3.utils.toChecksumAddress(await window.blockchainCall(pairToken.methods.token0));
             if (address !== view.address) {
                 return;
@@ -1337,12 +1359,12 @@ window.getTierKey = function getTierKey(blockLimit) {
 window.calculateMultiplierAndDivider = function calculateMultiplierAndDivider(p) {
     p = (typeof p).toLowerCase() === 'string' ? parseFloat(p) : p;
     p = p / 100;
-    var percentage = window.formatMoney(p, 9, '') .split('.');
+    var percentage = window.formatMoney(p, 9, '').split('.');
     var arr = [];
     arr[0] = percentage[0];
     var i;
-    for(i = percentage[1].length - 1; i >= 0; i--) {
-        if(percentage[1][i] !== '0') {
+    for (i = percentage[1].length - 1; i >= 0; i--) {
+        if (percentage[1][i] !== '0') {
             break;
         }
     }
@@ -1350,7 +1372,7 @@ window.calculateMultiplierAndDivider = function calculateMultiplierAndDivider(p)
     arr[0] += afterFloat;
     arr[0] = window.numberToString(parseInt(arr[0]));
     arr[1] = '1';
-    for(var i = 0; i < afterFloat.length; i++) {
+    for (var i = 0; i < afterFloat.length; i++) {
         arr[1] += '0';
     }
     arr[1] = window.numberToString(parseInt(arr[1]));
@@ -1359,11 +1381,11 @@ window.calculateMultiplierAndDivider = function calculateMultiplierAndDivider(p)
 
 window.eliminateFloatingFinalZeroes = function eliminateFloatingFinalZeroes(value, decSeparator) {
     decSeparator = decSeparator || '.';
-    if(value.indexOf(decSeparator) === -1) {
+    if (value.indexOf(decSeparator) === -1) {
         return value;
     }
     var split = value.split(decSeparator);
-    while(split[1].endsWith('0')) {
+    while (split[1].endsWith('0')) {
         split[1] = split[1].substring(0, split[1].length - 1);
     }
     return split[1].length === 0 ? split[0] : split.join(decSeparator);
@@ -1374,24 +1396,24 @@ function getPage() {
     try {
         var search = {};
         var splits = window.location.search.split('?');
-        for(var z in splits) {
+        for (var z in splits) {
             var split = splits[z].trim();
-            if(split.length === 0) {
+            if (split.length === 0) {
                 continue;
             }
             split = split.split('&');
-            for(var i in split) {
+            for (var i in split) {
                 var data = split[i].trim();
-                if(data.length === 0) {
+                if (data.length === 0) {
                     continue;
                 }
                 data = data.split('=');
                 data[1] = window.decodeURIComponent(data[1]);
-                if(!search[data[0]]) {
+                if (!search[data[0]]) {
                     search[data[0]] = data[1];
                 } else {
                     var value = search[data[0]];
-                    if(typeof value !== 'object') {
+                    if (typeof value !== 'object') {
                         value = [value];
                     }
                     value.push(data[1]);
@@ -1401,8 +1423,7 @@ function getPage() {
         }
         window.addressBarParams = search;
         location = window.addressBarParams.location;
-    } catch(e) {
-    }
-    window.history.pushState({},"", window.location.protocol + '//' + window.location.host);
+    } catch (e) {}
+    window.history.pushState({}, "", window.location.protocol + '//' + window.location.host);
     return location;
 };
