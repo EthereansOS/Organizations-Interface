@@ -61,7 +61,10 @@ var Proposal = React.createClass({
             <p>Total Votes: {window.fromDecimals(it.allVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>
             {!it.withdrawed && <p className="AllRed">To Withdraw: {window.fromDecimals(it.myVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>}
             <section>
-                {(it.surveyEnd || it.hardCapReached) && !it.terminationData && <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>}
+                {(it.surveyEnd || it.hardCapReached) && !it.terminationData && <section className="MutoStai">
+                    <p></p>
+                    <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>
+                </section>}
                 {it.terminationData && !it.withdrawed && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
                 <a className={"LinkVisualButton" + (_this.props.toggle === ('info_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('info_' + it.key) ? null : ('info_' + it.key))}>Info</a>
                 {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
@@ -103,9 +106,12 @@ var Proposal = React.createClass({
             <p>Leading: {it.leading && <span>&#9989;</span>}{!it.leading && <span>&#9940;</span>}</p>
             <p>End Block:<a target="_blank" href={window.getNetworkElement('etherscanURL') + 'block/' + it.endBlock}>{it.endBlock}</a></p>
             {!it.surveyEnd && <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.toggle === ('vote_' + it.key) ? ' Editing' : '')} onClick={() => _this.emit('toggle', _this.props.toggle === ('vote_' + it.key) ? null : ('vote_' + it.key))}>Vote</WalletEnablerButton>}
-            {it.surveyEnd && !it.terminated && <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>}
             {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>
+            {it.surveyEnd && !it.terminated && <section className="MutoStai">
+                <p></p>
+                <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>
+            </section>}
         </section>];
         _this.props.toggle === 'vote_' + it.key && rendered.push(<section className="ProposalVote">
             <section className="ProposalVoteINFO">
@@ -188,7 +194,8 @@ var Proposal = React.createClass({
         percAccepted = (isNaN(percAccepted) ? 0 : percAccepted) + '%';
         var percRefused = ((parseInt(it.refused) / it.allVotes) * 100);
         percRefused = (isNaN(percRefused) ? 0 : percRefused) + '%';
-        var rendered = [<section className="ProposalBio">
+        var rendered = [
+        <section className="ProposalBio">
             <h5>{it.emergency && <span>&#x1F6A8;{'\u00a0'}</span>}{it.compareErrors === undefined && <LoaderMinimino />}{it.compareErrors && it.compareErrors.length > 0 && <span title={('There are some problems in this proposal:\n' + (it.compareErrors.join(';\n').trim()))}>&#9763;&#65039;</span>} {!it.codeName ? !it.replaces ? "One Time" : "Kill" : it.replaces ? "Edit" : "Add New"}{(it.codeName || it.replaces) && [<span> | </span>, <span>{it.codeName || it.replaces}</span>]}</h5>
             <p>
                 <span ref={ref => ref && (ref.innerHTML = description.substring(0, more ? description.length : length))} />
@@ -197,7 +204,8 @@ var Proposal = React.createClass({
             </p>
         </section>];
         rendered.push((it.checkedTimes > 0 ? this.renderTerminated : this.renderRunning)(percAccepted, percRefused));
-        _this.props.toggle === 'code_' + it.key && rendered.push(<section className="AllViewCode">
+        _this.props.toggle === 'code_' + it.key && rendered.push(
+        <section className="AllViewCode">
             <section className="AllViewCodeEditor">
                 <Editor className="AllViewCode" firstCode={it.replacesCode || it.code} secondCode={(it.replacesCode && it.code) || undefined} />
             </section>
