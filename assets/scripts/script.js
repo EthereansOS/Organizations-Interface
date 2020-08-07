@@ -29,6 +29,7 @@ window.blockchainSetup = async function blockchainSetup() {
         window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
         window.ethereum && window.ethereum.on && window.ethereum.on('networkChanged', window.onEthereumUpdate);
         window.ethereum && window.ethereum.on && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
+        window.ethereum && window.ethereum.on && window.ethereum.on('chainChanged', window.onEthereumUpdate);
         return window.onEthereumUpdate(0);
     } catch (e) {
         throw 'An error occurred while trying to setup the Blockchain Connection: ' + (e.message || e + '.');
@@ -202,6 +203,13 @@ window.choosePage = async function choosePage() {
     } catch (e) {
         console.error(e);
     }
+};
+
+window.getLink = function getLink() {
+    var link = window.location.protocol + '//';
+    link += window.location.hostname;
+    window.location.port && (link += ':' + window.location.port);
+    return link;
 };
 
 window.loadCustomizedPage = async function loadCustomizedPage() {
@@ -1435,21 +1443,23 @@ window.loadStakingData = async function loadStakingData(element) {
     json = JSON.parse(json.endsWith(',]') ? (json.substring(0, json.lastIndexOf(',]')) + ']') : json);
     var stakingData = [];
     for (var i in json) {
-        var element = json[i];
-        if (element.name.indexOf('staking.transfer.authorized.') === -1 && element.name.indexOf('authorizedtotransferforstaking_') === -1) {
+        var elem = json[i];
+        if (elem.name.indexOf('staking.transfer.authorized.') === -1 && elem.name.indexOf('authorizedtotransferforstaking_') === -1) {
             continue;
         }
-        var split = element.name.split('.');
-        split.length === 1 && (split = element.name.split('_'));
+        var active = await window.blockchainCall(element.stateHolder.methods.getBool, elem.name);
+        var split = elem.name.split('.');
+        split.length === 1 && (split = elem.name.split('_'));
         var stakingManager = window.newContract(window.context.StakeAbi, split[split.length - 1]);
-        stakingData.push(await window.setStakingManagerData(stakingManager, blockTiers));
+        stakingData.push(await window.setStakingManagerData(stakingManager, blockTiers, active));
     }
     return {stakingData, blockTiers};
 };
 
-window.setStakingManagerData = async function setStakingManagerData(stakingManager, blockTiers) {
+window.setStakingManagerData = async function setStakingManagerData(stakingManager, blockTiers, active) {
     var stakingManagerData = {
         stakingManager,
+        active,
         blockTiers
     };
     var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);

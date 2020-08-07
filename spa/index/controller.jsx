@@ -31,11 +31,12 @@ var IndexController = function (view) {
                 startBlock: window.getNetworkElement('deploySearchStart')
             };
             await window.updateInfo(undefined, element);
+            var active = await window.blockchainCall(element.stateHolder.methods.getBool, `staking.transfer.authorized.${stakingManager.options.address.toLowerCase()}`);
             var blockTiers = {};
             Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
             var props = {
                 element,
-                stakingData: await window.setStakingManagerData(stakingManager, blockTiers)
+                stakingData: await window.setStakingManagerData(stakingManager, blockTiers, active)
             };
             ReactModuleLoader.load({
                 modules: ['spa/stake'],

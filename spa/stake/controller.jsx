@@ -19,9 +19,14 @@ var StakeController = function (view) {
     };
 
     context.approve = async function approve(target) {
-        var token = target === 'mine' ? context.view.props.element.token : context.view.props.stakingData.pairs[context.view.pool.value.split('_')[0]].token;
-        await window.blockchainCall(token.methods.approve, context.view.props.stakingData.stakingManager.options.address, await window.blockchainCall(token.methods.totalSupply));
-        context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]));
+        context.view.setState({loadingStake : false, loadingApprove: true});
+        try {
+            var token = target === 'mine' ? context.view.props.element.token : context.view.props.stakingData.pairs[context.view.pool.value.split('_')[0]].token;
+            await window.blockchainCall(token.methods.approve, context.view.props.stakingData.stakingManager.options.address, await window.blockchainCall(token.methods.totalSupply));
+            context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]));
+        } catch(e) {
+        }
+        context.view.setState({loadingStake : false, loadingApprove: false});
     };
 
     context.max = async function max(target, i, tier) {
@@ -95,7 +100,6 @@ var StakeController = function (view) {
     };
 
     context.stake = async function stake(pool, tier) {
-        context.view.setState({staked: null});
         var firstAmount = window.toDecimals(context.view.firstAmount.value.split(',').join(''), 18);
         var stakingInfo = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.getStakingInfo, tier);
         var buidlBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
@@ -106,15 +110,16 @@ var StakeController = function (view) {
             return alert("Amount to stake must be less than the current remaining one");
         }
         if(parseInt(firstAmount) > parseInt(buidlBalance)) {
-            return alert("You don't have enough buidl balance to stake!");
+            return alert(`You don't have enough ${context.view.props.symbol} balance to stake!`);
         }
+        context.view.setState({staked: null, loadingStake : true, loadingApprove: false});
         firstAmount = new UniswapFraction(firstAmount, 1);
         var secondAmount = await context.calculateOther('firstAmount', pool, tier);
         var firstAmountMin = firstAmount.subtract(firstAmount.multiply(context.slippage)).toSignificant(100).split('.')[0];
         var secondAmountMin = secondAmount.subtract(secondAmount.multiply(context.slippage)).toSignificant(100).split('.')[0];
         firstAmount = firstAmount.toSignificant(100).split('.')[0];
         secondAmount = secondAmount.toSignificant(100).split('.')[0];
-        if(parseInt(secondAmount) > (await context.getSecondTokenData(pool)).balance) {
+        if(parseInt(secondAmount) > parseInt(await context.getSecondTokenData(pool)).balance) {
             return alert("You don't have enough " + (context.view.props.stakingData.pairs[pool].symbol) + " balance to stake!");
         }
         var eth = pool === 0 ? secondAmount : undefined;
@@ -126,17 +131,19 @@ var StakeController = function (view) {
                 period : context.view.props.stakingData.tiers[tier].tierKey
             }}, function() {
                 context.view.emit('ethereum/ping');
+                context.view.emit('staking/refresh');
             });
         } catch(e) {
-            alert(e.message || e);
+            (e.message || e).toLowerCase().indexOf('user denied') === -1 && alert(e.message || e);
         }
+        context.view.setState({loadingStake : false, loadingApprove: false});
     };
 
     context.load = async function load() {
         if(!window.walletAddress) {
             return;
         }
-        await context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]))
+        context.view.pool && await context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]))
         var currentBlock = await window.web3.eth.getBlockNumber();
         var stakingPositions = [];
         for(var tier = 0; tier < context.view.props.stakingData.tiers.length; tier++) {
