@@ -23,8 +23,11 @@ project = "dfo-hub"
 copyright = "2020, dfo-hub"
 author = "dfo-hub"
 
+
+# The short X.Y version
+version = "0.x.0"
 # The full version, including alpha/beta/rc tags
-release = "0.3.0"
+release = "0.x.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -35,6 +38,7 @@ release = "0.3.0"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinxcontrib.soliditydomain",
+    "sphinx.ext.intersphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
