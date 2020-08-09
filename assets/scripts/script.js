@@ -265,13 +265,16 @@ window.getAddress = async function getAddress() {
 window.getSendingOptions = function getSendingOptions(transaction, value) {
     return new Promise(async function(ok, ko) {
         if (transaction) {
-            var address = await window.getAddress();
+            var from = await window.getAddress();
+            var nonce = await window.web3.eth.getTransactionCount(from);
             return window.bypassEstimation ? ok({
-                from: address,
+                nonce,
+                from,
                 gas: window.gasLimit || '7900000',
                 value
             }) : transaction.estimateGas({
-                    from: address,
+                    nonce,
+                    from,
                     gasPrice: window.web3.utils.toWei("13", "gwei"),
                     value
                 },
@@ -280,7 +283,8 @@ window.getSendingOptions = function getSendingOptions(transaction, value) {
                         return ko(error.message || error);
                     }
                     return ok({
-                        from: address,
+                        nonce,
+                        from,
                         gas: gas || window.gasLimit || '7900000',
                         value
                     });
@@ -342,11 +346,18 @@ window.sendBlockchainTransaction = function sendBlockchainTransaction(value, tra
         }
         try {
             (transaction = transaction.send ? transaction.send(await window.getSendingOptions(transaction, value), handleTransactionError) : transaction).on('transactionHash', transactionHash => {
+                $.publish('transaction/start');
+                var stop = function() {
+                    $.unsubscribe('transaction/stop', stop);
+                    handleTransactionError('stopped');
+                };
+                $.subscribe('transaction/stop', stop);
                 var timeout = async function() {
                     var receipt = await window.web3.eth.getTransactionReceipt(transactionHash);
                     if (!receipt || !receipt.blockNumber || parseInt(await window.web3.eth.getBlockNumber()) < (parseInt(receipt.blockNumber) + (window.context.transactionConfirmations || 0))) {
                         return window.setTimeout(timeout, window.context.transactionConfirmationsTimeoutMillis);
                     }
+                    $.unsubscribe('transaction/stop', stop);
                     return transaction.then(ok);
                 };
                 window.setTimeout(timeout);

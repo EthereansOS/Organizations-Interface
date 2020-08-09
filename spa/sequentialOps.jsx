@@ -23,13 +23,20 @@ var SequentialOps = React.createClass({
         current.loading = true;
         _this.emit('message');
         _this.forceUpdate(function () {
-            delete current.loading;
+            var onStart = function() {
+                _this.unsubscribe('transaction/start', onStart);
+                current.transacting = true;
+                _this.forceUpdate();
+            };
+            _this.subscribe('transaction/start', onStart);
             var include = $(_this.list.children('li.child-' + index)[0]).children().find('input.include[type="checkbox"]')[0];
             include && (include.disabled = true);
             var transactionHash = $('input.transactionHash[type="text"][data-i="' + index + '"]')[0];
             transactionHash && (transactionHash.disabled = true);
             current.transactionHash = current.bypass === true ? undefined : current.transactionHash;
             (current.transactionHash ? window.web3.eth.getTransactionReceipt(current.transactionHash).then(transaction => current.onTransaction(_this.ctx, transaction)) : current.call(_this.ctx, current.bypass)).then(function () {
+                delete current.loading;
+                delete current.transacting;
                 target && $(target).removeClass('disabled');
                 _this.cancelButton && $(_this.cancelButton).removeClass('disabled');
                 _this.advancedButton && $(_this.advancedButton).removeClass('disabled');
@@ -38,16 +45,29 @@ var SequentialOps = React.createClass({
                     _this.props.onCallback && _this.props.onCallback(index, index === _this.children.length - 1);
                 });
             }).catch(function (e) {
+                delete current.loading;
+                delete current.transacting;
                 include && (include.disabled = false);
                 transactionHash && (transactionHash.disabled = false);
                 target && $(target).removeClass('disabled');
                 _this.cancelButton && $(_this.cancelButton).removeClass('disabled');
                 _this.advancedButton && $(_this.advancedButton).removeClass('disabled');
-                current.ko = (e.message || e).toLowerCase().indexOf("user denied") === -1;
+                current.ko = (e.message || e) !== 'stopped' && (e.message || e).toLowerCase().indexOf("user denied") === -1;
                 current.ko && _this.emit('message', e.message || e, 'error');
                 _this.forceUpdate();
             });
         });
+    },
+    stop(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this.emit('transaction/stop');
+        this.cancelButton && $(this.cancelButton).removeClass('disabled');
+        this.advancedButton && $(this.advancedButton).removeClass('disabled');
+        var index = this.getIndex();
+        index = isNaN(index) ? this.children.length - 1 : index;
+        delete this.children[index].loading;
+        delete this.children[index].transacting;
+        this.forceUpdate();
     },
     onCancel(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -132,6 +152,7 @@ var SequentialOps = React.createClass({
                             {it.ok && <span>&#9989;</span>}
                             {it.ko && <span>&#9940;</span>}
                         </span>
+                        {it.loading && it.transacting && <span>{'\u00a0'}<a href="javascript:;" className="LinkVisualButton" onClick={this.stop}>Stop</a></span>}
                         {it.description && <span className="Pistombrillo">{it.description}</span>}
                     </label>
                 </li>)}
