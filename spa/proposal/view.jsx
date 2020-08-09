@@ -102,11 +102,14 @@ var Proposal = React.createClass({
     renderRunning(percAccepted, percRefused) {
         var _this = this;
         var it = _this.state.survey;
-        var rendered = [<section className="ProposalAction">
+        var rendered = [<section className="ProposalAction ProposalPool">
             <p>Leading: {it.leading && <span>&#9989;</span>}{!it.leading && <span>&#9940;</span>}</p>
             <p>End Block:<a target="_blank" href={window.getNetworkElement('etherscanURL') + 'block/' + it.endBlock}>{it.endBlock}</a></p>
             {!it.surveyEnd && <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.toggle === ('vote_' + it.key) ? ' Editing' : '')} onClick={() => _this.emit('toggle', _this.props.toggle === ('vote_' + it.key) ? null : ('vote_' + it.key))}>Vote</WalletEnablerButton>}
             {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
+            <br/>
+            <br/>
+            <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.address} target="_blank">Proposal</a>
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>
             {it.surveyEnd && !it.terminated && <section className="MutoStai">
                 <p></p>

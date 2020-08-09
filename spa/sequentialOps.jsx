@@ -9,7 +9,8 @@ var SequentialOps = React.createClass({
             return;
         }
         $(target).addClass('disabled');
-        $(this.cancelButton).addClass('disabled');
+        this.advancedButton && $(this.cancelButton).addClass('disabled');
+        this.advancedButton && $(this.advancedButton).addClass('disabled');
         var _this = this;
         for (var i in _this.children) {
             var child = _this.children[i];
@@ -31,6 +32,7 @@ var SequentialOps = React.createClass({
             (current.transactionHash ? window.web3.eth.getTransactionReceipt(current.transactionHash).then(transaction => current.onTransaction(_this.ctx, transaction)) : current.call(_this.ctx, current.bypass)).then(function () {
                 target && $(target).removeClass('disabled');
                 _this.cancelButton && $(_this.cancelButton).removeClass('disabled');
+                _this.advancedButton && $(_this.advancedButton).removeClass('disabled');
                 current.ok = true;
                 _this.forceUpdate(function () {
                     _this.props.onCallback && _this.props.onCallback(index, index === _this.children.length - 1);
@@ -40,6 +42,7 @@ var SequentialOps = React.createClass({
                 transactionHash && (transactionHash.disabled = false);
                 target && $(target).removeClass('disabled');
                 _this.cancelButton && $(_this.cancelButton).removeClass('disabled');
+                _this.advancedButton && $(_this.advancedButton).removeClass('disabled');
                 current.ko = (e.message || e).toLowerCase().indexOf("user denied") === -1;
                 current.ko && _this.emit('message', e.message || e, 'error');
                 _this.forceUpdate();
@@ -76,6 +79,24 @@ var SequentialOps = React.createClass({
         }
         return parseInt(index);
     },
+    toggleAdvanced(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        if($(e.currentTarget).hasClass('disabled')) {
+            return;
+        }
+        var _this = this;
+        this.setState({advanced: !(this.state && this.state.advanced)}, function() {
+            if(this.state.advanced) {
+                return;
+            }
+            for(var i = 0; i < _this.children.length; i++) {
+                var child = _this.children[i];
+                if(!child.ok) {
+                    delete child.transactionHash;
+                }
+            }
+        });
+    },
     render() {
         var _this = this;
         var element = undefined;
@@ -103,7 +124,7 @@ var SequentialOps = React.createClass({
                     <label>
                         {it.bypassable && <input type="checkbox" className="include" ref={ref => ref && (ref.checked = !it.bypass)} disabled={it.ok} data-i={i} onChange={this.onBypassChange}/>}
                         <p><b>{it.name}</b></p>
-                        {it.onTransaction && [
+                        {it.onTransaction && ((this.state && this.state.advanced && !it.ok) || (it.ok && it.transactionHash)) && [
                             <p><b>{'\u00a0'}or{'\u00a0'}</b></p>,
                             <input type="text" className="transactionHash" ref={ref => ref && (ref.value = it.transactionHash || '')} disabled={it.ok} data-i={i} placeholder="Place a already-done Txn Hash" onKeyUp={this.onTransactionHash} onChange={this.onTransactionHash}/>
                         ]}
@@ -117,6 +138,7 @@ var SequentialOps = React.createClass({
             </ol>
             {(_this.props.hideGoButton + '') !== 'true' && <div className="LetsGoPika">
                 {(_this.props.showCancelButton + '') === 'true' && <a href="javascript:;" ref={ref => this.cancelButton = ref} onClick={this.onCancel}>Cancel</a>}
+                <a href="javascript:;" className={"LinkVisualButtonB" + (this.state && this.state.advanced ? " Edited" : "")} onClick={this.toggleAdvanced} ref={ref => this.advancedButton = ref}>Recovery</a>
                 <a href="javascript:;" className="LinkVisualButtonB" ref={ref => this.goButton = ref} onClick={this.go}>{actionName}</a>
             </div>}
         </div>);
