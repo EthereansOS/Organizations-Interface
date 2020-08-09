@@ -32,13 +32,7 @@ New addition to the codebase must be fully documented.
 Documentation is generated using Sphinx and reStructuredText, following the example set by Solidity. For a more comprehensive
 description of the documentation process see [Write the Docs!]
 
-To locally generate the documentation either use:
-
-```console
-tox -e docs
-```
-
-Or DIY:
+To locally generate the documentation:
 
 ```console
 virtualenv .venv
