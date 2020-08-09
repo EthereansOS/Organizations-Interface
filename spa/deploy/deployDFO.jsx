@@ -8,8 +8,8 @@ var DeployDFO = React.createClass({
             <span>
                 <SequentialOps ref={ref => this.sequentialOps = ref} initialContext={_this.props.allData} auto="true">
                     {[{
-                        name: "Deploy Voting Token | " + _this.props.allData.tokenTotalSupply + " " + _this.props.allData.tokenSymbol,
-                        call: function (data) {
+                        name: "Data Integrity Validation",
+                        call(data) {
                             return new Promise(function (ok, ko) {
                                 var errors = [];
                                 !data.dfoName && errors.push('Insert a valid DFO Name');
@@ -20,7 +20,7 @@ var DeployDFO = React.createClass({
                                 (isNaN(data.emergencySurveyLength) || data.emergencySurveyLength <= 0) && errors.push("Emergency Survey Length must be a number greater than 0");
                                 var availableSupply = parseFloat(window.fromDecimals(data.availableSupply, 18).split(',').join(''));
                                 var calculateAvailableSupplyBasedField = function calculateAvailableSupplyBasedField(data, availableSupply, errors, fieldName, label, bypassCheck) {
-                                    if(!data[fieldName + 'Check'] && !bypassCheck) {
+                                    if (!data[fieldName + 'Check'] && !bypassCheck) {
                                         return;
                                     }
                                     var value = parseFloat(data[fieldName].split(',').join(''));
@@ -37,7 +37,12 @@ var DeployDFO = React.createClass({
                                     return ko(errors);
                                 }
                                 return ok();
-                            }).then(() => {
+                            });
+                        }
+                    }, {
+                        name: "Deploy Voting Token | " + _this.props.allData.tokenTotalSupply + " " + _this.props.allData.tokenSymbol,
+                        call(data) {
+                            return new Promise(function (ok) {
                                 var payload = window.web3.eth.abi.encodeParameters(['address', 'uint256', 'string', 'string', 'uint256', 'uint256'], [
                                     window.voidEthereumAddress, 0,
                                     data.dfoName,
@@ -50,7 +55,17 @@ var DeployDFO = React.createClass({
                                     data.votingToken = response[0];
                                     data.stateHolder = response[1];
                                     data.functionaltyModelsManagerAddress = response[2];
-                                })
+                                    return ok();
+                                });
+                            });
+                        },
+                        onTransaction(data, transaction) {
+                            return new Promise(function(ok) {
+                                var response = window.formatDFOLogs(transaction.logs, "DFOCollateralContractsCloned(address_indexed,address,address,address)")[0].data;
+                                data.votingToken = response[0];
+                                data.stateHolder = response[1];
+                                data.functionaltyModelsManagerAddress = response[2];
+                                ok();
                             });
                         }
                     }, {
@@ -63,12 +78,23 @@ var DeployDFO = React.createClass({
                                 data.mvdWalletAddress = response[1];
                                 data.doubleProxyAddress = response[2];
                             });
+                        },
+                        onTransaction(data, transaction) {
+                            return new Promise(function(ok) {
+                                var response = window.formatDFOLogs(transaction.logs, "DFOCollateralContractsCloned(address_indexed,address,address,address)")[0].data;
+                                data.mvdFunctionalityProposalManagerAddress = response[0];
+                                data.mvdWalletAddress = response[1];
+                                data.doubleProxyAddress = response[2];
+                                ok();
+                            });
                         }
                     }, {
                         name: "Deploy Governance Rules",
                         call: function (data) {
                             var params = ['address', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256', 'uint256'];
-                            var values = [window.voidEthereumAddress, 0,
+                            var values = [
+                                window.voidEthereumAddress,
+                                0,
                                 data.surveyLength,
                                 data.emergencySurveyLength,
                                 window.toDecimals(data.emergencySurveyStaking, 18),
@@ -80,6 +106,11 @@ var DeployDFO = React.createClass({
                             var payload = window.web3.eth.abi.encodeParameters(params, values);
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployGovernanceRules', payload).then(response => {
                                 data.functionalitiesManagerAddress = window.formatDFOLogs(response.events.Event, "DFOCollateralContractsCloned(address_indexed,address)").raw.data[0];
+                            });
+                        },
+                        onTransaction(data, transaction) {
+                            return new Promise(function(ok) {
+                                ok(data.functionalitiesManagerAddress = window.formatDFOLogs(transaction.logs, "DFOCollateralContractsCloned(address_indexed,address)")[0].data[0]);
                             });
                         }
                     }, {
@@ -100,7 +131,8 @@ var DeployDFO = React.createClass({
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployDFO', payload).then(response => {
                                 data.response = window.formatDFOLogs(response.events.Event, "DFODeployed(address_indexed,address_indexed,address,address)").raw.data[0];
                             }).then(() => _this.emit("dfo/deploy", window.newContract(window.context.proxyAbi, data.response)));
-                        }
+                        },
+                        actionName : "Deploy"
                     }]}
                 </SequentialOps>
             </span>

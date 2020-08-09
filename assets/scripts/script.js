@@ -866,9 +866,18 @@ window.formatDFOLogs = function formatDFOLogs(logVar, event) {
             }
         }
     }
+    window.dfoEvent = window.dfoEvent || window.web3.utils.sha3('Event(string,bytes32,bytes32,bytes)');
+    var eventTopic = event && window.web3.utils.sha3(event);
+    var manipulatedLogs = [];
     for (var i in logs) {
         var log = logs[i];
+        if(log.topics && log.topics[0] !== window.dfoEvent) {
+            continue;
+        }
         log.topics && log.topics.splice(0, 1);
+        if(eventTopic && log.topics && log.topics[0] !== eventTopic) {
+            continue;
+        }
         log.raw && log.raw.topics && log.raw.topics.splice(0, 1);
         try {
             log.data && (log.data = web3.eth.abi.decodeParameter("bytes", log.data));
@@ -886,8 +895,9 @@ window.formatDFOLogs = function formatDFOLogs(logVar, event) {
                 log.raw && log.raw.data && log.raw.data.push(data[key]);
             });
         }
+        manipulatedLogs.push(log);
     }
-    return logVar.length ? logs : logVar;
+    return logVar.length ? manipulatedLogs : manipulatedLogs[0] || logVar;
 };
 
 window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, template, lines, descriptions, updates, prefixedLines, postFixedLines) {
@@ -994,7 +1004,18 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             data.functionalitySourceId = await window.mint(window.split(data.sourceCode), undefined, true);
             data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
         },
-        bypassable: true
+        bypassable: true,
+        async onTransaction(data, transaction) {
+            window.ocelotMintedEvent = window.ocelotMintedEvent || window.web3.utils.sha3("Minted(uint256,uint256,uint256)");
+            window.ocelotFinalizedEvent = window.ocelotFinalizedEvent || window.web3.utils.sha3("Finalized(uint256,uint256)");
+            for(var log of transaction.logs) {
+                if(log.topics[0] === window.ocelotMintedEvent || log.topics[0] === window.ocelotFinalizedEvent) {
+                    data.functionalitySourceId = window.web3.eth.abi.decodeParameter('uint256', log.topics[1]);
+                    data.editor && data.editor.contentTokenInput && (data.editor.contentTokenInput.value = data.functionalitySourceId);
+                    break;
+                }
+            }
+        }
     });
     (!initialContext.functionalityAddress && (initialContext.selectedContract || initialContext.template || initialContext.functionalitySourceId || initialContext.sourceCode)) && sequentialOps.push({
         name: "Deploying Smart Contract",
@@ -1011,6 +1032,10 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             data.constructorArguments && Object.keys(data.constructorArguments).map(key => args.push(data.constructorArguments[key]));
             data.functionalityAddress = (await window.createContract.apply(window, args)).options.address;
             data.editor && data.editor.functionalityAddress && (data.editor.functionalityAddress.value = data.functionalityAddress);
+        },
+        async onTransaction(data, transaction) {
+            data.functionalityAddress = transaction.contractAddress;
+            data.editor && data.editor.functionalityAddress && (data.editor.functionalityAddress.value = data.functionalityAddress);
         }
     });
     if (initialContext.emergency) {
@@ -1018,6 +1043,10 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
         approved < parseInt(initialContext.element.emergencySurveyStaking) && sequentialOps.push({
             name: 'Approving ' + window.fromDecimals(initialContext.element.emergencySurveyStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Emergency Staking',
             async call(data) {
+                var approved = parseInt(await window.blockchainCall(data.element.token.methods.allowance, window.walletAddress, data.element.dFO.options.address));
+                if(approved >= parseInt(data.element.emergencySurveyStaking)) {
+                    return;
+                }
                 await window.blockchainCall(data.element.token.methods.approve, initialContext.element.dFO.options.address, data.element.emergencySurveyStaking);
             }
         });
@@ -1044,7 +1073,8 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
                 $.publish('message', 'Proposal Sent!', 'info');
                 $.publish('section/change', 'Proposals');
             }
-        }
+        },
+        actionName : "Publish"
     });
     parseInt(initialContext.element.minimumStaking) && sequentialOps.push({
         name: 'Sending Initial ' + window.fromDecimals(initialContext.element.minimumStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Staking',
@@ -1053,7 +1083,8 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             $.publish('loader/toggle', false);
             $.publish('message', 'Proposal Sent!', 'info');
             $.publish('section/change', 'Proposals');
-        }
+        },
+        actionName : "Accept"
     });
     $.publish('loader/toggle', [true, sequentialOps, initialContext]);
 };
