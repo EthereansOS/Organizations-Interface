@@ -145,8 +145,10 @@ var SequentialOps = React.createClass({
                         {it.bypassable && <input type="checkbox" className="include" ref={ref => ref && (ref.checked = !it.bypass)} disabled={it.ok} data-i={i} onChange={this.onBypassChange}/>}
                         <p><b>{it.name}</b></p>
                         {it.onTransaction && ((this.state && this.state.advanced && !it.ok) || (it.ok && it.transactionHash)) && [
-                            <p><b>{'\u00a0'}or{'\u00a0'}</b></p>,
-                            <input type="text" className="transactionHash" ref={ref => ref && (ref.value = it.transactionHash || '')} disabled={it.ok} data-i={i} placeholder="Place a already-done Txn Hash" onKeyUp={this.onTransactionHash} onChange={this.onTransactionHash}/>
+                            <p className="Pistombrillo">
+                            <label>If you have already deployed this Smart Contract, you can paste here the transaction hash, to proceed without needs re-deploy it and pay additional ETH fees.</label>
+                            <input type="text" className="transactionHash" ref={ref => ref && (ref.value = it.transactionHash || '')} disabled={it.ok} data-i={i} placeholder="Transaction Hash" onKeyUp={this.onTransactionHash} onChange={this.onTransactionHash}/>
+                            </p>
                         ]}
                         <span className={it.loading ? "loaderMinimino" : ""}>
                             {it.ok && <span>&#9989;</span>}
@@ -159,8 +161,8 @@ var SequentialOps = React.createClass({
             </ol>
             {(_this.props.hideGoButton + '') !== 'true' && <div className="LetsGoPika">
                 {(_this.props.showCancelButton + '') === 'true' && <a href="javascript:;" ref={ref => this.cancelButton = ref} onClick={this.onCancel}>Cancel</a>}
-                <a href="javascript:;" className={"LinkVisualButtonB" + (this.state && this.state.advanced ? " Edited" : "")} onClick={this.toggleAdvanced} ref={ref => this.advancedButton = ref}>Recovery</a>
                 <a href="javascript:;" className="LinkVisualButtonB" ref={ref => this.goButton = ref} onClick={this.go}>{actionName}</a>
+                <a href="javascript:;" className={"LinkVisualButtonB LLinkVisualButtonSpecial" + (this.state && this.state.advanced ? " Edited" : "")} onClick={this.toggleAdvanced} ref={ref => this.advancedButton = ref}>Recovery</a>
             </div>}
         </div>);
     }
