@@ -62,7 +62,7 @@ var Proposal = React.createClass({
             {!it.withdrawed && <p className="AllRed">To Withdraw: {window.fromDecimals(it.myVotes, _this.props.element.decimals)} {_this.props.element.symbol}</p>}
             <section>
                 {(it.surveyEnd || it.hardCapReached) && !it.terminationData && <section className="MutoStai">
-                    <p></p>
+                    <p>Sometime Web 3 providers can't estimate correctly the Max Gas needed for complex transactions. Finalizing a Proposal, you execute the code in the EVM, be sure to add the right Max Gas required for its execution. Do it at your own risk. <a href="https://blockgeeks.com/guides/ethereum-gas/">More</a></p>
                     <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>
                 </section>}
                 {it.terminationData && !it.withdrawed && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
@@ -112,7 +112,7 @@ var Proposal = React.createClass({
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.address} target="_blank">Proposal</a>
             <a className="LinkVisualStandard" href={window.getNetworkElement('etherscanURL') + 'address/' + it.location} target="_blank">Contract</a>
             {it.surveyEnd && !it.terminated && <section className="MutoStai">
-                <p></p>
+            <p>Sometime Web 3 providers can't estimate correctly the Max Gas needed for complex transactions. Finalizing a Proposal, you execute the code in the EVM, be sure to add the right Max Gas required for its execution. Do it at your own risk. <a href="https://blockgeeks.com/guides/ethereum-gas/">More</a></p>
                 <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>
             </section>}
         </section>];
