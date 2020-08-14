@@ -9,8 +9,8 @@ var SequentialOps = React.createClass({
             return;
         }
         $(target).addClass('disabled');
-        this.advancedButton && $(this.cancelButton).addClass('disabled');
-        this.advancedButton && $(this.advancedButton).addClass('disabled');
+        this.cancelButton && $(this.cancelButton).addClass('disabled');
+        //this.recoveryButton && $(this.recoveryButton).addClass('disabled');
         var _this = this;
         for (var i in _this.children) {
             var child = _this.children[i];
@@ -35,23 +35,25 @@ var SequentialOps = React.createClass({
             transactionHash && (transactionHash.disabled = true);
             current.transactionHash = current.bypass === true ? undefined : current.transactionHash;
             (current.transactionHash ? window.web3.eth.getTransactionReceipt(current.transactionHash).then(transaction => current.onTransaction(_this.ctx, transaction)) : current.call(_this.ctx, current.bypass)).then(function () {
+                _this.unsubscribe('transaction/start', onStart);
                 delete current.loading;
                 delete current.transacting;
                 target && $(target).removeClass('disabled');
                 _this.cancelButton && $(_this.cancelButton).removeClass('disabled');
-                _this.advancedButton && $(_this.advancedButton).removeClass('disabled');
+                //_this.recoveryButton && $(_this.recoveryButton).removeClass('disabled');
                 current.ok = true;
                 _this.forceUpdate(function () {
                     _this.props.onCallback && _this.props.onCallback(index, index === _this.children.length - 1);
                 });
             }).catch(function (e) {
+                _this.unsubscribe('transaction/start', onStart);
                 delete current.loading;
                 delete current.transacting;
                 include && (include.disabled = false);
                 transactionHash && (transactionHash.disabled = false);
                 target && $(target).removeClass('disabled');
                 _this.cancelButton && $(_this.cancelButton).removeClass('disabled');
-                _this.advancedButton && $(_this.advancedButton).removeClass('disabled');
+                //_this.recoveryButton && $(_this.recoveryButton).removeClass('disabled');
                 current.ko = (e.message || e) !== 'stopped' && (e.message || e).toLowerCase().indexOf("user denied") === -1;
                 current.ko && _this.emit('message', e.message || e, 'error');
                 _this.forceUpdate();
@@ -62,7 +64,7 @@ var SequentialOps = React.createClass({
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         this.emit('transaction/stop');
         this.cancelButton && $(this.cancelButton).removeClass('disabled');
-        this.advancedButton && $(this.advancedButton).removeClass('disabled');
+        //this.recoveryButton && $(this.recoveryButton).removeClass('disabled');
         var index = this.getIndex();
         index = isNaN(index) ? this.children.length - 1 : index;
         delete this.children[index].loading;
@@ -99,12 +101,19 @@ var SequentialOps = React.createClass({
         }
         return parseInt(index);
     },
-    toggleAdvanced(e) {
+    onRecovery(e) {
+        var _this = this;
+        if(_this.children) {
+            var index = this.getIndex();
+            index = isNaN(index) ? _this.children.length - 1 : index;
+            if(_this.children[index].loading || _this.children[index].transacting) {
+                return this.stop(e);
+            }
+        }
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         if($(e.currentTarget).hasClass('disabled')) {
             return;
         }
-        var _this = this;
         this.setState({advanced: !(this.state && this.state.advanced)}, function() {
             if(this.state.advanced) {
                 return;
@@ -154,7 +163,7 @@ var SequentialOps = React.createClass({
                             {it.ok && <span>&#9989;</span>}
                             {it.ko && <span>&#9940;</span>}
                         </span>
-                        {it.loading && it.transacting && <span>{'\u00a0'}<a href="javascript:;" className="LinkVisualButton" onClick={this.stop}>Stop</a></span>}
+                        {false && it.loading && it.transacting && <span>{'\u00a0'}<a href="javascript:;" className="LinkVisualButton" onClick={this.stop}>Stop</a></span>}
                         {it.description && <span className="Pistombrillo">{it.description}</span>}
                     </label>
                 </li>)}
@@ -162,7 +171,7 @@ var SequentialOps = React.createClass({
             {(_this.props.hideGoButton + '') !== 'true' && <div className="LetsGoPika">
                 {(_this.props.showCancelButton + '') === 'true' && <a href="javascript:;" ref={ref => this.cancelButton = ref} onClick={this.onCancel}>Cancel</a>}
                 <a href="javascript:;" className="LinkVisualButtonB" ref={ref => this.goButton = ref} onClick={this.go}>{actionName}</a>
-                <a href="javascript:;" className={"LinkVisualButtonB LLinkVisualButtonSpecial" + (this.state && this.state.advanced ? " Edited" : "")} onClick={this.toggleAdvanced} ref={ref => this.advancedButton = ref}>Recovery</a>
+                <a href="javascript:;" className={"LinkVisualButtonB LLinkVisualButtonSpecial" + (this.state && this.state.advanced ? " Edited" : "")} onClick={this.onRecovery} ref={ref => this.recoveryButton = ref}>Recovery</a>
             </div>}
         </div>);
     }
