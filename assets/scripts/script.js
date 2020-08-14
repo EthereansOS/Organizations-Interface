@@ -672,9 +672,16 @@ window.extractComment = function extractComment(code, element) {
         var tag = split[i];
         if (tag.indexOf(' * ') === 0) {
             try {
-                split[i] = tag.substring(3).trim();
+                split[i] = tag = tag.substring(3).trim();
             } catch (e) {
-                split[i] = tag.substring(2).trim();
+                split[i] = tag= tag.substring(2).trim();
+            }
+        }
+        if (tag.indexOf(' *') === 0) {
+            try {
+                split[i] = tag = tag.substring(2).trim();
+            } catch (e) {
+                split[i] = tag= tag.substring(1).trim();
             }
         }
     }
