@@ -65,6 +65,7 @@ var SequentialOps = React.createClass({
         this.emit('transaction/stop');
         this.cancelButton && $(this.cancelButton).removeClass('disabled');
         //this.recoveryButton && $(this.recoveryButton).removeClass('disabled');
+        this.goButton && $(this.goButton).removeClass('disabled');
         var index = this.getIndex();
         index = isNaN(index) ? this.children.length - 1 : index;
         delete this.children[index].loading;
