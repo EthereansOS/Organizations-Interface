@@ -174,7 +174,7 @@ contract DFOStake {
         }
         IERC20 token = IERC20(tokenAddress);
         token.transferFrom(msg.sender, address(this), value);
-        if(token.allowance(address(this), UNISWAP_V2_FACTORY) <= value) {
+        if(token.allowance(address(this), UNISWAP_V2_ROUTER) <= value) {
             token.approve(UNISWAP_V2_ROUTER, 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
         }
     }

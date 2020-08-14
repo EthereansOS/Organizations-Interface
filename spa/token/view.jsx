@@ -123,7 +123,7 @@ var Token = React.createClass({
                             </AsyncValue>
                             <h5 className="DFOHostingTitle">DFO Wallet Supply: </h5>
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.balanceOf, _this.props.element.decimals)}</a></p>}
+                                {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
                             {this.props.edit && <a href="javascript:;" data-function="mintNewTokens" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Mint' ? 'EditDFOYo Editing' : '')}>Mint</a>}
                             {this.props.edit && <a href="javascript:;" data-function="burn" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Burn' ? 'EditDFOYo Editing' : '')}>Burn</a>}
