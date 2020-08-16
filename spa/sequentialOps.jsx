@@ -103,15 +103,15 @@ var SequentialOps = React.createClass({
         return parseInt(index);
     },
     onRecovery(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         var _this = this;
         if(_this.children) {
             var index = this.getIndex();
             index = isNaN(index) ? _this.children.length - 1 : index;
             if(_this.children[index].loading || _this.children[index].transacting) {
-                return this.stop(e);
+                this.stop(e);
             }
         }
-        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         if($(e.currentTarget).hasClass('disabled')) {
             return;
         }
