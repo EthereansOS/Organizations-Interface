@@ -139,7 +139,7 @@ var Token = React.createClass({
                     <li className="TheDappInfo025">
                         <section className="DFOTitleSection">
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, '')} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
                         </section>
