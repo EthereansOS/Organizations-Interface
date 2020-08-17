@@ -57,7 +57,17 @@ var StakeController = function (view) {
         var buidlPosition  = (await window.blockchainCall(pair.methods.token0)).toLowerCase() === context.view.props.element.token.options.address.toLowerCase() ? 0 : 1;
         var otherPosition = buidlPosition == 0 ? 1 : 0;
         var reserves = await window.blockchainCall(pair.methods.getReserves);
-        reserves[buidlPosition] = i === 0 ? reserves[buidlPosition] : new UniswapFraction(reserves[buidlPosition], 1).divide(10 ** 12).toSignificant(6);
+        var firstDecimals = parseInt(await window.blockchainCall(context.view.props.element.token.methods.decimals));
+        var secondDecimals = i === 0 ? 18 : parseInt(await window.blockchainCall(secondToken.methods.decimals));
+        if(firstDecimals > secondDecimals) {
+            var x = firstDecimals - secondDecimals;
+            var result = new UniswapFraction(reserves[buidlPosition], 1).divide(10 ** x).toSignificant(6);
+            while(result.indexOf('.') !== -1) {
+                x--;
+                result = new UniswapFraction(reserves[buidlPosition], 1).divide(10 ** x).toSignificant(6);
+            }
+            reserves[buidlPosition] = result;
+        }
         var buidlPerSecond = new UniswapFraction(reserves[buidlPosition], reserves[otherPosition]);
         var secondPerBuidl = new UniswapFraction(reserves[otherPosition], reserves[buidlPosition]);
         return {
