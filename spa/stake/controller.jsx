@@ -44,9 +44,9 @@ var StakeController = function (view) {
 
     context.calculateOther = async function calculateOther(target, i, tier) {
         var reserves = await context.calculateReserves((await context.getSecondTokenData(i, true)).token, i);
-        var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? 6 : 18));
+        var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? context.view.props.stakingData.pairs[i].decimals : 18));
         value = new UniswapFraction(value.toSignificant(100).split('.')[0]);
-        var otherVal = value.divide(10 ** (target === 'firstAmount' && context.view.props.stakingData.pairs[i].decimals)).toSignificant(6);
+        var otherVal = (target !== 'firstAmount' ? value : value.divide(10 ** context.view.props.stakingData.pairs[i].decimals)).toSignificant(6);
         context.view[target === 'firstAmount' ? 'secondAmount' : 'firstAmount'].value = window.formatMoney(otherVal, otherVal.split('.')[1] && otherVal.split('.')[1].length);
         target === "firstAmount" && context.calculateReward(tier);
         return value;

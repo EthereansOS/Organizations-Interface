@@ -1,10 +1,10 @@
-var DeFiOffering = React.createClass({
+var Farming = React.createClass({
     requiredScripts: [
         'spa/loaderMini.jsx',
         'spa/okBoomer.jsx',
         'spa/loaderMinimino.jsx',
-        'spa/defioffering/fixedInflation/view.jsx',
-        'spa/defioffering/staking/view.jsx',
+        'spa/farming/fixedInflation/view.jsx',
+        'spa/farming/staking/view.jsx',
         'spa/loaderMini.jsx'
     ],
     getDefaultSubscriptions() {

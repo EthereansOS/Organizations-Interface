@@ -163,7 +163,7 @@ var Stake = React.createClass({
                 <section className="ExpTop">
                     <h1>Instructions:</h1>
                     <section className="ExpPar">
-                        <p>This Liquidity Staking Mechanism is designed to reward <a className="FancyUni" href="https://uniswap.info/token/0x7b123f53421b1bf8533339bfbdc7c98aa94163db">Uniswap V2</a> liquidity Providers to lock long-term liquidity in Uniswap V2 <a className="FancyUni" href="https://uniswap.info/pair/0xb0fb35cc576034b01bed6f4d0333b1bd3859615c"></a>.</p>
+                        <p>This Liquidity Mining Mechanism is designed to reward <a className="FancyUni" href="https://uniswap.info/token/0x7b123f53421b1bf8533339bfbdc7c98aa94163db">Uniswap V2</a> liquidity Providers to lock long-term liquidity in Uniswap V2 <a className="FancyUni" href="https://uniswap.info/pair/0xb0fb35cc576034b01bed6f4d0333b1bd3859615c"></a>.</p>
                     </section>
                     <h1>&#127873; Reward System</h1>
                     <h2>The reward system is independent from the {this.props.element.symbol} price!</h2>

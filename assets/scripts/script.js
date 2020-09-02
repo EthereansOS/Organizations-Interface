@@ -135,8 +135,11 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 };
                 update = true;
             }
+            delete window.walletAddress;
             try {
                 window.walletAddress = (await window.web3.eth.getAccounts())[0];
+            } catch (e) {}
+            try {
                 window.walletAvatar = window.makeBlockie(window.walletAddress);
             } catch (e) {}
             update && $.publish('ethereum/update');

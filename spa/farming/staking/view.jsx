@@ -1,7 +1,7 @@
 var StakingView = React.createClass({
     requiredScripts: [
         'spa/loaderMinimino.jsx',
-        'spa/defioffering/staking/edit.jsx'
+        'spa/farming/staking/edit.jsx'
     ],
     requiredModules: [
         'spa/stake'
@@ -32,7 +32,7 @@ var StakingView = React.createClass({
         }
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
-                <h2>Liquidity Staking</h2>
+                <h2>Liquidity Mining</h2>
                 {this.props.edit && <a href="javascript:;" onClick={() => _this.setState({ edit: !(_this.state && _this.state.edit) })} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>{_this.state && _this.state.edit ? 'Close' : 'New'}</a>}
             </section>
             {(!this.state || !this.state.edit) && (!this.props || !this.props.stakingData) && <LoaderMinimino />}

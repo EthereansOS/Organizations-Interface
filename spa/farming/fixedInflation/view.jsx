@@ -1,7 +1,7 @@
 var FixedInflationView = React.createClass({
     requiredScripts : [
         'spa/loaderMinimino.jsx',
-        'spa/defioffering/fixedInflation/edit.jsx'
+        'spa/farming/fixedInflation/edit.jsx'
     ],
     calculateTimeTier() {
         if(!this.props || !this.props.fixedInflationData || !this.props.fixedInflationData.blockLimit) {

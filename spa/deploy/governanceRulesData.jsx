@@ -47,7 +47,7 @@ var GovernanceRulesData = React.createClass({
         return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyMinStake", "Min Staking", "", "text", this.props.allData.tokenSymbol + " to Propose Updates", true, "The minimum of Token Staked needed to create a new Proposal.");
     },
     renderSurveyCommunityStake() {
-        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyCommunityStake", "DFO Locked Supply", "", "text", this.props.allData.tokenSymbol, true, "The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Staking, Rewards and other Community Features).");
+        return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveyCommunityStake", "DFO Locked Supply", "", "text", this.props.allData.tokenSymbol, true, "The amount of Voting Tokens locked in the DFO wallet (For Fixed Inflation, Liquidity Mining, Rewards and other Community Features).");
     },
     renderSurveySingleReward() {
         return this.renderInput("InsertSurveyQuorum", "SurveyQuorumYN", "surveySingleReward", "Activity Reward", "", "text", this.props.allData.tokenSymbol + " of staked tokens", true, "The amount of Voting Tokens set as a reward to the issuer for every Accepted Proposal paid automatically by the DFO Wallet.");
