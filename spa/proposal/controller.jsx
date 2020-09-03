@@ -126,7 +126,7 @@ var ProposalController = function (view) {
             var sourceLocationId = survey.replacedCodeSourceLocationId;
             var sourceLocation = survey.replacedCodeSourceLocation;
             if (!survey.terminated) {
-                var functionalityData = await window.blockchainCall(window.dfoHub.functionalitiesManager.methods.getFunctionalityData, survey.replaces);
+                var functionalityData = await window.blockchainCall(context.view.props.element.functionalitiesManager.methods.getFunctionalityData, survey.replaces);
                 if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }

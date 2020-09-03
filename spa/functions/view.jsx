@@ -67,7 +67,7 @@ var Functions = React.createClass({
         }
         return (<ul ref={ref => element.inputParameters && element.inputParameters.length > 0 && (this[element.codeName + 'Input'] = $(ref))}>
             {element.inputParameters.map((it, i) => (!element.needsSender || i > (element.submitable ? 1 : 0)) && <li key={it.codeName}>
-                {(it === 'bytes32' || it === 'address' || it === 'string' || it.indexOf('uint') == 0) && <input type={it.indexOf('uint') == 0 ? "number" : "text"} min="0" placeholder={it === 'address' ? "Insert your ethereum address" : ""}></input>}
+                {(it === 'bytes32' || it === 'address' || it === 'string' || it.indexOf('uint') == 0) && <input type={it.indexOf('uint') == 0 ? "number" : "text"} min="0" placeholder={it === 'address' ? "address" : ""}></input>}
                 {it === 'bool' && <select>
                     <option value="false" selected>false</option>
                     <option value="true">true</option>

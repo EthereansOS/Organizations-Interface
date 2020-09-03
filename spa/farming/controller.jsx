@@ -1,4 +1,4 @@
-var DeFiOfferingController = function (view) {
+var FarmingController = function (view) {
     var context = this;
     context.view = view;
 

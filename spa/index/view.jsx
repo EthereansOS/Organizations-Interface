@@ -51,10 +51,10 @@ var Index = React.createClass({
     componentDidMount() {
         var address = '';
         try {
-            address = window.location.search.split(' ').join('').split('/').join('').split('?addr=').join('');
+            address = window.addressBarParams.addr;
         } catch (e) {
         }
-        isEthereumAddress(address) && (this.address.value = address) && this.load({target:{dataset:{timeout:"300"}}});
+        isEthereumAddress(address) && (this.address.value = address) && this.load({target:{dataset:{timeout:"700"}}});
         this.controller.tryLoadStaking();
     },
     toggleDarkMode(e) {

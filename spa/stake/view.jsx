@@ -1,7 +1,8 @@
 var Stake = React.createClass({
     requiredScripts: [
         'spa/loader.jsx',
-        'spa/bigLoader.jsx'
+        'spa/bigLoader.jsx',
+        'spa/ghostLoader.jsx'
     ],
     requiredModules: [
         'spa/stakingInfo'
@@ -47,19 +48,20 @@ var Stake = React.createClass({
     },
     approve(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        if (!$(e.currentTarget).hasClass('active')) {
+        if(!$(e.currentTarget).hasClass('active') || this.state.loadingStake || this.state.loadingApprove) {
             return;
         }
         this.controller.approve(e.currentTarget.dataset.target);
     },
     stake(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        if (!$(e.currentTarget).hasClass('active')) {
+        if(!$(e.currentTarget).hasClass('active') || this.state.loadingStake || this.state.loadingApprove) {
             return;
         }
         this.controller.stake(parseInt(this.pool.value.split('_')[0]), this.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
     },
     componentDidMount() {
+        window.history.pushState({}, '', window.getLink() + '?staking=' + this.props.stakingData.stakingManager.options.address);
         this.controller.load();
     },
     firstTier(section) {
@@ -69,17 +71,22 @@ var Stake = React.createClass({
         var tier = this.props.stakingData.tiers[position];
         return tier.tierKey === 'Custom' ? `${tier.blockNumber} blocks` : tier.tierKey;
     },
+    close(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        window.history.pushState({}, '', window.getLink());
+        this.emit('stake/close');
+    },
     render() {
         var _this = this;
         return (<section className="StakeBigBoss STAKEALL" style={{"position" : 'fixed'}}>
-            <a className="NoStakeBro" href="javascript:;" onClick={() => this.emit('stake/close')}>Close</a>
+            <a className="NoStakeBro" href="javascript:;" onClick={this.close}>Close</a>
             {this.state && this.state.staked && <section className="boxAYORT">
                 <section className="boxAYORTTEXT">
                     <h2>&#127881; &#129385; Staked! &#129385; &#127881;</h2>
                     <p>You have succesfully staked <b>{this.state.staked.amount}</b> {this.props.element.symbol} for <b>{this.state.staked.period}!</b> Check the <a href="javascript:;" onClick={() => this.emit('view/change', 'Status')}>Status</a> page to manage your Staking Position. </p>
                 </section>
             </section>}
-            <section className="switchBox">
+            {this.props.stakingData.active && <section className="switchBox">
                 <h3>Stake</h3>
                 <section className="switchTools">
                     <a data-target="firstAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>
@@ -112,14 +119,14 @@ var Stake = React.createClass({
                     <img src={this.props.element.logo}/>
                 </section>
                 <section className="switchActions">
-                    {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target="mine" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>Approve {this.props.element.symbol}</a>}
-                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target="other" href="javascript:;" className="switchAction active" onClick={this.approve}>Approve {this.state.approveSecond}</a>}
-                    {window.walletAddress && <a href="javascript:;" className={"switchAction" + (!this.state.approveFirst && !this.state.approveSecond ? " active" : "")} onClick={this.stake}>Stake</a>}
+                    {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target="mine" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.element.symbol)}</a>}
+                    {window.walletAddress && !this.state.approveFirst && this.state.approveSecond && <a data-target="other" href="javascript:;" className="switchAction active" onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.state.approveSecond)}</a>}
+                    {window.walletAddress && <a href="javascript:;" className={"switchAction" + (!this.state.approveFirst && !this.state.approveSecond ? " active" : "")} onClick={this.stake}>{this.state.loadingStake && <GhostLoader/>}{!this.state.loadingStake && "Stake"}</a>}
                     {!window.walletAddress && <a href="javascript:;" onClick={() => window.ethereum.enable().then(() => window.getAddress()).then(() => _this.emit('ethereum/ping'))} className="switchAction active">Connect</a>}
                 </section>
                 <p>By Staking {this.props.element.symbol} you'll earn from the Uniswap V2 Trading fees + the Staking Reward. Staking {this.props.element.symbol} you're adding liquidity to Uniswap V2 and you'll recevie Pool Tokens.</p>
                 <p>Disclamer: Staking {this.props.element.symbol} is an irreversible action, you'll be able to redeem your locked Uniswap V2 tokens only after the selected locking period. Do it at your own risk</p>
-            </section>
+            </section>}
             <section>
                 <section className="statusBox">
                     <h2>Your Positions</h2>
@@ -156,7 +163,7 @@ var Stake = React.createClass({
                 <section className="ExpTop">
                     <h1>Instructions:</h1>
                     <section className="ExpPar">
-                        <p>This Liquidity Staking Mechanism is designed to reward <a className="FancyUni" href="https://uniswap.info/token/0x7b123f53421b1bf8533339bfbdc7c98aa94163db">Uniswap V2</a> liquidity Providers to lock long-term liquidity in Uniswap V2 <a className="FancyUni" href="https://uniswap.info/pair/0xb0fb35cc576034b01bed6f4d0333b1bd3859615c"></a>.</p>
+                        <p>This Liquidity Mining Mechanism is designed to reward <a className="FancyUni" href="https://uniswap.info/token/0x7b123f53421b1bf8533339bfbdc7c98aa94163db">Uniswap V2</a> liquidity Providers to lock long-term liquidity in Uniswap V2 <a className="FancyUni" href="https://uniswap.info/pair/0xb0fb35cc576034b01bed6f4d0333b1bd3859615c"></a>.</p>
                     </section>
                     <h1>&#127873; Reward System</h1>
                     <h2>The reward system is independent from the {this.props.element.symbol} price!</h2>
@@ -207,7 +214,6 @@ var Stake = React.createClass({
                         <p>To Withdraw your liquidity using your Uniswap V2 Liquidity Pool Tokens, you just have to go to the <a href="https://app.uniswap.org/#/pool" target="_Blank">Uniswap GUI</a>, select your Liquidity Pool and choose the amount to Withdraw.</p>
                     </section>
                 </section>
-
             </section>
         </section>);
     }

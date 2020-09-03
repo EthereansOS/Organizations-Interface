@@ -247,12 +247,12 @@ var Overview = React.createClass({
                         <h5 className="DFOHostingTitle">&#128424; Fixed Inflation:</h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'DeFi Offering')} href="javascript:;">More</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
                         </section>
-                        <h5 className="DFOHostingTitle">&#129412; Liquidity Staking:</h5>
+                        <h5 className="DFOHostingTitle">&#129412; Liquidity Mining:</h5>
                         <section className="DFOTitleSection">
                         <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'DeFi Offering')} href="javascript:;">More</a>
+                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
                         </section>
                     </li>
                 </ul>

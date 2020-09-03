@@ -123,7 +123,7 @@ var Token = React.createClass({
                             </AsyncValue>
                             <h5 className="DFOHostingTitle">DFO Wallet Supply: </h5>
                             <AsyncValue>
-                                {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.balanceOf, _this.props.element.decimals)}</a></p>}
+                                {_this.props.element.symbol && _this.props.element.balanceOf && <p className="DFOLabelTitleInfo"> <a className="LinkVisualStandard" href={window.getNetworkElement("etherscanURL") + 'token/tokenholderchart/' + _this.props.element.token.options.address} target="_blank">{window.fromDecimals(_this.props.element.communityTokens, _this.props.element.decimals)}</a></p>}
                             </AsyncValue>
                             {this.props.edit && <a href="javascript:;" data-function="mintNewTokens" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Mint' ? 'EditDFOYo Editing' : '')}>Mint</a>}
                             {this.props.edit && <a href="javascript:;" data-function="burn" onClick={this.toggleMintBurn} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (this.state && this.state.mintBurn === 'Burn' ? 'EditDFOYo Editing' : '')}>Burn</a>}
@@ -139,7 +139,7 @@ var Token = React.createClass({
                     <li className="TheDappInfo025">
                         <section className="DFOTitleSection">
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
-                            <a href={window.context.uniSwapSwapURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, '')} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
                         </section>
