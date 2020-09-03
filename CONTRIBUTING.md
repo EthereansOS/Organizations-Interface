@@ -13,22 +13,28 @@
 
 ### Solidity
 
-* Solidity portions of the codebase adhere follow the official [Solidity Styleguide]
+- Solidity portions of the codebase adhere follow the official [Solidity Styleguide]
+- `.sol` filename should be PascalCase
 
 ### JavaScript
 
 ### Python
 
-* Python portions of the codebase follow standard PEP8 best practices.
-* Python code must be formatted using the Black formatter using the provided settings.
+- Python portions of the codebase follow standard PEP8 best practices.
+- Python code must be formatted using the Black formatter using the provided settings.
 
 ## Documentation
+
+**NOTE:** Currently the documentation pipeline is composed by a custom Python Parser that output `md`
+files and renders them via `mkdocs`. We are however working on a more comprehensive solution built
+around Sphinx and reStructuredText.
 
 New addition to the codebase must be fully documented.
 
 - JavaScript portions of the code should be annotated using JSDoc style docstrings.
-- Solidity portions of the code should be fully annotated using [NatSpec] and [Solidity Domain for Sphinx].
+- Solidity portions of the code should be fully annotated according to [NatSpec] standards.
 
+<!--
 Documentation is generated using Sphinx and reStructuredText, following the example set by Solidity. For a more comprehensive
 description of the documentation process see [Write the Docs!]
 
@@ -40,7 +46,7 @@ source .venv/bin/activate
 pip install -r docs/requirements.txt
 cd docs
 make html
-```
+``` -->
 
 ---
 
