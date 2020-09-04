@@ -44,7 +44,7 @@ var StakeController = function (view) {
 
     context.calculateOther = async function calculateOther(target, i, tier) {
         var reserves = await context.calculateReserves((await context.getSecondTokenData(i, true)).token, i);
-        var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? context.view.props.stakingData.pairs[i].decimals : 18));
+        var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? context.view.props.stakingData.pairs[i].decimals : context.view.props.element.decimals));
         value = new UniswapFraction(value.toSignificant(100).split('.')[0]);
         var otherVal = (target !== 'firstAmount' ? value : value.divide(10 ** context.view.props.stakingData.pairs[i].decimals)).toSignificant(6);
         context.view[target === 'firstAmount' ? 'secondAmount' : 'firstAmount'].value = window.formatMoney(otherVal, otherVal.split('.')[1] && otherVal.split('.')[1].length);
@@ -110,7 +110,7 @@ var StakeController = function (view) {
     };
 
     context.stake = async function stake(pool, tier) {
-        var firstAmount = window.toDecimals(context.view.firstAmount.value.split(',').join(''), 18);
+        var firstAmount = window.toDecimals(context.view.firstAmount.value.split(',').join(''), context.view.props.element.decimals);
         var stakingInfo = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.getStakingInfo, tier);
         var buidlBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
         if(parseInt(firstAmount) < parseInt(stakingInfo[0])) {
@@ -120,7 +120,7 @@ var StakeController = function (view) {
             return alert("Amount to stake must be less than the current remaining one");
         }
         if(parseInt(firstAmount) > parseInt(buidlBalance)) {
-            return alert(`You don't have enough ${context.view.props.symbol} balance to stake!`);
+            return alert(`You don't have enough ${context.view.props.element.symbol} balance to stake!`);
         }
         context.view.setState({staked: null, loadingStake : true, loadingApprove: false});
         firstAmount = new UniswapFraction(firstAmount, 1);
@@ -192,7 +192,7 @@ var StakeController = function (view) {
                     stakingInfo.cumulativeReward = window.web3.utils.toBN(stakingInfo.cumulativeReward).add(window.web3.utils.toBN(stakingInfo.splittedReward)).toString();
                 }
                 stakingInfo.cumulativeReward = parseInt(stakingInfo.cumulativeReward) > parseInt(stakingInfo.reward) ? stakingInfo.reward : stakingInfo.cumulativeReward;
-                //await context.loadUniswapPoolAmounts(stakingInfo);
+                await context.loadUniswapPoolAmounts(stakingInfo);
                 stakingPositions.push(stakingInfo);
             }
         }
@@ -201,8 +201,14 @@ var StakeController = function (view) {
 
     context.loadUniswapPoolAmounts = async function loadUniswapPoolAmounts(stakingInfo) {
         var otherTokenAddress = (await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.tokens))[stakingInfo.poolPosition];
-        var pool = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair(otherTokenAddress, context.view.props.element.votingToken.options.address)));
-        console.log(pool.options.address);
+        var pool = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, otherTokenAddress, context.view.props.element.token.options.address));
+        var token0 = await window.blockchainCall(pool.methods.token0);
+        var reserves = await window.blockchainCall(pool.methods.getReserves);
+        var totalSupply = await window.blockchainCall(pool.methods.totalSupply);
+        var percentage = parseInt(stakingInfo.poolAmount) / parseInt(totalSupply);
+        var reserve0 = window.numberToString(parseInt(reserves[0]) * percentage).split(',').join('').split('.')[0];
+        var reserve1 = window.numberToString(parseInt(reserves[1]) * percentage).split(',').join('').split('.')[0];
+        
     };
 
     context.redeem = async function redeem(e, tier, position) {
