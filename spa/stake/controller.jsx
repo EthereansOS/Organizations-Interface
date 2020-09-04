@@ -132,8 +132,9 @@ var StakeController = function (view) {
         if(parseInt(secondAmount) > parseInt(await context.getSecondTokenData(pool)).balance) {
             return alert("You don't have enough " + (context.view.props.stakingData.pairs[pool].symbol) + " balance to stake!");
         }
-        var eth = pool === 0 ? secondAmount : undefined;
-        var value = pool === 0 ? '0' : secondAmount;
+        var otherTokenAddress = window.web3.utils.toChecksumAddress((await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.tokens))[pool]);
+        var eth = otherTokenAddress === window.wethAddress ? secondAmount : undefined;
+        var value = otherTokenAddress === window.wethAddress ? '0' : secondAmount;
         try {
             await window.blockchainCall(eth, context.view.props.stakingData.stakingManager.methods.stake, tier, pool + '', firstAmount, firstAmountMin, value, secondAmountMin);
             context.view.setState({staked: {
@@ -153,6 +154,7 @@ var StakeController = function (view) {
         if(!window.walletAddress) {
             return;
         }
+        context.view.setState({loadingPosition : true});
         context.view.pool && await context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]))
         var currentBlock = await window.web3.eth.getBlockNumber();
         var stakingPositions = [];
@@ -190,10 +192,17 @@ var StakeController = function (view) {
                     stakingInfo.cumulativeReward = window.web3.utils.toBN(stakingInfo.cumulativeReward).add(window.web3.utils.toBN(stakingInfo.splittedReward)).toString();
                 }
                 stakingInfo.cumulativeReward = parseInt(stakingInfo.cumulativeReward) > parseInt(stakingInfo.reward) ? stakingInfo.reward : stakingInfo.cumulativeReward;
+                //await context.loadUniswapPoolAmounts(stakingInfo);
                 stakingPositions.push(stakingInfo);
             }
         }
         context.view.setState({loadingPosition : false, stakingPositions});
+    };
+
+    context.loadUniswapPoolAmounts = async function loadUniswapPoolAmounts(stakingInfo) {
+        var otherTokenAddress = (await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.tokens))[stakingInfo.poolPosition];
+        var pool = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair(otherTokenAddress, context.view.props.element.votingToken.options.address)));
+        console.log(pool.options.address);
     };
 
     context.redeem = async function redeem(e, tier, position) {
