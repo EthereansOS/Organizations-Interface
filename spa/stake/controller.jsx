@@ -200,7 +200,7 @@ var StakeController = function (view) {
     };
 
     context.loadUniswapPoolAmounts = async function loadUniswapPoolAmounts(stakingInfo) {
-        var otherTokenAddress = (await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.tokens))[stakingInfo.poolPosition];
+        var otherTokenAddress = context.view.props.stakingData.pairs[stakingInfo.poolPosition].address;
         var pool = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, otherTokenAddress, context.view.props.element.token.options.address));
         var token0 = await window.blockchainCall(pool.methods.token0);
         var reserves = await window.blockchainCall(pool.methods.getReserves);
@@ -208,7 +208,13 @@ var StakeController = function (view) {
         var percentage = parseInt(stakingInfo.poolAmount) / parseInt(totalSupply);
         var reserve0 = window.numberToString(parseInt(reserves[0]) * percentage).split(',').join('').split('.')[0];
         var reserve1 = window.numberToString(parseInt(reserves[1]) * percentage).split(',').join('').split('.')[0];
-        
+        if(token0 === context.view.props.element.token.options.address) {
+            stakingInfo.myBalance = reserve0;
+            stakingInfo.otherBalance = reserve1;
+        } else {
+            stakingInfo.myBalance = reserve1;
+            stakingInfo.otherBalance = reserve0;
+        }
     };
 
     context.redeem = async function redeem(e, tier, position) {

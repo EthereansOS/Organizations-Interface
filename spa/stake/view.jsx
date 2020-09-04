@@ -2,7 +2,8 @@ var Stake = React.createClass({
     requiredScripts: [
         'spa/loader.jsx',
         'spa/bigLoader.jsx',
-        'spa/ghostLoader.jsx'
+        'spa/ghostLoader.jsx',
+        'spa/loaderMini.jsx'
     ],
     requiredModules: [
         'spa/stakingInfo'
@@ -131,12 +132,16 @@ var Stake = React.createClass({
                 <section className="statusBox">
                     <h2>Your Positions</h2>
                     {!window.walletAddress && <a href="javascript:;" onClick={() => window.ethereum.enable().then(() => window.getAddress()).then(() => _this.emit('ethereum/ping')).then(_this.controller.load)} className="switchAction active">Connect your Wallet</a>}
-                    {window.walletAddress && (!this.state || this.state.loadingPosition) && <Loader />}
+                    {window.walletAddress && (!this.state || this.state.loadingPosition) && <LoaderMini />}
                     {window.walletAddress && (!this.state || !this.state.loadingPosition) && this.state && this.state.stakingPositions && this.state.stakingPositions.map(it => <section className="statusYou">
                         <section className="statusPosition">
                             <h3>{it.poolAmountFromDecimals}</h3>
-                            <h6 className="statusUni">&#129412; <a href="">Uniswap-V2</a></h6>
+                            <h6 className="statusUni">&#129412; <a href="javascript:;">Uniswap-V2</a></h6>
                             <h6><b>{this.props.stakingData.pairs[it.poolPosition].symbol}-{this.props.element.symbol}</b></h6>
+                            <br/>
+                            <h6>Locked Balance:</h6>
+                            <h6><b>{window.fromDecimals(it.myBalance, this.props.element.decimals)} {this.props.element.symbol}</b></h6>
+                            <h6><b>{window.fromDecimals(it.otherBalance, this.props.stakingData.pairs[it.poolPosition].decimals)} {this.props.stakingData.pairs[it.poolPosition].symbol}</b></h6>
                         </section>
                         <section className="statusPosition">
                             <h5>{window.fromDecimals(it.reward, this.props.element.decimals)} <img src={this.props.element.logo}></img></h5>
