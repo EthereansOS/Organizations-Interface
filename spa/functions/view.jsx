@@ -130,8 +130,8 @@ var Functions = React.createClass({
                                         </section>
                                         <section className="DFOBtnReadSection">
                                             {this.renderInput(it)}
-                                            {!it.isInternal && it.submitable && <a className="LinkVisualButton RwWrite" onClick={e => _this.onClick(e, it)}>Submit</a>}
-                                            {!it.isInternal && !it.submitable && <a className="LinkVisualButton RwRead" onClick={e => _this.onClick(e, it)}>Read</a>}
+                                            {!it.isInternal && it.submitable && <a href="javascript:;" className="LinkVisualButton RwWrite" onClick={e => _this.onClick(e, it)}>Submit</a>}
+                                            {!it.isInternal && !it.submitable && <a href="javascript:;" className="LinkVisualButton RwRead" onClick={e => _this.onClick(e, it)}>Read</a>}
                                             {it.isInternal && <span className="RwIntern">Internal</span>}
                                         </section>
                                         {_this.state && _this.state.response && _this.state.response[it.codeName] && <section className="DFOBtnResultSection">

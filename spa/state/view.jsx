@@ -121,7 +121,8 @@ var State = React.createClass({
                     <input ref={_this.onInputRef} />
                     <a className="LinkVisualButton LinkVisualButtonB" href="javascript:;" onClick={_this.addNew}>Add New</a>
                 </section>*/}
-                {(!_this.state || !_this.state.stateElements || _this.state.stateElements.length !== _this.state.stateElementsAmount) && <LoaderMini message="Loading Elements" />}
+                {_this.state && _this.state.unsupportedRnDVersion && <h2>This R&D version is no longer supported because it is lower than 0.1.</h2>}
+                {(!_this.state || !_this.state.stateElements || _this.state.stateElements.length !== _this.state.stateElementsAmount) && (!_this.state || !_this.state.unsupportedRnDVersion) && <LoaderMini message="Loading Elements" />}
             </section>
         );
     }

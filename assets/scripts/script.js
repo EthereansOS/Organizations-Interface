@@ -1370,6 +1370,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
             view.enqueue(() => view.setState({ uniswapPairs }));
         }
     }
+    uniswapPairs.length === 0 && view.enqueue(() => view.setState({ uniswapPairs }));
 };
 
 window.loadTokenInfos = async function loadTokenInfos(addresses, wethAddress) {
