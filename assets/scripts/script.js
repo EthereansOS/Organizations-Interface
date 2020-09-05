@@ -312,7 +312,9 @@ window.createContract = async function createContract(abi, data) {
         data,
         arguments: args,
     });
-    var contractAddress = window.getNextContractAddress && window.getNextContractAddress(from, await window.web3.eth.getTransactionCount(from));
+    var nonce = await window.web3.eth.getTransactionCount(from);
+    nonce = parseInt(window.numberToString(nonce) + '');
+    var contractAddress = window.getNextContractAddress && window.getNextContractAddress(from, nonce === 0 ? undefined : nonce);
     try {
         contractAddress = (await window.sendBlockchainTransaction(undefined, window.web3.eth.sendTransaction({
             from,
@@ -1638,6 +1640,10 @@ window.updateInfo = async function updateInfo(view, element) {
         } catch (e) {}
         element.ens = element.ens || '';
         try {
+            element.metadata = await window.AJAXRequest(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x')));
+            Object.entries(element.metadata).forEach(it => element[it[0]] = it[1]);
+        } catch(e) {}
+        try {
             view && view && setTimeout(function() {
                 view && view.forceUpdate();
             });
@@ -1738,4 +1744,62 @@ window.getFIBlock = async function getFIBlock(element) {
     var lastSwapBlock = parseInt(await window.blockchainCall(element.stateHolder.methods.getUint256, 'lastSwapBlock'));
     var swapBlockLimit = parseInt(await window.blockchainCall(element.stateHolder.methods.getUint256, 'swapBlockLimit'));
     console.log(element.name, window.getNetworkElement('etherscanURL') + 'block/countdown/' + (lastSwapBlock + swapBlockLimit));
+};
+
+window.uploadToIPFS = async function uploadToIPFS(files) {
+    var single = !(files instanceof Array);
+    files = single ? [files] : files;
+    for(var i in files) {
+        var file = files[i];
+        if(!(file instanceof File) && !(file instanceof Blob)) {
+            files[i] = new Blob([JSON.stringify(files[i], null, 4)], {type: "application/json"});
+        }
+    }
+    var hashes = [];
+    window.api = window.api || new IpfsHttpClient(window.context.ipfsHost);
+    for await(var upload of window.api.add(files)) {
+        hashes.push(window.context.ipfsUrlTemplate + upload.path);
+    }
+    return single ? hashes[0] : hashes;
+};
+
+window.validateDFOMetadata = async function validateDFOMetadataAndUpload(metadata) {
+    var errors = [];
+    !metadata && errors.push('Please provide data');
+    metadata && !metadata.name && errors.push("Name is mandatory in metadata");
+    metadata && !metadata.shortDescription && errors.push("Short Description is mandatory in metadata");
+    metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("White Paper URI is not a valid URL");
+    metadata && (!metadata.iconUri || !new RegExp(window.urlRegex).test(metadata.iconUri)) && errors.push("Icon URI is not a valid URL");
+    metadata && (!metadata.distributedLink || !new RegExp(window.urlRegex).test(metadata.distributedLink)) && errors.push("Distributed Link is not a valid URL");
+    metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Discussion URI is not a valid URL");
+    metadata && (!metadata.repoUri || !new RegExp(window.urlRegex).test(metadata.repoUri)) && errors.push("Repo URI is not a valid URL");
+    if(errors.length > 0) {
+        throw errors.join('\n');
+    }
+    return await window.uploadToIPFS(metadata);
+};
+
+window.proposeNewMetadataLink = async function proposeNewMetadataLink(element, metadata, noValidation) {
+    var metadataLink = !noValidation ? await window.validateDFOMetadata(metadata) : null;
+    var originalMetadataLink = null;
+    try {
+        originalMetadataLink = await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x');
+        originalMetadataLink = window.web3.eth.abi.decodeParameter('string', originalMetadataLink);
+    } catch(e) {
+    }
+    if(originalMetadataLink === metadataLink) {
+        return;
+    }
+    var descriptions = ['DFO Hub - Utilities - Get Metadata Link', 'The metadata located at this link contains all info about the DFO like name, short description, discussion link and many other info.'];
+    var updates = !metadataLink ? ['Clearing Votes Hard Cap'] : ['Setting metadata link to ' + metadataLink];
+    originalMetadataLink && descriptions.push(updates[0]);
+    var template = !metadataLink ? undefined : JSON.parse(JSON.stringify(window.context.simpleValueProposalTemplate).split('type').join('string memory').split('value').join('\\"' + metadataLink + '\\"'));
+    window.sendGeneratedProposal(element, {
+        title: updates[0],
+        functionalityName: metadataLink ? 'getMetadataLink' : '',
+        functionalityMethodSignature: metadataLink ? 'getValue()' : '',
+        functionalitySubmitable: false,
+        functionalityReplace: originalMetadataLink ? 'getMetadataLink' : '',
+        functionalityOutputParameters: metadataLink ? '["string"]' : '',
+    }, template, undefined, descriptions, updates);
 };

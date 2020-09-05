@@ -1,6 +1,7 @@
 var Overview = React.createClass({
     requiredModules: [
-        'spa/editor'
+        'spa/editor',
+        'spa/dFOMetadata'
     ],
     requiredScripts: [
         'spa/loaderMini.jsx',
@@ -205,6 +206,7 @@ var Overview = React.createClass({
                         </section>
                     </section>}
                 </ul>
+                {_this.props.element.metadata && <DFOMetadata element={_this.props.element}/>}
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
                     <h2>Rules and funds</h2>
