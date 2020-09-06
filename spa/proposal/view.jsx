@@ -55,6 +55,7 @@ var Proposal = React.createClass({
     renderTerminated(percAccepted, percRefused) {
         var _this = this;
         var it = _this.state.survey;
+        console.log(it.codeName, it.sourceLocationId, it.sourceLocation);
         var rendered = [<section className="ProposalPool">
             <h6>{(it.result || it.leading) && <span>&#9989; Accepted</span>} {!it.result && !it.leading && <span>&#9940; Refused</span>}</h6>
             <p>{!it.resultBlock && "Last Checked "}Block: <a href={window.getNetworkElement('etherscanURL') + 'block/' + (it.resultBlock || it.lastCheckedBlock)} target="_blank">{(it.resultBlock || it.lastCheckedBlock)}</a></p>
@@ -199,7 +200,7 @@ var Proposal = React.createClass({
         percRefused = (isNaN(percRefused) ? 0 : percRefused) + '%';
         var rendered = [
         <section className="ProposalBio">
-            <h5>{it.emergency && <span>&#x1F6A8;{'\u00a0'}</span>}{it.compareErrors === undefined && <LoaderMinimino />}{it.compareErrors && it.compareErrors.length > 0 && <span title={('There are some problems in this proposal:\n' + (it.compareErrors.join(';\n').trim()))}>&#9763;&#65039;</span>} {!it.codeName ? !it.replaces ? "One Time" : "Kill" : it.replaces ? "Edit" : "Add New"}{(it.codeName || it.replaces) && [<span> | </span>, <span>{it.codeName || it.replaces}</span>]}</h5>
+            <h5>{it.emergency && <span>&#x1F6A8;{'\u00a0'}</span>}{it.compareErrors === undefined && <LoaderMinimino />}{it.compareErrors && it.compareErrors.length > 0 && <span title={((it.compareErrors[0].indexOf('data not available') !== -1 ? '' : 'There are some problems in this proposal:\n') + (it.compareErrors.join(';\n').trim()))}>&#9763;&#65039;</span>} {!it.codeName ? !it.replaces ? "One Time" : "Kill" : it.replaces ? "Edit" : "Add New"}{(it.codeName || it.replaces) && [<span> | </span>, <span>{it.codeName || it.replaces}</span>]}</h5>
             <p>
                 <span ref={ref => ref && (ref.innerHTML = description.substring(0, more ? description.length : length))} />
                 {!more && length < description.length && ['... ', <a href="javascript:;" onClick={() => _this.emit('toggle', 'more_' + it.key)}>More</a>]}

@@ -23,6 +23,9 @@ var FunctionsController = function (view) {
                 if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }
+                if(functionality.codeName !== 'getEmergencySurveyStaking' && functionality.sourceLocationId === 0) {
+                    delete functionality.code;
+                }
             } catch (e) {}
             functionality.description = window.extractHTMLDescription(functionality.code);
             functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
@@ -36,7 +39,7 @@ var FunctionsController = function (view) {
                     return;
                 }
                 functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
-                functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.name, functionality.compareErrors.join(' - '));
+                functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.codeName, functionality.sourceLocation, functionality.sourceLocationId, functionality.compareErrors.join(' - '));
                 if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }

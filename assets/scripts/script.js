@@ -430,6 +430,9 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
             callback && callback();
             try {
                 functionality.code = functionality.code || await window.loadContent(functionality.sourceLocationId, functionality.sourceLocation);
+                if(functionality.codeName !== 'getEmergencySurveyStaking' && functionality.sourceLocationId === 0) {
+                    delete functionality.code;
+                }
             } catch (e) {}
             functionality.description = window.extractHTMLDescription(functionality.code);
             functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces);
@@ -767,10 +770,16 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
     };
     var errors = [];
     var comments = code ? window.extractComment(code) : {};
-    if ((codeName || (!codeName && !replaces)) && !comments.Description) {
+    if (codeName && !code) {
+        //errors.push('Missing code!');
+        errors.push('On-chain data not available');
+        errors.push('https://etherscan.io/address/' + location + '#code');
+        errors.push('(IPFS metadata coming soon)');
+    }
+    if ((codeName || (!codeName && !replaces)) && code && !comments.Description) {
         errors.push('Missing description!');
     }
-    if ((codeName || (!codeName && !replaces)) && !comments.Discussion) {
+    if ((codeName || (!codeName && !replaces)) && code && !comments.Discussion) {
         !knownFunctionalities[codeName] && errors.push('Missing discussion Link!');
     }
     if (codeName && replaces && !comments.Update) {
@@ -778,9 +787,6 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
     }
     if (codeName && !location) {
         errors.push('Missing location address!');
-    }
-    if (codeName && !code) {
-        errors.push('Missing code!');
     }
     if (codeName && !methodSignature) {
         errors.push('Missing method signature!');
