@@ -84,6 +84,9 @@ var ProposalController = function (view) {
             if ((survey.codeName || !survey.replaces) && !survey.code) {
                 try {
                     survey.code = await window.loadContent(survey.sourceLocationId, survey.sourceLocation);
+                    if(survey.codeName !== 'getEmergencySurveyStaking' && survey.sourceLocationId === 0) {
+                        delete survey.code;
+                    }
                 } catch (ex) {
                 }
                 if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {

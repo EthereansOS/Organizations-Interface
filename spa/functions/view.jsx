@@ -97,7 +97,7 @@ var Functions = React.createClass({
                             <li key={it.codeName}>
                                 <section className="DFOFunctionEmoji">
                                     {it.compareErrors === undefined && <LoaderMinimino />}
-                                    {it.compareErrors && <h4 title={(!it.compareErrors || it.compareErrors.length === 0) ? '' : ('There are some problems in this functionality:\n' + (it.compareErrors.join(';\n').trim()))} ref={ref => ref && (ref.innerHTML = (!it.compareErrors || it.compareErrors.length === 0) ? '&#128736;&#65039;' : '&#9763;&#65039;')}></h4>}
+                                    {it.compareErrors && <h4 title={(!it.compareErrors || it.compareErrors.length === 0) ? '' : ((it.compareErrors[0].indexOf('data not available') !== -1 ? '' : 'There are some problems in this functionality:\n') + (it.compareErrors.join(';\n').trim()))} ref={ref => ref && (ref.innerHTML = (!it.compareErrors || it.compareErrors.length === 0) ? '&#128736;&#65039;' : '&#9763;&#65039;')}></h4>}
                                 </section>
                                 <section className="DFOFunctionTitle">
                                     <h5>{it.codeName}</h5>
