@@ -772,7 +772,7 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
     };
     var errors = [];
     var comments = code ? window.extractComment(code) : {};
-    if (codeName && !code) {
+    if ((codeName || !replaces) && !code) {
         //errors.push('Missing code!');
         errors.push('On-chain data not available');
         errors.push('https://etherscan.io/address/' + location + '#code');
