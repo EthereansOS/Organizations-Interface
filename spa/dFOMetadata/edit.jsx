@@ -90,7 +90,7 @@ var DFOMetadataEdit = React.createClass({
                 </div>
                 <p className="OkBoomer">A link to an external ENS webpage to use the application (if any).<div className="BoomerTriangle"/></p>
             </section>
-            {this.props.showCommands && <section>
+            {this.props.showCommands && <section className="PROPOSEmetadata">
                 <br/>
                 {(!this.state || this.state.performing !== 'propose') && <a className="LinkVisualButton LinkVisualButtonB" href="javascript:;" onClick={this.proposeChange}>Propose</a>}
                 {this.state && this.state.performing === 'propose' && <section className="loaderMinimino"/>}

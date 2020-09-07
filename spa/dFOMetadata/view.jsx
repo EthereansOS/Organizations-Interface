@@ -17,8 +17,8 @@ var DFOMetadata = React.createClass({
                 <section className="HostingCategoryTitle">
                     <h2>Organization Info</h2>
                 </section>
-                <section className="HostingCategoryTitle">
-                    <h2><a className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.change === name ? " Editing" : "")} href="javascript:;" onClick={() => _this.setState({ change: _this.state && _this.state.change === 'edit' ? null : 'edit' })}>Add Metadata</a></h2>
+                <section className="HostingCategoryTitle HostingCategoryTitle25">
+                    <a className={"LinkVisualButton LinkVisualButtonB SpecialMetadataBTN" + (_this.state && _this.state.change === name ? " Editing" : "")} href="javascript:;" onClick={() => _this.setState({ change: _this.state && _this.state.change === 'edit' ? null : 'edit' })}>Add Metadata</a>
                 </section>
             </ul>);
         }
