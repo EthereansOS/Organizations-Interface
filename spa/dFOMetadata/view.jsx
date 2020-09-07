@@ -2,17 +2,22 @@ var DFOMetadata = React.createClass({
     requiredScripts: [
         'spa/dFOMetadata/edit.jsx'
     ],
+    getDefaultSubscriptions() {
+        return {
+            'metadata/edit/close' : () => this.setState({change : null})
+        }
+    },
     render() {
         var _this = this;
-        if(false) {
-            return <DFOMetadataEdit className="DeployNewWhat2"/>;
+        if(_this.state && _this.state.change === 'edit') {
+            return <DFOMetadataEdit className="DeployNewWhat2" element={_this.props.element} data={_this.props.element.metadata} showCommands={true}/>;
         }
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
-                <h2>Organization Info</h2>
+                <h2>Organization Info {_this.props.edit && <a className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.change === name ? " Editing" : "")} href="javascript:;" onClick={() => _this.setState({ change: _this.state && _this.state.change === 'edit' ? null : 'edit' })}>Change</a>}</h2>
             </section>
             <li className="TheDappInfo05 TheDappInfo1B">
-                <img className="DFObrandICON" src={_this.props.element.iconUri}></img>
+                <img className="DFObrandICON" src={_this.props.element.brandUri}></img>
             </li>
             {_this.props.element.shortDescription && <li className="TheDappInfo2">
                 <h5 className="DFOHostingTitle">BIO</h5>

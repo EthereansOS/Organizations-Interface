@@ -1,12 +1,39 @@
 var DFOMetadataEdit = React.createClass({
+    extractData() {
+        var data = window.getData(this.domRoot);
+        !data.brandUri && this.props.data && (data.brandUri = this.props.data.brandUri);
+        !data.logoUri && this.props.data && (data.logoUri = this.props.data.logoUri);
+        return data;
+    },
     getData() {
-        return window.validateDFOMetadata(window.getData(this.domRoot), true);
+        return window.validateDFOMetadata(this.extractData(), true);
+    },
+    setData(originalData) {
+        if(!originalData) {
+            return;
+        }
+        var data = {};
+        Object.entries(originalData).forEach(it => data[it[0]] = it[1]);
+        delete data.brandUri;
+        delete data.logoUri;
+        window.setData(this.domRoot, data);
+    },
+    proposeChange(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        window.proposeNewMetadataLink(this.props.element, this.extractData()).then(() => this.emit('metadata/edit/close'));
+    },
+    back(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        this.emit('metadata/edit/close');
+    },
+    componentDidMount() {
+        this.setData(this.props.data);
     },
     render() {
         return (<section className={"DeployNewWhat " + this.props.className}>
             <section className="DeployNewWhat3">
             <h2 className="METADATACHANGE">Propose Metadata Change</h2>
-            <a className="METADATACHANGECLOSE">Back</a>
+            <a className="METADATACHANGECLOSE" onClick={this.back}>Back</a>
             <div className="InsertDfoSubdomain">
                 <label className="LabelSPEC" htmlFor="shortDescription">BIO:</label>
                 <textarea className="LabelSPECWRITE" id="shortDescription" type="text"></textarea>
