@@ -36,7 +36,7 @@ var DFOMetadataEdit = React.createClass({
                 <input id="wpUri" type="text" />
             </div>
             <div className="InsertDfoSubdomain">
-                <label htmlFor="wpUri">Roadmap link:</label>
+                <label htmlFor="roadmapUri">Roadmap link:</label>
                 <input id="wpUri" type="text" />
             </div>
             <div className="InsertDfoSubdomain">
