@@ -466,6 +466,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .StakeBigBoss .stakingInfo h3 {line-height: 0;}
 .HostingCategoryTitle25 {text-align: center !important;}
 .SpecialMetadataBTN {margin: 10px auto !important; display: inline-block; font-size: 13px; width: auto; height: auto; padding: 7px 5px;}
+.stakingEdit .TheDappInfoSub {margin: 20px 0;}
 
 .DarkMode, .DarkMode .ProposalVote, .DarkMode .NewProposalIndex .DFOItOptions input[type="text"], .DarkMode .LabelSPECWRITE, .DarkMode .NewProposalIndex .DFOItOptions textarea, .DarkMode .NewProposalIndex .DFOItOptions select, .DarkMode .DFOFunctionQuery, .DarkMode .InsertDfoName input, .DarkMode .InsertDfoSubdomain input, .DarkMode .InsertTokenName input, .DarkMode .InsertTokenSupply input, .DarkMode .InsertSurveyLength input, .DarkMode .InsertSurveyQuorum .SurveyQuorumHow, .DarkMode .InsertSurveyMinStake input, .DarkMode .InsertSurveySingleReward input, .DarkMode .InsertSurveyCommunityStake input, .DarkMode .sequentialOps, .DarkMode .DFOFunctionIndexIcon, .DarkMode .MainLoaderAll .sequentialOps, .DarkMode .InsertSurveyEmergencyLength input, .DarkMode .InsertSurveyEmergencyPenalty input, .DarkMode .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV input,.DarkMode .GigiImputabene {background-color: #000000;}
 .DarkMode .DFOInfo .DFOOpened, .DarkMode .DeployNewWhat2, .DarkMode .DFOOpened .DFONavigator,.DarkMode .TheDappInfoAll, .DarkMode .DFOOpened .DFONavigator li, .DarkMode .Explorer, .DarkMode .DFOOpened .DFONavigator li a, .DarkMode .DFOList, .DarkMode header .SearchLi input,.DarkMode header .SearchLi a, .DarkMode .MainLoader, .DarkMode .BravPicciot {background-color:#292929 !important;}
@@ -493,7 +494,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DarkMode .LLinkVisualButtonSpecial {color: #616060 !important;}
 .DarkMode .Pistombrillo input {background-color: #3e3e3e; border: 1px solid #333333; color: #f1f1f1;}
 .TheDappInfosub {position: relative;}
-.ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff; text-decoration: none;}
+.ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff; text-decoration: none; cursor: pointer;}
 .ChiudiQuellaGigi {top: -3px;left: -6px;}
 .LinkVisualButtonBIGGAMaNNTROP {font-size: 14px; height: auto; padding: 10px; width: 100%;}
 .LinkVisualButtonBIGGAMaNNTROPAAAA {font-size: 14px; height: auto; padding: 10px; width: 300px;}
@@ -537,3 +538,4 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .BETABANNER p a {text-decoration: underline; color: #ffb004; font-weight: bold;}
 .BETABANNER section > a {font-size: 15px; padding: 10px 15px; background-color: #ffb004; color: #ffffff; font-weight: bold; text-decoration: none; margin-top: 25px; display: inline-block;}
 .BETABANNER section > a:hover {background-color: #fccb63;}
+
