@@ -23,6 +23,7 @@ var FunctionsController = function (view) {
                     return;
                 }
                 Object.entries(functionality.metadata).forEach(it => functionality[it[0]] = it[1]);
+                functionality.description = window.extractHTMLDescription(functionality.description || functionality.code);
             } catch(e) {}
             functionality.inputParameters = [];
             try {
@@ -30,15 +31,17 @@ var FunctionsController = function (view) {
                 functionality.inputParameters = functionality.inputParameters ? functionality.inputParameters.split(',') : [];
             } catch (e) {}
             try {
-                functionality.code = functionality.code || await window.loadContent(functionality.sourceLocationId, functionality.sourceLocation);
-                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
-                    return;
-                }
-                if(functionality.codeName !== 'getEmergencySurveyStaking' && functionality.sourceLocationId === 0) {
-                    delete functionality.code;
+                if(!functionality.code) {
+                    functionality.code = functionality.code || await window.loadContent(functionality.sourceLocationId, functionality.sourceLocation);
+                    if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                        return;
+                    }
+                    if(functionality.codeName !== 'getEmergencySurveyStaking' && functionality.sourceLocationId === 0) {
+                        delete functionality.code;
+                    }
+                    functionality.description = window.extractHTMLDescription(functionality.code);
                 }
             } catch (e) {}
-            functionality.description = window.extractHTMLDescription(functionality.code);
             functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
             functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.name, functionality.compareErrors.join(' - '));
             if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {

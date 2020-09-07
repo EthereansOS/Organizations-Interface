@@ -55,17 +55,17 @@ var DFOMetadata = React.createClass({
             <li className="TheDappInfo1 TheDappInfo1B">
                 <h5 className="DFOHostingTitle">More</h5>
                 <section className="DFOTitleSection DFOTitleSectionB">
-                    <a href={window.formatLink(_this.props.element.wpUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Explainer</a>
-                    <a href={window.formatLink(_this.props.element.roadmapUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Roadmap</a>
-                    <a href={window.formatLink(_this.props.element.repoUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Ext. Repo</a>
-                    <a href={window.formatLink(_this.props.element.discussionUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Discussion</a>
+                    {_this.props.element.wpUri && <a href={window.formatLink(_this.props.element.wpUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Explainer</a>}
+                    {_this.props.element.roadmapUri && <a href={window.formatLink(_this.props.element.roadmapUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Roadmap</a>}
+                    {_this.props.element.repoUri && <a href={window.formatLink(_this.props.element.repoUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Ext. Repo</a>}
+                    {_this.props.element.discussionUri && <a href={window.formatLink(_this.props.element.discussionUri)} target="_blank" className="LinkVisualButton LinkVisualEthscan">Discussion</a>}
                     <h5 className="DFOHostingTitle DFOHostingTitleB">Secure Domain</h5>
                     <AsyncValue>
                         {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo"><a className="LinkVisualButton LinkVisualEthscan LinkVisualEthscam" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
                     </AsyncValue>
                     <h5 className="DFOHostingTitle DFOHostingTitleB">External Domains</h5>
-                    <a href={window.formatLink(_this.props.element.externalDNS)} target="_blank" className="LinkVisualButton LinkVisualEthscan">DNS Link</a>
-                    <a href={window.formatLink(_this.props.element.externalENS)} target="_blank" className="LinkVisualButton LinkVisualEthscan">ENS Link</a>
+                    {_this.props.element.externalDNS && <a href={window.formatLink(_this.props.element.externalDNS)} target="_blank" className="LinkVisualButton LinkVisualEthscan">DNS Link</a>}
+                    {_this.props.element.externalENS && <a href={window.formatLink(_this.props.element.externalENS)} target="_blank" className="LinkVisualButton LinkVisualEthscan">ENS Link</a>}
                 </section>
             </li>
         </ul>);
