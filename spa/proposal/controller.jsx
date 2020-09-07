@@ -26,7 +26,7 @@ var ProposalController = function (view) {
                 Object.keys(data).forEach(key => survey[key] = data[key]);
             }
             try {
-                survey.metadataLink = await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, survey.location).methods.getMetadataLink);
+                survey.metadataLink = window.formatLink(await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, survey.location).methods.getMetadataLink));
                 if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }

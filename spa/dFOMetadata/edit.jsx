@@ -1,8 +1,8 @@
 var DFOMetadataEdit = React.createClass({
     extractData() {
         var data = window.getData(this.domRoot);
-        (!data.brandUri || data.brandUri.length === 0) && this.props.data && (data.brandUri = this.props.data.brandUri instanceof Array ? this.props.data.brandUri[0] : this.props.data.brandUri);
-        (!data.logoUri || data.logoUri.length === 0) && this.props.data && (data.logoUri = this.props.data.logoUri instanceof Array ? this.props.data.logoUri[0] : this.props.data.logoUri);
+        //(!data.brandUri || data.brandUri.length === 0) && this.props.data && (data.brandUri = this.props.data.brandUri instanceof Array ? this.props.data.brandUri[0] : this.props.data.brandUri);
+        //(!data.logoUri || data.logoUri.length === 0) && this.props.data && (data.logoUri = this.props.data.logoUri instanceof Array ? this.props.data.logoUri[0] : this.props.data.logoUri);
         return data;
     },
     getData() {
@@ -14,8 +14,8 @@ var DFOMetadataEdit = React.createClass({
         }
         var data = {};
         Object.entries(originalData).forEach(it => data[it[0]] = it[1]);
-        (typeof data.brandUri === 'string' || data.brandUri instanceof Array) && delete data.brandUri;
-        (typeof data.logoUri === 'string' || data.logoUri instanceof Array) && delete data.logoUri;
+        //(typeof data.brandUri === 'string' || data.brandUri instanceof Array) && delete data.brandUri;
+        //(typeof data.logoUri === 'string' || data.logoUri instanceof Array) && delete data.logoUri;
         window.setData(this.domRoot, data);
     },
     proposeChange(e) {
@@ -51,12 +51,12 @@ var DFOMetadataEdit = React.createClass({
                 <p className="OkBoomer">The name of the organization<div className="BoomerTriangle"/></p>
                 <div className="InsertDfoSubdomain">
                     <label htmlFor="brandUri">DFO Logo:</label>
-                    <input id="brandUri" type="file" accepts="image/*" />
+                    <input id="brandUri" type="text"/>
                 </div>
                 <p className="OkBoomer">The logo of the organization (must be a .png 350 x 350 pixels)<div className="BoomerTriangle"/></p>
                 <div className="InsertDfoSubdomain">
                     <label htmlFor="logoUri">Token Logo:</label>
-                    <input id="logoUri" type="file" accepts="image/*" />
+                    <input id="logoUri" type="text"/>
                 </div>
                 <p className="OkBoomer">The logo of the Voting Token (must be a .png 350 x 350 pixels)<div className="BoomerTriangle"/></p>
                 <div className="InsertDfoSubdomain">

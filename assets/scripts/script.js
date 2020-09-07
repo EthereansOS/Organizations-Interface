@@ -777,7 +777,8 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
         "getMinimumStaking": true,
         "getIndex": true,
         "getLink": true,
-        "getVotesHardCap": true
+        "getVotesHardCap": true,
+        "getMetadataLink": true
     };
     var errors = [];
     var comments = code ? window.extractComment(code) : {};
@@ -1827,11 +1828,14 @@ window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUplo
         //errors.push(e.message || e);
     }
 
+    metadata && metadata.brandUri && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri) || metadata.brandUri.indexOf('ipfs') === -1) && errors.push("DFO Logo is not a valid URL");
+    metadata && metadata.logoUri && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri) || metadata.logoUri.indexOf('ipfs') === -1) && errors.push("Token Logo is not a valid URL");
+    metadata && metadata.externalENS && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("External ENS link must contain a valid ENS URL");
     //metadata && !metadata.name && errors.push("Name is mandatory in metadata");
     //metadata && !metadata.shortDescription && errors.push("BIO is mandatory in metadata");
     //metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("Explainer link must contain a valid URL");
-    //metadata && !noUpload && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri)) && errors.push("DFO Logo is not a valid URL");
-    //metadata && !noUpload && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri)) && errors.push("Token Logo is not a valid URL");
+    //metadata && !noUpload && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri) || metadata.brandUri.indexOf('ipfs') === -1) && errors.push("DFO Logo is not a valid URL");
+    //metadata && !noUpload && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri) || metadata.logoUri.indexOf('ipfs') === -1) && errors.push("Token Logo is not a valid URL");
     //metadata && noUpload && !metadata.brandUri && errors.push("Insert a valid DFO Logo");
     //metadata && noUpload && !metadata.logoUri && errors.push("Insert a valid Token Logo image");
     //metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Chat link must contain a valid URL");
@@ -1939,6 +1943,7 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 };
 
 window.formatLink = function formatLink(link) {
+    link = (link ? link.length ? link[0] : link : '').split(window.context.ipfsUrlTemplate).join(window.context.ipfsUrlChanger);
     return link && link.indexOf('http') === -1 ? ('https://' + link) : link;
 };
 

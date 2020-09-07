@@ -27,7 +27,7 @@ var DFOMetadata = React.createClass({
                 <h2>Organization Info {_this.props.edit && <a className={"LinkVisualButton LinkVisualButtonB" + (_this.state && _this.state.change === name ? " Editing" : "")} href="javascript:;" onClick={() => _this.setState({ change: _this.state && _this.state.change === 'edit' ? null : 'edit' })}>Change</a>}</h2>
             </section>
             <li className="TheDappInfo05 TheDappInfo1B">
-                <img className="DFObrandICON" src={_this.props.element.brandUri}></img>
+                <img className="DFObrandICON" src={window.formatLink(_this.props.element.brandUri)}></img>
             </li>
             {_this.props.element.shortDescription && <li className="TheDappInfo2">
                 <h5 className="DFOHostingTitle">BIO</h5>

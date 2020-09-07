@@ -80,7 +80,7 @@ var DFOList = React.createClass({
                                 <a href="javascript:;" onClick={() => {delete it.functionalities; _this.setState({ key: _this.state && _this.state.key === it.key ? null : it.key })}} className="DFOOpener">
                                     <section className="DFOIcon">
                                         <AsyncValue>
-                                            <img src={it.brandUri || it.icon}/>
+                                            <img src={it.brandUri ? window.formatLink(it.brandUri) : it.icon}/>
                                         </AsyncValue>
                                     </section>
                                     <section className="DFOName">
