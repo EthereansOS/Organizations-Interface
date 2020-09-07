@@ -505,7 +505,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOTitleSectionB .LinkVisualStandard {font-size: 11px !important; text-decoration: underline !important;margin: 2px 3px;}
 .TheDappInfo1B {width: 200px;}
 .LinkVisualEthscam {max-width: 90%; width: auto; padding: 4px 11px;}
-
+.VerifiedIcon img {border-radius: 50% !important;}
 .DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}	.DFOListOpenAfter {position: absolute; left: 0; top: 117px; margin-bottom: 0; padding-bottom: 10px; margin-top: 0;}
 .DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #545454 !important;z-index: 10000;}	.DFOMAinNavAfter {position: fixed; top: 60px; left:0;width: 100%; background-color: #8653f6 !important;z-index: 10000;}
 .DFONavigatorAfter {position: fixed; top: 130px; left:0; z-index: 10000;}
