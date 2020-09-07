@@ -22,7 +22,7 @@ var VotingTokenData = React.createClass({
             result = window.web3.eth.abi.decodeParameter('uint256', result);
             return {
                 result,
-                available : window.web3.utils.toBN(totalSupplyWei).sub(window.web3.utils.toBN(result)).toString()
+                available: window.web3.utils.toBN(totalSupplyWei).sub(window.web3.utils.toBN(result)).toString()
             };
         });
     },
@@ -37,21 +37,25 @@ var VotingTokenData = React.createClass({
         });
     },
     retrieveAmountPercentage(ref) {
-        ref && this.retrieveVotingTokensAmountForHub(100).then(result =>  ref.innerHTML = window.fromDecimals(result.result, 18));
+        ref && this.retrieveVotingTokensAmountForHub(100).then(result => ref.innerHTML = window.fromDecimals(result.result, 18));
     },
     render() {
         return (<section>
             <p><span>2 of 3 | Voting Token</span><br></br>The Voting Token of a DFO is an ERC20 Token. The Voting Token is the key to rule the DFO functionalities and its assets. If you lose your voting tokens, there is no way to be part of the future DFO's decisions.</p>
-             <section className="DeployNewWhat">
-                    <div className="InsertTokenName">
-                        <label htmlFor="tokenSymbol">Symbol:</label>
-                        <input ref={ref => this.tokenSymbol = ref} autocomplete="off" id="tokenSymbol" type="text" onChange={this.onChange}/>
-                    </div>
-                    <div className="InsertTokenSupply">
-                        <label htmlFor="tokenTotalSupply">Supply:</label>
-                        <input id="tokenTotalSupply" type="number" min="1" ref={ref => this.totalSupply = ref} onChange={this.onChange}/>
-                        <aside><b>Generation Fee:</b> <span ref={this.retrieveAmountPercentage}></span>% <span>(<span ref={ref => this.amountForHub = ref}>0</span> <span ref={ref => this.tokenSymbolLabel = ref}></span>)</span></aside>
-                    </div>
+            <section className="DeployNewWhat">
+                <div className="InsertDfoName">
+                    <label htmlFor="dfoName">Name:</label>
+                    <input autocomplete="off" id="dfoName" type="text" />
+                </div>
+                <div className="InsertTokenName">
+                    <label htmlFor="tokenSymbol">Symbol:</label>
+                    <input ref={ref => this.tokenSymbol = ref} autocomplete="off" id="tokenSymbol" type="text" onChange={this.onChange} />
+                </div>
+                <div className="InsertTokenSupply">
+                    <label htmlFor="tokenTotalSupply">Supply:</label>
+                    <input id="tokenTotalSupply" type="number" min="1" ref={ref => this.totalSupply = ref} onChange={this.onChange} />
+                    <aside><b>Generation Fee:</b> <span ref={this.retrieveAmountPercentage}></span>% <span>(<span ref={ref => this.amountForHub = ref}>0</span> <span ref={ref => this.tokenSymbolLabel = ref}></span>)</span></aside>
+                </div>
             </section>
         </section>);
     }

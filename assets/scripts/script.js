@@ -1,7 +1,8 @@
 window.voidEthereumAddress = '0x0000000000000000000000000000000000000000';
 window.voidEthereumAddressExtended = '0x0000000000000000000000000000000000000000000000000000000000000000';
 window.descriptionWordLimit = 300;
-window.urlRegex = new RegExp("(https?:\\/\\/[^\s]+)", "gs");
+window.oldUrlRegex = new RegExp("(https?:\\/\\/[^\s]+)", "gs");
+window.urlRegex = new RegExp("(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$", "gs");
 window.solidityImportRule = new RegExp("import( )+\"(\\d+)\"( )*;", "gs");
 window.pragmaSolidityRule = new RegExp("pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\\d+;", "gs");
 window.base64Regex = new RegExp("data:([\\S]+)\\/([\\S]+);base64", "gs");
@@ -227,22 +228,29 @@ window.getData = function getData(root, checkValidation) {
     var children = root.children().find('input,select,textarea');
     children.length === 0 && (children = root.children('input,select,textarea'));
     children.each(function(i, input) {
-        var id = input.id || i;
-        input.type && input.type !== 'checkbox' && (data[id] = input.value);
-        input.type === 'number' && (data[id] = parseFloat(data[id].split(',').join('')));
-        input.type === 'number' && isNaN(data[id]) && (data[id] = parseFloat((input.dataset.defaultValue || '').split(',').join('')));
-        (input.type === 'checkbox' || input.type === 'radio') && (data[id] = input.checked);
-        !input.type || input.type === 'hidden' && (data[id] = $(input).val());
-        input.type === 'file' && (data[id] = input.files);
+        var id = (input.id || i).split('.');
+        var value;
+        input.type && input.type !== 'checkbox' && (value = input.value);
+        input.type === 'number' && (value = parseFloat(value.split(',').join('')));
+        input.type === 'number' && isNaN(value) && (value = parseFloat((input.dataset.defaultValue || '').split(',').join('')));
+        (input.type === 'checkbox' || input.type === 'radio') && (value = input.checked);
+        !input.type || input.type === 'hidden' && (value = $(input).val());
+        input.type === 'file' && (value = input.files);
         if (checkValidation) {
-            if (!data[id]) {
+            if (!value) {
                 throw "Data is mandatory";
             }
-            if (input.type === 'number' && isNaN(data[id])) {
+            if (input.type === 'number' && isNaN(value)) {
                 throw "Number is mandatory";
             }
         }
+        var x = data;
+        while(id.length > 0) {
+            var partialId = id.pop();
+            x = data[partialId] = data[partialId] || id.length === 0 ? value : {};
+        }
     });
+
     return data;
 };
 
@@ -1769,20 +1777,28 @@ window.uploadToIPFS = async function uploadToIPFS(files) {
     return single ? hashes[0] : hashes;
 };
 
-window.validateDFOMetadata = async function validateDFOMetadataAndUpload(metadata) {
+window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUpload) {
+    metadata.brandUri = (!metadata.brandUri || noUpload) ? metadata.brandUri : (typeof metadata.brandUri === 'string' && metadata.brandUri.indexOf('ipfs') !== -1) ? metadata.brandUri : await window.uploadToIPFS(metadata.brandUri);
+    metadata.logoUri = (!metadata.logoUri || noUpload) ? metadata.logoUri : (typeof metadata.logoUri === 'string' && metadata.logoUri.indexOf('ipfs') !== -1) ? metadata.logoUri : await window.uploadToIPFS(metadata.logoUri);
     var errors = [];
     !metadata && errors.push('Please provide data');
     metadata && !metadata.name && errors.push("Name is mandatory in metadata");
     metadata && !metadata.shortDescription && errors.push("Short Description is mandatory in metadata");
-    metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("White Paper URI is not a valid URL");
-    metadata && (!metadata.iconUri || !new RegExp(window.urlRegex).test(metadata.iconUri)) && errors.push("Icon URI is not a valid URL");
-    metadata && (!metadata.distributedLink || !new RegExp(window.urlRegex).test(metadata.distributedLink)) && errors.push("Distributed Link is not a valid URL");
-    metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Discussion URI is not a valid URL");
-    metadata && (!metadata.repoUri || !new RegExp(window.urlRegex).test(metadata.repoUri)) && errors.push("Repo URI is not a valid URL");
+    metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("White Paper does not contain a valid URL");
+    metadata && !noUpload && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri)) && errors.push("Icon URI is not a valid URL");
+    metadata && !noUpload && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri)) && errors.push("Logo URI is not a valid URL");
+    metadata && noUpload && !metadata.brandUri && errors.push("Insert a valid Brand image");
+    metadata && noUpload && !metadata.logoUri && errors.push("Insert a valid Token logo image");
+    metadata && (!metadata.distributedLink || !new RegExp(window.urlRegex).test(metadata.distributedLink)) && errors.push("Distributed Link does not contain a valid URL");
+    metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Discussion Link does not contain a valid URL");
+    metadata && (!metadata.repoUri || !new RegExp(window.urlRegex).test(metadata.repoUri)) && errors.push("Repo Link does not contain a valid URL");
+    metadata && (!metadata.externalDNS || !new RegExp(window.urlRegex).test(metadata.externalDNS)) && errors.push("External Homepage does not contain a valid URL");
+    metadata && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS)) && errors.push("Alternative ENS does not contain a valid URL");
     if(errors.length > 0) {
         throw errors.join('\n');
     }
-    return await window.uploadToIPFS(metadata);
+    console.log(metadata);
+    return noUpload ? metadata : await window.uploadToIPFS(metadata);
 };
 
 window.proposeNewMetadataLink = async function proposeNewMetadataLink(element, metadata, noValidation) {

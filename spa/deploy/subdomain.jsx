@@ -1,10 +1,9 @@
-var DFOData = React.createClass({
+var Subdomain = React.createClass({
     getData() {
         var _this = this;
         return (new Promise(function (ok, ko) {
             var data = window.getData(_this.domRoot);
             var errors = [];
-            !data.dfoName && errors.push('Insert a valid DFO Name');
             !data.ensDomain && errors.push('ENS Domain is mandatory');
             if (errors.length > 0) {
                 return ko(errors);
@@ -43,12 +42,8 @@ var DFOData = React.createClass({
     },
     render() {
         return (<section>
-            <p><span>1 of 3 | Bio</span><br></br>Fist of all, choose the DFO's name and redeem your ENS subdomain. The .dfohub.eth subdomain will redirect users to the DFO's front-end persistently as long as the ethereum network exists.</p>
+            <p><span>1 of 4 | Subdomain</span><br></br>Fist of all, Redeem your ENS subdomain. The .dfohub.eth subdomain will redirect users to the DFO's front-end persistently as long as the ethereum network exists.</p>
             <section className="DeployNewWhat">
-                <div className="InsertDfoName">
-                    <label htmlFor="dfoName">Name:</label>
-                    <input autocomplete="off" id="dfoName" type="text" />
-                </div>
                 <div className="InsertDfoSubdomain">
                     <label htmlFor="ensDomain">Subdomain:</label>
                     <input id="ensDomain" type="text" onChange={this.checkENS} /> <span>.dfohub.eth</span> <span className="SubDomainFree" ref={ref => this.ensCheck = ref}></span>
