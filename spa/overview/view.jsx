@@ -124,12 +124,12 @@ var Overview = React.createClass({
     },
     render() {
         var _this = this;
-        if(!_this.props.element.token) {
-            return <LoaderMini/>
+        if (!_this.props.element.token) {
+            return <LoaderMini />
         }
         return (
             <section className="DFOOverview">
-                {_this.props.element.metadata && <DFOMetadata element={_this.props.element} edit={_this.props.edit}/>}
+                <DFOMetadata element={_this.props.element} edit={_this.props.edit}/>
                 <ul className="DFOHosting">
                     <section className="HostingCategoryTitle">
                         <h2>Decentralized Application</h2>
@@ -157,7 +157,7 @@ var Overview = React.createClass({
                         </section>
                     </li>
                     <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle">&#129302; Core:</h5>
+                        <h5 className="DFOHostingTitle">&#129302; Core:</h5>
                         <section className="DFOTitleSection">
                             <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "address/" + _this.props.element.dFO.options.address}>&#128142; Etherscan</a>
                         </section>
@@ -169,7 +169,7 @@ var Overview = React.createClass({
                         </section>
                     </li>
                     <li className="TheDappInfo1">
-                    <h5 className="DFOHostingTitle">&#128302; ENS: </h5>
+                        <h5 className="DFOHostingTitle">&#128302; ENS: </h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
                                 {_this.props.element.ens !== undefined && <p className="DFOLabelTitleInfo"><a className="LinkVisualStandard" target="_blank" href={"https://" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth?ensd=" + ((_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || '') + "dfohub.eth"}>{(_this.props.element.ens && (_this.props.element.ens.toLowerCase() + '.')) || ''}dfohub.eth</a></p>}
@@ -185,7 +185,7 @@ var Overview = React.createClass({
                         </section>
                     </li>
                     <li className="TheDappInfo05">
-                    <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions: </h5>
+                        <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions: </h5>
                         <section className="DFOTitleSection">
                             <p className="LinkVisualStandard MiiiiFunctionalities">
                                 <AsyncValue>
@@ -208,9 +208,9 @@ var Overview = React.createClass({
                     </section>}
                 </ul>
                 <ul className="DFOHosting">
-                <section className="HostingCategoryTitle">
-                    <h2>Rules and funds</h2>
-                </section>
+                    <section className="HostingCategoryTitle">
+                        <h2>Rules and funds</h2>
+                    </section>
                     <li className="TheDappInfo1">
                         <h5 className="DFOHostingTitle">&#127984; Regular Proposals: </h5>
                         <section className="DFOTitleSection">
@@ -248,13 +248,13 @@ var Overview = React.createClass({
                     <li className="TheDappInfo1">
                         <h5 className="DFOHostingTitle">&#128424; Fixed Inflation:</h5>
                         <section className="DFOTitleSection">
-                        <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
+                            <p className="DFOLabelTitleInfo">Active</p>
+                            <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
                         </section>
                         <h5 className="DFOHostingTitle">&#129412; Liquidity Mining:</h5>
                         <section className="DFOTitleSection">
-                        <p className="DFOLabelTitleInfo">Active</p>
-                        <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
+                            <p className="DFOLabelTitleInfo">Active</p>
+                            <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
                         </section>
                     </li>
                 </ul>

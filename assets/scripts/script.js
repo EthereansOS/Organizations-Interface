@@ -1761,7 +1761,7 @@ window.getFIBlock = async function getFIBlock(element) {
 };
 
 window.uploadToIPFS = async function uploadToIPFS(files) {
-    var single = !(files instanceof Array) && !(files instanceof FileList);
+    var single = !(files instanceof Array) && (!(files instanceof FileList) || files.length === 0);
     files = single ? [files] : files;
     var list = [];
     for(var i = 0; i < files.length; i++) {
@@ -1780,21 +1780,37 @@ window.uploadToIPFS = async function uploadToIPFS(files) {
 };
 
 window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUpload) {
-    metadata.brandUri = (!metadata.brandUri || noUpload) ? metadata.brandUri : (typeof metadata.brandUri === 'string' && metadata.brandUri.indexOf('ipfs') !== -1) ? metadata.brandUri : await window.uploadToIPFS(metadata.brandUri);
-    metadata.logoUri = (!metadata.logoUri || noUpload) ? metadata.logoUri : (typeof metadata.logoUri === 'string' && metadata.logoUri.indexOf('ipfs') !== -1) ? metadata.logoUri : await window.uploadToIPFS(metadata.logoUri);
     var errors = [];
     !metadata && errors.push('Please provide data');
+    if(metadata && typeof metadata.brandUri !== 'string' && !await window.checkCoverSize(metadata.brandUri)) {
+        errors.push('Brand Logo must be valid 320x320 image');
+    }
+    try {
+        metadata && (metadata.brandUri = (!metadata.brandUri || noUpload) ? metadata.brandUri : (typeof metadata.brandUri === 'string' && metadata.brandUri.indexOf('ipfs') !== -1) ? metadata.brandUri : await window.uploadToIPFS(metadata.brandUri));
+    } catch(e) {
+        errors.push(e.message || e);
+    }
+    if(metadata && typeof metadata.logoUri !== 'string' && !await window.checkCoverSize(metadata.logoUri)) {
+        errors.push('Token Logo must be valid 320x320 image');
+    }
+    try {
+        metadata && (metadata.logoUri = (!metadata.logoUri || noUpload) ? metadata.logoUri : (typeof metadata.logoUri === 'string' && metadata.logoUri.indexOf('ipfs') !== -1) ? metadata.logoUri : await window.uploadToIPFS(metadata.logoUri));
+    } catch(e) {
+        errors.push(e.message || e);
+    }
+
     metadata && !metadata.name && errors.push("Name is mandatory in metadata");
-    metadata && !metadata.shortDescription && errors.push("Short Description is mandatory in metadata");
-    metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("White Paper does not contain a valid URL");
-    metadata && !noUpload && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri)) && errors.push("Icon URI is not a valid URL");
-    metadata && !noUpload && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri)) && errors.push("Logo URI is not a valid URL");
-    metadata && noUpload && !metadata.brandUri && errors.push("Insert a valid Brand image");
-    metadata && noUpload && !metadata.logoUri && errors.push("Insert a valid Token logo image");
-    metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Discussion Link does not contain a valid URL");
-    metadata && (!metadata.repoUri || !new RegExp(window.urlRegex).test(metadata.repoUri)) && errors.push("Repo Link does not contain a valid URL");
-    metadata && (!metadata.externalDNS || !new RegExp(window.urlRegex).test(metadata.externalDNS)) && errors.push("External Homepage does not contain a valid URL");
-    metadata && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("Alternative ENS does not contain a valid ENS URL");
+    metadata && !metadata.shortDescription && errors.push("BIO is mandatory in metadata");
+    metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("Explainer link must contain a valid URL");
+    metadata && !noUpload && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri)) && errors.push("DFO Logo is not a valid URL");
+    metadata && !noUpload && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri)) && errors.push("Token Logo is not a valid URL");
+    metadata && noUpload && !metadata.brandUri && errors.push("Insert a valid DFO Logo");
+    metadata && noUpload && !metadata.logoUri && errors.push("Insert a valid Token Logo image");
+    metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Chat link must contain a valid URL");
+    metadata && (!metadata.repoUri || !new RegExp(window.urlRegex).test(metadata.repoUri)) && errors.push("Repo link must contain a valid URL");
+    metadata && (!metadata.externalDNS || !new RegExp(window.urlRegex).test(metadata.externalDNS)) && errors.push("External link must contain a valid URL");
+    metadata && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("External ENS link must contain a valid ENS URL");
+    metadata && (!metadata.roadmapUri || !new RegExp(window.urlRegex).test(metadata.roadmapUri)) && errors.push("Roadmap link must contain a valid URL");
     if(errors.length > 0) {
         throw errors.join('\n');
     }
@@ -1875,4 +1891,25 @@ contract GetStringValue {
         metadataLink
     ];
     return await window.createContract.apply(window, args);
+};
+
+window.checkCoverSize = function checkCoverSize(cover, width, height) {
+    cover = (cover.item && cover.item(0)) || cover;
+    width = width || 320;
+    height = height || width;
+    return new Promise(function (ok) {
+        var reader = new FileReader();
+        reader.addEventListener("load", function () {
+            var image = new Image();
+            image.onload = function onload() {
+                return ok(image.width === width && image.height === height);
+            };
+            image.src = (window.URL || window.webkitURL).createObjectURL(cover);
+        }, false);
+        reader.readAsDataURL(cover);
+    });
+};
+
+window.formatLink = function formatLink(link) {
+    return link && link.indexOf('http') === -1 ? ('https://' + link) : link;
 };
