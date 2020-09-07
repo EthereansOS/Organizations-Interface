@@ -1,12 +1,14 @@
 var Deploy = React.createClass({
     requiredScripts: [
-        'spa/deploy/dFOData.jsx',
+        'spa/deploy/subdomain.jsx',
+        'spa/deploy/dFOMetadata.jsx',
         'spa/deploy/votingTokenData.jsx',
         'spa/deploy/governanceRulesData.jsx',
         'spa/deploy/deployDFO.jsx'
     ],
     steps: [
-        'DFOData',
+        'Subdomain',
+        'DFOMetadata',
         'VotingTokenData',
         'GovernanceRulesData',
         'DeployDFO'

@@ -1,25 +1,53 @@
 var DFOMetadataEdit = React.createClass({
+    getData() {
+        return window.validateDFOMetadata(window.getData(this.domRoot), true);
+    },
     render() {
-        var _this = this;
-        return (<ul className="DFOHosting">
-            <section className="HostingCategoryTitle">
-                <h2>Metadata</h2>
-            </section>
-            {_this.props.element.shortDescription && <li className="TheDappInfo1">
-                <h5 className="DFOHostingTitle">&#128462; Description</h5>
-                <section className="DFOTitleSection">
-                    <p className="DFOLabelTitleInfo">{_this.props.element.shortDescription}</p>
-                </section>
-            </li>}
-            <li className="TheDappInfo1">
-                <h5 className="DFOHostingTitle">&#57354; Useful Links</h5>
-                <section className="DFOTitleSection">
-                    <a href={_this.props.element.wpUri} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; White Paper</a>
-                    <a href={_this.props.element.distributedLink} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Link</a>
-                    <a href={_this.props.element.discussionUri} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Discussion</a>
-                    <a href={_this.props.element.repoUri} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Repo</a>
-                </section>
-            </li>
-        </ul>);
+        return (<section className="DeployNewWhat">
+            <div className="InsertDfoName">
+                <label htmlFor="name">Name:</label>
+                <input autocomplete="off" id="name" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="shortDescription">Short Description:</label>
+                <textarea id="shortDescription" type="text"></textarea>
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="wpUri">White Paper:</label>
+                <input id="wpUri" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="brandUri">Brand:</label>
+                <input id="brandUri" type="file" accepts="image/*" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="logoUri">Token Logo:</label>
+                <input id="logoUri" type="file" accepts="image/*" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="decentralizedIndex">Decentralized Index:</label>
+                <input id="decentralizedIndex" type="number" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="distributedLink">Distributed Link:</label>
+                <input id="distributedLink" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="discussionUri">Discussion Link:</label>
+                <input id="discussionUri" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="repoUri">Repo Link:</label>
+                <input id="repoUri" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="externalDNS">External Homepage:</label>
+                <input id="externalDNS" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="externalENS">Alternative ENS:</label>
+                <input id="externalENS" type="text" />
+            </div>
+        </section>);
     }
 });
