@@ -129,9 +129,7 @@ var Overview = React.createClass({
         }
         return (
             <section className="DFOOverview">
-
-                    {_this.props.element.metadata && <DFOMetadata element={_this.props.element}/>}
-
+                {_this.props.element.metadata && <DFOMetadata element={_this.props.element} edit={_this.props.edit}/>}
                 <ul className="DFOHosting">
                     <section className="HostingCategoryTitle">
                         <h2>Decentralized Application</h2>

@@ -3,7 +3,7 @@ var DFOMetadata = React.createClass({
         'spa/dFOMetadata/edit.jsx'
     ],
     getData() {
-        return this.dFOMetadata.getData()
+        return this.dFOMetadata.getData().then(metadata => { return {metadata}; });
     },
     render() {
         return (<section>

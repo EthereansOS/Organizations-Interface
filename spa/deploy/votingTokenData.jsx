@@ -4,6 +4,7 @@ var VotingTokenData = React.createClass({
         var data = window.getData(_this.domRoot);
         return (new Promise(function (ok, ko) {
             var errors = [];
+            !data.tokenName && errors.push('Insert a valid Token Name');
             !data.tokenSymbol && errors.push('Insert a valid Token Symbol');
             (isNaN(data.tokenTotalSupply) || data.tokenTotalSupply <= 0) && errors.push('Token Total Supply must be greater than 0');
             if (errors.length > 0) {
@@ -44,8 +45,8 @@ var VotingTokenData = React.createClass({
             <p><span>2 of 3 | Voting Token</span><br></br>The Voting Token of a DFO is an ERC20 Token. The Voting Token is the key to rule the DFO functionalities and its assets. If you lose your voting tokens, there is no way to be part of the future DFO's decisions.</p>
             <section className="DeployNewWhat">
                 <div className="InsertDfoName">
-                    <label htmlFor="dfoName">Name:</label>
-                    <input autocomplete="off" id="dfoName" type="text" />
+                    <label htmlFor="tokenName">Name:</label>
+                    <input autocomplete="off" id="tokenName" type="text" />
                 </div>
                 <div className="InsertTokenName">
                     <label htmlFor="tokenSymbol">Symbol:</label>

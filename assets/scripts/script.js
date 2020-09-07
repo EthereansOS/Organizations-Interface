@@ -1609,6 +1609,10 @@ window.updateInfo = async function updateInfo(view, element) {
     element.name = await window.blockchainCall(element.token.methods.name);
     element.symbol = await window.blockchainCall(element.token.methods.symbol);
     element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
+    try {
+        element.metadata = await window.AJAXRequest(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x')));
+        Object.entries(element.metadata).forEach(it => element[it[0]] = it[1]);
+    } catch(e) {}
     element.decimals = await window.blockchainCall(element.token.methods.decimals);
     element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
     element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
@@ -1653,10 +1657,6 @@ window.updateInfo = async function updateInfo(view, element) {
             element.votesHardCap = window.web3.eth.abi.decodeParameter("uint256", await window.blockchainCall(element.dFO.methods.read, 'getVotesHardCap', '0x'));
         } catch (e) {}
         element.ens = element.ens || '';
-        try {
-            element.metadata = await window.AJAXRequest(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x')));
-            Object.entries(element.metadata).forEach(it => element[it[0]] = it[1]);
-        } catch(e) {}
         try {
             view && view && setTimeout(function() {
                 view && view.forceUpdate();
@@ -1761,17 +1761,19 @@ window.getFIBlock = async function getFIBlock(element) {
 };
 
 window.uploadToIPFS = async function uploadToIPFS(files) {
-    var single = !(files instanceof Array);
+    var single = !(files instanceof Array) && !(files instanceof FileList);
     files = single ? [files] : files;
-    for(var i in files) {
-        var file = files[i];
+    var list = [];
+    for(var i = 0; i < files.length; i++) {
+        var file = files.item ? files.item(i) : files[i];
         if(!(file instanceof File) && !(file instanceof Blob)) {
-            files[i] = new Blob([JSON.stringify(files[i], null, 4)], {type: "application/json"});
+            file = new Blob([JSON.stringify(file, null, 4)], {type: "application/json"});
         }
+        list.push(file);
     }
     var hashes = [];
     window.api = window.api || new IpfsHttpClient(window.context.ipfsHost);
-    for await(var upload of window.api.add(files)) {
+    for await(var upload of window.api.add(list)) {
         hashes.push(window.context.ipfsUrlTemplate + upload.path);
     }
     return single ? hashes[0] : hashes;
@@ -1789,15 +1791,13 @@ window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUplo
     metadata && !noUpload && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri)) && errors.push("Logo URI is not a valid URL");
     metadata && noUpload && !metadata.brandUri && errors.push("Insert a valid Brand image");
     metadata && noUpload && !metadata.logoUri && errors.push("Insert a valid Token logo image");
-    metadata && (!metadata.distributedLink || !new RegExp(window.urlRegex).test(metadata.distributedLink)) && errors.push("Distributed Link does not contain a valid URL");
     metadata && (!metadata.discussionUri || !new RegExp(window.urlRegex).test(metadata.discussionUri)) && errors.push("Discussion Link does not contain a valid URL");
     metadata && (!metadata.repoUri || !new RegExp(window.urlRegex).test(metadata.repoUri)) && errors.push("Repo Link does not contain a valid URL");
     metadata && (!metadata.externalDNS || !new RegExp(window.urlRegex).test(metadata.externalDNS)) && errors.push("External Homepage does not contain a valid URL");
-    metadata && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS)) && errors.push("Alternative ENS does not contain a valid URL");
+    metadata && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("Alternative ENS does not contain a valid ENS URL");
     if(errors.length > 0) {
         throw errors.join('\n');
     }
-    console.log(metadata);
     return noUpload ? metadata : await window.uploadToIPFS(metadata);
 };
 
@@ -1824,4 +1824,55 @@ window.proposeNewMetadataLink = async function proposeNewMetadataLink(element, m
         functionalityReplace: originalMetadataLink ? 'getMetadataLink' : '',
         functionalityOutputParameters: metadataLink ? '["string"]' : '',
     }, template, undefined, descriptions, updates);
+};
+
+window.deployMetadataLink = async function deployMetadata(metadata, functionalitiesManager) {
+    var metadataLink = await window.validateDFOMetadata(metadata);
+    var code = `
+pragma solidity ^0.7.1;
+
+contract DeployMetadataLink {
+
+    constructor(address mVDFunctionalitiesManagerAddress, address sourceLocation, uint256 sourceLocationId, string memory metadataLink) {
+        IMVDFunctionalitiesManager functionalitiesManager = IMVDFunctionalitiesManager(mVDFunctionalitiesManagerAddress);
+        functionalitiesManager.addFunctionality("getMetadataLink", sourceLocation, sourceLocationId, address(new GetStringValue(metadataLink)), false, "getValue()", '["string"]', false, false);
+        selfdestruct(msg.sender);
+    }
+}
+
+interface IMVDFunctionalitiesManager {
+    function addFunctionality(string calldata codeName, address sourceLocation, uint256 sourceLocationId, address location, bool submitable, string calldata methodSignature, string calldata returnAbiParametersArray, bool isInternal, bool needsSender) external;
+}
+
+contract GetStringValue {
+
+    string private _value;
+
+    constructor(string memory value) public {
+        _value = value;
+    }
+
+    function onStart(address, address) public {
+    }
+
+    function onStop(address) public {
+    }
+
+    function getValue() public view returns(string memory) {
+        return _value;
+    }
+}
+`.trim();
+    var selectedSolidityVersion = 'soljson-v0.7.1+commit.f4a555be.js';
+    var compiled = await window.SolidityUtilities.compile(code, selectedSolidityVersion, 200);
+    var selectedContract = compiled['DeployMetadataLink'];
+    var args = [
+        selectedContract.abi,
+        selectedContract.bytecode,
+        functionalitiesManager,
+        window.getNetworkElement('defaultOcelotTokenAddress'),
+        window.getNetworkElement('deployMetadataLinkSourceLocationId'),
+        metadataLink
+    ];
+    return await window.createContract.apply(window, args);
 };

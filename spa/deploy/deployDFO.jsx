@@ -12,7 +12,7 @@ var DeployDFO = React.createClass({
                         call(data) {
                             return new Promise(function (ok, ko) {
                                 var errors = [];
-                                !data.dfoName && errors.push('Insert a valid DFO Name');
+                                !data.tokenName && errors.push('Insert a valid Token Name');
                                 !data.tokenSymbol && errors.push('Insert a valid Token Symbol');
                                 (isNaN(data.tokenTotalSupply) || data.tokenTotalSupply <= 0) && errors.push('Token Total Supply must be greater than 0');
                                 !data.ensDomain && errors.push('ENS Domain is mandatory');
@@ -44,7 +44,7 @@ var DeployDFO = React.createClass({
                         call(data) {
                             var payload = window.web3.eth.abi.encodeParameters(['address', 'uint256', 'string', 'string', 'uint256', 'uint256'], [
                                 window.voidEthereumAddress, 0,
-                                data.dfoName,
+                                data.tokenName,
                                 data.tokenSymbol,
                                 data.tokenTotalSupply,
                                 data.surveyCommunityStake ? window.toDecimals(data.surveyCommunityStake, 18) : 0
@@ -109,6 +109,13 @@ var DeployDFO = React.createClass({
                             return new Promise(function (ok) {
                                 ok(data.functionalitiesManagerAddress = window.formatDFOLogs(transaction.logs, "DFOCollateralContractsCloned(address_indexed,address)")[0].data[0]);
                             });
+                        }
+                    }, {
+                        name: 'Deploy Metadata',
+                        call : function(data) {
+                            var metadata = {};
+                            Object.entries(data.metadata).forEach(entry => metadata[entry[0]] = entry[1]);
+                            return window.deployMetadataLink(metadata, data.functionalitiesManagerAddress);
                         }
                     }, {
                         name: "Deploy New DFO",
