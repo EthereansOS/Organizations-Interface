@@ -750,8 +750,11 @@ window.methodSignatureMatch = function methodSignatureMatch(methodSignature, com
 };
 
 window.extractHTMLDescription = function extractHTMLDescription(code, updateFirst) {
+    if(!code) {
+        return '';
+    }
     var description = '';
-    var comments = window.extractComment(code);
+    var comments = typeof code === 'string' ? window.extractComment(code) : code;
     if (updateFirst) {
         comments.Update && (description += comments.Update);
         comments.Description && (description += ((comments.Update ? '<br/><br/><b>Description</b>:<br/>' : '') + comments.Description));

@@ -35,6 +35,7 @@ var ProposalController = function (view) {
                     return;
                 }
                 Object.entries(survey.metadata).forEach(it => survey[it[0]] = it[1]);
+                survey.description = window.extractHTMLDescription(survey.description || survey.code, true);
             } catch(e) {}
 
             survey.surveyEnd = survey.endBlock <= (context.view.props.currentBlock + 1);

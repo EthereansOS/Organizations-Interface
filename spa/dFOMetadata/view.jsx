@@ -7,6 +7,23 @@ var DFOMetadata = React.createClass({
             'metadata/edit/close': () => this.setState({ change: null })
         }
     },
+    shortenWord(p) {
+        if(!p) {
+            return;
+        }
+        var _this = this;
+        var more = this.state && this.state.more;
+        var shorten = window.shortenWord(_this.props.element.shortDescription, 300);
+        var html = more ? _this.props.element.shortDescription : shorten;
+        p.innerHTML = html;
+        if(shorten.length !== _this.props.element.shortDescription.length) {
+            $(p).append($('<a href="javascript:;" class="MOREINFOSOON">' + (more ? 'Less' : 'More' ) + '</a>').click(function() {
+                _this.setState({more : more ? false : true}, function() {
+                    _this.shortenWord(p);
+                });
+            }));
+        }
+    },
     render() {
         var _this = this;
         if (_this.state && _this.state.change === 'edit') {
@@ -32,7 +49,7 @@ var DFOMetadata = React.createClass({
             {_this.props.element.shortDescription && <li className="TheDappInfo2">
                 <h5 className="DFOHostingTitle">BIO</h5>
                 <section className="DFOTitleSection">
-                    <p className="DFOLabelTitleInfo">{_this.props.element.shortDescription}<a className="MOREINFOSOON">More</a></p>
+                    <p className="DFOLabelTitleInfo" ref={this.shortenWord}></p>
                 </section>
             </li>}
             <li className="TheDappInfo1 TheDappInfo1B">
