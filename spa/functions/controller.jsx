@@ -13,6 +13,17 @@ var FunctionsController = function (view) {
             if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                 return;
             }
+            try {
+                functionality.metadataLink = await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, functionality.location).methods.getMetadataLink);
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+                functionality.metadata = await window.AJAXRequest(functionality.metadataLink);
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+                Object.entries(functionality.metadata).forEach(it => functionality[it[0]] = it[1]);
+            } catch(e) {}
             functionality.inputParameters = [];
             try {
                 functionality.inputParameters = functionality.methodSignature.split(functionality.methodSignature.substring(0, functionality.methodSignature.indexOf('(') + 1)).join('').split(')').join('');
@@ -28,7 +39,7 @@ var FunctionsController = function (view) {
                 }
             } catch (e) {}
             functionality.description = window.extractHTMLDescription(functionality.code);
-            functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
+            functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces);
             functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.name, functionality.compareErrors.join(' - '));
             if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                 return;
@@ -38,7 +49,7 @@ var FunctionsController = function (view) {
                 if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }
-                functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces, true);
+                functionality.compareErrors = await window.searchForCodeErrors(functionality.location, functionality.code, functionality.codeName, functionality.methodSignature, functionality.replaces);
                 functionality.compareErrors && functionality.compareErrors.length > 0 && console.log(functionality.codeName, functionality.sourceLocation, functionality.sourceLocationId, functionality.compareErrors.join(' - '));
                 if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;

@@ -23,6 +23,16 @@ contract DeployDFO {
     ENS constant private ENS_CONTROLLER = ENS(0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e);
     bytes4 constant private ENS_ADDRESS_INTERFACE_ID = 0x213b9eb8;
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) public {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     function onStart(address, address) public {
     }
 

@@ -82,16 +82,17 @@ var NewProposal = React.createClass({
                 selected = i === currentMethod && it.name === currentMethodName;
             } catch (e) {
             }
-            if(it.name === 'onStart' || it.name === 'onStop') {
-                if(it.type === 'constructor' || it.stateMutability === 'view' || it.stateMutability === 'pure') {
-                    return;
-                }
-                if(it.name === 'onStart' && it.inputs.length === 2 && it.inputs[0].type === 'address' && it.inputs[1].type === 'address') {
-                    return;
-                }
-                if(it.name === 'onStop' && it.inputs.length === 1 && it.inputs[0].type === 'address') {
-                    return;
-                }
+            if(it.type === 'constructor') {
+                return;
+            }
+            if(it.name === 'onStart' && (it.stateMutability !== 'view' && it.stateMutability !== 'pure') && it.inputs.length === 2 && it.inputs[0].type === 'address' && it.inputs[1].type === 'address') {
+                return;
+            }
+            if(it.name === 'onStop' && (it.stateMutability !== 'view' && it.stateMutability !== 'pure') &&  it.inputs.length === 1 && it.inputs[0].type === 'address') {
+                return;
+            }
+            if(it.name === 'getMetadataLink' && it.stateMutability === 'view' &&  it.inputs.length === 0 && it.outputs.length === 1 && it.outputs[0].type === 'string') {
+                return;
             }
             var name = (it.type === 'function' ? ((it.name + '(') + (it.inputs.map(it => it.type).join(',').trim()) + ')') : '').split(' ').join('').split(',)').join(')');
             var args = (it.type !== 'function' ? '[]' : JSON.stringify(it.outputs.map(it => it.type))).split(' ').join('');
@@ -190,6 +191,12 @@ var NewProposal = React.createClass({
                     _this.enqueue(() => _this.editor.editor.setValue(array.join('\n')), 300);
                 });
         }
+        setTimeout(async function() {
+            if(_this.editor.editor.getValue().trim() !== '') {
+                return;
+            }
+            _this.controller.loadStandardTemplate();
+        }, 600);
     },
     render() {
         var _this = this;

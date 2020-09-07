@@ -11,10 +11,16 @@ pragma solidity ^0.6.0;
 
 contract GetMinimumBlockNumberForEmergencySurveyFunctionality {
 
+    string private _metadataLink;
     uint256 private _value;
 
-    constructor(uint256 value) public {
+    constructor(string memory metadataLink, uint256 value) public {
+        _metadataLink = metadataLink;
         _value = value;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
     }
 
     function onStart(address, address) public {

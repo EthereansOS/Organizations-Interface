@@ -29,6 +29,16 @@ contract DeployGovernanceRules {
 
     uint256 private _getMinimumStakingSourceLocationId = 147;
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) public {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     function onStart(address, address) public {
     }
 

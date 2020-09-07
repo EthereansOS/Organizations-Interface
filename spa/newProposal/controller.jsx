@@ -30,7 +30,8 @@ var NewProposalController = function(view) {
 
         data.selectedContract = context.view.selectedContract;
 
-        data.functionalityMethodSignature && data.functionalityMethodSignature !== 'callOneTime(address)' && !window.checkOnStartAndOnStop(data.selectedContract.abi) && messages.push('Functionalities must have onStart(address,address) and onStop(address) methods');
+        var mandatoryFunctionalityProposalConstraints = data.functionalityMethodSignature && !window.checkMandatoryFunctionalityProposalConstraints(data.selectedContract.abi, data.functionalityMethodSignature === 'callOneTime(address)');
+        mandatoryFunctionalityProposalConstraints && messages.push(...mandatoryFunctionalityProposalConstraints);
         !data.functionalityReplace && !data.functionalityName && data.functionalityMethodSignature !== 'callOneTime(address)' && messages.push('Functionality name is mandatory');
         data.functionalityName && !data.selectedContract && messages.push('You need to insert a valid SmartCotract code and choose a method.');
         data.selectedContract && data.selectedContract.bytecode === '0x' && messages.push('You need to insert a valid SmartCotract code and choose a method.');
@@ -49,5 +50,16 @@ var NewProposalController = function(view) {
         }
 
         return data;
+    };
+
+    context.loadStandardTemplate = async function loadStandardTemplate() {
+        var compilers = await window.SolidityUtilities.getCompilers();
+        var release = Object.keys(compilers.releases)[0];
+        var template = await window.AJAXRequest('data/MicroserviceTemplate.sol');
+        template = template.format(release);
+        try {
+            context.view.editor.editor.setValue(template);
+        } catch(e) {
+        }
     };
 };

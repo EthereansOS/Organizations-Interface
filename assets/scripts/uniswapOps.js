@@ -309,6 +309,16 @@ pragma solidity ^${selectedSolidityVersion[0]};
 
 contract FixedInflationFunctionality {
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     function onStart(address, address) public {
         IMVDProxy proxy = IMVDProxy(msg.sender);
         IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
@@ -514,6 +524,16 @@ pragma solidity ^${selectedSolidityVersion[0]};
 
 contract StakingTransferFunctionality {
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     function onStart(address, address) public {
         IMVDProxy proxy = IMVDProxy(msg.sender);
         IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
@@ -600,6 +620,16 @@ interface IERC20 {
 pragma solidity ^${selectedSolidityVersion[0]};
 
 contract StakingTransferFunctionality {
+
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
 
     function callOneTime(address) public {
         IMVDProxy proxy = IMVDProxy(msg.sender);

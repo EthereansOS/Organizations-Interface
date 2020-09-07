@@ -17,6 +17,16 @@ pragma solidity ^0.6.0;
 
 contract SurveyResultValidator {
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) public {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     function onStart(address, address) public {
     }
 

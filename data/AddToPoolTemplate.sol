@@ -25,6 +25,16 @@ contract AddToPoolProposal {
     uint256 private constant SLIPPAGE_NUMERATOR = 5;
     uint256 private constant SLIPPAGE_DENOMINATOR = 1000;
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     receive() external payable {
     }
 

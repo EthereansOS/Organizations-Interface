@@ -228,7 +228,7 @@ window.getData = function getData(root, checkValidation) {
     var children = root.children().find('input,select,textarea');
     children.length === 0 && (children = root.children('input,select,textarea'));
     children.each(function(i, input) {
-        var id = (input.id || i).split('.');
+        var id = ((input.id || i) + '').split('.');
         var value;
         input.type && input.type !== 'checkbox' && (value = input.value);
         input.type === 'number' && (value = parseFloat(value.split(',').join('')));
@@ -671,6 +671,7 @@ window.extractComment = function extractComment(code, element) {
     if (!element) {
         var comments = {};
         ['Description', 'Discussion', 'Update'].map(key => comments[key] = window.extractComment(code, key));
+        comments.Discussion && (comments.Discussion = window.formatLink(comments.Discussion));
         return comments;
     }
     var initialCode = '/* ' + element + ':\n';
@@ -831,25 +832,41 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
         if (compare && codeName && !window.methodSignatureMatch(methodSignature, compare)) {
             errors.push('Wrong Method signature ' + methodSignature + ' for the given contract!');
         }
-        if (compare && codeName && !window.checkOnStartAndOnStop(compare.abi)) {
-            errors.push('Missing mandatory onStart(address,address) and onStop(address) functions');
+        if (compare) {
+            var constraints = window.checkMandatoryFunctionalityProposalConstraints(compare.abi, !codeName, true);
+            constraints && errors.push(...constraints);
         }
     } catch (e) {}
     return errors;
 };
 
-window.checkOnStartAndOnStop = function checkOnStartAndOnStop(abi) {
-    var onStart = false;
-    var onStop = false;
+window.checkMandatoryFunctionalityProposalConstraints = function checkMandatoryFunctionalityProposalConstraints(abi, isOneTime, noMetadata) {
+    var mandatoryFunctionalityProposalConstraints = {
+        onStart : isOneTime === true,
+        onStop : isOneTime === true,
+        getMetadataLinkConstructor : false,
+        getMetadataLink : false
+    };
     for (var voice of abi) {
-        if (!onStart) {
-            onStart = voice.type === 'function' && voice.name === 'onStart' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 2 && voice.inputs[0].type === 'address' && voice.inputs[1].type === 'address';
+        if (!mandatoryFunctionalityProposalConstraints.getMetadataLinkConstructor) {
+            mandatoryFunctionalityProposalConstraints.getMetadataLinkConstructor = voice.type === 'constructor' && voice.inputs && voice.inputs.length >= 1 && voice.inputs[0].type === 'string' && voice.inputs[0].name === 'metadataLink';
         }
-        if (!onStop) {
-            onStop = voice.type === 'function' && voice.name === 'onStop' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 1 && voice.inputs[0].type === 'address';
+        if(!mandatoryFunctionalityProposalConstraints.getMetadataLink) {
+            mandatoryFunctionalityProposalConstraints.getMetadataLink = voice.type === 'function' && voice.name === 'getMetadataLink' && voice.stateMutability === 'view' &&  voice.inputs.length === 0 && voice.outputs.length === 1 && voice.outputs[0].type === 'string';
+        }
+        if (!mandatoryFunctionalityProposalConstraints.onStart) {
+            mandatoryFunctionalityProposalConstraints.onStart = voice.type === 'function' && voice.name === 'onStart' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 2 && voice.inputs[0].type === 'address' && voice.inputs[1].type === 'address';
+        }
+        if (!mandatoryFunctionalityProposalConstraints.onStop) {
+            mandatoryFunctionalityProposalConstraints.onStop = voice.type === 'function' && voice.name === 'onStop' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 1 && voice.inputs[0].type === 'address';
         }
     }
-    return onStart && onStop;
+    var errors = [];
+    noMetadata !== true && !mandatoryFunctionalityProposalConstraints.getMetadataLinkConstructor && errors.push("Microservices must have a constructor with a string variable called 'metadataLink' as first parameter");
+    noMetadata !== true && !mandatoryFunctionalityProposalConstraints.getMetadataLink && errors.push("Missing mandatory function getMetadataLink() public view returns(string memory)");
+    !mandatoryFunctionalityProposalConstraints.onStart && errors.push("Missing mandatory function onStart(address,address) public");
+    !mandatoryFunctionalityProposalConstraints.onStop && errors.push("Missing mandatory function onStop(address) public");
+    return errors;
 };
 
 window.tokenPercentage = function tokenPercentage(amount, totalSupply) {
@@ -1064,7 +1081,8 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
             }
             var args = [
                 data.selectedContract.abi,
-                data.selectedContract.bytecode
+                data.selectedContract.bytecode,
+                await window.generateFunctionalityMetadataLink(data)
             ];
             data.constructorArguments && Object.keys(data.constructorArguments).map(key => args.push(data.constructorArguments[key]));
             data.functionalityAddress = (await window.createContract.apply(window, args)).options.address;
@@ -1657,6 +1675,8 @@ window.updateInfo = async function updateInfo(view, element) {
             element.votesHardCap = window.web3.eth.abi.decodeParameter("uint256", await window.blockchainCall(element.dFO.methods.read, 'getVotesHardCap', '0x'));
         } catch (e) {}
         element.ens = element.ens || '';
+        element.ensComplete = element.ens + '.dfohub.eth';
+        element.ensComplete.indexOf('.') === 0 && (element.ensComplete = element.ensComplete.substring(1));
         try {
             view && view && setTimeout(function() {
                 view && view.forceUpdate();
@@ -1920,4 +1940,40 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 
 window.formatLink = function formatLink(link) {
     return link && link.indexOf('http') === -1 ? ('https://' + link) : link;
+};
+
+window.generateFunctionalityMetadataLink = async function generateFunctionalityMetadataLink(data) {
+    var comments = {};
+    try {
+        comments = window.extractComment(data.sourceCode || data.code);
+    } catch(e) {
+    }
+    var codeName = data.codeName || data.functionalityName;
+    var replaces = data.replaces || data.functionalityReplace;
+    var metadata = {
+        title : data.title,
+        codeName,
+        description: {
+            Discussion : window.formatLink(comments.Discussion || data.element.ensComplete),
+            Description: comments.Description,
+            Update: comments.Update,
+        },
+        code: data.sourceCode || data.code,
+        version : await window.getNextFunctionalityVersion(data, codeName, replaces)
+    }
+    console.log(metadata);
+    return await window.uploadToIPFS(metadata);
+};
+
+window.getNextFunctionalityVersion = async function getNextFunctionalityVersion(data, codeName, replaces) {
+    var version = 0;
+    if(replaces && codeName) {
+        try {
+            var functionalityLocation = (await window.blockchainCall(data.element.functionalitiesManager.methods.getFunctionalityData, data.replaces))[0];
+            var metadata = await window.AJAXRequest(await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, functionalityLocation).methods.getMetadataLink));
+            version = 1 + metadata.version;
+        } catch(e) {
+        }
+    }
+    return version;
 };

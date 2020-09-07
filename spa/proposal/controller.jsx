@@ -25,6 +25,17 @@ var ProposalController = function (view) {
                 data = JSON.parse(data.split('"returnAbiParametersArray":,').join('"returnAbiParametersArray":[],'));
                 Object.keys(data).forEach(key => survey[key] = data[key]);
             }
+            try {
+                survey.metadataLink = await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, survey.location).methods.getMetadataLink);
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+                survey.metadata = await window.AJAXRequest(survey.metadataLink);
+                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                    return;
+                }
+                Object.entries(survey.metadata).forEach(it => survey[it[0]] = it[1]);
+            } catch(e) {}
 
             survey.surveyEnd = survey.endBlock <= (context.view.props.currentBlock + 1);
 

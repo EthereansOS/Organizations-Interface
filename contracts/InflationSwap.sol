@@ -126,6 +126,16 @@ pragma solidity ^0.6.0;
 
 contract FairInflationFunctionality {
 
+    string private _metadataLink;
+
+    constructor(string memory metadataLink) public {
+        _metadataLink = metadataLink;
+    }
+
+    function getMetadataLink() public view returns(string memory) {
+        return _metadataLink;
+    }
+
     //Functionality Set-UP
     //This mandatory method is called by the proxy just after the proposal finalization.
     //It sets-up all the stuff to let this functionality work properly

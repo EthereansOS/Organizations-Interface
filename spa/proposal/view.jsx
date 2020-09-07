@@ -55,7 +55,6 @@ var Proposal = React.createClass({
     renderTerminated(percAccepted, percRefused) {
         var _this = this;
         var it = _this.state.survey;
-        console.log(it.codeName, it.sourceLocationId, it.sourceLocation);
         var rendered = [<section className="ProposalPool">
             <h6>{(it.result || it.leading) && <span>&#9989; Accepted</span>} {!it.result && !it.leading && <span>&#9940; Refused</span>}</h6>
             <p>{!it.resultBlock && "Last Checked "}Block: <a href={window.getNetworkElement('etherscanURL') + 'block/' + (it.resultBlock || it.lastCheckedBlock)} target="_blank">{(it.resultBlock || it.lastCheckedBlock)}</a></p>
