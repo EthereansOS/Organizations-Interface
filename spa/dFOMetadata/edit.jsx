@@ -53,12 +53,12 @@ var DFOMetadataEdit = React.createClass({
                     <label htmlFor="brandUri">DFO Logo:</label>
                     <input id="brandUri" type="text"/>
                 </div>
-                <p className="OkBoomer">IPFS link to the logo of the organization (must be a .png 320 x 320 pixels)<a href="https://docs.ipfs.io/">IPFS Guide</a><div className="BoomerTriangle"/></p>
+                <p className="OkBoomer">IPFS link to the logo of the organization (must be a .png 320 x 320 pixels)<a href="https://docs.ipfs.io/" target="_blank">IPFS Guide</a><div className="BoomerTriangle"/></p>
                 <div className="InsertDfoSubdomain">
                     <label htmlFor="logoUri">Token Logo:</label>
                     <input id="logoUri" type="text"/>
                 </div>
-                <p className="OkBoomer">IPFS link to the logo of the Voting Token (must be a .png 320 x 320 pixels)<a href="https://docs.ipfs.io/">IPFS Guide</a><div className="BoomerTriangle"/></p>
+                <p className="OkBoomer">IPFS link to the logo of the Voting Token (must be a .png 320 x 320 pixels)<a href="https://docs.ipfs.io/" target="_blank">IPFS Guide</a><div className="BoomerTriangle"/></p>
                 <div className="InsertDfoSubdomain">
                     <label htmlFor="discussionUri">Chat Link:</label>
                     <input id="discussionUri" type="text" />

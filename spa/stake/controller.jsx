@@ -82,9 +82,9 @@ var StakeController = function (view) {
                 var tierData = await context.getTierData();
                 tierData = [tierData[1][tier], tierData[2][tier], tierData[3][tier]];
                 var value = window.web3.utils.toBN(window.toDecimals(context.view.firstAmount.value.split(',').join(''), 18)).mul(window.web3.utils.toBN(tierData[0])).div(window.web3.utils.toBN(tierData[1])).toString();
-                context.view.reward.innerText = window.fromDecimals(value, context.view.props.element.decimals);
+                context.view.reward.innerText = window.formatMoney(window.fromDecimals(value, context.view.props.element.decimals, true), 18);
                 var splittedValue = window.web3.utils.toBN(value).div(window.web3.utils.toBN(tierData[2]));
-                context.view.splittedReward.innerText = window.fromDecimals(splittedValue, context.view.props.element.decimals);
+                context.view.splittedReward.innerText = window.formatMoney(window.fromDecimals(splittedValue, context.view.props.element.decimals, true), 18);
             } catch(e) {
             }
         });
