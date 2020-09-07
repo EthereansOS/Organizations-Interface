@@ -1629,7 +1629,7 @@ window.updateInfo = async function updateInfo(view, element) {
     element.symbol = await window.blockchainCall(element.token.methods.symbol);
     element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
     try {
-        element.metadata = await window.AJAXRequest(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x')));
+        element.metadata = await window.AJAXRequest(window.formatLink(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x'))));
         Object.entries(element.metadata).forEach(it => element[it[0]] = it[1]);
     } catch(e) {}
     element.decimals = await window.blockchainCall(element.token.methods.decimals);
@@ -1943,7 +1943,7 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 };
 
 window.formatLink = function formatLink(link) {
-    link = (link ? link.length ? link[0] : link : '').split(window.context.ipfsUrlTemplate).join(window.context.ipfsUrlChanger);
+    link = (link ? link instanceof Array ? link[0] : link : '').split(window.context.ipfsUrlTemplate).join(window.context.ipfsUrlChanger);
     return link && link.indexOf('http') === -1 ? ('https://' + link) : link;
 };
 
