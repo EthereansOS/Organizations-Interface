@@ -4,7 +4,7 @@ var DFOMetadata = React.createClass({
     ],
     render() {
         var _this = this;
-        if(true) {
+        if(false) {
             return <DFOMetadataEdit className="DeployNewWhat2"/>;
         }
         return (<ul className="DFOHosting">
@@ -21,7 +21,7 @@ var DFOMetadata = React.createClass({
                 </section>
             </li>}
             <li className="TheDappInfo1 TheDappInfo1B">
-                <h5 className="DFOHostingTitle">Useful Links</h5>
+                <h5 className="DFOHostingTitle">More</h5>
                 <section className="DFOTitleSection DFOTitleSectionB">
                     <a href={_this.props.element.wpUri} target="_blank" className="LinkVisualButton LinkVisualEthscan">Explainer</a>
                     <a href={_this.props.element.wpUri} target="_blank" className="LinkVisualButton LinkVisualEthscan">Roadmap</a>
