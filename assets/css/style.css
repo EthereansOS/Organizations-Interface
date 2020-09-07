@@ -109,8 +109,8 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOHosting .TheDappInfo3 .DFOTitleSection {width: 325px;}
 .DFOOpened .DFOOverview .DFOHosting .TheDappInfo2 .DFOTitleSection {width: 420px;}
 .TheDappInfo3 h6 {font-size: 16px;font-weight: bold;}
-.DFOOpened .DFOOverview .DFOHosting .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #888888;background-color: #dedede;position: relative;}
-.DeployNewWhat .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #888888;background-color: #dedede;position: relative;}
+.DFOOpened .DFOOverview .DFOHosting .OkBoomer {margin: 10px 0; border-radius: 10px;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #888888;background-color: #dedede;position: relative;}
+.DeployNewWhat .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #888888;background-color: #dedede;position: relative;border-radius: 10px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfo {color: #292929; margin: 3px 0; font-size: 12px; line-height: 1.1; width: 100%; display: inline-block; min-height: 20px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfoM {color: #292929; margin: 3px 0; font-size: 20px; line-height: 1.1; width: 100%; display: inline-block; min-height: 25px;}
 .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection .DFOLabelTitleInfosmall {font-size: 13px; font-weight: normal;}
@@ -133,7 +133,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionLastUpdate a {font-size: 12px; font-weight: bold;margin: 5px 0px; display: inline-block; color: #292929;}
 .DFOOpened .DFOOverview .DFOFunctionList li  .DFOBtnViewSection {width: 170px;margin: 1px 0 0 10px; vertical-align: top; display: inline-block;min-height: 60px;text-align: center;}
 
-.OkBoomer .BoomerTriangle {position: absolute;top: -8px;left: 46%;text-align: center;padding:0;width: 0;}
+.OkBoomer .BoomerTriangle {position: absolute;top: -8px;left: 8%;text-align: center;padding:0;width: 0;}
 .BoomerTriangle {width: 0;height: 0;border-style: solid;border-width: 0 4.5px 9px 4.5px;border-color: transparent transparent #dedede transparent; display: inline-block; position: absolute;}
 
 .DFOOpened .DFOOverview .DFOStateList {width: 990px;padding: 0 0; display: inline-block; text-decoration: none; text-align: center;list-style-type:none; margin-top: 40px;}
@@ -351,7 +351,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .NavDeploy p {font-size: 14px; color: #000000; text-decoration: none; line-height: 1.3; width: 250px; text-align: left; display: inline-block;vertical-align: middle;}
 .NavDeploy p span {font-weight: bold; font-size: 18px;line-height: 1.8;}
 .NavDeploy  .LinkVisualButton {width: 100%;height: 18px;background-color: #007bff;color: #f1f1f1;font-size: 13px;border: none;padding: 11px 0; font-weight: bold; text-decoration: none;}
-.DeployNewWhat .OkBoomer {width: 420px; font-size: 13px;}
+.DeployNewWhat .OkBoomer {width: 420px; font-size: 13px; border-radius: 10px;}
 .DeployNewWhat .METADATACHANGE {display: none;}
 .DeployNewWhat2 .METADATACHANGE {display: inline-block; font-size: 30px; margin: 80px auto 30px auto; text-align: center;}
 .DeployNewWhat h5 {font-size: 20px;margin: 10px 0px;display: inline-block;}
@@ -384,7 +384,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DFOGovernanceSelector ul li:hover h6, .DFOGovernanceSelector ul li:hover p, .DFOGovernanceSelector ul .selected p, .DFOGovernanceSelector ul .selected h6 {color: #f1f1f1;}
 .DFOGovernanceSelector ul .selected {position: relative;}
 .DFOGovernanceSelector ul .SelectedTriangle {display: none;}
-.DFOGovernanceSelector .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #888888; background-color: #dedede;position: relative;}
+.DFOGovernanceSelector .OkBoomer {margin: 10px 0;font-size: 13px;font-weight: normal;line-height: 1.3;text-decoration: none;display: inline-block;padding: 10px;max-width: 85%;color: #888888; background-color: #dedede;position: relative; border-radius: 10px;}
 .DFOGovernanceSelector ul .selected .SelectedTriangle {width: 0;height: 0;border-style: solid;border-width: 13.0px 7.5px 0 7.5px;border-color: #000000 transparent transparent transparent; border-style: inset; -webkit-transform:rotate(360deg); display: inline-block; position: absolute;bottom: -13px;left: 65px;}
 .InsertDfoName label, .InsertDfoSubdomain label, .InsertTokenName label, .InsertTokenSupply label, .InsertSurveyLength label, .InsertSurveyQuorum label, .InsertSurveyMinStake label, .InsertSurveyEmergencyLength label, .InsertSurveyEmergencyPenalty label, .InsertSurveySingleReward label, .InsertSurveyCommunityStake label {width: 150px; display: inline-block; font-size: 15px;color: #000000; font-weight: bold;}
 .InsertDfoName input, .InsertDfoSubdomain input, .InsertTokenName input, .InsertTokenSupply input, .InsertSurveyLength input, .InsertSurveyQuorum .SurveyQuorumHow, .InsertSurveyMinStake input,.InsertSurveyEmergencyLength input, .InsertSurveyEmergencyPenalty input, .InsertSurveySingleReward input, .InsertSurveyCommunityStake input {width: 150px;height: 25px;border: none;}
