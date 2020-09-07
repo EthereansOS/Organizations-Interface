@@ -129,6 +129,9 @@ var Overview = React.createClass({
         }
         return (
             <section className="DFOOverview">
+
+                    {_this.props.element.metadata && <DFOMetadata element={_this.props.element}/>}
+
                 <ul className="DFOHosting">
                     <section className="HostingCategoryTitle">
                         <h2>Decentralized Application</h2>
@@ -206,7 +209,6 @@ var Overview = React.createClass({
                         </section>
                     </section>}
                 </ul>
-                {_this.props.element.metadata && <DFOMetadata element={_this.props.element}/>}
                 <ul className="DFOHosting">
                 <section className="HostingCategoryTitle">
                     <h2>Rules and funds</h2>
