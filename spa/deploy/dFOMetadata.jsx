@@ -7,7 +7,7 @@ var DFOMetadata = React.createClass({
     },
     render() {
         return (<section>
-            <p><span>2 of 4 | Metadata</span><br></br>Insert all your DFO's info.</p>
+            <p><span>2 of 4 | Metadata</span><br></br>What this brand new DFO is about?</p>
             <DFOMetadataEdit ref={ref => this.dFOMetadata = ref}/>
         </section>);
     }

@@ -3,21 +3,20 @@ var DFOMetadataEdit = React.createClass({
         return window.validateDFOMetadata(window.getData(this.domRoot), true);
     },
     render() {
-        return (<section className="DeployNewWhat">
+        return (<section className={"DeployNewWhat " + this.props.className}>
+            <section className="DeployNewWhat3">
+            <h2 className="METADATACHANGE">Propose Metadata Change</h2>
+            <a className="METADATACHANGECLOSE">Back</a>
+            <div className="InsertDfoSubdomain">
+                <label className="LabelSPEC" htmlFor="shortDescription">BIO:</label>
+                <textarea className="LabelSPECWRITE" id="shortDescription" type="text"></textarea>
+            </div>
             <div className="InsertDfoName">
-                <label htmlFor="name">Name:</label>
+                <label htmlFor="name">DFO Name:</label>
                 <input autocomplete="off" id="name" type="text" />
             </div>
             <div className="InsertDfoSubdomain">
-                <label htmlFor="shortDescription">Short Description:</label>
-                <textarea id="shortDescription" type="text"></textarea>
-            </div>
-            <div className="InsertDfoSubdomain">
-                <label htmlFor="wpUri">White Paper:</label>
-                <input id="wpUri" type="text" />
-            </div>
-            <div className="InsertDfoSubdomain">
-                <label htmlFor="brandUri">Brand:</label>
+                <label htmlFor="brandUri">DFO Logo:</label>
                 <input id="brandUri" type="file" accepts="image/*" />
             </div>
             <div className="InsertDfoSubdomain">
@@ -25,29 +24,30 @@ var DFOMetadataEdit = React.createClass({
                 <input id="logoUri" type="file" accepts="image/*" />
             </div>
             <div className="InsertDfoSubdomain">
-                <label htmlFor="decentralizedIndex">Decentralized Index:</label>
-                <input id="decentralizedIndex" type="number" />
-            </div>
-            <div className="InsertDfoSubdomain">
-                <label htmlFor="distributedLink">Distributed Link:</label>
-                <input id="distributedLink" type="text" />
-            </div>
-            <div className="InsertDfoSubdomain">
-                <label htmlFor="discussionUri">Discussion Link:</label>
+                <label htmlFor="discussionUri">Chat Link:</label>
                 <input id="discussionUri" type="text" />
             </div>
             <div className="InsertDfoSubdomain">
-                <label htmlFor="repoUri">Repo Link:</label>
+                <label htmlFor="repoUri">Repo link:</label>
                 <input id="repoUri" type="text" />
             </div>
             <div className="InsertDfoSubdomain">
-                <label htmlFor="externalDNS">External Homepage:</label>
+                <label htmlFor="wpUri">Explainer link:</label>
+                <input id="wpUri" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="wpUri">Roadmap link:</label>
+                <input id="wpUri" type="text" />
+            </div>
+            <div className="InsertDfoSubdomain">
+                <label htmlFor="externalDNS">External link:</label>
                 <input id="externalDNS" type="text" />
             </div>
             <div className="InsertDfoSubdomain">
-                <label htmlFor="externalENS">Alternative ENS:</label>
+                <label htmlFor="externalENS">External ENS link:</label>
                 <input id="externalENS" type="text" />
             </div>
+            </section>
         </section>);
     }
 });

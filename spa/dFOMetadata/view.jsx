@@ -4,8 +4,8 @@ var DFOMetadata = React.createClass({
     ],
     render() {
         var _this = this;
-        if(false) {
-            return <DFOMetadataEdit/>;
+        if(true) {
+            return <DFOMetadataEdit className="DeployNewWhat2"/>;
         }
         return (<ul className="DFOHosting">
             <section className="HostingCategoryTitle">
