@@ -24,7 +24,7 @@
     "usdcTokenAddressRopsten": "0xBc1EF4dddFAcb08e80C368eE2AAD69265775DCb9",
     "uniSwapV2RouterAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
     "uniSwapV2FactoryAddress" : "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
-    "infuraNode" : "https://mainnet.infura.io/v3/74534c65c1014f218c56310884ce0264",
+    "infuraNode" : "https://mainnet.infura.io/v3/795103c53bb54f0380e3e55e758521c6",
     "ipfsHost": "https://ipfs.infura.io:5001/api/v0/",
     "ipfsUrlTemplate": "ipfs://ipfs/",
     "ipfsUrlChanger" : "https://gateway.ipfs.io/ipfs/",
