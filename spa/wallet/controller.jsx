@@ -22,7 +22,7 @@ var WalletController = function (view) {
         } catch (e) {
             await window.loadWallets(context.view.props.element, tokens => context.view.setState({ tokens }));
         }
-        context.view.setState({
+        context.view.state.tokens && context.view.setState({
             tokenAmounts: context.view.state.tokens.map(it => {
                 return {
                     i: it.i,
@@ -31,7 +31,7 @@ var WalletController = function (view) {
                 };
             })
         });
-        context.calculateAmounts();
+        context.view.state.tokens && context.calculateAmounts();
     };
 
     context.calculateAmounts = async function calculateAmounts() {

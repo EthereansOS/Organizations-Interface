@@ -154,7 +154,7 @@ var StakingEdit = React.createClass({
     },
     componentDidMount() {
         var _this = this;
-        window.loadOffChainWallets(_this, tokensList => _this.setState({tokensList}));
+        window.loadOffChainWallets().then(tokensList => _this.setState({tokensList}));
     },
     render() {
         var _this = this;

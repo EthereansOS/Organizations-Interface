@@ -1289,14 +1289,13 @@ window.loadLogo = async function loadLogo(address) {
     return logo;
 };
 
-window.loadOffChainWallets = async function loadOffChainWallets(view, callback) {
+window.loadOffChainWallets = async function loadOffChainWallets() {
     return await (window.tokensList = window.tokensList || new Promise(async function(ok) {
         var tokensList = {
             "Programmable Equities": (await window.AJAXRequest(window.context.programmableEquitiesURL)).tokens.map(it => it.chainId === window.networkId && it),
             "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.map(it => it.chainId === window.networkId && it),
             "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.map(it => it.chainId === window.networkId && it)
         }
-        view && view.mounted && callback && callback(tokensList);
         var keys = Object.keys(tokensList);
         for (var key of keys) {
             if (key === 'Indexes') {
@@ -1318,7 +1317,6 @@ window.loadOffChainWallets = async function loadOffChainWallets(view, callback) 
                 }
                 token.logo = token.logoURI;
                 tokensList[key][i] = token;
-                view && view.mounted && callback && callback(tokensList);
             }
         }
         return ok(tokensList);
