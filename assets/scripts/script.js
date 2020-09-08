@@ -1806,6 +1806,15 @@ window.uploadToIPFS = async function uploadToIPFS(files) {
 window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUpload) {
     var errors = [];
     !metadata && errors.push('Please provide data');
+
+    metadata && metadata.brandUri && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri) || metadata.brandUri.indexOf('ipfs') === -1) && errors.push("DFO Logo is not a valid IPFS URL (ipfs://ipfs/...)");
+    metadata && metadata.logoUri && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri) || metadata.logoUri.indexOf('ipfs') === -1) && errors.push("Token Logo is not a valid IPFS URL (ipfs://ipfs/...)");
+    metadata && metadata.externalENS && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("External ENS link must contain a valid ENS URL");
+
+    if(errors.length > 0) {
+        throw errors.join('\n');
+    }
+
     try {
         metadata.brandUri = metadata.brandUri.item(0);
     } catch(e) {
@@ -1830,10 +1839,6 @@ window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUplo
     } catch(e) {
         //errors.push(e.message || e);
     }
-
-    metadata && metadata.brandUri && (!metadata.brandUri || !new RegExp(window.urlRegex).test(metadata.brandUri) || metadata.brandUri.indexOf('ipfs') === -1) && errors.push("DFO Logo is not a valid URL");
-    metadata && metadata.logoUri && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri) || metadata.logoUri.indexOf('ipfs') === -1) && errors.push("Token Logo is not a valid URL");
-    metadata && metadata.externalENS && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("External ENS link must contain a valid ENS URL");
     //metadata && !metadata.name && errors.push("Name is mandatory in metadata");
     //metadata && !metadata.shortDescription && errors.push("BIO is mandatory in metadata");
     //metadata && (!metadata.wpUri || !new RegExp(window.urlRegex).test(metadata.wpUri)) && errors.push("Explainer link must contain a valid URL");
