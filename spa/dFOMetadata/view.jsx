@@ -49,7 +49,7 @@ var DFOMetadata = React.createClass({
             {_this.props.element.shortDescription && <li className="TheDappInfo2">
                 <h5 className="DFOHostingTitle">BIO</h5>
                 <section className="DFOTitleSection">
-                    <p className="DFOLabelTitleInfo" ref={this.shortenWord}></p>
+                    <p className="DFOLabelTitleInfo DFOLabelTitleInfo4" ref={this.shortenWord}></p>
                 </section>
             </li>}
             <li className="TheDappInfo1 TheDappInfo1B">
