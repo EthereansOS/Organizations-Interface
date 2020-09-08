@@ -1285,6 +1285,41 @@ window.loadLogo = async function loadLogo(address) {
     return logo;
 };
 
+window.loadOnChainWallets = async function loadOnChainWallets(view, callback) {
+    var tokensList = {
+        "Programmable Equities" : (await window.AJAXRequest(window.context.programmableEquitiesURL)).tokens.map(it => it.chainId === window.networkId && it),
+        "Tokens" : (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.map(it => it.chainId === window.networkId && it),
+        "Indexes" : (await window.AJAXRequest(window.context.indexesURL)).tokens.map(it => it.chainId === window.networkId && it)
+    }
+    callback && callback(tokensList);
+    var keys = Object.keys(tokensList);
+    for(var key of keys) {
+        if(key === 'Indexes') {
+            continue;
+        }
+        var tokens = tokensList[key];
+        for(var i = 0; i < tokens.length; i++) {
+            var token = tokensList[key][i];
+            if(token === true || token === false) {
+                continue;
+            }
+            token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
+            try {
+                await window.AJAXRequest(token.logoURI);
+                if(view && !view.mounted) {
+                    return;
+                }
+            } catch(e) {
+                token.logoURI = 'assets/img/default-logo.png'
+            }
+            token.logo = token.logoURI;
+            tokensList[key][i] = token;
+            callback && callback(tokensList);
+        }
+    }
+    return tokensList;
+};
+
 window.loadWallets = async function loadWallets(element, callback, alsoLogo) {
     window.preloadedTokens = window.preloadedTokens || await window.AJAXRequest('data/walletData.json');
     var network = window.context.ethereumNetwork[window.networkId];

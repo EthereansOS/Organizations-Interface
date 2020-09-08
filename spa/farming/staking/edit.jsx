@@ -1,6 +1,7 @@
 var StakingEdit = React.createClass({
     requiredScripts: [
-        'spa/loaderMinimino.jsx'
+        'spa/loaderMinimino.jsx',
+        'spa/uniswapTokenPicker.jsx'
     ],
     getInitialState() {
         var state = {
@@ -98,7 +99,10 @@ var StakingEdit = React.createClass({
         this.setState({ blockNumber: parseInt(e.currentTarget.dataset.value) });
     },
     onNewPair(newPair) {
-        this.pairPicker.setState({ selected: null });
+        if(!newPair) {
+            return;
+        }
+        this.pairPicker && this.pairPicker.setState({ selected: null });
         var pairs = (this.state && this.state.pairs) || [];
         for (var pair of pairs) {
             if (pair.address === newPair.address) {
@@ -148,6 +152,10 @@ var StakingEdit = React.createClass({
             _this.minCapInput.value = value
         }, 300);
     },
+    componentDidMount() {
+        var _this = this;
+        window.loadOnChainWallets(_this, tokensList => _this.setState({tokensList}));
+    },
     render() {
         var _this = this;
         if (!_this.props.stakingData) {
@@ -165,7 +173,8 @@ var StakingEdit = React.createClass({
                         {it.symbol}
                         <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>
                     </a>)}
-                    <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />
+                    {false && <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />}
+                    <UniswapTokenPicker ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair}/>
                 </section>
             </section>
             <section className="TheDappInfo2">

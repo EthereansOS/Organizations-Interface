@@ -142,6 +142,7 @@ var ReactModuleManager = function() {
             if (reactClass.prototype.oldComponentDidMount === undefined) {
                 reactClass.prototype.oldComponentDidMount = reactClass.prototype.componentDidMount
                 reactClass.prototype.componentDidMount = function componentDidMount() {
+                    this.mounted = true;
                     if(requireCalled === false) {
                         return;
                     }
@@ -181,6 +182,7 @@ var ReactModuleManager = function() {
                         if (this.oldComponentWillUnmount !== undefined && this.oldComponentWillUnmount !== null) {
                             this.oldComponentWillUnmount.apply(this);
                         }
+                        delete this.mounted;
                     }
                 }
                 if (reactClass.prototype.subscribe === undefined) {
