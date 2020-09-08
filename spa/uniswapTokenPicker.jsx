@@ -1,7 +1,7 @@
 var UniswapTokenPicker = React.createClass({
     getDefaultSubscriptions() {
         return {
-            'ethereum/update' : () => this.setState({key: null, selected : null})
+            'ethereum/update': () => this.setState({ key: null, selected: null })
         };
     },
     onSectionChange(e) {
@@ -21,12 +21,12 @@ var UniswapTokenPicker = React.createClass({
         var _this = this;
         var oldTarget = e.currentTarget;
         this.setState({ opened: true }, function () {
-          /*  _this.opened && (_this.opened.onblur = _this.opened.onblur || function onblur(e) {
+            _this.opened && (_this.opened.onblur = _this.opened.onblur || function onblur(e) {
                 e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
                 e.relatedTarget && e.relatedTarget !== oldTarget && e.relatedTarget.click();
                 e.relatedTarget && e.relatedTarget !== oldTarget && _this.opened && _this.opened.focus();
                 (!e.relatedTarget || (e.relatedTarget !== oldTarget && !e.relatedTarget.dataset.key)) && _this.setState({ opened: null });
-            }) && _this.opened.focus(); */
+            }) && _this.opened.focus();
         });
     },
     onClick(e) {
@@ -90,9 +90,9 @@ var UniswapTokenPicker = React.createClass({
     },
     render() {
         return (
-        <section className="BazTokenSelector">
-            {this.state && this.state.opened && this.renderOpened()}
-            {(!this.state || !this.state.opened) && this.renderClosed()}
-        </section>);
+            <section className="BazTokenSelector">
+                {this.state && this.state.opened && this.renderOpened()}
+                {(!this.state || !this.state.opened) && this.renderClosed()}
+            </section>);
     }
 });
