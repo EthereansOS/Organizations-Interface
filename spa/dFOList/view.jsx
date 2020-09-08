@@ -66,6 +66,7 @@ var DFOList = React.createClass({
     },
     componentDidUpdate() {
         this.emit('index/fullscreen', this.state && this.state.key !== undefined && this.state.key !== null);
+        window.setHomepageLink(this.dfoElement ? ('?addr=' + this.dfoElement.props.element.dFO.options.address) : undefined);
     },
     render() {
         var _this = this;

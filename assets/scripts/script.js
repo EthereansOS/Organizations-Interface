@@ -2024,3 +2024,18 @@ window.getNextFunctionalityVersion = async function getNextFunctionalityVersion(
     }
     return version;
 };
+
+window.getHomepageLink = function getHomepageLink(tail) {
+    var link = '';
+    link += window.location.protocol;
+    link += '//';
+    link += window.location.hostname;
+    window.location.port && (link += (':' + window.location.port));
+    link += window.location.pathname;
+    !link.endsWith('/') && (link += '/');
+    return link + (tail || '');
+};
+
+window.setHomepageLink = function setHomepageLink(tail) {
+    window.history.pushState({}, "", window.getHomepageLink(tail));
+};

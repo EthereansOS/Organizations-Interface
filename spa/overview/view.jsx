@@ -185,6 +185,10 @@ var Overview = React.createClass({
                         </section>
                     </li>
                     <li className="TheDappInfo05">
+                        <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; DFO Link: </h5>
+                        <section className="DFOTitleSection">
+                            <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getHomepageLink('?addr=' + this.props.element.dFO.options.address)}>Navigate</a>
+                        </section>
                         <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; Functions: </h5>
                         <section className="DFOTitleSection">
                             <p className="LinkVisualStandard MiiiiFunctionalities">
