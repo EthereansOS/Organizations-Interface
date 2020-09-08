@@ -7,6 +7,10 @@ var Wallet = React.createClass({
         'spa/tokenPicker'
     ],
     componentDidMount() {
+        if(this.called) {
+            return;
+        }
+        this.called = true;
         this.controller.loadWallets();
     },
     toggleProposal(e) {
@@ -142,14 +146,14 @@ var Wallet = React.createClass({
                         <h2>{_this.props.element.name} Balances {(!_this.state || _this.state.cumulativeAmountDollar === undefined || _this.state.cumulativeAmountDollar === null) ? <LoaderMinimino /> : <span>(Tracked: ${window.formatMoney(_this.state.cumulativeAmountDollar)})</span>} <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a></h2>
                     </section>
                     {(!_this.state || !_this.state.tokens) && <LoaderMinimino />}
-                    {_this.state && _this.state.tokens && _this.state.tokens.map(it => it.amount !== undefined && it.amount !== '0' && <li key={it.address} className="TheDappInfo1 TheDappInfoSub">
+                    {_this.state && _this.state.tokenAmounts && _this.state.tokens && _this.state.tokens.map(it => _this.state.tokenAmounts[it.i].amount !== undefined && _this.state.tokenAmounts[it.i].amount !== '0' && <li key={it.address} className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <section className="DFOWalletBalanceSingleT">
                                 <img src={it.logo}></img>
-                                <h3>{it.symbol} {it.amountDollars === undefined ? <LoaderMinimino /> : !it.amountDollars ? undefined : <span className="DFOLabelTitleInfosmall"> (${window.formatMoney(it.amountDollars)})</span>}</h3>
+                                <h3>{it.symbol} {_this.state.tokenAmounts[it.i].amountDollars === undefined ? <LoaderMinimino /> : !_this.state.tokenAmounts[it.i].amountDollars ? undefined : <span className="DFOLabelTitleInfosmall"> (${window.formatMoney(_this.state.tokenAmounts[it.i].amountDollars)})</span>}</h3>
                             </section>
-                            {it.amount !== undefined && <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(it.amount, it.decimals)}</b></h5>}
-                            {it.amount === undefined && <LoaderMinimino />}
+                            {_this.state.tokenAmounts[it.i].amount !== undefined && <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.state.tokenAmounts[it.i].amount, it.decimals)}</b></h5>}
+                            {_this.state.tokenAmounts[it.i].amount === undefined && <LoaderMinimino />}
                             <br />
                             {_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='swap' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.swapProposal === it.address ? 'EditDFOYo Editing' : '')}>Swap</a>}
                             {/*{_this.props.edit && <a href="javascript:;" data-address={it.address} data-type='pool' onClick={_this.toggleProposal} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.poolProposal === it.address ? 'EditDFOYo Editing' : '')}>Pool Proposal</a>}*/}

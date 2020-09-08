@@ -75,7 +75,9 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
             address,
             topics: [
                 window.proxyChangedTopic = window.proxyChangedTopic || window.web3.utils.sha3('ProxyChanged(address)')
-            ]
+            ],
+            fromBlock: window.getNetworkElement("deploySearchStart"),
+            toBlock: 'latest'
         }, true);
         return await window.loadDFO(window.web3.eth.abi.decodeParameter('address', logs[0].topics[1]), allAddresses);
     }
@@ -90,12 +92,12 @@ window.getLogs = async function(a, endOnFirstResult) {
     args.fromBlock = args.fromBlock || (window.getNetworkElement('deploySearchStart') + '');
     args.toBlock = args.toBlock || (await window.web3.eth.getBlockNumber() + '');
     var to = parseInt(args.toBlock);
-    while (parseInt(args.fromBlock) <= to) {
+    while (isNaN(to) || parseInt(args.fromBlock) <= to) {
         var newTo = parseInt(args.fromBlock) + window.context.blockSearchSection;
         newTo = newTo <= to ? newTo : to;
-        args.toBlock = newTo + '';
+        args.toBlock = isNaN(newTo) ? args.toBlock : (newTo + '');
         logs.push(...(await window.web3.eth.getPastLogs(args)));
-        if (logs.length > 0 && endOnFirstResult === true) {
+        if (isNaN(to) || logs.length > 0 && endOnFirstResult === true) {
             return logs;
         }
         args.fromBlock = (parseInt(args.toBlock) + 1) + '';
@@ -123,6 +125,8 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                     dFO: await window.loadDFO(window.getNetworkElement('dfoAddress')),
                     startBlock: window.getNetworkElement('deploySearchStart')
                 };
+                delete window.tokensList;
+                window.loadOffChainWallets();
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
                 window.wethAddress = await window.blockchainCall((window.uniSwapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress)).methods.WETH);
                 try {
@@ -245,7 +249,7 @@ window.getData = function getData(root, checkValidation) {
             }
         }
         var x = data;
-        while(id.length > 0) {
+        while (id.length > 0) {
             var partialId = id.pop();
             x = data[partialId] = data[partialId] || id.length === 0 ? value : {};
         }
@@ -440,7 +444,7 @@ window.loadFunctionalities = function loadFunctionalities(element, callback, ifN
             callback && callback();
             try {
                 functionality.code = functionality.code || await window.loadContent(functionality.sourceLocationId, functionality.sourceLocation);
-                if(functionality.codeName !== 'getEmergencySurveyStaking' && functionality.sourceLocationId === 0) {
+                if (functionality.codeName !== 'getEmergencySurveyStaking' && functionality.sourceLocationId === 0) {
                     delete functionality.code;
                 }
             } catch (e) {}
@@ -750,7 +754,7 @@ window.methodSignatureMatch = function methodSignatureMatch(methodSignature, com
 };
 
 window.extractHTMLDescription = function extractHTMLDescription(code, updateFirst) {
-    if(!code) {
+    if (!code) {
         return '';
     }
     var description = '';
@@ -846,17 +850,17 @@ window.searchForCodeErrors = async function searchForCodeErrors(location, code, 
 
 window.checkMandatoryFunctionalityProposalConstraints = function checkMandatoryFunctionalityProposalConstraints(abi, isOneTime, noMetadata) {
     var mandatoryFunctionalityProposalConstraints = {
-        onStart : isOneTime === true,
-        onStop : isOneTime === true,
-        getMetadataLinkConstructor : false,
-        getMetadataLink : false
+        onStart: isOneTime === true,
+        onStop: isOneTime === true,
+        getMetadataLinkConstructor: false,
+        getMetadataLink: false
     };
     for (var voice of abi) {
         if (!mandatoryFunctionalityProposalConstraints.getMetadataLinkConstructor) {
             mandatoryFunctionalityProposalConstraints.getMetadataLinkConstructor = voice.type === 'constructor' && voice.inputs && voice.inputs.length >= 1 && voice.inputs[0].type === 'string' && voice.inputs[0].name === 'metadataLink';
         }
-        if(!mandatoryFunctionalityProposalConstraints.getMetadataLink) {
-            mandatoryFunctionalityProposalConstraints.getMetadataLink = voice.type === 'function' && voice.name === 'getMetadataLink' && voice.stateMutability === 'view' &&  voice.inputs.length === 0 && voice.outputs.length === 1 && voice.outputs[0].type === 'string';
+        if (!mandatoryFunctionalityProposalConstraints.getMetadataLink) {
+            mandatoryFunctionalityProposalConstraints.getMetadataLink = voice.type === 'function' && voice.name === 'getMetadataLink' && voice.stateMutability === 'view' && voice.inputs.length === 0 && voice.outputs.length === 1 && voice.outputs[0].type === 'string';
         }
         if (!mandatoryFunctionalityProposalConstraints.onStart) {
             mandatoryFunctionalityProposalConstraints.onStart = voice.type === 'function' && voice.name === 'onStart' && voice.stateMutability !== "view" && voice.stateMutability !== "pure" && (!voice.outputs || voice.outputs.length === 0) && voice.inputs && voice.inputs.length === 2 && voice.inputs[0].type === 'address' && voice.inputs[1].type === 'address';
@@ -1285,39 +1289,40 @@ window.loadLogo = async function loadLogo(address) {
     return logo;
 };
 
-window.loadOnChainWallets = async function loadOnChainWallets(view, callback) {
-    var tokensList = {
-        "Programmable Equities" : (await window.AJAXRequest(window.context.programmableEquitiesURL)).tokens.map(it => it.chainId === window.networkId && it),
-        "Tokens" : (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.map(it => it.chainId === window.networkId && it),
-        "Indexes" : (await window.AJAXRequest(window.context.indexesURL)).tokens.map(it => it.chainId === window.networkId && it)
-    }
-    callback && callback(tokensList);
-    var keys = Object.keys(tokensList);
-    for(var key of keys) {
-        if(key === 'Indexes') {
-            continue;
+window.loadOffChainWallets = async function loadOffChainWallets(view, callback) {
+    return await (window.tokensList = window.tokensList || new Promise(async function(ok) {
+        var tokensList = {
+            "Programmable Equities": (await window.AJAXRequest(window.context.programmableEquitiesURL)).tokens.map(it => it.chainId === window.networkId && it),
+            "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.map(it => it.chainId === window.networkId && it),
+            "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.map(it => it.chainId === window.networkId && it)
         }
-        var tokens = tokensList[key];
-        for(var i = 0; i < tokens.length; i++) {
-            var token = tokensList[key][i];
-            if(token === true || token === false) {
+        view && view.mounted && callback && callback(tokensList);
+        var keys = Object.keys(tokensList);
+        for (var key of keys) {
+            if (key === 'Indexes') {
                 continue;
             }
-            token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
-            try {
-                await window.AJAXRequest(token.logoURI);
-                if(view && !view.mounted) {
-                    return;
+            var tokens = tokensList[key];
+            for (var i = 0; i < tokens.length; i++) {
+                var token = tokensList[key][i];
+                if (token === true || token === false) {
+                    continue;
                 }
-            } catch(e) {
-                token.logoURI = 'assets/img/default-logo.png'
+                token.listName = key;
+                token.token = token.token || window.newContract(window.context.votingTokenAbi, token.address);
+                token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
+                try {
+                    await window.AJAXRequest(token.logoURI);
+                } catch (e) {
+                    token.logoURI = 'assets/img/default-logo.png'
+                }
+                token.logo = token.logoURI;
+                tokensList[key][i] = token;
+                view && view.mounted && callback && callback(tokensList);
             }
-            token.logo = token.logoURI;
-            tokensList[key][i] = token;
-            callback && callback(tokensList);
         }
-    }
-    return tokensList;
+        return ok(tokensList);
+    }));
 };
 
 window.loadWallets = async function loadWallets(element, callback, alsoLogo) {
@@ -1668,7 +1673,7 @@ window.updateInfo = async function updateInfo(view, element) {
     try {
         element.metadata = await window.AJAXRequest(window.formatLink(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x'))));
         Object.entries(element.metadata).forEach(it => element[it[0]] = it[1]);
-    } catch(e) {}
+    } catch (e) {}
     element.decimals = await window.blockchainCall(element.token.methods.decimals);
     element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
     element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
@@ -1822,16 +1827,16 @@ window.uploadToIPFS = async function uploadToIPFS(files) {
     var single = !(files instanceof Array) && (!(files instanceof FileList) || files.length === 0);
     files = single ? [files] : files;
     var list = [];
-    for(var i = 0; i < files.length; i++) {
+    for (var i = 0; i < files.length; i++) {
         var file = files.item ? files.item(i) : files[i];
-        if(!(file instanceof File) && !(file instanceof Blob)) {
-            file = new Blob([JSON.stringify(file, null, 4)], {type: "application/json"});
+        if (!(file instanceof File) && !(file instanceof Blob)) {
+            file = new Blob([JSON.stringify(file, null, 4)], { type: "application/json" });
         }
         list.push(file);
     }
     var hashes = [];
     window.api = window.api || new IpfsHttpClient(window.context.ipfsHost);
-    for await(var upload of window.api.add(list)) {
+    for await (var upload of window.api.add(list)) {
         hashes.push(window.context.ipfsUrlTemplate + upload.path);
     }
     return single ? hashes[0] : hashes;
@@ -1845,32 +1850,30 @@ window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUplo
     metadata && metadata.logoUri && (!metadata.logoUri || !new RegExp(window.urlRegex).test(metadata.logoUri) || metadata.logoUri.indexOf('ipfs') === -1) && errors.push("Token Logo is not a valid IPFS URL (ipfs://ipfs/...)");
     metadata && metadata.externalENS && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("External ENS link must contain a valid ENS URL");
 
-    if(errors.length > 0) {
+    if (errors.length > 0) {
         throw errors.join('\n');
     }
 
     try {
         metadata.brandUri = metadata.brandUri.item(0);
-    } catch(e) {
-    }
-    if(metadata && typeof metadata.brandUri !== 'string' && !await window.checkCoverSize(metadata.brandUri)) {
+    } catch (e) {}
+    if (metadata && typeof metadata.brandUri !== 'string' && !await window.checkCoverSize(metadata.brandUri)) {
         //errors.push('Brand Logo must be valid 320x320 image');
     }
     try {
         metadata && (metadata.brandUri = (!metadata.brandUri || noUpload) ? metadata.brandUri : (typeof metadata.brandUri === 'string' && metadata.brandUri.indexOf('ipfs') !== -1) ? metadata.brandUri : await window.uploadToIPFS(metadata.brandUri));
-    } catch(e) {
+    } catch (e) {
         errors.push(e.message || e);
     }
     try {
         metadata.logoUri = metadata.logoUri.item(0);
-    } catch(e) {
-    }
-    if(metadata && typeof metadata.logoUri !== 'string' && !await window.checkCoverSize(metadata.logoUri)) {
+    } catch (e) {}
+    if (metadata && typeof metadata.logoUri !== 'string' && !await window.checkCoverSize(metadata.logoUri)) {
         //errors.push('Token Logo must be valid 320x320 image');
     }
     try {
         metadata && (metadata.logoUri = (!metadata.logoUri || noUpload) ? metadata.logoUri : (typeof metadata.logoUri === 'string' && metadata.logoUri.indexOf('ipfs') !== -1) ? metadata.logoUri : await window.uploadToIPFS(metadata.logoUri));
-    } catch(e) {
+    } catch (e) {
         //errors.push(e.message || e);
     }
     //metadata && !metadata.name && errors.push("Name is mandatory in metadata");
@@ -1885,7 +1888,7 @@ window.validateDFOMetadata = async function validateDFOMetadata(metadata, noUplo
     //metadata && (!metadata.externalDNS || !new RegExp(window.urlRegex).test(metadata.externalDNS)) && errors.push("External link must contain a valid URL");
     //metadata && (!metadata.externalENS || !new RegExp(window.urlRegex).test(metadata.externalENS) || metadata.externalENS.indexOf('.eth') === -1) && errors.push("External ENS link must contain a valid ENS URL");
     //metadata && (!metadata.roadmapUri || !new RegExp(window.urlRegex).test(metadata.roadmapUri)) && errors.push("Roadmap link must contain a valid URL");
-    if(errors.length > 0) {
+    if (errors.length > 0) {
         throw errors.join('\n');
     }
     return noUpload ? metadata : await window.uploadToIPFS(metadata);
@@ -1897,9 +1900,8 @@ window.proposeNewMetadataLink = async function proposeNewMetadataLink(element, m
     try {
         originalMetadataLink = await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x');
         originalMetadataLink = window.web3.eth.abi.decodeParameter('string', originalMetadataLink);
-    } catch(e) {
-    }
-    if(originalMetadataLink === metadataLink) {
+    } catch (e) {}
+    if (originalMetadataLink === metadataLink) {
         return;
     }
     var descriptions = ['DFO Hub - Utilities - Get Metadata Link', 'The metadata located at this link contains all info about the DFO like name, short description, discussion link and many other info.'];
@@ -1971,9 +1973,9 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
     cover = (cover.item && cover.item(0)) || cover;
     width = width || 320;
     height = height || width;
-    return new Promise(function (ok) {
+    return new Promise(function(ok) {
         var reader = new FileReader();
-        reader.addEventListener("load", function () {
+        reader.addEventListener("load", function() {
             var image = new Image();
             image.onload = function onload() {
                 return ok(image.width === width && image.height === height);
@@ -1993,20 +1995,19 @@ window.generateFunctionalityMetadataLink = async function generateFunctionalityM
     var comments = {};
     try {
         comments = window.extractComment(data.sourceCode || data.code);
-    } catch(e) {
-    }
+    } catch (e) {}
     var codeName = data.codeName || data.functionalityName;
     var replaces = data.replaces || data.functionalityReplace;
     var metadata = {
-        title : data.title,
+        title: data.title,
         codeName,
         description: {
-            Discussion : window.formatLink(comments.Discussion || data.element.ensComplete),
+            Discussion: window.formatLink(comments.Discussion || data.element.ensComplete),
             Description: comments.Description,
             Update: comments.Update,
         },
         code: data.sourceCode || data.code,
-        version : await window.getNextFunctionalityVersion(data, codeName, replaces)
+        version: await window.getNextFunctionalityVersion(data, codeName, replaces)
     }
     console.log(metadata);
     return await window.uploadToIPFS(metadata);
@@ -2014,13 +2015,12 @@ window.generateFunctionalityMetadataLink = async function generateFunctionalityM
 
 window.getNextFunctionalityVersion = async function getNextFunctionalityVersion(data, codeName, replaces) {
     var version = 0;
-    if(replaces && codeName) {
+    if (replaces && codeName) {
         try {
             var functionalityLocation = (await window.blockchainCall(data.element.functionalitiesManager.methods.getFunctionalityData, data.replaces))[0];
             var metadata = await window.AJAXRequest(await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, functionalityLocation).methods.getMetadataLink));
             version = 1 + metadata.version;
-        } catch(e) {
-        }
+        } catch (e) {}
     }
     return version;
 };
