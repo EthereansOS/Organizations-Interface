@@ -30,7 +30,7 @@ var NewProposalController = function(view) {
 
         data.selectedContract = context.view.selectedContract;
 
-        var mandatoryFunctionalityProposalConstraints = data.functionalityMethodSignature && !window.checkMandatoryFunctionalityProposalConstraints(data.selectedContract.abi, data.functionalityMethodSignature === 'callOneTime(address)');
+        var mandatoryFunctionalityProposalConstraints = data.functionalityMethodSignature && window.checkMandatoryFunctionalityProposalConstraints(data.selectedContract.abi, data.functionalityMethodSignature === 'callOneTime(address)');
         mandatoryFunctionalityProposalConstraints && messages.push(...mandatoryFunctionalityProposalConstraints);
         !data.functionalityReplace && !data.functionalityName && data.functionalityMethodSignature !== 'callOneTime(address)' && messages.push('Functionality name is mandatory');
         data.functionalityName && !data.selectedContract && messages.push('You need to insert a valid SmartCotract code and choose a method.');

@@ -32,6 +32,13 @@ var Token = React.createClass({
             _this.props.element.blocks = window.web3.eth.abi.decodeParameters(['uint256'], blocks)[0];
             _this.forceUpdate();
         });
+        var call = !_this.props.element.logo;
+        _this.props.element.logo = _this.props.element.logo || _this.props.element.logoUri || _this.props.element.logoURI;
+        _this.props.element.logo && call && _this.forceUpdate();
+        !_this.props.element.logo && window.loadLogo(_this.props.element.token.options.address).then(logo => {
+            _this.props.element.logo = logo;
+            _this.forceUpdate();
+        });
         window.loadUniswapPairs(this, _this.props.element.token.options.address);
     },
     renderChangeButton(name) {
