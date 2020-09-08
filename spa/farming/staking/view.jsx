@@ -19,6 +19,16 @@ var StakingView = React.createClass({
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         window.stopStake(this, element.stakingManager.options.address);
     },
+    componentDidMount() {
+        var _this = this;
+        var call = !_this.props.element.logo;
+        _this.props.element.logo = _this.props.element.logo || _this.props.element.logoUri || _this.props.element.logoURI;
+        _this.props.element.logo && call && _this.forceUpdate();
+        !_this.props.element.logo && window.loadLogo(_this.props.element.token.options.address).then(logo => {
+            _this.props.element.logo = logo;
+            _this.forceUpdate();
+        });
+    },
     render() {
         var _this = this;
         var props = {};
@@ -42,7 +52,7 @@ var StakingView = React.createClass({
                 lis.push(...element.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
                     <section className="TheDappInfo1">
                         <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
+                        <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
                             <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
                             <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
                             <p className="DFOHostingTitle">Total Lock: <b>{it.blockNumber}</b> Blocks</p>
@@ -53,7 +63,7 @@ var StakingView = React.createClass({
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                             {element.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
-                                <img src={pair.logo}/>
+                            <img src={pair.logo}/>
                                 {pair.symbol}
                             </a>)}
                     </section>
