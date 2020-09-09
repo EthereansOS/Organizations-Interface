@@ -1980,7 +1980,7 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 
 window.formatLink = function formatLink(link) {
     link = (link ? link instanceof Array ? link[0] : link : '').split(window.context.ipfsUrlTemplate).join(window.context.ipfsUrlChanger);
-    return link && link.indexOf('http') === -1 ? ('https://' + link) : link;
+    return (!link ? '' : link.indexOf('http') === -1 ? ('https://' + link) : link).split('https:').join('').split('http:').join('');
 };
 
 window.generateFunctionalityMetadataLink = async function generateFunctionalityMetadataLink(data) {
