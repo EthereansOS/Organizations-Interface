@@ -413,12 +413,12 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .stakingEdit .TheDappInfo1, .stakingEdit .TheDappInfo2 {margin: 10px; display: inline-block;}
 .stakingEdit .TheDappInfo2 .bravPicciot,.stakingEdit .TheDappInfo1 .bravPicciot {width: 78% !important;}
 .StakeBigBoss {width: 100%; position: fixed; top: 0; left: 0; background-color: #7901ff; opacity: 0.9; }
-.NavDeploy > h2 {line-height: 1.3; font-size: 40px; font-weight: normal;}
+.NavDeploy > h2 {line-height: 1; font-size: 40px; font-weight: normal;}
 .NoWeb3 {width: 100%;text-align: center;min-width: 100%;height: 100%;padding-top: 0px;background-color: #030303;}
 .NoWeb3 h1 {width: 350px; height: 350px; display: inline-block; margin-top: 100px; text-align: center;}
 .NoWeb3 h1 img {width: 350px; height: 350px; display: inline-block;}
-.NoWeb3 .DisclamerWeb3 {width: 100%; text-align: center; display: inline-block; margin: 10px auto;}
-.NoWeb3 .DisclamerWeb3 h2 {font-size: 60px;font-weight: bold;color: #7901ff;}
+.NoWeb3 .DisclamerWeb3 {width: 100%; text-align: center; display: inline-block; margin: 0 auto; }
+.NoWeb3 .DisclamerWeb3 h2 {font-size: 60px;font-weight: bold;color: #7901ff;margin: 0 auto; display: inline-block; margin-block-end: 0;margin-block-start: 0;}
 .NoWeb3 .DisclamerWeb3 p {font-size: 16px; color: #7901ff; line-height: 1.4;}
 .NoWeb3 .DisclamerWeb3 p a {font-size: 15px; color: #ff00ff; font-weight: bold; padding: 0 3px;}
 .NoWeb3 .DisclamerWeb3 p a:hover {color: #ffffff; background-color: #ff00ff; text-decoration: none;}
@@ -556,6 +556,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .BETABANNER p a {text-decoration: underline; color: #ffb004; font-weight: bold;}
 .BETABANNER section > a {font-size: 15px; padding: 10px 15px; background-color: #ffb004; color: #ffffff; font-weight: bold; text-decoration: none; margin-top: 25px; display: inline-block;}
 .BETABANNER section > a:hover {background-color: #fccb63;}
+.ConnectButton {background-color: #7901ff; padding: 5px 8px; font-size: 18px; color: #f1f1f1; text-decoration: none; border-radius: 9px;}
 
 @media only screen and (min-width: 640px) {
 .BazTokenSelector {width: 100%; display: inline-block; margin: 10px auto; text-align: center;}
