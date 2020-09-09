@@ -95,9 +95,10 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
             var update = false;
             if (!window.networkId || window.networkId !== parseInt(window.ethereum.chainId)) {
                 delete window.contracts;
+                window.ethereum && (window.ethereum.enable = () => window.ethereum.request({ method: 'eth_requestAccounts' }));
                 window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
-                window.ethereum && window.ethereum.on && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
-                window.ethereum && window.ethereum.on && window.ethereum.on('chainChanged', window.onEthereumUpdate);
+                window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.accountsChanged || window.ethereum._events.accountsChanged.length === 0) && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
+                window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.chainChanged || window.ethereum._events.chainChanged.length === 0) && window.ethereum.on('chainChanged', window.onEthereumUpdate);
                 window.web3 = new window.Web3Browser(window.ethereum);
                 window.web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
                 window.web3.eth.transactionBlockTimeout = 999999999;
