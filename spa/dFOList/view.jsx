@@ -10,7 +10,7 @@ var DFOList = React.createClass({
         var _this = this;
         return {
             'ethereum/update': () => this.forceUpdate(this.controller.loadList),
-            'ethereum/ping' : () => window.refreshBalances(this, this.state && this.state.element, true).then(() => this.forceUpdate()),
+            'ethereum/ping' : this.refreshUserBalance,
             'search': search => this.setState({ search, key: null }),
             'element/update': this.updateElement,
             'balances/refresh': () => window.refreshBalances(this, this.props.element),
@@ -75,6 +75,10 @@ var DFOList = React.createClass({
         this.emit('index/fullscreen', this.state && this.state.key !== undefined && this.state.key !== null);
         window.setHomepageLink(this.dfoElement ? ('?addr=' + this.dfoElement.props.element.dFO.options.address) : undefined);
     },
+    refreshUserBalance() {
+        var _this = this;
+        _this.state && _this.state.key && window.refreshBalances(undefined, window.list[_this.state.key], true).then(() => _this.forceUpdate())
+    },
     render() {
         var _this = this;
         var list = this.getList();
@@ -85,7 +89,7 @@ var DFOList = React.createClass({
                         return (!_this.state || !_this.state.key || _this.state.key === it.key) && <li key={it.key} className="DFOInfo">
                             <section className={"DFOMAinNav" + (this.state && this.state.key ? ' DFOMAinNavAfter' : '')}>
                                 <section className="DFOMAinNavBox">
-                                    <a href="javascript:;" onClick={() => { delete it.functionalities; _this.setState({ key: _this.state && _this.state.key === it.key ? null : it.key }) }} className="DFOOpener">
+                                    <a href="javascript:;" onClick={() => { delete it.functionalities; _this.setState({ key: _this.state && _this.state.key === it.key ? null : it.key }, _this.refreshUserBalance) }} className="DFOOpener">
                                         <section className="DFOIcon">
                                             <AsyncValue>
                                                 <img src={it.brandUri ? window.formatLink(it.brandUri) : it.icon} />
