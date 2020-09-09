@@ -48,9 +48,7 @@ var UniswapTokenPicker = React.createClass({
         var _this = this;
         var thisKey = this.getKey();
         return (<section className="BazSelectorContainer" tabIndex="-1" ref={ref => this.opened = ref}>
-            <section className="BazSelectorContainerClose">
-                <a href="javascript:;" onClick={this.close}>X</a>
-            </section>
+
             <section className="BazSelectorContainerMenu">
                 <section className="BazSelectorContainerMenuintern">
                     {this.props.tokensList && Object.keys(this.props.tokensList).map(key => <li key={key} className={thisKey === key ? "Selected" : undefined}>
