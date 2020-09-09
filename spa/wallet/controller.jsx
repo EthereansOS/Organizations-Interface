@@ -5,10 +5,17 @@ var WalletController = function (view) {
     context.pairCreatedTopic = window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
 
     context.loadWallets = async function loadWallets() {
-        context.view.setState({ tokens: null, cumulativeAmountDollar: null, tokenAmounts: null });
+        context.view.setState({ tokens: null, cumulativeAmountDollar: null, tokenAmounts: null, loading: true });
         try {
             var tokensList = await window.loadOffChainWallets();
-            var tokens = [];
+            var tokens = [{
+                i: 0,
+                address: window.voidEthereumAddress,
+                name: 'Ethereum',
+                symbol: 'ETH',
+                decimals: '18',
+                logo: "assets/img/eth-logo.png"
+            }];
             Object.values(tokensList).forEach(tokenArray => {
                 tokenArray.forEach(it => {
                     try {
@@ -51,21 +58,32 @@ var WalletController = function (view) {
             if (token === true || token === false) {
                 continue;
             }
-            try {
-                tokenAmount.amount = token.address === window.voidEthereumAddress ? await window.web3.eth.getBalance(context.view.props.element.walletAddress) : await window.blockchainCall(token.token.methods.balanceOf, context.view.props.element.walletAddress);
-                if (!context.view.mounted) {
-                    return;
+            if(token.i === 0) {
+                tokenAmount.amountDollars = ethereumPrice;
+                try {
+                    tokenAmount.amount = await window.web3.eth.getBalance(context.view.props.element.walletAddress);
+                    if (!context.view.mounted) {
+                        return;
+                    }
+                } catch(e) {
                 }
-                tokenAmount.amountDollars = token.address === window.voidEthereumAddress ? '1' : window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', token.decimals), [token.address, window.wethAddress]))[1], 18, true);
-                if (!context.view.mounted) {
-                    return;
+            } else {
+                try {
+                    tokenAmount.amount = token.address === window.voidEthereumAddress ? await window.web3.eth.getBalance(context.view.props.element.walletAddress) : await window.blockchainCall(token.token.methods.balanceOf, context.view.props.element.walletAddress);
+                    if (!context.view.mounted) {
+                        return;
+                    }
+                    tokenAmount.amountDollars = token.address === window.voidEthereumAddress ? '1' : window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', token.decimals), [token.address, window.wethAddress]))[1], 18, true);
+                    if (!context.view.mounted) {
+                        return;
+                    }
+                    tokenAmount.amountDollars = parseFloat(window.fromDecimals(tokenAmount.amount, token.decimals, true)) * parseFloat(tokenAmount.amountDollars) * ethereumPrice;
+                } catch (e) {
                 }
-                tokenAmount.amountDollars = parseFloat(window.fromDecimals(tokenAmount.amount, token.decimals, true)) * parseFloat(tokenAmount.amountDollars) * ethereumPrice;
-            } catch (e) {
             }
             cumulativeAmountDollar += tokenAmount.amountDollars;
             context.view.setState({ cumulativeAmountDollar, tokenAmounts });
         }
-        context.view.setState({ cumulativeAmountDollar, tokenAmounts });
+        context.view.setState({ cumulativeAmountDollar, tokenAmounts, loading: false });
     };
 };

@@ -145,7 +145,6 @@ var Wallet = React.createClass({
                     <section className="HostingCategoryTitle">
                         <h2>{_this.props.element.name} Balances {(!_this.state || _this.state.cumulativeAmountDollar === undefined || _this.state.cumulativeAmountDollar === null) ? <LoaderMinimino /> : <span>(Tracked: ${window.formatMoney(_this.state.cumulativeAmountDollar)})</span>} <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a></h2>
                     </section>
-                    {(!_this.state || !_this.state.tokens) && <LoaderMinimino />}
                     {_this.state && _this.state.tokenAmounts && _this.state.tokens && _this.state.tokens.map(it => _this.state.tokenAmounts[it.i].amount !== undefined && _this.state.tokenAmounts[it.i].amount !== '0' && <li key={it.address} className="TheDappInfo1 TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <section className="DFOWalletBalanceSingleT">
@@ -163,6 +162,10 @@ var Wallet = React.createClass({
                             {_this.state && _this.state.transferProposal === it.address && _this.renderTransferProposal(it)}
                         </section>
                     </li>)}
+                    {this.state && this.state.loading && <section>
+                        <br/>
+                        <LoaderMinimino/>
+                    </section>}
                 </ul>
             </section>
         );
