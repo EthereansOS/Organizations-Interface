@@ -6,10 +6,9 @@ var DFOListController = function (view) {
     context.dfoDeployedEvent = "DFODeployed(address_indexed,address)";
     context.newDfoDeployedEvent = "DFODeployed(address_indexed,address_indexed,address,address)";
 
-    context.loadList = async function loadList(refreshBalances) {
+    context.loadList = async function loadList() {
         context.alreadyLoaded = {};
         (context.running = true) && context.loadEvents();
-        refreshBalances && window.refreshBalances(context.view);
     };
 
     context.loadEvents = async function loadEvents(topics, toBlock, lastBlockNumber) {

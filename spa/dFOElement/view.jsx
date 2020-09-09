@@ -4,7 +4,7 @@ var DFOElement = React.createClass({
     ],
     getDefaultSubscriptions() {
         return {
-            'section/change': this.sectionChange
+            'section/change' : this.sectionChange,
         };
     },
     onClick(e) {

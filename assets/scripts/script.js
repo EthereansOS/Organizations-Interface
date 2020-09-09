@@ -95,6 +95,14 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
             var update = false;
             if (!window.networkId || window.networkId !== parseInt(window.ethereum.chainId)) {
                 delete window.contracts;
+                window.clearDataInterval = window.clearDataInterval || setInterval(function() {
+                    try {
+                        while(true) {
+                            window.ethereum._events.data.forEach(it => window.ethereum.off('data', it));
+                        }
+                    } catch(e) {
+                    }
+                }, 3000);
                 window.ethereum && (window.ethereum.enable = () => window.ethereum.request({ method: 'eth_requestAccounts' }));
                 window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
                 window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.accountsChanged || window.ethereum._events.accountsChanged.length === 0) && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
@@ -1779,13 +1787,12 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
     element.walletBUIDLDollar && (element.walletBUIDLDollar = window.formatMoney(element.walletBUIDLDollar));
     element.walletDAIDollar && (element.walletDAIDollar = window.formatMoney(element.walletDAIDollar));
     element.myBalanceOf = window.walletAddress ? await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress) : '0';
+    view && view.forceUpdate();
     if (silent === true) {
         return;
     }
-    view && view.forceUpdate();
     setTimeout(function() {
-        var keys = Object.keys(window.list);
-        keys.map(async function(key, i) {
+        Promise.all(Object.keys(window.list).map(async function(key, i) {
             if (element.key === key) {
                 return;
             }
@@ -1794,8 +1801,7 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
                 return;
             }
             e.myBalanceOf = window.walletAddress ? await window.blockchainCall(e.token.methods.balanceOf, window.walletAddress) : '0';
-            i === keys.length - 1 && view && view.forceUpdate();
-        });
+        })).then(() => view && view.forceUpdate());
     });
 };
 
