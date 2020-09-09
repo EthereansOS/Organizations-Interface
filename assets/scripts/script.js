@@ -93,13 +93,12 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
     return new Promise(function(ok) {
         setTimeout(async function() {
             var update = false;
-            if (!window.networkId || window.networkId !== await window.web3.eth.net.getId()) {
+            if (!window.networkId || window.networkId !== parseInt(window.ethereum.chainId)) {
                 delete window.contracts;
                 window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
-                window.ethereum && window.ethereum.on && window.ethereum.on('networkChanged', window.onEthereumUpdate);
                 window.ethereum && window.ethereum.on && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
                 window.ethereum && window.ethereum.on && window.ethereum.on('chainChanged', window.onEthereumUpdate);
-                window.web3 = new window.Web3Browser((window.web3 && window.web3.currentProvider));
+                window.web3 = new window.Web3Browser(window.ethereum);
                 window.web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
                 window.web3.eth.transactionBlockTimeout = 999999999;
                 window.web3.eth.transactionPollingTimeout = new Date().getTime();
