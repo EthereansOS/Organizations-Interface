@@ -3,14 +3,14 @@ var Deploy = React.createClass({
         'spa/deploy/subdomain.jsx',
         'spa/deploy/votingTokenData.jsx',
         'spa/deploy/governanceRulesData.jsx',
-        'spa/deploy/dFOMetadata.jsx',
+        'spa/deploy/deployDFOMetadata.jsx',
         'spa/deploy/deployDFO.jsx'
     ],
     steps: [
         'Subdomain',
         'VotingTokenData',
         'GovernanceRulesData',
-        'DFOMetadata',
+        'DeployDFOMetadata',
         'DeployDFO'
     ],
     getInitialState() {

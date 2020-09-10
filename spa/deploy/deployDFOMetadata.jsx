@@ -1,4 +1,4 @@
-var DFOMetadata = React.createClass({
+var DeployDFOMetadata = React.createClass({
     requiredScripts: [
         'spa/dFOMetadata/edit.jsx'
     ],
