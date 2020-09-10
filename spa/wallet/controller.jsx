@@ -59,14 +59,16 @@ var WalletController = function (view) {
                 continue;
             }
             if(token.i === 0) {
-                tokenAmount.amountDollars = ethereumPrice;
                 try {
                     tokenAmount.amount = await window.web3.eth.getBalance(context.view.props.element.walletAddress);
                     if (!context.view.mounted) {
                         return;
                     }
                 } catch(e) {
+                    tokenAmount.amount = '0'
                 }
+                tokenAmount.amountDollars = ethereumPrice * parseFloat(window.fromDecimals(tokenAmount.amount, 18));
+
             } else {
                 try {
                     tokenAmount.amount = token.address === window.voidEthereumAddress ? await window.web3.eth.getBalance(context.view.props.element.walletAddress) : await window.blockchainCall(token.token.methods.balanceOf, context.view.props.element.walletAddress);
