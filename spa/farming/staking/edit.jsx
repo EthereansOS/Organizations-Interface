@@ -174,7 +174,7 @@ var StakingEdit = React.createClass({
                         <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>
                     </a>)}
                     {false && <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />}
-                    <UniswapTokenPicker ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair}/>
+                    <UniswapTokenPicker exceptFor={this.props.element.token.options.address} ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair}/>
                 </section>
             </section>
             <section className="TheDappInfo2">

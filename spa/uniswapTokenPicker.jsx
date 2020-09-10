@@ -44,11 +44,25 @@ var UniswapTokenPicker = React.createClass({
         }
         return key;
     },
+    exceptFor(address) {
+        if(this.props.exceptFor && this.props.exceptFor.length > 0) {
+            if(typeof this.props.exceptFor === 'string' && window.web3.utils.toChecksumAddress(address) === window.web3.utils.toChecksumAddress(this.props.exceptFor)) {
+                return true;
+            }
+            if(this.props.exceptFor instanceof Array) {
+                for(var exception of this.props.exceptFor) {
+                    if(window.web3.utils.toChecksumAddress(address) === window.web3.utils.toChecksumAddress(exception)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    },
     renderOpened() {
         var _this = this;
         var thisKey = this.getKey();
         return (<section className="BazSelectorContainer" tabIndex="-1" ref={ref => this.opened = ref}>
-
             <section className="BazSelectorContainerMenu">
                 <section className="BazSelectorContainerMenuintern">
                     {this.props.tokensList && Object.keys(this.props.tokensList).map(key => <li key={key} className={thisKey === key ? "Selected" : undefined}>
@@ -58,7 +72,7 @@ var UniswapTokenPicker = React.createClass({
             </section>
             {thisKey && <section className="BazSelectorContainerObjects">
                 {this.props.tokensList[thisKey].map((it, i) => {
-                    if (!it) {
+                    if (!it || _this.exceptFor(it.address)) {
                         return;
                     }
                     return (<li key={it.address} className={this.state.selected === i ? "Selected" : undefined}>
