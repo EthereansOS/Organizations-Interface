@@ -276,4 +276,40 @@ var OverviewController = function (view) {
             functionalityOutputParameters: data.votesHardCap ? '["uint256"]' : '',
         }, template, undefined, descriptions, updates);
     };
+
+    context.checkStakingAndFixedInflaction = async function checkStakingAndFixedInflaction(view) {
+        view = view || context.view;
+        if(!view.mounted) {
+            return;
+        }
+        if(!view.props.element.stateHolder) {
+            return setTimeout(() => context.checkStakingAndFixedInflaction(view), 300);
+        }
+        var fixedInflationStatus = await window.blockchainCall(view.props.element.stateHolder.methods.getUint256, 'fixedInflation.transfers.length') > 0 ? 'active' : 'unset';
+        var liquidityMiningStatus = 'loading';
+        view.setState({fixedInflationStatus, liquidityMiningStatus});
+        try {
+            var json = await window.blockchainCall(view.props.element.stateHolder.methods.toJSON);
+            if(!view.mounted) {
+                return;
+            }
+            json = JSON.parse(json.endsWith(',]') ? (json.substring(0, json.lastIndexOf(',]')) + ']') : json);
+            for (var i in json) {
+                var element = json[i];
+                var methodName = 'get' + element.type.substring(0, 1).toUpperCase() + element.type.substring(1);
+                element.value = await window.blockchainCall(view.props.element.stateHolder.methods[methodName], element.name);
+                if(element.name.indexOf('staking.transfer.authorized.') === 0 && element.value) {
+                    liquidityMiningStatus = 'active';
+                }
+                if(!view.mounted) {
+                    return;
+                }
+                if(fixedInflationStatus === 'active' && liquidityMiningStatus === 'active') {
+                    break;
+                }
+            }
+        } catch (e) {
+        }
+        view.setState({fixedInflationStatus : fixedInflationStatus === 'loading' ? 'unset' : fixedInflationStatus, liquidityMiningStatus : liquidityMiningStatus === 'loading' ? 'unset' : liquidityMiningStatus});
+    };
 };

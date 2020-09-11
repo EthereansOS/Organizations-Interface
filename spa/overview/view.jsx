@@ -6,7 +6,7 @@ var Overview = React.createClass({
     requiredScripts: [
         'spa/loaderMini.jsx',
         'spa/okBoomer.jsx',
-        'spa/loaderMinimino'
+        'spa/loaderMinimino.jsx'
     ],
     uploadFile(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -32,6 +32,7 @@ var Overview = React.createClass({
             _this.props.element.blocks = window.web3.eth.abi.decodeParameters(['uint256'], blocks)[0];
             _this.forceUpdate();
         });
+        this.controller.checkStakingAndFixedInflaction();
     },
     renderChangeButton(name) {
         var _this = this;
@@ -252,12 +253,16 @@ var Overview = React.createClass({
                     <li className="TheDappInfo1">
                         <h5 className="DFOHostingTitle">&#128424; Fixed Inflation:</h5>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo">Active</p>
+                            {this.state && this.state.fixedInflationStatus === 'loading' && <LoaderMinimino/>}
+                            {this.state && this.state.fixedInflationStatus === 'active' && <p className="DFOLabelTitleInfo">Active</p>}
+                            {this.state && this.state.fixedInflationStatus === 'unset' && <p className="DFOLabelTitleInfo">Not set</p>}
                             <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
                         </section>
                         <h5 className="DFOHostingTitle">&#129412; Liquidity Mining:</h5>
                         <section className="DFOTitleSection">
-                            <p className="DFOLabelTitleInfo">Active</p>
+                            {this.state && this.state.liquidityMiningStatus === 'loading' && <LoaderMinimino/>}
+                            {this.state && this.state.liquidityMiningStatus === 'active' && <p className="DFOLabelTitleInfo">Active</p>}
+                            {this.state && this.state.liquidityMiningStatus === 'unset' && <p className="DFOLabelTitleInfo">Not set</p>}
                             <a className="LinkVisualButton LinkVisualEthscan" onClick={() => _this.emit('section/change', 'Farming')} href="javascript:;">More</a>
                         </section>
                     </li>
