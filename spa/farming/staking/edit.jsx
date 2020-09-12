@@ -88,6 +88,11 @@ var StakingEdit = React.createClass({
             _this.hardCapInput.value = '';
             _this.minCapInput.value = '';
             _this.rewardPercentageInput.value = '';
+            _this.onTierChange({
+                currentTarget: {
+                    value: Object.keys(_this.props.blockTiers)[0]
+                }
+            });
         });
     },
     onTierChange(e) {
@@ -99,7 +104,7 @@ var StakingEdit = React.createClass({
         this.setState({ blockNumber: parseInt(e.currentTarget.dataset.value) });
     },
     onNewPair(newPair) {
-        if(!newPair) {
+        if (!newPair) {
             return;
         }
         this.pairPicker && this.pairPicker.setState({ selected: null });
@@ -154,7 +159,12 @@ var StakingEdit = React.createClass({
     },
     componentDidMount() {
         var _this = this;
-        window.loadOffChainWallets().then(tokensList => _this.setState({tokensList}));
+        window.loadOffChainWallets().then(tokensList => _this.setState({ tokensList }));
+        this.onTierChange({
+            currentTarget: {
+                value: Object.keys(this.props.blockTiers)[0]
+            }
+        });
     },
     render() {
         var _this = this;
@@ -174,7 +184,7 @@ var StakingEdit = React.createClass({
                         <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>
                     </a>)}
                     {false && <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />}
-                    <UniswapTokenPicker exceptFor={this.props.element.token.options.address} ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair}/>
+                    <UniswapTokenPicker exceptFor={this.props.element.token.options.address} ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair} />
                 </section>
             </section>
             <section className="TheDappInfo2">
@@ -240,7 +250,7 @@ var StakingEdit = React.createClass({
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                             {_this.state.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
-                                <img src={pair.logo}/>
+                                <img src={pair.logo} />
                                 {pair.symbol}
                             </a>)}
                         </section>

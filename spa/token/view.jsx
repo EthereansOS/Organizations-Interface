@@ -168,8 +168,8 @@ var Token = React.createClass({
                             <span className="DFOLabelTitleInfosmall"> {window.fromDecimals(it.otherReserve, it.decimals)} {it.symbol}</span>
                             {false && <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>}
                             <br/>
-                            <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
-                            <a href={window.context.uniSwapPoolURLTemplate.format(_this.props.element.token.options.address, it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
+                            <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, it.address === window.wethAddress ? '' : it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.uniSwapPoolURLTemplate.format(_this.props.element.token.options.address, it.address === window.wethAddress ? '' : it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
                         </section>
                     </li>)}
                 </ul>
