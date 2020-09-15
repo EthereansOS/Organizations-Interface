@@ -70,7 +70,7 @@ var Proposal = React.createClass({
                     <p>Sometime Web 3 providers can't estimate correctly the Max Gas needed for complex transactions. Finalizing a Proposal, you execute the code in the EVM, be sure to add the right Max Gas required for its execution. Do it at your own risk. <a href="https://blockgeeks.com/guides/ethereum-gas/">More</a></p>
                     <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>
                 </section>}
-                {it.terminationData && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
+                {it.terminationData && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw All</WalletEnablerButton>}
                 <a className={"LinkVisualButton" + (_this.props.toggle === ('info_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('info_' + it.key) ? null : ('info_' + it.key))}>Info</a>
                 {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
             </section>
