@@ -7,6 +7,10 @@ var ProposalsController = function (view) {
     context.proposalSetTopic = window.web3.utils.sha3('ProposalSet(address,bool)');
     context.blockLimit = 40000;
 
+    context.updateBalance = async function updateBalance() {
+        context.view.setState({myBalance: !window.walletAddress ? '0' : await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress)});
+    };
+
     context.loadSurveys = async function loadSurveys(element, surveys, terminatedSurveys, myBalance, currentBlock, toBlock) {
         if(!context.view || !context.view.mountDate) {
             return;

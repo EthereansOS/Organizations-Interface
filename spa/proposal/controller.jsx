@@ -5,6 +5,15 @@ var ProposalController = function (view) {
     context.transferTopic = window.web3.utils.sha3('Transfer(address,address,uint256)');
     context.functionalitySetTopic = window.web3.utils.sha3('FunctionalitySet(string,address,string,address,uint256,address,bool,string,bool,bool,address)');
 
+    context.refreshVotes = async function refreshVotes() {
+        var survey = this.state.survey;
+        var myVotes = !window.walletAddress ? ['0', '0'] : await window.blockchainCall(survey.contract.methods.getVote, window.walletAddress);
+        survey.myAccepts = window.web3.utils.toBN(myVotes[0]).toString();
+        survey.myRefuses = window.web3.utils.toBN(myVotes[1]).toString();
+        survey.myVotes = window.web3.utils.toBN(myVotes[0]).add(window.web3.utils.toBN(myVotes[1])).toString();
+        context.view.setState({ survey });
+    };
+
     context.loadSurvey = async function loadSurvey() {
         var element = context.view.props.element;
         if (!context.view || !context.view.mountDate || element !== context.view.props.element) {
@@ -13,6 +22,7 @@ var ProposalController = function (view) {
         var mountedDate = context.view.mountDate;
         var survey = {};
         Object.keys(context.view.state.survey).forEach(key => survey[key] = context.view.state.survey[key]);
+        delete survey.withdrawed;
         try {
 
             if (!survey.contract) {
@@ -27,16 +37,16 @@ var ProposalController = function (view) {
             }
             try {
                 survey.metadataLink = window.formatLink(await window.blockchainCall(window.newContract(window.context.IFunctionalityAbi, survey.location).methods.getMetadataLink));
-                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }
                 survey.metadata = await window.AJAXRequest(survey.metadataLink);
-                if(!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
+                if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }
                 Object.entries(survey.metadata).forEach(it => survey[it[0]] = it[1]);
                 survey.description = window.extractHTMLDescription(survey.description || survey.code, true);
-            } catch(e) {}
+            } catch (e) { }
 
             survey.surveyEnd = survey.endBlock <= (context.view.props.currentBlock + 1);
 
@@ -96,7 +106,7 @@ var ProposalController = function (view) {
             if ((survey.codeName || !survey.replaces) && !survey.code) {
                 try {
                     survey.code = await window.loadContent(survey.sourceLocationId, survey.sourceLocation);
-                    if(survey.codeName !== 'getEmergencySurveyStaking' && survey.sourceLocationId === 0) {
+                    if (survey.codeName !== 'getEmergencySurveyStaking' && survey.sourceLocationId === 0) {
                         delete survey.code;
                     }
                 } catch (ex) {
@@ -152,8 +162,8 @@ var ProposalController = function (view) {
                 if (!context.view || context.view.mountDate !== mountedDate || element !== context.view.props.element) {
                     return;
                 }
-                for(var log of transactionReceipt.logs) {
-                    if(log.topics[0].toLowerCase() !== context.functionalitySetTopic.toLowerCase()) {
+                for (var log of transactionReceipt.logs) {
+                    if (log.topics[0].toLowerCase() !== context.functionalitySetTopic.toLowerCase()) {
                         continue;
                     }
                     var data = window.web3.eth.abi.decodeParameters(["string", "string", "address", "uint256", "bool", "string", "bool", "bool"], log.data);
@@ -210,6 +220,30 @@ var ProposalController = function (view) {
     };
 
     context.withdraw = async function withraw(e, survey) {
+        if(!window.walletAddress) {
+            return;
+        }
+        var element = context.view.props.element;
+        var withdrawed = false;
+        if (!survey.raisedBy === element.dFO.options.address.toLowerCase()) {
+            return alert("This proposal was made using an older version of this DFO's core and cannot be withdrawn any more");
+        }
+        try {
+            var transfer = await window.getLogs({
+                address: element.token.options.address,
+                topics: [
+                    context.transferTopic,
+                    window.web3.eth.abi.encodeParameter('address', survey.address),
+                    window.web3.eth.abi.encodeParameter('address', window.walletAddress)
+                ],
+                fromBlock: survey.startBlock
+            });
+            withdrawed = transfer.length > 0;
+        } catch (e) {
+        }
+        if(withdrawed) {
+            return alert('You already withdrawn your tokens');
+        }
         try {
             var target = $(e.currentTarget);
             var loader = $('<section class="loaderMinimino"/>').insertAfter(target.hide());

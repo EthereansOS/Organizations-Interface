@@ -1127,7 +1127,7 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
         },
         actionName: "Publish"
     });
-    parseInt(initialContext.element.minimumStaking) && sequentialOps.push({
+    !isNaN(parseInt(initialContext.element.minimumStaking)) && parseInt(initialContext.element.minimumStaking) > 0 && sequentialOps.push({
         name: 'Sending Initial ' + window.fromDecimals(initialContext.element.minimumStaking, initialContext.element.decimals) + ' ' + initialContext.element.symbol + ' for Staking',
         async call(data) {
             await window.blockchainCall(window.newContract(window.context.propsalAbi, data.transaction.events.Proposal.returnValues.proposal).methods.accept, window.numberToString(data.element.minimumStaking));
@@ -1972,6 +1972,9 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 
 window.formatLink = function formatLink(link) {
     link = (link ? link instanceof Array ? link[0] : link : '').split(window.context.ipfsUrlTemplate).join(window.context.ipfsUrlChanger);
+    while(link && link.startsWith('/')) {
+        link = link.substring(1);
+    }
     return (!link ? '' : link.indexOf('http') === -1 ? ('https://' + link) : link).split('https:').join('').split('http:').join('');
 };
 
@@ -1993,7 +1996,6 @@ window.generateFunctionalityMetadataLink = async function generateFunctionalityM
         code: data.sourceCode || data.code,
         version: await window.getNextFunctionalityVersion(data, codeName, replaces)
     }
-    console.log(metadata);
     return await window.uploadToIPFS(metadata);
 };
 

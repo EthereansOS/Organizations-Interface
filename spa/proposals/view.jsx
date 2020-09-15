@@ -9,6 +9,7 @@ var Proposals = React.createClass({
         return {
             'surveys/refresh': () => this.controller.loadSurveys(this.props.element, this.state.surveys, this.state.terminatedSurveys),
             'toggle': toggle => this.setState({toggle}),
+            'ethereum/ping' : this.controller.updateBalance
         };
     },
     componentDidMount() {

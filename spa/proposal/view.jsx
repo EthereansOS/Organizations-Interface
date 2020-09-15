@@ -10,6 +10,11 @@ var Proposal = React.createClass({
             survey: this.props.survey
         }
     },
+    getDefaultSubscriptions() {
+        return {
+            'ethereum/ping' : this.componentDidMount
+        }
+    },
     switchRef(ref) {
         this.switch = ref;
         var _this = this;
@@ -65,7 +70,7 @@ var Proposal = React.createClass({
                     <p>Sometime Web 3 providers can't estimate correctly the Max Gas needed for complex transactions. Finalizing a Proposal, you execute the code in the EVM, be sure to add the right Max Gas required for its execution. Do it at your own risk. <a href="https://blockgeeks.com/guides/ethereum-gas/">More</a></p>
                     <WalletEnablerButton className="LinkVisualButton LinkVisualButtonB ProposalPoolWithdraw" onClick={e => _this.controller.finalize(e, it)}>Finalize</WalletEnablerButton>
                 </section>}
-                {it.terminationData && !it.withdrawed && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
+                {it.terminationData && parseInt(it.myVotes) > 0 && <WalletEnablerButton className="LinkVisualButton ProposalPoolWithdraw" onClick={e => _this.controller.withdraw(e, it)}>Withdraw</WalletEnablerButton>}
                 <a className={"LinkVisualButton" + (_this.props.toggle === ('info_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.emit('toggle', _this.props.toggle === ('info_' + it.key) ? null : ('info_' + it.key))}>Info</a>
                 {(it.code || it.replacesCode) && <a className={"LinkVisualButton" + (_this.props.toggle === ('code_' + it.key) ? ' Editing' : '')} href="javascript:;" onClick={() => _this.controller.tryLoadDiff().then(() => _this.emit('toggle', _this.props.toggle === ('code_' + it.key) ? null : ('code_' + it.key)))}>Code</a>}
             </section>
@@ -140,8 +145,8 @@ var Proposal = React.createClass({
                     <p>{window.fromDecimals(it.refused, _this.props.element.decimals)} {_this.props.element.symbol}</p>
                 </section>
                 <section className="ProposalVoteBalances">
-                    <h6>Available Balance</h6>
-                    <p>{window.fromDecimals(it.myBalance, _this.props.element.decimals)} {_this.props.element.symbol}</p>
+                        <h6>Available Balance</h6>
+                        <p>{window.fromDecimals(_this.props.myBalance, _this.props.element.decimals)} {_this.props.element.symbol}</p>
                     <h6>Staked Balance</h6>
                     <p>&#9989; | {window.fromDecimals(it.myAccepts, _this.props.element.decimals)} {_this.props.element.symbol}</p>
                     <p>&#9940; | {window.fromDecimals(it.myRefuses, _this.props.element.decimals)} {_this.props.element.symbol}</p>
