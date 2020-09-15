@@ -169,7 +169,7 @@ var Proposal = React.createClass({
                 <section className="ProposalVoteVotingExit">
                     <a className="LinkVisualButton" href="javascript:;" onClick={e => _this.interact(e, it)}>Withdraw All</a>
                 </section>
-                <section className="ProposalVoteVotingExit">
+                <section className="ProposalVoteVotingExit TheDappInfoX">
                     <p>Switch To</p>
                     <select ref={_this.switchRef}>
                         <option value="Accept">&#9989;</option>

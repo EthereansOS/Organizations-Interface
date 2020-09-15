@@ -131,7 +131,7 @@ var Overview = React.createClass({
         return (
             <section className="DFOOverview">
                 <DFOMetadata element={_this.props.element} edit={_this.props.edit}/>
-                <ul className="DFOHosting">
+                <ul className="DFOHosting TheDappInfoX">
                     <section className="HostingCategoryTitle">
                         <h2>Decentralized Application</h2>
                     </section>
@@ -169,7 +169,7 @@ var Overview = React.createClass({
                             <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getNetworkElement("etherscanURL") + "tokenHoldings?a=" + _this.props.element.walletAddress}>&#128142; Etherscan</a>
                         </section>
                     </li>
-                    <li className="TheDappInfo1">
+                    <li className="TheDappInfo1 TheDappInfoX">
                         <h5 className="DFOHostingTitle">&#128302; ENS: </h5>
                         <section className="DFOTitleSection">
                             <AsyncValue>
@@ -185,7 +185,7 @@ var Overview = React.createClass({
                             {_this.renderChangeButton('index')}
                         </section>
                     </li>
-                    <li className="TheDappInfo05">
+                    <li className="TheDappInfo05 TheDappInfoX">
                         <h5 className="DFOHostingTitle DFOHostingTitle2">&#128736; DFO Link: </h5>
                         <section className="DFOTitleSection">
                             <a className="LinkVisualButton LinkVisualEthscan" target="_blank" href={window.getHomepageLink('?addr=' + this.props.element.dFO.options.address)}>Navigate</a>
@@ -212,7 +212,7 @@ var Overview = React.createClass({
                         </section>
                     </section>}
                 </ul>
-                <ul className="DFOHosting">
+                <ul className="DFOHosting TheDappInfoX">
                     <section className="HostingCategoryTitle">
                         <h2>Rules and funds</h2>
                     </section>

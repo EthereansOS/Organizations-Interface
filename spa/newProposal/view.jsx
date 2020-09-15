@@ -203,13 +203,18 @@ var NewProposal = React.createClass({
         var functionality = this.getFunctionality();
         return (
             <section className="NewProposalIndex">
+                <section className="TheDappInfoXYZ">
                 <section className="AllertBanner">
+                    <p>To propose changes, open this website with a desktop or a tablet</p>
+                </section>
+                </section>
+                <section className="AllertBanner TheDappInfoX">
                     <p>If you're deploying a new perpetual functionality, be sure to add both onStart(address,address) and onStop(address) into the Smart Contract.</p>
                 </section>
-                <section className="SideViewCode">
+                <section className="SideViewCode TheDappInfoX">
                     <Editor ref={this.onEditor} className="NewProposalCode" readonly={this.props.delete || this.props.oneTimeCode} sourceLocation={this.props.sourceLocation} sourceLocationId={this.props.sourceLocationId} firstCode={this.props.oneTimeCode} compileAtStart={this.props.oneTimeCode !== undefined && this.props.oneTimeCode !== null}/>
                 </section>
-                <section className="DFOItOptions">
+                <section className="DFOItOptions TheDappInfoX">
                     <p>Name</p>
                     <input className="ProposeTitle" id="functionalityName" type="text" ref={ref => ref && (ref.disabled = (functionality || this.props.delete || this.props.oneTimeCode || this.props.oneTimeProposal) ? true : false) && (ref.value = ((!this.props.delete && functionality && functionality.codeName) || ''))} />
                     <p>Discussion Link</p>

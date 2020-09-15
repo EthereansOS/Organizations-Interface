@@ -40,7 +40,7 @@ var StakingView = React.createClass({
                 stakingData: props.stakeToShow
             });
         }
-        return (<ul className="DFOHosting">
+        return (<ul className="DFOHosting HostingCategoryTitleYYY">
             <section className="HostingCategoryTitle">
                 <h2>Liquidity Mining</h2>
                 {this.props.edit && <a href="javascript:;" onClick={() => _this.setState({ edit: !(_this.state && _this.state.edit) })} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>{_this.state && _this.state.edit ? 'Close' : 'New'}</a>}
@@ -50,16 +50,16 @@ var StakingView = React.createClass({
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.map(element => {
                 var lis = [];
                 lis.push(...element.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
-                    <section className="TheDappInfo1">
+                    <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
                         <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
                             <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
-                            <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
-                            <p className="DFOHostingTitle">Total Lock: <b>{it.blockNumber}</b> Blocks</p>
-                            <p className="DFOLabelTitleInfosmall">DEX: &#129412; V2 </p>
+                            <p className="DFOHostingTitle TheDappInfoX">Distribution: <b>Weekly</b></p>
+                            <p className="DFOHostingTitle TheDappInfoX">Total Lock: <b>{it.blockNumber}</b> Blocks</p>
+                            <p className="DFOLabelTitleInfosmall TheDappInfoX">DEX: &#129412; V2 </p>
                         </section>
                     </section>
-                    <section className="TheDappInfo1">
+                    <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                             {element.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
@@ -68,7 +68,7 @@ var StakingView = React.createClass({
                             </a>)}
                     </section>
                     </section>
-                    <section className="TheDappInfo1">
+                    <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
                             <span className="DFOHostingTitleS">Staked:</span>
                             <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.staked, _this.props.element.decimals)}</b></h5>

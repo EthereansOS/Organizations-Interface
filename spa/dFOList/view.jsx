@@ -138,7 +138,7 @@ var DFOList = React.createClass({
                                             </AsyncValue>
                                         </section>
                                     </a>
-                                    <a className="DFOAddressOpener" href={window.getNetworkElement('etherscanURL') + 'address/' + it.dFO.options.address} target="_blank">
+                                    <a className="DFOAddressOpener DFOAddressOpener2" href={window.getNetworkElement('etherscanURL') + 'address/' + it.dFO.options.address} target="_blank">
                                         <section className="DFOMinInfo">
                                             <h6>Address</h6>
                                             <AsyncValue>

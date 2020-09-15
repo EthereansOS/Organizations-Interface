@@ -89,11 +89,11 @@ var Token = React.createClass({
         var _this = this;
         return (
             <section className="DFOOverview">
-                <ul className="DFOHosting">
+                <ul className="DFOHosting DFOHostingY">
                     <section className="HostingCategoryTitle">
                         <h2>Voting Token</h2>
                     </section>
-                    <li className="TheDappInfo05">
+                    <li className="TheDappInfo05 TheDappInfoYY">
                         <section className="DFOTitleSection">
                             <figure className="VerifiedIcon">
                                 <img src={this.props.element.logoUri ? window.formatLink(this.props.element.logoUri) : this.props.element.logo}></img>
@@ -112,7 +112,7 @@ var Token = React.createClass({
                             </AsyncValue>
                         </section>
                     </li>
-                    <li className="TheDappInfo05">
+                    <li className="TheDappInfo05 TheDappInfoX">
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle">Voting Power:</h5>
                             <AsyncValue>
@@ -122,7 +122,7 @@ var Token = React.createClass({
                         <section className="DFOTitleSection">
                         </section>
                     </li>
-                    <li className="TheDappInfo1">
+                    <li className="TheDappInfo1 TheDappInfoX">
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle">Existing Supply:  </h5>
                             <AsyncValue>
@@ -158,7 +158,7 @@ var Token = React.createClass({
                     </section>
                     {!this.state || !this.state.uniswapPairs && <LoaderMinimino/>}
                     {this.state && this.state.uniswapPairs && this.state.uniswapPairs.length === 0 && <p>No Uniswap V2 pair found</p>}
-                    {this.state && this.state.uniswapPairs && this.state.uniswapPairs.map(it => <li key={it.pairToken.options.address} className="TheDappInfo1 TheDappInfoSub">
+                    {this.state && this.state.uniswapPairs && this.state.uniswapPairs.map(it => <li key={it.pairToken.options.address} className="TheDappInfo1 TheDappInfoY TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle">&#129412; V2 <b>{_this.props.element.symbol} - {it.symbol}</b></h5>
                             <span className="DFOLabelTitleInfosmall">{window.fromDecimals(it.mainReserve, _this.props.element.decimals)} {_this.props.element.symbol}</span>

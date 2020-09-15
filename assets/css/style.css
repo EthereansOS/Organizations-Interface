@@ -591,3 +591,152 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .BazSelectorContainerMenu a {background-color: transparent;}
 .BazSelectorContainerObjects li a {background-color: transparent; color: #f1f1f1; font-weight: bold;}
 .BazSelectorContainerObjects li a p {color: #f1f1f1 !important;}
+.TheDappInfoXYZ {display: none !important;}
+
+@media only screen and (max-device-width: 750px) {
+    .TheDappInfoXYZ {display: inline-block !important;}
+    .Main {min-width: 100%;}
+    header {min-width: 100%; text-align: center;height: 45px;}
+    header ul {width: 95%; height: 45px;}
+    header .BrandLi {width: 60%; text-align: left;margin-top: 13px;}
+    header .BrandLi .BrandLiInfo {text-align: center;}
+    header .SearchLi {display: none;}
+    header .DeployLi {float: right; margin-top: 13px;}
+    header .DeployLi .walletEnablerButton {display: none;}
+    .DFOList {margin-top: 10px; min-width: 100%;}
+    .DFOList .DFOLister {width: 98%;}
+    .DFOMAinNavBox {width: 100%;}
+    .DFOList .DFOLister .DFOInfo .DFOOpener {width: 70%;}
+    .DFOList .DFOLister .DFOInfo .DFOOpener .DFOName {width: 55%; word-break: break-all;}
+    .DFOMAinNavAfter .DFOName {margin: 0px 10px 0 10px !important;}
+    .DFOList .DFOLister .DFOInfo .DFOOpener .DFOName h5 {width: 98%;word-break: break-all; font-size: 13px; font-weight: bold;}
+    .DFOMinInfoOp {display: none !important;}
+    .DFOENSOpener {display: none !important;}
+    .DFOList .DFOLister .DFOInfo .DFOAddressOpener {width: 20%;}
+    .DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo {width: 100%;}
+    .DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo h6 {width: 95%;font-size: 11px;}
+    .DFOList .DFOLister .DFOInfo .DFOAddressOpener .DFOMinInfo h5 {width: 95%;font-size: 11px;}
+    .DFOList .DFOLister .DFOInfo .DFOOpener .DFOIcon {margin:15px 10px 0 0}
+    .DFOAddressOpener2 {display: none !important;}
+    .BETABANNER {position: fixed;}
+    .BETABANNER section {width: 95%;}
+    .BETABANNER h1 {display:none;}
+    .BETABANNER h2 {font-size: 22px;}
+    .BETABANNER p {font-size: 11px;}
+    .NoWeb3 h1 {margin: 0;width: 100%; height: auto;}
+    .NoWeb3 .DisclamerWeb3 {width: 100%;}
+    .NoWeb3 h1 img {width: 100%; height: auto;}
+    .DFOMAinNavAfter {top: 40px;}
+    .DFOMAinNavAfter .DFOOpener {width: 70%;}
+    .DFOOpener .DFOMinInfo {display: none !important;}
+    .DFOEditKill {display: none;}
+    .DFONavigatorAfter {top: 90px;} 
+    .DFOOpened .DFONavigator li {width: 25%;height: 23px;}
+    .DFOOpened .DFONavigator li a {font-size: 10.5px;font-weight: bold;padding: 5px 0 5px 0;height: 13px;}
+    .DFOOpened .DFONavigator {height: 23px;margin: 0 0 0 0;}
+    .DFOOpened .DFOSubNavigator {top: 113px;}
+    .DFOOpened .DFOOverview .DFOFunctionList {margin-top: 0px;width: 95%;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionTitle {width: 80%; margin: 0 0px 0 0;min-height: 50px;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionEmoji h4 {font-size: 15px;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionEmoji {min-height: 40px;margin: 0 5px 0 10px;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionTitle h5 {font-size: 16px;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription {width: 95%; margin-left: 2%;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription p {font-size: 13px; word-break: normal;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOBtnViewSection {width: 90%;margin: 0px 5%;min-height: 50px;}
+    .NewProposaleditor {width: 100% !important;height: 300px !important;}
+    .DFOFxTools {width: 100%;}
+    .DFOFunctionQueryFX .DFOFunctionMethod {width: 100%; text-align: center; min-height: auto;margin: 0 0 0 0;}
+    .DFOFunctionQueryFX .DFOBtnReadSection {width: 100%;margin: 0;min-height: auto;text-align: center;}
+    .DFOFunctionQueryFX .DFOBtnResultSection {width: 100%;margin: 0 0 10px 0;min-height: auto;text-align: center;}
+    .DFOOpened .DFOOverview .DFOStateList {width: 95%; margin-top: 0;}
+    .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState {width: 100%;margin: 5px auto;padding: 10px 0;}
+    .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateTN {width: 90%;margin: 0 0 10px 0;text-align: center;}
+    .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateN, .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateT {width: 100%;}
+    .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateV {width: 100%;margin: 0 0 10px 0; text-align: center;word-break: break-all;}
+    .DFOMAinNavAfter .DFOIcon, .DFOMAinNavAfter .DFOIcon img {width: 33px !important;height: 33px !important;}
+    .DFOMAinNavAfter .DFOIcon {margin: 5px !important;}
+    .DFOMAinNavAfter .DFOOpener {height: 50px !important; width: 100% !important;}
+    .DFOMAinNavAfter .DFOName h5 {font-size: 15px !important;}
+    .DFOListOpenAfter {top: 95px;}
+    .DFOOpened .DFOOverview .DFOHosting {margin-top: 0;margin-bottom: 20px;}
+    .DFOOpened .DFOOverview .DFOHosting h2, .ProposalsActiveIndex > h2, .ProposalsOldIndex > h2 {font-size: 20px !important; text-align: center !important;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo05 {width: 100px;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo2 {width: 95%;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo2 .DFOTitleSection {width: 90%;margin:5px 4%}
+    .LinkVisualButton {width: 100px;padding: 8px 5px;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo1 .DFOTitleSection {width: 100%; text-align: center;}
+    .DFOTitleSection > p {text-align: left;font-size: 13px;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo05 {width: 40%;padding: 0px 5px 10px 5px;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo1 {width: 40%;}
+    .TheDappInfoX {display: none !important;}
+    .TheDappInfo1B {width: 95% !important;text-align: center;}
+    .TheDappInfo1B .DFOLabelTitleInfo {text-align: center;}
+    .TheDappInfo1B img {width: 100px; display: block; margin: 5px auto;}
+    .DFOOpened .DFOOverview .DFOHosting .HostingCategoryTitle h2 span {font-size: 13px; width: 100%;display: inline-block;margin: 5px;}
+    .TheDappInfoY {width: 90% !important; margin: 0 2%;}
+    .TheDappInfoY .DFOTitleSection {padding: 4% !important; width: 90% !important;}
+    .TheDappInfoYY {width: 100% !important; text-align:center;}
+    .TheDappInfoYY .DFOTitleSection {width: 90% !important; text-align: center !important;}
+    .DFOOpened .DFOOverview .DFOHosting .DFOTitleSection figure, .DFOOpened .DFOOverview .DFOHostingY .DFOTitleSection figure img {width: 50px;height: 50px; display: inline-block;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfoAll {width: 90%;}
+    .HostingCategoryTitleYYY .DFOTitleSection {width: 85% !important; margin: 0px 5px !important;}
+    .DFOHostingBBBB .TheDappInfoYY {width: 90% !important;}
+    .DFOHostingBBBB .DFOTitleSection {width: 85% !important;}
+    .NewProposalIndex .AllertBanner {width: 90%;padding: 8px 5%;}
+    .ProposalBio, .DraftBio {width: 90% !important;padding: 10px 5% !important; min-height: 40px;}
+    .ProposalBio h5, .DraftBio h5 {text-align: center !important;}
+    .ProposalBio p, .DraftBio p {width: 100% !important;}
+    .ProposalAction, .ProposalPool {width: 90% !important;margin: 5px !important;}
+    .ProposalVoteINFO {width: 100%!important;}
+    .ProposalVoteToken {width: 90%!important;margin: 5px 5%!important;}
+    .ProposalVoteToken > p {width: 90%!important; margin: 4px 5%!important;}
+    .ProposalVote .ProposalPoolReview .ProposalPoolReviewPercentage {width: 70%!important;}
+    .ProposalVoteBalances {width: 90%!important;margin: 5px 5%!important;border:none;padding: 5px 0 5px 0px!important;}
+    .ProposalVoteVoting {width: 90%!important;margin: 5px 5%!important; padding:0!important;}
+    .ProposalVoteVotingNew input, .ProposalVoteVotingExit input {width: 20%!important;}
+    .AllViewCode {height: 300px;}
+    .ProposalsIndex, .DraftsIndex, .DraftsOldIndex {margin-top: 0;}
+}
+
+@media only screen and (min-device-width: 751px) and (max-device-width: 1024px) {
+    .Main {min-width: 700px !important;}
+    header {min-width: 700px !important;}
+    header ul {width: 95%;}
+    header .SearchLi {width: 450px;}
+    header .SearchLi input {width: 300px}
+    .DFOList, .DFOOpened .DFOOverview {min-width: 700px !important;}
+    .DFOList .DFOLister .DFOInfo {min-width: 700px !important;}
+    .DFOList .DFOLister {width: 95%;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo1 {width:220px}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo05 {width:105px;}
+    .DFOOpened .DFOOverview .DFOFunctionList {width: 100%;}
+    .DFOOpened .DFOOverview .DFOFunctionList li .DFOFunctionDescription {width: 450px;margin: 0px 20px 0 35px;}
+    .DFOOpened .DFOOverview .DFOStateList {width: 100%;}
+    .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState {width: 96%; padding: 20px 2%}
+    .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateTN,.DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateN, .DFOOpened .DFOOverview .DFOStateList li .DFOSingleState .DFOSingleStateT {width: 200px; word-break: break-all;}
+    .DFOFunctionQuery .NewProposaleditor {width: 100%;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfo1 .DFOTitleSection {width: 175px;}
+    .DFOOpened .DFOOverview .DFOHosting .TheDappInfoAll {width: 700px;}
+    .DFOOpened .DFOOverview .DFOHosting .DFOHostingTitle {font-size: 16px;}
+    .AllViewCode .NewProposaleditor {width: 100%}
+    .ProposalsOldIndex .ProposalBio,.ProposalBio, .DraftBio {width: 345px;}
+    .ProposalBio p, .DraftBio p {word-break: break-all;}
+    .NewProposalIndex .AllertBanner {width: 90%;padding: 8px 5%;}
+    .DFOMAinNavBox {width: 100%;}
+    .DFOMAinNavAfter .DFOOpener {width: 450px !important;}
+    .DFOMAinNavAfter .DFOName {width: 160px !important;}
+    .DFOMAinNavAfter .DFOName h5 {font-size:15px !important;}
+    .DFOMAinNavAfter .DFOIcon, .DFOMAinNavAfter .DFOIcon img {width: 25px !important; height: 25px !important;}
+    .DFOMAinNavAfter .DFOMinInfo {width: 215px !important}
+    .DFOMAinNavAfter .DFOMinInfo section {width: 160px;}
+    .Main .MainLoader .MainLoaderAll {width: 90%;}
+    .DFOENSOpener {display: none !important;}
+    .DFOAddressOpener2 {display: none !important;}
+    .dFOMetadata .TheDappInfo1 {width: 65% !important;}
+    .dFOMetadata .TheDappInfo1  .DFOTitleSection {width: 100% !important;}
+    .NavDeploy {width: 100%;}
+    .NavDeploy p {width: 170px;}
+    .DeployNewWhat {margin-left: 50px;}
+    .DFOGovernanceSelector {margin-left: 50px;}
+    .DFOOverview .DeployNewWhat {margin-left: 0px;}
+}
