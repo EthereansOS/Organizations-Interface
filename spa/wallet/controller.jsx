@@ -68,19 +68,19 @@ var WalletController = function (view) {
                     tokenAmount.amount = '0'
                 }
                 tokenAmount.amountDollars = ethereumPrice * parseFloat(window.fromDecimals(tokenAmount.amount, 18));
-
             } else {
                 try {
                     tokenAmount.amount = token.address === window.voidEthereumAddress ? await window.web3.eth.getBalance(context.view.props.element.walletAddress) : await window.blockchainCall(token.token.methods.balanceOf, context.view.props.element.walletAddress);
                     if (!context.view.mounted) {
                         return;
                     }
-                    tokenAmount.amountDollars = token.address === window.voidEthereumAddress ? '1' : window.fromDecimals((await window.blockchainCall(window.uniSwapV2Router.methods.getAmountsOut, window.toDecimals('1', token.decimals), [token.address, window.wethAddress]))[1], 18, true);
+                    tokenAmount.amountDollars = token.address === window.voidEthereumAddress ? '1' : window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', token.decimals), [token.address, window.wethAddress]))[1], 18, true);
                     if (!context.view.mounted) {
                         return;
                     }
                     tokenAmount.amountDollars = parseFloat(window.fromDecimals(tokenAmount.amount, token.decimals, true)) * parseFloat(tokenAmount.amountDollars) * ethereumPrice;
                 } catch (e) {
+                    console.error(e)
                 }
             }
             cumulativeAmountDollar += tokenAmount.amountDollars;
