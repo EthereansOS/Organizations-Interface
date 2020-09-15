@@ -11,6 +11,12 @@ window.Main = async function Main() {
     await window.loadContext();
 };
 
+window.connectFromHomepage = async function(button) {
+    button.innerHTML = '<spa class="loaderMinimino"></span>';
+    button.className = '';
+    window.onEthereumUpdate(0).then(window.choosePage);
+};
+
 window.newContract = function newContract(abi, address) {
     window.contracts = window.contracts || {};
     var key = window.web3.utils.sha3(JSON.stringify(abi));
@@ -108,15 +114,10 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 if (network === undefined || network === null) {
                     return alert('This network is actually not supported!');
                 }
-                window.dfoHub = {
-                    key: 'DFO',
-                    dFO: await window.loadDFO(window.getNetworkElement('dfoAddress')),
-                    startBlock: window.getNetworkElement('deploySearchStart')
-                };
                 delete window.tokensList;
+                var dfo = window.loadDFO(window.getNetworkElement('dfoAddress'));
                 window.loadOffChainWallets();
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
-                window.wethAddress = await window.blockchainCall((window.uniSwapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress)).methods.WETH);
                 try {
                     window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));
                 } catch (e) {}
@@ -124,8 +125,13 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.uniswapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress);
                 window.wethAddress = window.web3.utils.toChecksumAddress(await window.blockchainCall(window.uniswapV2Router.methods.WETH));
                 window.list = {
-                    DFO: window.dfoHub
+                    DFO: {
+                        key: 'DFO',
+                        dFO: await dfo,
+                        startBlock: window.getNetworkElement('deploySearchStart')
+                    }
                 };
+                window.dfoHub = window.list.DFO;
                 update = true;
             }
             delete window.walletAddress;
