@@ -1,8 +1,12 @@
+// SPDX-License-Identifier: BSD-2
+pragma solidity ^0.6.0;
+
 /* Discussion:
  * https://dfohub.com/strategy
  */
-/* Description:
- * A sustainable economic model for
+/*
+ * @title FairInflation
+ * @dev A sustainable economic model for
  * DFO-based Startups to maintain value
  * and funds operations
  *
@@ -85,13 +89,13 @@
  * DFO’s new Voting Tokens is added to the DFOhub Wallet. The DFOhub Wallet is managed only
  * by voting from the BUIDL holders, making assets into the DFOhub wallet the backed value of
  * BUIDL.
- * 
+ *
  * DFOhub Experiment in numbers:
  * ● BUIDL Total Supply = 42.000.000 BUIDL
  * ● DFOhub DFO Wallet = 11.500.000 BUIDL (27.3%)
  * ● DFOhub Team Operations Wallet = 11.500.000 BUIDL (27.3%)
  * ● BUIDL Circulating Supply = 2.200.000 BUIDL (5.2%)
- * 
+ *
  * With a Smart Contract based proposal, DFOhub will step by step inflate the circulating supply of
  * BUIDL for a total of 0.8% during a period of a year and a half by selling a fixed number of BUIDL
  * once every two weeks (~ 100.800 Ethereum Blocks @ 12 sec for a block for 40 times)
@@ -122,24 +126,21 @@
  * All of the functionalities related to this R&D will become available for every DFO as Optional
  * Basic Functionalities, to accelerate the exploration of Programmable Equities R&D.
  */
-pragma solidity ^0.6.0;
-
 contract FairInflationFunctionality {
-
     string private _metadataLink;
 
     constructor(string memory metadataLink) public {
         _metadataLink = metadataLink;
     }
 
-    function getMetadataLink() public view returns(string memory) {
+    function getMetadataLink() public view returns (string memory) {
         return _metadataLink;
     }
 
     //Functionality Set-UP
     //This mandatory method is called by the proxy just after the proposal finalization.
     //It sets-up all the stuff to let this functionality work properly
-    function onStart(address,address) public {
+    function onStart(address, address) public {
         //The Proxy is the main Contract of the DFO Protocol
         IMVDProxy proxy = IMVDProxy(msg.sender);
 
@@ -147,9 +148,11 @@ contract FairInflationFunctionality {
         address tokenToSwapAddress = 0xD6F0Bb2A45110f819e908a915237D652Ac7c5AA8;
 
         //The Smart Contract Address where to swap BUIDL for ETH in Uniswap V1
+
         address uniswapV1ExchangeAddress = 0xFE3eB37C105800842001F759d295eCFb2158A4Cb;
 
         //The Smart Contract Address to locate the Uniswap V2 Exchanges
+
         address uniswapV2RouterAddress = 0xf164fC0Ec4E93095b804a4795bBe1e041497b92a;
 
         //The well-nown USDC Contract Token
@@ -218,7 +221,12 @@ contract FairInflationFunctionality {
         stateHolder.setUint256("swapTimes", swapTimes + 1);
 
         //Are you calling it after two weeks since last time?
-        require(block.number >= (stateHolder.getUint256("lastSwapBlock") + stateHolder.getUint256("swapBlockLimit")), "Too early to swap new Tokens!");
+        require(
+            block.number >=
+                (stateHolder.getUint256("lastSwapBlock") +
+                    stateHolder.getUint256("swapBlockLimit")),
+            "Too early to swap new Tokens!"
+        );
 
         //Save the last time you called it
         stateHolder.setUint256("lastSwapBlock", block.number);
@@ -230,103 +238,200 @@ contract FairInflationFunctionality {
         IERC20 tokenToSwap = IERC20(stateHolder.getAddress("tokenToSwapAddress"));
 
         //How many BUIDL I have to swap for ETH in UniswapV1?
-        uint256 tokenAmountToSwapForEtherInV1 = stateHolder.getUint256("tokenAmountToSwapForEtherInV1");
+        uint256 tokenAmountToSwapForEtherInV1 = stateHolder.getUint256(
+            "tokenAmountToSwapForEtherInV1"
+        );
 
         //How many BUIDL I have to swap for ETH in UniswapV2?
-        uint256 tokenAmountToSwapForEtherInV2 = stateHolder.getUint256("tokenAmountToSwapForEtherInV2");
+        uint256 tokenAmountToSwapForEtherInV2 = stateHolder.getUint256(
+            "tokenAmountToSwapForEtherInV2"
+        );
 
         //How many BUIDL I have to swap for USDC in UniswapV2?
-        uint256 tokenAmountToSwapForUSDCInV2 = stateHolder.getUint256("tokenAmountToSwapForUSDCInV2");
+        uint256 tokenAmountToSwapForUSDCInV2 = stateHolder.getUint256(
+            "tokenAmountToSwapForUSDCInV2"
+        );
 
         //Send the correct cumulative amount of BUIDL tokens to swap from the DFO to this function, to let it spend them in Uniswap V1 and V2
-        proxy.transfer(address(this), tokenAmountToSwapForEtherInV1 + tokenAmountToSwapForEtherInV2 + tokenAmountToSwapForUSDCInV2, address(tokenToSwap));
+        proxy.transfer(
+            address(this),
+            tokenAmountToSwapForEtherInV1 +
+                tokenAmountToSwapForEtherInV2 +
+                tokenAmountToSwapForUSDCInV2,
+            address(tokenToSwap)
+        );
 
         //Swap BUIDL for ETH in UniswapV1
-        uniswapV1(stateHolder,tokenAmountToSwapForEtherInV1, tokenToSwap, dfoWalletAddress);
+        uniswapV1(stateHolder, tokenAmountToSwapForEtherInV1, tokenToSwap, dfoWalletAddress);
 
         //Swap BUIDL for ETH and USDC in UniswapV2
-        uniswapV2(stateHolder, tokenAmountToSwapForEtherInV2, tokenAmountToSwapForUSDCInV2, tokenToSwap, dfoWalletAddress);
+        uniswapV2(
+            stateHolder,
+            tokenAmountToSwapForEtherInV2,
+            tokenAmountToSwapForUSDCInV2,
+            tokenToSwap,
+            dfoWalletAddress
+        );
     }
 
     //Swap BUIDL for ETH in UniswapV1
-    function uniswapV1(IStateHolder stateHolder, uint256 tokenAmountToSwapForEtherInV1, IERC20 tokenToSwap, address dfoWalletAddress) private {
+    function uniswapV1(
+        IStateHolder stateHolder,
+        uint256 tokenAmountToSwapForEtherInV1,
+        IERC20 tokenToSwap,
+        address dfoWalletAddress
+    ) private {
         //Do I have something to swap in UniswapV1?
-        if(tokenAmountToSwapForEtherInV1 <= 0) {
+        if (tokenAmountToSwapForEtherInV1 <= 0) {
             return;
         }
 
         //Take the Uniswap V1 Exchange (Couple BUIDL-ETH) Smart Contract
-        IUniswapV1Exchange uniswapV1Exchange = IUniswapV1Exchange(stateHolder.getAddress("uniswapV1ExchangeAddress"));
+        IUniswapV1Exchange uniswapV1Exchange = IUniswapV1Exchange(
+            stateHolder.getAddress("uniswapV1ExchangeAddress")
+        );
 
         //"Unlock" - Enable UniswapV1 to spend my BUIDL tokens, if necessary
-        if(tokenToSwap.allowance(address(this), address(uniswapV1Exchange)) == 0) {
-            tokenToSwap.approve(address(uniswapV1Exchange), 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
+        if (tokenToSwap.allowance(address(this), address(uniswapV1Exchange)) == 0) {
+            tokenToSwap.approve(
+                address(uniswapV1Exchange),
+                0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+            );
         }
 
         //Swap the desired amount of BUIDL and send gained ETHs to the DFO's Wallet
-        uniswapV1Exchange.tokenToEthTransferInput(tokenAmountToSwapForEtherInV1, uniswapV1Exchange.getTokenToEthInputPrice(tokenAmountToSwapForEtherInV1), block.timestamp + 1000, dfoWalletAddress);
+        uniswapV1Exchange.tokenToEthTransferInput(
+            tokenAmountToSwapForEtherInV1,
+            uniswapV1Exchange.getTokenToEthInputPrice(tokenAmountToSwapForEtherInV1),
+            block.timestamp + 1000,
+            dfoWalletAddress
+        );
     }
 
     //Swap BUIDL for ETH in UniswapV2
-    function uniswapV2(IStateHolder stateHolder, uint256 tokenAmountToSwapForEtherInV2, uint256 tokenAmountToSwapForUSDCInV2, IERC20 tokenToSwap, address dfoWalletAddress) private {
+    function uniswapV2(
+        IStateHolder stateHolder,
+        uint256 tokenAmountToSwapForEtherInV2,
+        uint256 tokenAmountToSwapForUSDCInV2,
+        IERC20 tokenToSwap,
+        address dfoWalletAddress
+    ) private {
         //Do I have something to swap in UniswapV2?
-        if(tokenAmountToSwapForEtherInV2 <= 0 && tokenAmountToSwapForUSDCInV2 <= 0) {
+        if (tokenAmountToSwapForEtherInV2 <= 0 && tokenAmountToSwapForUSDCInV2 <= 0) {
             return;
         }
 
         //Take the Uniswap V2 Router Smart Contract
-        IUniswapV2Router uniswapV2Router = IUniswapV2Router(stateHolder.getAddress("uniswapV2RouterAddress"));
+        IUniswapV2Router uniswapV2Router = IUniswapV2Router(
+            stateHolder.getAddress("uniswapV2RouterAddress")
+        );
 
         //"Unlock" - Enable UniswapV2 to spend my BUIDL tokens, if necessary
-        if(tokenToSwap.allowance(address(this), address(uniswapV2Router)) == 0) {
-            tokenToSwap.approve(address(uniswapV2Router), 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
+        if (tokenToSwap.allowance(address(this), address(uniswapV2Router)) == 0) {
+            tokenToSwap.approve(
+                address(uniswapV2Router),
+                0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+            );
         }
 
         address[] memory path = new address[](2);
         path[0] = address(tokenToSwap);
 
         //Swap the desired amount of BUIDL and send gained ETHs to the DFO's Wallet
-        if(tokenAmountToSwapForEtherInV2 > 0) {
+        if (tokenAmountToSwapForEtherInV2 > 0) {
             path[1] = uniswapV2Router.WETH();
-            uniswapV2Router.swapExactTokensForETH(tokenAmountToSwapForEtherInV2, uniswapV2Router.getAmountsOut(tokenAmountToSwapForEtherInV2, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
+            uniswapV2Router.swapExactTokensForETH(
+                tokenAmountToSwapForEtherInV2,
+                uniswapV2Router.getAmountsOut(tokenAmountToSwapForEtherInV2, path)[1],
+                path,
+                dfoWalletAddress,
+                block.timestamp + 1000
+            );
         }
 
         //Swap the desired amount of BUIDL and send gained USDCs to the DFO's Wallet
-        if(tokenAmountToSwapForUSDCInV2 > 0) {
+        if (tokenAmountToSwapForUSDCInV2 > 0) {
             path[1] = stateHolder.getAddress("uSDCTokenAddress");
-            uniswapV2Router.swapExactTokensForTokens(tokenAmountToSwapForUSDCInV2, uniswapV2Router.getAmountsOut(tokenAmountToSwapForUSDCInV2, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
+            uniswapV2Router.swapExactTokensForTokens(
+                tokenAmountToSwapForUSDCInV2,
+                uniswapV2Router.getAmountsOut(tokenAmountToSwapForUSDCInV2, path)[1],
+                path,
+                dfoWalletAddress,
+                block.timestamp + 1000
+            );
         }
     }
 }
 
 interface IUniswapV1Exchange {
-    function tokenToEthTransferInput(uint256 tokens_sold, uint256 min_eth, uint256 deadline, address recipient) external returns (uint256  eth_bought);
-    function getTokenToEthInputPrice(uint256 tokens_sold) external view returns (uint256 eth_bought);
+    function tokenToEthTransferInput(
+        uint256 tokens_sold,
+        uint256 min_eth,
+        uint256 deadline,
+        address recipient
+    ) external returns (uint256 eth_bought);
+
+    function getTokenToEthInputPrice(uint256 tokens_sold)
+        external
+        view
+        returns (uint256 eth_bought);
 }
 
 interface IUniswapV2Router {
     function WETH() external pure returns (address);
-    function getAmountsOut(uint amountIn, address[] calldata path) external view returns (uint[] memory amounts);
-    function swapExactTokensForETH(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts);
-    function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] calldata path, address to, uint deadline) external returns (uint[] memory amounts);
+
+    function getAmountsOut(uint256 amountIn, address[] calldata path)
+        external
+        view
+        returns (uint256[] memory amounts);
+
+    function swapExactTokensForETH(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapExactTokensForTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
 }
 
 interface IMVDProxy {
-    function getToken() external view returns(address);
-    function getStateHolderAddress() external view returns(address);
-    function getMVDWalletAddress() external view returns(address);
-    function transfer(address receiver, uint256 value, address token) external;
+    function getToken() external view returns (address);
+
+    function getStateHolderAddress() external view returns (address);
+
+    function getMVDWalletAddress() external view returns (address);
+
+    function transfer(
+        address receiver,
+        uint256 value,
+        address token
+    ) external;
 }
 
 interface IStateHolder {
-    function setUint256(string calldata name, uint256 value) external returns(uint256);
-    function getUint256(string calldata name) external view returns(uint256);
-    function getAddress(string calldata name) external view returns(address);
+    function setUint256(string calldata name, uint256 value) external returns (uint256);
+
+    function getUint256(string calldata name) external view returns (uint256);
+
+    function getAddress(string calldata name) external view returns (address);
+
     function setAddress(string calldata varName, address val) external returns (address);
-    function clear(string calldata varName) external returns(string memory oldDataType, bytes memory oldVal);
+
+    function clear(string calldata varName)
+        external
+        returns (string memory oldDataType, bytes memory oldVal);
 }
 
 interface IERC20 {
     function allowance(address owner, address spender) external view returns (uint256);
+
     function approve(address spender, uint256 amount) external returns (bool);
 }

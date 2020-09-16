@@ -63,13 +63,13 @@ contract DeployGovernanceRules {
     /**
      * @dev Deploy the Governance Rules cloning the original core one and modify it according to
      * the desired functionalities/configurations
-     * @param sender
+     * @param sender Address of the caller
      * @param
      * @param minimumBlockNumber Amount of blocks for the duration of a proposal
      * @param emergencyBlockNumber Amount of blocks for the duration of an EmergencyProposal
      * @param emergencyStaking
      * @param quorum Required quorum for a proposal to be accepted
-     * @param surveyMaxCap
+     * @param surveyMaxCap Amount of voting tokens needed to reach the max-cap on a proposal
      * @param surveyMinStake
      * @param surveySingleReward
      * @return mvdFunctionalitiesManager The newly created Functionalities Manager
