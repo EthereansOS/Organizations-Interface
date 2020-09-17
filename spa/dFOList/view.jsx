@@ -148,7 +148,7 @@ var DFOList = React.createClass({
             <section className={"DFOList" + (this.state && this.state.key ? ' DFOListOpenAfter' : '')}>
                 {(!this.state || !this.state.key) && <section className="ListOrderPanel">
                 <label className="ORDERINFOOOOOO">
-                        <p>sort by</p>
+                        <p>Sort by</p>
                         <select onChange={this.setOrder}>
                             {Object.entries(this.state.orders).map(it => <option key={it[0]} value={it[0]} selected={_this.state.order === it[0]}>{it[1]}</option>)}
                         </select>
