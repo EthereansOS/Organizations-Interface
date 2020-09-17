@@ -468,12 +468,12 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .SpecialMetadataBTN {margin: 10px auto !important; display: inline-block; font-size: 13px; width: auto; height: auto; padding: 7px 5px;}
 .stakingEdit .TheDappInfoSub {margin: 20px 0;}
 .DFOLabelTitleInfo4 {line-height: 1.4 !important;}
-.METADATAINFOOOOOO span {font-size: 13px; vertical-align: middle; margin-right: 5px;}
+.METADATAINFOOOOOO span {font-size: 13px; vertical-align: middle; margin-right: 5px;margin-block-start: 0;margin-block-end: 0; line-height: 1;}
 .METADATAINFOOOOOO input {vertical-align: middle;}
 .ORDERINFOOOOOO, .METADATAINFOOOOOO {background-color: #d6d6d6; border-radius: 8px; padding: 7px 10px; margin: auto 5px; cursor: pointer;}
 .ORDERINFOOOOOO select {background-color: #d6d6d6;border: none; font-weight: bold;}
 .ListOrderPanel {width: 100%; text-align: center; margin: 5px auto 35px auto;}
-.ListOrderPanel p {font-size: 13px; color: #191919; margin: auto 5px; vertical-align: middle; display: inline-block;vertical-align: middle; display: inline-block;}
+.ListOrderPanel p {font-size: 13px; color: #191919; margin: auto 5px; vertical-align: middle; display: inline-block;vertical-align: middle; display: inline-block;margin-block-start: 0;margin-block-end: 0; line-height: 1;}
 
 .BazTokenSelector {width: 100%; display: inline-block; margin: 10px auto; text-align: center;}
 .BazTokenSelector a {padding: 10px 20px; text-decoration: none; font-weight: bold; display: inline-block; margin: 5px; border-radius: 6px;}
