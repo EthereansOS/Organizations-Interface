@@ -80,7 +80,6 @@ var WalletController = function (view) {
                     }
                     tokenAmount.amountDollars = parseFloat(window.fromDecimals(tokenAmount.amount, token.decimals, true)) * parseFloat(tokenAmount.amountDollars) * ethereumPrice;
                 } catch (e) {
-                    console.error(e)
                 }
             }
             cumulativeAmountDollar += tokenAmount.amountDollars;

@@ -148,7 +148,7 @@ var Wallet = React.createClass({
                     {_this.state && _this.state.tokenAmounts && _this.state.tokens && _this.state.tokens.map(it => _this.state.tokenAmounts[it.i].amount !== undefined && _this.state.tokenAmounts[it.i].amount !== '0' && <li key={it.address} className="TheDappInfo1 TheDappInfoY TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <section className="DFOWalletBalanceSingleT">
-                                <img src={it.logo}></img>
+                                <img src={it.logo} alt={it.symbol.substring(0, 1).toUpperCase()}/>
                                 <h3>{it.symbol} {_this.state.tokenAmounts[it.i].amountDollars === undefined ? <LoaderMinimino /> : !_this.state.tokenAmounts[it.i].amountDollars ? undefined : <span className="DFOLabelTitleInfosmall"> (${window.formatMoney(_this.state.tokenAmounts[it.i].amountDollars)})</span>}</h3>
                             </section>
                             {_this.state.tokenAmounts[it.i].amount !== undefined && <h5 className="DFOLabelTitleInfoM"><b>{window.fromDecimals(_this.state.tokenAmounts[it.i].amount, it.decimals)}</b></h5>}

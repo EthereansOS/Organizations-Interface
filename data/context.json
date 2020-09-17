@@ -25,7 +25,7 @@
     "uniSwapV2RouterAddress": "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
     "uniSwapV2FactoryAddress" : "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f",
     "ipfsHost": "https://ipfs.infura.io:5001/api/v0/",
-    "ipfsUrlTemplate": "ipfs://ipfs/",
+    "ipfsUrlTemplates": ["ipfs://ipfs/", "ipfs://"],
     "ipfsUrlChanger" : "https://gateway.ipfs.io/ipfs/",
     "deploySearchStart": 9779603,
     "deploySearchStartRopsten": 7465062,

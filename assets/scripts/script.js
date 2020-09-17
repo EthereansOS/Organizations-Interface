@@ -1288,6 +1288,16 @@ window.loadLogo = async function loadLogo(address) {
 };
 
 window.loadOffChainWallets = async function loadOffChainWallets() {
+    var loadLogoWork = async function loadLogoWork(token) {
+        token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
+        token.logoURI = window.formatLink(token.logoURI);
+        try {
+            await window.AJAXRequest(token.logoURI);
+        } catch (e) {
+            token.logoURI = 'assets/img/default-logo.png'
+        }
+        token.logo = token.logoURI;
+    };
     return await (window.tokensList = window.tokensList || new Promise(async function(ok) {
         var tokensList = {
             "Programmable Equities": (await window.AJAXRequest(window.context.programmableEquitiesURL)).tokens.map(it => it.chainId === window.networkId && it),
@@ -1307,13 +1317,7 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
                 }
                 token.listName = key;
                 token.token = token.token || window.newContract(window.context.votingTokenAbi, token.address);
-                token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
-                try {
-                    await window.AJAXRequest(token.logoURI);
-                } catch (e) {
-                    token.logoURI = 'assets/img/default-logo.png'
-                }
-                token.logo = token.logoURI;
+                loadLogoWork(token);
                 tokensList[key][i] = token;
             }
         }
@@ -1742,16 +1746,8 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
     element.walletBUIDLDollar = '0';
     element.walletUSDC = '0';
     element.walletUSDCDollar = '0';
-    element.walletUSDT = '0';
-    element.walletUSDTDollar = '0';
     element.walletDAI = '0';
     element.walletDAIDollar = '0';
-    element.walletRSV = '0';
-    element.walletRSVDollar = '0';
-    element.walletWBTC = '0';
-    element.walletWBTCDollar = '0';
-    element.walletWETH = '0';
-    element.walletWETHDollar = '0';
     try {
         element.walletDAI = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("daiTokenAddress")).methods.balanceOf, element.walletAddress);
         element.walletDAIDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("daiTokenAddress"), window.wethAddress]))[1], 18, true);
@@ -1764,18 +1760,6 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
         element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdcTokenAddress")).methods.balanceOf, element.walletAddress);
         element.walletUSDCDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 6), [window.getNetworkElement("usdcTokenAddress"), window.wethAddress]))[1], 18, true);
         element.walletUSDCDollar = parseFloat(window.fromDecimals(element.walletUSDC, 6, true)) * parseFloat(element.walletUSDCDollar) * ethereumPrice;
-        element.walletUSDT = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdtTokenAddress")).methods.balanceOf, element.walletAddress);
-        element.walletUSDTDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 6), [window.getNetworkElement("usdtTokenAddress"), window.wethAddress]))[1], 18, true);
-        element.walletUSDTDollar = parseFloat(window.fromDecimals(element.walletUSDT, 6, true)) * parseFloat(element.walletUSDTDollar) * ethereumPrice;
-        element.walletDAI = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("daiTokenAddress")).methods.balanceOf, element.walletAddress);
-        //element.walletDAIDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("daiTokenAddress"), window.wethAddress]))[1], 18, true);
-        //element.walletDAIDollar = parseFloat(window.fromDecimals(element.walletDAI, 18, true)) * parseFloat(element.walletDAIDollar) * ethereumPrice;
-        element.walletRSV = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("rsvTokenAddress")).methods.balanceOf, element.walletAddress);
-        element.walletRSVDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("rsvTokenAddress"), window.wethAddress]))[1], 18, true);
-        element.walletRSVDollar = parseFloat(window.fromDecimals(element.walletRSV, 18, true)) * parseFloat(element.walletRSVDollar) * ethereumPrice;
-        element.walletWBTC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("wbtcTokenAddress")).methods.balanceOf, element.walletAddress);
-        element.walletWBTCDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 8), [window.getNetworkElement("wbtcTokenAddress"), window.wethAddress]))[1], 18, true);
-        element.walletWBTCDollar = parseFloat(window.fromDecimals(element.walletWBTC, 8, true)) * parseFloat(element.walletWBTCDollar) * ethereumPrice;
     } catch (e) {}
     try {
         element.walletBUIDLDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', window.dfoHub.decimals), [window.dfoHub.token.options.address, window.wethAddress]))[1], 18, true);
@@ -1844,7 +1828,7 @@ window.uploadToIPFS = async function uploadToIPFS(files) {
     var hashes = [];
     window.api = window.api || new IpfsHttpClient(window.context.ipfsHost);
     for await (var upload of window.api.add(list)) {
-        hashes.push(window.context.ipfsUrlTemplate + upload.path);
+        hashes.push(window.context.ipfsUrlTemplates[0] + upload.path);
     }
     return single ? hashes[0] : hashes;
 };
@@ -1994,7 +1978,10 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 };
 
 window.formatLink = function formatLink(link) {
-    link = (link ? link instanceof Array ? link[0] : link : '').split(window.context.ipfsUrlTemplate).join(window.context.ipfsUrlChanger);
+    link = (link ? link instanceof Array ? link[0] : link : '');
+    for(var temp of window.context.ipfsUrlTemplates) {
+        link = link.split(temp).join(window.context.ipfsUrlChanger);
+    }
     while(link && link.startsWith('/')) {
         link = link.substring(1);
     }
