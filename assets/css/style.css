@@ -468,6 +468,12 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .SpecialMetadataBTN {margin: 10px auto !important; display: inline-block; font-size: 13px; width: auto; height: auto; padding: 7px 5px;}
 .stakingEdit .TheDappInfoSub {margin: 20px 0;}
 .DFOLabelTitleInfo4 {line-height: 1.4 !important;}
+.METADATAINFOOOOOO span {font-size: 13px; vertical-align: middle; margin-right: 5px;}
+.METADATAINFOOOOOO input {vertical-align: middle;}
+.ORDERINFOOOOOO, .METADATAINFOOOOOO {background-color: #d6d6d6; border-radius: 8px; padding: 7px 10px; margin: auto 5px; cursor: pointer;}
+.ORDERINFOOOOOO select {background-color: #d6d6d6;border: none; font-weight: bold;}
+.ListOrderPanel {width: 100%; text-align: center; margin: 5px auto 35px auto;}
+.ListOrderPanel p {font-size: 13px; color: #191919; margin: auto 5px; vertical-align: middle; display: inline-block;vertical-align: middle; display: inline-block;}
 
 .BazTokenSelector {width: 100%; display: inline-block; margin: 10px auto; text-align: center;}
 .BazTokenSelector a {padding: 10px 20px; text-decoration: none; font-weight: bold; display: inline-block; margin: 5px; border-radius: 6px;}
@@ -511,6 +517,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .DarkMode .DFOFunctionQueryFX  .DFOBtnReadSection ul li input[type=number],.DarkMode .DFOFunctionQueryFX  .DFOBtnReadSection ul li input[type=text] {background-color: #333333; color: #f1f1f1; border: none;}
 .DarkMode .LLinkVisualButtonSpecial {color: #616060 !important;}
 .DarkMode .Pistombrillo input {background-color: #3e3e3e; border: 1px solid #333333; color: #f1f1f1;}
+.DarkMode .ORDERINFOOOOOO, .DarkMode .METADATAINFOOOOOO, .DarkMode .ListOrderPanel p, .DarkMode .ORDERINFOOOOOO select {background-color: #191919; color: #f1f1f1;}
 .TheDappInfosub {position: relative;}
 .ChiudiQuella {position: absolute;top: 5px;left: 15px;background-color: #f30303;width: 15px;height: 15px;font-size: 15px;text-align: center;border-radius: 50%;color: #ffffff; text-decoration: none; cursor: pointer;}
 .ChiudiQuellaGigi {top: -3px;left: -6px;}
@@ -698,6 +705,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
     .ProposalVoteVotingNew input, .ProposalVoteVotingExit input {width: 20%!important;}
     .AllViewCode {height: 300px;}
     .ProposalsIndex, .DraftsIndex, .DraftsOldIndex {margin-top: 0;}
+    .ListOrderPanel p {display: none;}
 }
 
 @media only screen and (min-device-width: 751px) and (max-device-width: 1024px) {

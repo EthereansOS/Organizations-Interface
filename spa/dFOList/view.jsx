@@ -23,17 +23,17 @@ var DFOList = React.createClass({
             orderByMetadata: window.localStorage.dfoListOrderByMetadata === 'false' ? false : true,
             order: window.localStorage.dfoListOrderMode || 'sortByUnlockedMarketCap',
             orders: {
-                'sortByUnlockedMarketCap': 'By unlocked market cap',
-                'sortByLockedMarketCap': 'Bylocked market cap',
-                'sortByTotalMarketCap': 'By total market cap',
-                'sortFromLast': 'From the newest',
-                'sortFromFirst': 'From the first'
+                'sortByUnlockedMarketCap': 'Circ. Supply',
+                'sortByLockedMarketCap': 'Locked Supply',
+                'sortByTotalMarketCap': 'Market Cap',
+                'sortFromLast': 'Newest',
+                'sortFromFirst': 'Oldest'
             }
         }
     },
     setOrder(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        window.localStorage.setItem('dfoListOrderMode', e.currentTarget.dataset.order)
+        window.localStorage.setItem('dfoListOrderMode', e.currentTarget.value)
         this.setState({ order: window.localStorage.dfoListOrderMode });
     },
     setCheckOrderByMetadata(e) {
@@ -154,12 +154,16 @@ var DFOList = React.createClass({
         return (
             <section className={"DFOList" + (this.state && this.state.key ? ' DFOListOpenAfter' : '')}>
                 {(!this.state || !this.state.key) && <section className="ListOrderPanel">
-                    <h2>DFO Order</h2>
-                    <label>
-                        <span>Including Metadata</span>
+                <label className="ORDERINFOOOOOO">
+                        <p>Order from</p>
+                        <select onChange={this.setOrder}>
+                            {Object.entries(this.state.orders).map(it => <option key={it[0]} value={it[0]} selected={_this.state.order === it[0]}>{it[1]}</option>)}
+                        </select>
+                    </label>
+                    <label className="METADATAINFOOOOOO">
+                        <span>Metadata First</span>
                         <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata}/>
                     </label>
-                    {Object.entries(this.state.orders).map(it => <a key={it[0]} href="javascript:;" className={"ListOrderItem" + (_this.state.order === it[0] ? " Selected" : "")} onClick={this.setOrder} data-order={it[0]}>{it[1]}</a>)}
                     <br/>
                 </section>}
                 <ul className="DFOLister">
