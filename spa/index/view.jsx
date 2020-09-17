@@ -62,6 +62,11 @@ var Index = React.createClass({
         $(e.target).html('&#' + (this.domRoot.toggleClass('DarkMode').hasClass('DarkMode') ? '128161' : '127769') + ';');
         window.localStorage.setItem('lightMode', this.domRoot.hasClass('DarkMode') ? 'false' : 'true');
     },
+    compareGotcha(ref) {
+        ref && setTimeout(function() {
+            ref.innerHTML = '<a href="javascript:;" onclick="$(this).parent().parent().parent().hide()">Gotcha!</a>'
+        }, 3000);
+    },
     render() {
         return (
             <div className={"Main" + (window.localStorage.lightMode === 'true' ? "" : " DarkMode")}>
@@ -99,7 +104,9 @@ var Index = React.createClass({
                             <h2>Simple View</h2>
                             <p>During the R&D for the new DFOhub front-end V2, you can use this simplified front-end experience. Here you can use every DFOhub features (farming, voting etc), but to propose updates, you need to use a desktop.</p>
                             </section>
-                            <a href="javascript:;" onClick={e => $(e.currentTarget).parent().parent().hide()}>Gotcha!</a>
+                            <section ref={this.compareGotcha}>
+                                <span className="loaderMinimino"/>
+                            </section>
                         </section>
                     </div>}
                     {this.state && this.state.deploy && <Deploy/>}

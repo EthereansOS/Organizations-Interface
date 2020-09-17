@@ -88,14 +88,14 @@ var DFOList = React.createClass({
     },
     sortList(list) {
         var sortedList = this[this.state.order](list);
-        var index = sortedList.indexOf(window.dfoHub);
-        sortedList.splice(index, 1);
-        sortedList.unshift(window.dfoHub);
         if(this.state.orderByMetadata) {
             var finalList = sortedList.filter(it => it.dFO.metadataLink !== undefined && it.dFO.metadataLink !== null);
             finalList.push(...sortedList.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null));
-            return finalList;
+            sortedList = finalList;
         }
+        /*var index = sortedList.indexOf(window.dfoHub);
+        sortedList.splice(index, 1);
+        sortedList.unshift(window.dfoHub);*/
         return sortedList;
     },
     sortFromLast(list) {
@@ -111,17 +111,6 @@ var DFOList = React.createClass({
             var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
             return a < b ? -1 : a > b ? 1 : 0;
         });
-    },
-    sortByMetadata(l) {
-        var sortFunction = function sortFunction(first, second) {
-            var a = parseInt(first.key.substring(0, first.key.indexOf("_")));
-            var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
-            return a < b ? 1 : a > b ? -1 : 0;
-        };
-        var list = Object.values(l);
-        var finalList = list.filter(it => it.dFO.metadataLink !== undefined && it.dFO.metadataLink !== null).sort(sortFunction);
-        finalList.push(...list.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null).sort(sortFunction));
-        return finalList;
     },
     sortByUnlockedMarketCap(list) {
         return this.sortByMarketCap(list, 'unlockedMarketCapDollar');
