@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-2
 
-pragma solidity ^0.6.0;
+pragma solidity >=0.7.0;
 
 /*
  * @title DFO Protocol - Community-Driven Governance.
@@ -51,7 +51,7 @@ contract CommunityDrivenGovernance {
     /**
      * @dev Trigger for the finalization of a proposal.
      * @param proposal Address for the proposal
-     * @param result
+     * @param result Boolean Flag representing the end status of the proposal
      */
     function proposalEnd(address proposal, bool result) public {
         if (!result) {

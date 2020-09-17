@@ -81,7 +81,7 @@ contract DeployGovernanceRules {
      * @param
      * @param minimumBlockNumber Amount of blocks for the duration of a proposal
      * @param emergencyBlockNumber Amount of blocks for the duration of an EmergencyProposal
-     * @param emergencyStaking
+     * @param emergencyStaking Emergency Staking
      * @param quorum Required quorum for a proposal to be accepted
      * @param surveyMaxCap Amount of voting tokens needed to reach the max-cap on a proposal
      * @param surveyMinStake The minimum of Token Staked needed to create a new Proposal.

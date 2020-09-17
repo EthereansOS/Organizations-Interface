@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD-2
-pragma solidity ^0.6.0;
+pragma solidity >=0.7.0;
 
 /**
  * @title Staking (Liquidity Mining/Farming) Contract for Buidl
@@ -49,9 +49,9 @@ contract BUIDLHodl {
      * @param buidlEthPoolTokenAddress Address of the Uniswap buidl-eth pool
      * @param buidlUSDCPoolTokenAddress Address of the Uniswap buidl-usdc pool
      * @param accumulatingEndBlock Maximum time in which the staking is available
-     * @param blockRanges Array of timed windows for the various staking tiers
+     * @param blocksRanges Array of timed windows for the various staking tiers
      * @param tokenRewardsMultipliers Multipliers for the above tiers (Numerator)
-     * @param tokensRewardsDividers Dividers for the above tier, gives you the percentage (Denominator)
+     * @param tokenRewardsDividers Dividers for the above tier, gives you the percentage (Denominator)
      */
     constructor(
         address proxy,

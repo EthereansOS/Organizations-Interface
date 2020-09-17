@@ -1,0 +1,24 @@
+site_name: Unifi Docs
+docs_dir: md-build
+site_dir: build
+permalink: True
+nav:
+  - Home: README.md
+  - Contributing: CONTRIBUTING.md
+  - API:
+      - Contracts:
+          - DeployDFO: contracts/DeployDFO.md
+          - DeployGovernanceRules: contracts/DeployGovernanceRules.md
+          - DeployVotingToken: contracts/DeployVotingToken.md
+          - GetEmergencySurveyStakingFunctionality: contracts/GetEmergencySurveyStakingFunctionality.md
+          - GetMinimumBlockNumberForEmergencySurveyFunctionality: contracts/GetMinimumBlockNumberForEmergencySurveyFunctionality.md
+          - GetMinimumBlockNumberForSurveyFunctionality: contracts/GetMinimumBlockNumberForSurveyFunctionality.md
+          - SurveyResultValidator: contracts/SurveyResultValidator.md
+          - VotingTokenAmountForHub: contracts/VotingTokenAmountForHub.md
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - typescript
+    - javascript

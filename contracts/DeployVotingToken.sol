@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: BSD
-pragma solidity ^0.6.0;
+pragma solidity >=0.7.0;
 
 /**
  * Description:

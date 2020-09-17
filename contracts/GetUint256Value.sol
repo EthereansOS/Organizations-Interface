@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity >=0.7.0;
 
 /**
  * Description:
@@ -40,7 +40,11 @@ contract GetUint256Value {
      */
     function onStop(address) public {}
 
-    function getValue() public view returns (uint256) {
+    /**
+     * @dev GETTER for the value
+     * @return value Get the value
+     */
+    function getValue() public view returns (uint256 value) {
         return _value;
     }
 }

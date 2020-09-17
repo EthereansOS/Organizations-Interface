@@ -1,0 +1,23 @@
+{
+  "name": "dfo-hub",
+  "version": "0.5.0",
+  "main": "index.html",
+  "repository": "git@github.com:b-u-i-d-l/unifi.git",
+  "author": "BUIDL <buidlers@dfohub.com>",
+  "license": "BSD 2",
+  "devDependencies": {
+    "prettier": "^2.1.0",
+    "prettier-plugin-solidity": "^1.0.0-alpha.56",
+    "solc": "^0.7.0",
+    "solidity-docgen": "^0.5.4"
+  },
+  "scripts": {
+    "docs": "yarn docs:docgen && yarn docs:mkdocs:serve",
+    "docs:build": "yarn docs:docgen && yarn docs:mkdocs:build",
+    "docs:clean": "rm -r docs/{md-build,build}",
+    "docs:serve": "yarn docs:docgen && yarn docs:mkdocs:serve",
+    "docs:docgen": "py-solidity-docgen --input contracts --output docs/md-build && cp *.md docs/md-build",
+    "docs:mkdocs:build": "cd docs && mkdocs build",
+    "docs:mkdocs:serve": "yarn docs:docgen && cd docs && mkdocs serve"
+  }
+}
