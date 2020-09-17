@@ -73,6 +73,10 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
     }
     dfo.options.originalAddress = allAddresses[0];
     dfo.options.allAddresses = allAddresses;
+    try {
+        dfo.metadataLink = window.web3.eth.abi.decodeParameter('string', await window.blockchainCall(dfo.methods.read, 'getMetadataLink', '0x'));
+    } catch(e) {
+    }
     return dfo;
 };
 
@@ -1729,8 +1733,10 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
     element.balanceOf = await window.blockchainCall(element.token.methods.balanceOf, window.dfoHub.walletAddress);
     element.communityTokens = await window.blockchainCall(element.token.methods.balanceOf, element.walletAddress);
     element.communityTokensDollar = '0';
+    element.availableSupply = window.web3.utils.toBN(element.totalSupply).sub(window.web3.utils.toBN(element.communityTokens)).toString();
+    element.unlockedMarketCapDollar = 0;
     element.walletETH = await window.web3.eth.getBalance(element.walletAddress);
-    element.walletETHDollar = parseFloat(window.fromDecimals(element.walletETH, 18, true)) * ethereumPrice;
+    element.walletETHDollar = ethereumPrice;
     element.walletBUIDL = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, element.walletAddress);
     element.walletBUIDLDollar = '0';
     element.walletUSDC = '0';
@@ -1751,6 +1757,8 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
         element.walletDAIDollar = parseFloat(window.fromDecimals(element.walletDAI, 18, true)) * parseFloat(element.walletDAIDollar) * ethereumPrice;
     } catch (e) {}
     try {
+        element.communityTokensDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', element.decimals), [element.token.options.address, window.wethAddress]))[1], 18, true);
+        element.communityTokensDollar = parseFloat(window.fromDecimals(element.communityTokens, 18, true)) * element.communityTokensDollar * ethereumPrice;
         element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdcTokenAddress")).methods.balanceOf, element.walletAddress);
         element.walletUSDCDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 6), [window.getNetworkElement("usdcTokenAddress"), window.wethAddress]))[1], 18, true);
         element.walletUSDCDollar = parseFloat(window.fromDecimals(element.walletUSDC, 6, true)) * parseFloat(element.walletUSDCDollar) * ethereumPrice;
@@ -1766,11 +1774,6 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
         element.walletWBTC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("wbtcTokenAddress")).methods.balanceOf, element.walletAddress);
         element.walletWBTCDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 8), [window.getNetworkElement("wbtcTokenAddress"), window.wethAddress]))[1], 18, true);
         element.walletWBTCDollar = parseFloat(window.fromDecimals(element.walletWBTC, 8, true)) * parseFloat(element.walletWBTCDollar) * ethereumPrice;
-        element.walletWETH = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("wethTokenAddress")).methods.balanceOf, element.walletAddress);
-        element.walletWETHDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("wethTokenAddress"), window.wethAddress]))[1], 18, true);
-        element.walletWETHDollar = parseFloat(window.fromDecimals(element.walletWETH, 18, true)) * parseFloat(element.walletWETHDollar) * ethereumPrice;
-        element.communityTokensDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', element.decimals), [element.token.options.address, window.wethAddress]))[1], 18, true);
-        element.communityTokensDollar = parseFloat(window.fromDecimals(element.communityTokens, 18, true)) * element.communityTokensDollar * ethereumPrice;
     } catch (e) {}
     try {
         element.walletBUIDLDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', window.dfoHub.decimals), [window.dfoHub.token.options.address, window.wethAddress]))[1], 18, true);
@@ -1781,6 +1784,18 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
     element.walletCumulativeDollar && (element.walletCumulativeDollar = window.formatMoney(element.walletCumulativeDollar));
     element.walletUSDCDollar && (element.walletUSDCDollar = window.formatMoney(element.walletUSDCDollar));
     element.communityTokensDollar && (element.communityTokensDollar = window.formatMoney(element.communityTokensDollar));
+    try {
+        element.unlockedMarketCapDollar = parseFloat(element.communityTokensDollar.split(',').join('.')) * parseFloat(window.fromDecimals(element.availableSupply, element.decimals, true));
+    } catch(e) {
+    }
+    try {
+        element.lockedMarketCapDollar = parseFloat(element.communityTokensDollar.split(',').join('.')) * parseFloat(window.fromDecimals(element.communityTokens, element.decimals, true));
+    } catch(e) {
+    }
+    try {
+        element.totalMarketCapDollar = parseFloat(element.communityTokensDollar.split(',').join('.')) * parseFloat(window.fromDecimals(element.totalSupply, element.decimals, true));
+    } catch(e) {
+    }
     element.walletETHDollar && (element.walletETHDollar = window.formatMoney(element.walletETHDollar));
     element.walletBUIDLDollar && (element.walletBUIDLDollar = window.formatMoney(element.walletBUIDLDollar));
     element.walletDAIDollar && (element.walletDAIDollar = window.formatMoney(element.walletDAIDollar));

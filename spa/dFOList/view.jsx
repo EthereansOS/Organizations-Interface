@@ -10,7 +10,7 @@ var DFOList = React.createClass({
         var _this = this;
         return {
             'ethereum/update': () => this.forceUpdate(this.controller.loadList),
-            'ethereum/ping' : this.refreshUserBalance,
+            'ethereum/ping': this.refreshUserBalance,
             'search': search => this.setState({ search, key: null }),
             'element/update': this.updateElement,
             'balances/refresh': () => window.refreshBalances(this, this.props.element),
@@ -18,7 +18,29 @@ var DFOList = React.createClass({
             'edit/toggle': (edit, callback) => this.dfoElement.setState({ edit }, _this.forceUpdate(callback))
         };
     },
-    toggleOkBoomer() { 
+    getInitialState() {
+        return {
+            orderByMetadata: window.localStorage.dfoListOrderByMetadata === 'false' ? false : true,
+            order: window.localStorage.dfoListOrderMode || 'sortByUnlockedMarketCap',
+            orders: {
+                'sortByUnlockedMarketCap': 'By unlocked market cap',
+                'sortByLockedMarketCap': 'Bylocked market cap',
+                'sortByTotalMarketCap': 'By total market cap',
+                'sortFromLast': 'From the newest',
+                'sortFromFirst': 'From the first'
+            }
+        }
+    },
+    setOrder(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        window.localStorage.setItem('dfoListOrderMode', e.currentTarget.dataset.order)
+        this.setState({ order: window.localStorage.dfoListOrderMode });
+    },
+    setCheckOrderByMetadata(e) {
+        window.localStorage.setItem('dfoListOrderByMetadata', e.currentTarget.checked);
+        this.setState({ orderByMetadata: e.currentTarget.checked });
+    },
+    toggleOkBoomer() {
         var _this = this;
         this.dfoElement.setState({ okBoomer: !(this.dfoElement.state && this.dfoElement.state.okBoomer) }, () => _this.forceUpdate())
     },
@@ -60,16 +82,63 @@ var DFOList = React.createClass({
                 }
             }
             return this.sortList(list);
-        } catch(e) {
+        } catch (e) {
             return [];
         }
     },
     sortList(list) {
+        var sortedList = this[this.state.order](list);
+        var index = sortedList.indexOf(window.dfoHub);
+        sortedList.splice(index, 1);
+        sortedList.unshift(window.dfoHub);
+        if(this.state.orderByMetadata) {
+            var finalList = sortedList.filter(it => it.dFO.metadataLink !== undefined && it.dFO.metadataLink !== null);
+            finalList.push(...sortedList.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null));
+            return finalList;
+        }
+        return sortedList;
+    },
+    sortFromLast(list) {
         return Object.values(list).sort((first, second) => {
             var a = parseInt(first.key.substring(0, first.key.indexOf("_")));
             var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
             return a < b ? 1 : a > b ? -1 : 0;
         });
+    },
+    sortFromFirst(list) {
+        return Object.values(list).sort((first, second) => {
+            var a = parseInt(first.key.substring(0, first.key.indexOf("_")));
+            var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
+            return a < b ? -1 : a > b ? 1 : 0;
+        });
+    },
+    sortByMetadata(l) {
+        var sortFunction = function sortFunction(first, second) {
+            var a = parseInt(first.key.substring(0, first.key.indexOf("_")));
+            var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
+            return a < b ? 1 : a > b ? -1 : 0;
+        };
+        var list = Object.values(l);
+        var finalList = list.filter(it => it.dFO.metadataLink !== undefined && it.dFO.metadataLink !== null).sort(sortFunction);
+        finalList.push(...list.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null).sort(sortFunction));
+        return finalList;
+    },
+    sortByUnlockedMarketCap(list) {
+        return this.sortByMarketCap(list, 'unlockedMarketCapDollar');
+    },
+    sortByLockedMarketCap(list) {
+        return this.sortByMarketCap(list, 'lockedMarketCapDollar');
+    },
+    sortByTotalMarketCap(list) {
+        return this.sortByMarketCap(list, 'totalMarketCapDollar');
+    },
+    sortByMarketCap(list, field) {
+        var sortFunction = function sortFunction(first, second) {
+            var a = first[field];
+            var b = second ? second[field] : 0;
+            return a < b ? 1 : a > b ? -1 : 0;
+        };
+        return Object.values(list).sort(sortFunction);
     },
     componentDidUpdate() {
         this.emit('index/fullscreen', this.state && this.state.key !== undefined && this.state.key !== null);
@@ -84,6 +153,15 @@ var DFOList = React.createClass({
         var list = this.getList();
         return (
             <section className={"DFOList" + (this.state && this.state.key ? ' DFOListOpenAfter' : '')}>
+                {(!this.state || !this.state.key) && <section className="ListOrderPanel">
+                    <h2>DFO Order</h2>
+                    <label>
+                        <span>Including Metadata</span>
+                        <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata}/>
+                    </label>
+                    {Object.entries(this.state.orders).map(it => <a key={it[0]} href="javascript:;" className={"ListOrderItem" + (_this.state.order === it[0] ? " Selected" : "")} onClick={this.setOrder} data-order={it[0]}>{it[1]}</a>)}
+                    <br/>
+                </section>}
                 <ul className="DFOLister">
                     {list.map(it => {
                         return (!_this.state || !_this.state.key || _this.state.key === it.key) && <li key={it.key} className="DFOInfo">

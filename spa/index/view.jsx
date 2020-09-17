@@ -57,14 +57,14 @@ var Index = React.createClass({
         isEthereumAddress(address) && (this.address.value = address) && this.load({target:{dataset:{timeout:"700"}}});
         this.controller.tryLoadStaking();
     },
-    toggleDarkMode(e) {
+    toggleLightMode(e) {
         e && e.preventDefault(true) && e.stopPropagation(true);
         $(e.target).html('&#' + (this.domRoot.toggleClass('DarkMode').hasClass('DarkMode') ? '128161' : '127769') + ';');
-        window.localStorage.setItem('darkMode', this.domRoot.hasClass('DarkMode') ? 'true' : 'false');
+        window.localStorage.setItem('lightMode', this.domRoot.hasClass('DarkMode') ? 'false' : 'true');
     },
     render() {
         return (
-            <div className={"Main" + (window.localStorage.darkMode === 'true' ? " DarkMode" : "")}>
+            <div className={"Main" + (window.localStorage.lightMode === 'true' ? "" : " DarkMode")}>
                 <section ref={ref => this.header = $(ref)} className="Explorer">
                     <header className="HeaderDFO">
                         <ul>
@@ -82,7 +82,7 @@ var Index = React.createClass({
                             </li>
                             <li className="DeployLi">
                                 <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (this.state && this.state.deploy ? " Editing" : "")} onClick={this.deploy}>{this.state && this.state.deploy ? 'Back' : 'New'}</WalletEnablerButton>
-                                <a className="ChangeViewDtoW" href="javascript:;" onClick={this.toggleDarkMode} ref={ref => ref && (ref.innerHTML = ("&#" + (window.localStorage.darkMode === 'true' ? "128161" : "127769") + ";"))}>&#127769;</a>
+                                <a className="ChangeViewDtoW" href="javascript:;" onClick={this.toggleLightMode} ref={ref => ref && (ref.innerHTML = ("&#" + (window.localStorage.lightMode === 'true' ? "127769" : "128161") + ";"))}>&#127769;</a>
                             </li>
                         </ul>
                     </header>
