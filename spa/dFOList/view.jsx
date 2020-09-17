@@ -99,11 +99,15 @@ var DFOList = React.createClass({
         return sortedList;
     },
     sortFromLast(list) {
-        return Object.values(list).sort((first, second) => {
+        var sortedList = Object.values(list).sort((first, second) => {
             var a = parseInt(first.key.substring(0, first.key.indexOf("_")));
             var b = second ? parseInt(second.key.substring(0, second.key.indexOf("_"))) : 0;
             return a < b ? 1 : a > b ? -1 : 0;
         });
+        var index = sortedList.indexOf(window.dfoHub);
+        sortedList.splice(index, 1);
+        sortedList.push(window.dfoHub);
+        return sortedList;
     },
     sortFromFirst(list) {
         return Object.values(list).sort((first, second) => {
