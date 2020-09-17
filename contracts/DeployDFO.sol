@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-2
 pragma solidity ^0.6.0;
 
-/*
+/**
+ * Description:
  * @title Deploy the DFO
  * @dev This specific DFOHub Functionality is called as the last step of the creation of a DFO.
  * It clones the original DFOHub Proxy contract and sets up all the other delegate contracts
@@ -15,20 +16,17 @@ pragma solidity ^0.6.0;
 contract DeployDFO {
     uint256
         private constant DOMAIN_ID = 26462834956419126467027313759401618380915230190462237878347296505689869422264;
-    address
-        private constant ENS_TOKEN_ADDRESS = 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85;
+    address private constant ENS_TOKEN_ADDRESS = 0x57f1887a8BF19b14fC0dF6Fd9B2acc9Af147eA85;
     bytes32
         private constant DOMAIN_NODE = 0x4710df84d2a5a23c87ad560f1151bd82497aab22e9c95162daa7c219d4a1ef78;
-    ENS private constant ENS_CONTROLLER = ENS(
-        0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e
-    );
+    ENS private constant ENS_CONTROLLER = ENS(0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e);
     bytes4 private constant ENS_ADDRESS_INTERFACE_ID = 0x213b9eb8;
 
     string private _metadataLink;
 
     /**
      * @dev Constructor for the contract
-     * @param metadataLink Link to the metadata of the Governance rules
+     * @param metadataLink Link to the metadata of all the microservice information
      */
     constructor(string memory metadataLink) public {
         _metadataLink = metadataLink;
@@ -36,18 +34,28 @@ contract DeployDFO {
 
     /**
      * @dev GETTER for the metadataLink
-     * @return metadataLink Link to the metadata of the Governance rules
+     * @return metadataLink Link to the metadata
      */
-    function getMetadataLink()
-        public
-        view
-        returns (string memory metadataLink)
-    {
+    function getMetadataLink() public view returns (string memory metadataLink) {
         return _metadataLink;
     }
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStart is one of this mandatory functions.
+     * onStart is triggered when a microservice is added.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStart(address, address) public {}
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStop is one of this mandatory functions.
+     * onStop is triggered when a microservice is removed.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStop(address) public {}
 
     /**
@@ -96,10 +104,12 @@ contract DeployDFO {
     }
 
     /**
-     * @dev Pay the DFOhub generation fee
+     * @dev During DFO deployment DFOhub keeps the voting token inside its contract.
+     * This method implements the logic for transferring token out ot the DFOhub wallet while also
+     * paying the generation fee.
      * @param senderProxy Proxy of DFOhub
      * @param votingToken Address of the VotingToken
-     * @return nonDFOhubAmount Amount of token available for the DFO minus the fee paid to DFOhub
+     * @return nonDFOhubAmount Amount of token available for the created DFO minus the fee paid to DFOhub
      */
     function _transferToken(IMVDProxy senderProxy, address votingToken)
         private
@@ -112,17 +122,12 @@ contract DeployDFO {
         IVotingToken tkn = IVotingToken(votingToken);
 
         uint256 proxyBalance = tkn.balanceOf(senderProxy.getMVDWalletAddress());
+        // Compute the generation fee
         uint256 votingTokenAmountForHub = toUint256(
-            senderProxy.read(
-                "getVotingTokenAmountForHub",
-                abi.encode(tkn.totalSupply())
-            )
+            senderProxy.read("getVotingTokenAmountForHub", abi.encode(tkn.totalSupply()))
         );
 
-        require(
-            proxyBalance >= votingTokenAmountForHub,
-            "Insufficient tokens amount for DFOHub!"
-        );
+        require(proxyBalance >= votingTokenAmountForHub, "Insufficient tokens amount for DFOHub!");
         return proxyBalance - votingTokenAmountForHub;
     }
 
@@ -157,6 +162,7 @@ contract DeployDFO {
         );
     }
 
+    // Trigger the event for the deployment of a dfo
     function _emitEvent(address proxy, address sender) private {
         IMVDProxy(msg.sender).emitEvent(
             "DFODeployed(address_indexed,address_indexed,address,address)",
@@ -168,7 +174,9 @@ contract DeployDFO {
 
     /**
      * @dev Attach an ENS (sub)domain to the DFO
-     * @param senderProxy Proxy for the DFOhub
+     * dfohub.eth is owned by the DFOhub core, it is lent to this function in order to create the
+     * new subdomains, it is then transferred back its owner
+     * @param senderProxy Proxy of the DFOhub
      * @param proxy Address of the Proxy of the DFO being created
      * @param ens String with the ENS to attach
      */
@@ -178,25 +186,14 @@ contract DeployDFO {
         string memory ens
     ) private {
         bytes32 subdomainLabel = keccak256(bytes(ens));
-        bytes32 subnode = keccak256(
-            abi.encodePacked(DOMAIN_NODE, subdomainLabel)
-        );
+        bytes32 subnode = keccak256(abi.encodePacked(DOMAIN_NODE, subdomainLabel));
 
-        require(
-            !ENS_CONTROLLER.recordExists(subnode),
-            "ENS Name already taken"
-        );
+        require(!ENS_CONTROLLER.recordExists(subnode), "ENS Name already taken");
 
         address domainOwner = ENS_CONTROLLER.owner(DOMAIN_NODE);
 
         if (domainOwner != address(this)) {
-            senderProxy.transfer721(
-                address(this),
-                DOMAIN_ID,
-                "",
-                false,
-                ENS_TOKEN_ADDRESS
-            );
+            senderProxy.transfer721(address(this), DOMAIN_ID, "", false, ENS_TOKEN_ADDRESS);
             IERC721(ENS_TOKEN_ADDRESS).reclaim(DOMAIN_ID, address(this));
             ENS_CONTROLLER.setOwner(DOMAIN_NODE, address(this));
             IERC721(ENS_TOKEN_ADDRESS).transferFrom(
@@ -229,6 +226,7 @@ contract DeployDFO {
         ENS_CONTROLLER.setOwner(subnode, domainOwner);
     }
 
+    // Assembly magic for cloning contract
     function clone(address original) private returns (address copy) {
         assembly {
             mstore(
@@ -246,11 +244,8 @@ contract DeployDFO {
         }
     }
 
-    function compareContracts(address a, address b)
-        private
-        view
-        returns (uint8 result)
-    {
+    // Assembly magic for knowing wether two contracts have the same bytecode
+    function compareContracts(address a, address b) private view returns (uint8 result) {
         assembly {
             result := eq(extcodehash(a), extcodehash(b))
         }
@@ -278,16 +273,10 @@ contract DeployDFO {
         return string(str);
     }
 
-    function toLowerCase(string memory str)
-        private
-        pure
-        returns (string memory)
-    {
+    function toLowerCase(string memory str) private pure returns (string memory) {
         bytes memory bStr = bytes(str);
         for (uint256 i = 0; i < bStr.length; i++) {
-            bStr[i] = bStr[i] >= 0x41 && bStr[i] <= 0x5A
-                ? bytes1(uint8(bStr[i]) + 0x20)
-                : bStr[i];
+            bStr[i] = bStr[i] >= 0x41 && bStr[i] <= 0x5A ? bytes1(uint8(bStr[i]) + 0x20) : bStr[i];
         }
         return string(bStr);
     }

@@ -15,8 +15,8 @@ contract CommunityDrivenGovernance {
     string private _metadataLink;
 
     /**
-     * @dev Contract constructor
-     * @param metadataLink Link to the metadata of the Proposal
+     * @dev Constructor for the contract
+     * @param metadataLink Link to the metadata of all the microservice information
      */
     constructor(string memory metadataLink) public {
         _metadataLink = metadataLink;
@@ -24,18 +24,28 @@ contract CommunityDrivenGovernance {
 
     /**
      * @dev GETTER for the metadataLink
-     * @return metadataLink Link to the metadata of the Proposal
+     * @return metadataLink Link to the metadata
      */
-    function getMetadataLink()
-        public
-        view
-        returns (string memory metadataLink)
-    {
+    function getMetadataLink() public view returns (string memory metadataLink) {
         return _metadataLink;
     }
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStart is one of this mandatory functions.
+     * onStart is triggered when a microservice is added.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStart(address, address) public {}
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStop is one of this mandatory functions.
+     * onStop is triggered when a microservice is removed.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStop(address) public {}
 
     /**
@@ -49,14 +59,10 @@ contract CommunityDrivenGovernance {
         }
         IMVDProxy proxy = IMVDProxy(msg.sender);
         if (
-            IMVDFunctionalitiesManager(
-                proxy.getMVDFunctionalitiesManagerAddress()
-            )
+            IMVDFunctionalitiesManager(proxy.getMVDFunctionalitiesManagerAddress())
                 .hasFunctionality("getSurveySingleReward")
         ) {
-            uint256 surveySingleReward = toUint256(
-                proxy.read("getSurveySingleReward", bytes(""))
-            );
+            uint256 surveySingleReward = toUint256(proxy.read("getSurveySingleReward", bytes("")));
             if (surveySingleReward > 0) {
                 proxy.transfer(
                     IMVDFunctionalityProposal(proposal).getProposer(),
@@ -87,10 +93,7 @@ interface IVotingToken {
 interface IMVDProxy {
     function getToken() external view returns (address);
 
-    function getMVDFunctionalitiesManagerAddress()
-        external
-        view
-        returns (address);
+    function getMVDFunctionalitiesManagerAddress() external view returns (address);
 
     function transfer(
         address receiver,
@@ -98,10 +101,7 @@ interface IMVDProxy {
         address token
     ) external;
 
-    function hasFunctionality(string calldata codeName)
-        external
-        view
-        returns (bool);
+    function hasFunctionality(string calldata codeName) external view returns (bool);
 
     function read(string calldata codeName, bytes calldata data)
         external
@@ -114,8 +114,5 @@ interface IMVDFunctionalityProposal {
 }
 
 interface IMVDFunctionalitiesManager {
-    function hasFunctionality(string calldata codeName)
-        external
-        view
-        returns (bool);
+    function hasFunctionality(string calldata codeName) external view returns (bool);
 }

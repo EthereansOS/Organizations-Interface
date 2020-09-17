@@ -1,8 +1,8 @@
+// SPDX-License-Identifier: BSD-2
 pragma solidity ^0.6.0;
 
 /**
  * @title Staking (Liquidity Mining/Farming) Contract for Buidl
- * @dev
  */
 contract BUIDLHodl {
     uint256 private constant MODES = 3;
@@ -48,10 +48,10 @@ contract BUIDLHodl {
      * @param uniswapV2RouterAddress Address of the UniswapV2Router Contract
      * @param buidlEthPoolTokenAddress Address of the Uniswap buidl-eth pool
      * @param buidlUSDCPoolTokenAddress Address of the Uniswap buidl-usdc pool
-     * @param accumulatingEndBlock
-     * @param blockRanges
-     * @param tokenRewardsMultipliers
-     * @param tokensRewardsDividers
+     * @param accumulatingEndBlock Maximum time in which the staking is available
+     * @param blockRanges Array of timed windows for the various staking tiers
+     * @param tokenRewardsMultipliers Multipliers for the above tiers (Numerator)
+     * @param tokensRewardsDividers Dividers for the above tier, gives you the percentage (Denominator)
      */
     constructor(
         address proxy,
@@ -77,9 +77,7 @@ contract BUIDLHodl {
         _accumulatingEndBlock = accumulatingEndBlock;
         _blocksRanges = blocksRanges;
         for (uint256 i = 0; i < tokenRewardsMultipliers.length; i++) {
-            _tokenRewards.push(
-                [tokenRewardsMultipliers[i], tokenRewardsDividers[i]]
-            );
+            _tokenRewards.push([tokenRewardsMultipliers[i], tokenRewardsDividers[i]]);
         }
     }
 
@@ -97,9 +95,7 @@ contract BUIDLHodl {
      */
     function setProxy(address newProxy) public {
         require(
-            IMVDFunctionalitiesManager(
-                IMVDProxy(_proxy).getMVDFunctionalitiesManagerAddress()
-            )
+            IMVDFunctionalitiesManager(IMVDProxy(_proxy).getMVDFunctionalitiesManagerAddress())
                 .isAuthorizedFunctionality(msg.sender),
             "Unauthorized Action!"
         );
@@ -117,30 +113,17 @@ contract BUIDLHodl {
         uint256 usdcIn,
         uint256 mode
     ) public payable {
-        require(
-            block.number < _accumulatingEndBlock,
-            "Accumulating Time has finished!"
-        );
+        require(block.number < _accumulatingEndBlock, "Accumulating Time has finished!");
         require(mode < MODES, "Unknown mode!");
         uint256 reward = _calculateReward(buidlIn, mode);
         _installStorageIfNecessary(msg.sender);
         StakingInfo[] storage array = _totalLocked[msg.sender][mode];
         array.push(
-            StakingInfo(
-                msg.value > 0,
-                buidlIn,
-                reward,
-                block.number + _blocksRanges[mode],
-                false
-            )
+            StakingInfo(msg.value > 0, buidlIn, reward, block.number + _blocksRanges[mode], false)
         );
         _totalLocked[msg.sender][mode] = array;
         if (msg.value == 0) {
-            IERC20(_usdcTokenAddress).transferFrom(
-                msg.sender,
-                address(this),
-                usdcIn
-            );
+            IERC20(_usdcTokenAddress).transferFrom(msg.sender, address(this), usdcIn);
         }
         emit Staked(
             msg.sender,
@@ -153,6 +136,7 @@ contract BUIDLHodl {
         );
     }
 
+    // For each user insert their info in the relevant tier
     function _installStorageIfNecessary(address sender) private {
         if (_totalLocked[sender].length > 0) {
             return;
@@ -168,11 +152,7 @@ contract BUIDLHodl {
      * @param mode Temporal Tier
      * @return reward Total reward
      */
-    function _calculateReward(uint256 amount, uint256 mode)
-        private
-        view
-        returns (uint256 reward)
-    {
+    function _calculateReward(uint256 amount, uint256 mode) private view returns (uint256 reward) {
         return _tokenRewards[mode][0];
     }
 
@@ -181,10 +161,7 @@ contract BUIDLHodl {
      * @param sender Address of the requester. Liquidity withdrawn will be sent to this address
      */
     function withdraw(address sender) public {
-        require(
-            block.number >= _accumulatingEndBlock,
-            "Accumulating Time is still running!"
-        );
+        require(block.number >= _accumulatingEndBlock, "Accumulating Time is still running!");
         StakingInfo[][] storage stakingInfos = _totalLocked[sender];
         uint256 ethPoolTokens = 0;
         uint256 usdcPoolTokens = 0;
@@ -200,9 +177,7 @@ contract BUIDLHodl {
                 }
                 stakingInfo.withdrawn = true;
                 ethPoolTokens += stakingInfo.eth ? stakingInfo.amountLocked : 0;
-                usdcPoolTokens += stakingInfo.eth
-                    ? 0
-                    : stakingInfo.amountLocked;
+                usdcPoolTokens += stakingInfo.eth ? 0 : stakingInfo.amountLocked;
                 buidlTokens += stakingInfo.reward;
             }
         }
@@ -221,9 +196,7 @@ contract BUIDLHodl {
 interface IERC20 {
     function balanceOf(address account) external view returns (uint256);
 
-    function transfer(address recipient, uint256 amount)
-        external
-        returns (bool);
+    function transfer(address recipient, uint256 amount) external returns (bool);
 
     function transferFrom(
         address sender,
@@ -266,10 +239,7 @@ interface IMVDProxy {
 
     function getMVDWalletAddress() external view returns (address);
 
-    function getMVDFunctionalitiesManagerAddress()
-        external
-        view
-        returns (address);
+    function getMVDFunctionalitiesManagerAddress() external view returns (address);
 
     function submit(string calldata codeName, bytes calldata data)
         external
@@ -284,24 +254,17 @@ interface IMVDProxy {
 }
 
 interface IMVDFunctionalitiesManager {
-    function isAuthorizedFunctionality(address functionality)
-        external
-        view
-        returns (bool);
+    function isAuthorizedFunctionality(address functionality) external view returns (bool);
 }
 
 interface IStateHolder {
-    function setUint256(string calldata name, uint256 value)
-        external
-        returns (uint256);
+    function setUint256(string calldata name, uint256 value) external returns (uint256);
 
     function getUint256(string calldata name) external view returns (uint256);
 
     function getAddress(string calldata name) external view returns (address);
 
-    function setAddress(string calldata varName, address val)
-        external
-        returns (address);
+    function setAddress(string calldata varName, address val) external returns (address);
 
     function clear(string calldata varName)
         external

@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: BSD-2
 pragma solidity ^0.6.0;
 
-/** Description:
+/**
+ * Description:
  * @title Emergency Survey duration provider.
  * @dev One of the 4 well-known read-only mandatory Functionalities every DFO needs.
  * The logic is for general purpose so that every DFO can use it as a Stateless Microservice.
@@ -13,7 +14,7 @@ contract GetMinimumBlockNumberForEmergencySurveyFunctionality {
 
     /**
      * @dev Contract constructor
-     * @param metadataLink Metadata for the EmergencySurvey
+     * @param metadataLink Link to the metadata of all the microservice information
      * @param value Amount of blocks for the duration of the EmergencySurvey proposal
      */
     constructor(string memory metadataLink, uint256 value) public {
@@ -23,14 +24,28 @@ contract GetMinimumBlockNumberForEmergencySurveyFunctionality {
 
     /**
      * @dev GETTER for the metadataLink
-     * @return metadataLink Link to the metadata of the EmergencySurvey
+     * @return metadataLink Link to the metadata
      */
-    function getMetadataLink() public view returns (string memory) {
+    function getMetadataLink() public view returns (string memory metadataLink) {
         return _metadataLink;
     }
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStart is one of this mandatory functions.
+     * onStart is triggered when a microservice is added.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStart(address, address) public {}
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStop is one of this mandatory functions.
+     * onStop is triggered when a microservice is removed.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStop(address) public {}
 
     /**

@@ -2,22 +2,24 @@
 pragma solidity ^0.7.0;
 
 /**
+ * Description:
  * @title Deploy Governance Rules
  * @dev This Microservice contains all the code useful to create the FunctionalitiesManager Core Contract.
  * The logic clones the original dfohub FunctionalitiesManager contract code and adds to it all the
  * mandatory Functionalities. Also, it can optionally insert other side-functionalities like the Survey Quorum,
  * the Votes Hard Cap, the minimum Survey Staking amount, or the reward amount for each successful Survey.
- *
- * Discussion: https://github.com/b-u-i-d-l/dfo-hub
+ */
+/*
+ * Discussion:
+ * https://github.com/b-u-i-d-l/dfo-hub
  */
 contract DeployGovernanceRules {
-    // DOCUMENT: these values
-    address
-        private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
+    // ROBE address where the onchain code is saved
+    address private _sourceLocation = 0x9784B427Ecb5275c9300eA34AdEF57923Ab170af;
 
+    // ROBE id for the various microservices
     uint256 private _getMinimumBlockNumberForSurveySourceLocationId = 2;
-    uint256
-        private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 1;
+    uint256 private _getMinimumBlockNumberForEmergencySurveySourceLocationId = 1;
     uint256 private _getEmergencySurveyStakingFunctionalitySourceLocationId = 0;
 
     uint256 private _surveyResultValidatorSourceLocationId = 62;
@@ -27,6 +29,8 @@ contract DeployGovernanceRules {
     uint256 private _getVotesHardCapSourceLocationId = 146;
 
     uint256 private _communityDrivenGovernanceLocationId = 72;
+
+    // Address of a microservice that handles some of the voting related mechanisms
     address
         private _communityDrivenGovernanceFunctionalityAddress = 0x92628ccDa6e51A3AC6746ef1100D419453fA8182;
 
@@ -38,7 +42,7 @@ contract DeployGovernanceRules {
 
     /**
      * @dev Constructor for the contract
-     * @param metadataLink Link to the metadata of the Governance rules
+     * @param metadataLink Link to the metadata of all the microservice information
      */
     constructor(string memory metadataLink) public {
         _metadataLink = metadataLink;
@@ -46,18 +50,28 @@ contract DeployGovernanceRules {
 
     /**
      * @dev GETTER for the metadataLink
-     * @return metadataLink Link to the metadata of the Governance rules
+     * @return metadataLink Link to the metadata
      */
-    function getMetadataLink()
-        public
-        view
-        returns (string memory metadataLink)
-    {
+    function getMetadataLink() public view returns (string memory metadataLink) {
         return _metadataLink;
     }
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStart is one of this mandatory functions.
+     * onStart is triggered when a microservice is added.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStart(address, address) public {}
 
+    /**
+     * @dev Each Microservice needs to implement its own logic for handling what happens when it's added or removed from a a DFO
+     * onStop is one of this mandatory functions.
+     * onStop is triggered when a microservice is removed.
+     * The method body can be left blank (i.e. you don't need any special startup/teardown logic)
+     * The only strict requirement is for the method to be there.
+     */
     function onStop(address) public {}
 
     /**
@@ -70,8 +84,9 @@ contract DeployGovernanceRules {
      * @param emergencyStaking
      * @param quorum Required quorum for a proposal to be accepted
      * @param surveyMaxCap Amount of voting tokens needed to reach the max-cap on a proposal
-     * @param surveyMinStake
-     * @param surveySingleReward
+     * @param surveyMinStake The minimum of Token Staked needed to create a new Proposal.
+     * @param surveySingleReward The amount of Voting Tokens set as a reward to the issuer for
+     * every Accepted Proposal paid automatically by the DFO Wallet.
      * @return mvdFunctionalitiesManager The newly created Functionalities Manager
      */
     function deployGovernanceRules(
@@ -87,9 +102,7 @@ contract DeployGovernanceRules {
     ) public returns (IMVDFunctionalitiesManager mvdFunctionalitiesManager) {
         IMVDProxy proxy = IMVDProxy(msg.sender);
 
-
-            IMVDFunctionalitiesManager originalFunctionalitiesManager
-         = IMVDFunctionalitiesManager(
+        IMVDFunctionalitiesManager originalFunctionalitiesManager = IMVDFunctionalitiesManager(
             proxy.getMVDFunctionalitiesManagerAddress()
         );
 
@@ -104,8 +117,9 @@ contract DeployGovernanceRules {
             emergencyStaking
         );
 
-        (functionalityAddress, , , , ) = originalFunctionalitiesManager
-            .getFunctionalityData("getDefaultIndex");
+        (functionalityAddress, , , , ) = originalFunctionalitiesManager.getFunctionalityData(
+            "getDefaultIndex"
+        );
 
         _deployCollateralFunctionalities(
             mvdFunctionalitiesManager,
@@ -140,28 +154,18 @@ contract DeployGovernanceRules {
             .init(
             _sourceLocation,
             _getMinimumBlockNumberForSurveySourceLocationId,
-            address(
-                new GetMinimumBlockNumberForSurveyFunctionality(
-                    minimumBlockNumber
-                )
-            ),
+            address(new GetMinimumBlockNumberForSurveyFunctionality(minimumBlockNumber)),
             _getMinimumBlockNumberForEmergencySurveySourceLocationId,
-            address(
-                new GetMinimumBlockNumberForEmergencySurveyFunctionality(
-                    emergencyBlockNumber
-                )
-            ),
+            address(new GetMinimumBlockNumberForEmergencySurveyFunctionality(emergencyBlockNumber)),
             _getEmergencySurveyStakingFunctionalitySourceLocationId,
-            address(
-                new GetEmergencySurveyStakingFunctionality(emergencyStaking)
-            ),
+            address(new GetEmergencySurveyStakingFunctionality(emergencyStaking)),
             _surveyResultValidatorSourceLocationId,
             checkSurveyResultFunctionalityAddress
         );
     }
 
     /**
-     * @dev Add functionalities to the FunctionalitiesManager
+     * @dev Add extra functionalities to the FunctionalitiesManager
      */
     function _deployCollateralFunctionalities(
         IMVDFunctionalitiesManager mvdFunctionalitiesManager,
@@ -273,10 +277,7 @@ contract DeployGovernanceRules {
 }
 
 interface IMVDProxy {
-    function getMVDFunctionalitiesManagerAddress()
-        external
-        view
-        returns (address);
+    function getMVDFunctionalitiesManagerAddress() external view returns (address);
 
     function emitEvent(
         string calldata eventSignature,
@@ -333,10 +334,7 @@ interface IMVDFunctionalitiesManager {
             uint256
         );
 
-    function hasFunctionality(string calldata codeName)
-        external
-        view
-        returns (bool);
+    function hasFunctionality(string calldata codeName) external view returns (bool);
 }
 
 interface IMVDFunctionalityProposal {
@@ -370,11 +368,7 @@ contract GetMinimumBlockNumberForEmergencySurveyFunctionality {
 
     function onStop(address newSurvey) public {}
 
-    function getMinimumBlockNumberForEmergencySurvey()
-        public
-        view
-        returns (uint256)
-    {
+    function getMinimumBlockNumberForEmergencySurvey() public view returns (uint256) {
         return _value;
     }
 }
