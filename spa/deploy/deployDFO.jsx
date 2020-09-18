@@ -96,9 +96,9 @@ var DeployDFO = React.createClass({
                                 data.emergencySurveyLength,
                                 window.toDecimals(data.emergencySurveyStaking, 18),
                                 data.surveyQuorum ? window.toDecimals(data.surveyQuorum, 18) : 0,
-                                data.surveyQuorum ? window.toDecimals(data.surveyMaxCap, 18) : 0,
-                                data.surveyQuorum ? window.toDecimals(data.surveyMinStake, 18) : 0,
-                                data.surveyQuorum ? window.toDecimals(data.surveySingleReward, 18) : 0
+                                data.surveyMaxCap ? window.toDecimals(data.surveyMaxCap, 18) : 0,
+                                data.surveyMinStake ? window.toDecimals(data.surveyMinStake, 18) : 0,
+                                data.surveySingleReward ? window.toDecimals(data.surveySingleReward, 18) : 0
                             ];
                             var payload = window.web3.eth.abi.encodeParameters(params, values);
                             return window.blockchainCall(window.dfoHub.dFO.methods.submit, 'deployGovernanceRules', payload).then(response => {

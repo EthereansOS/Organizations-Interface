@@ -1672,7 +1672,7 @@ window.updateInfo = async function updateInfo(view, element) {
     element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
     try {
         element.metadata = await window.AJAXRequest(window.formatLink(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x'))));
-        Object.entries(element.metadata).forEach(it => element[it[0]] = it[1]);
+        Object.entries(element.metadata).forEach(it => element[it[0]] = it[1] || element[it[0]]);
     } catch (e) {}
     element.decimals = await window.blockchainCall(element.token.methods.decimals);
     element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
@@ -1910,6 +1910,17 @@ window.proposeNewMetadataLink = async function proposeNewMetadataLink(element, m
 };
 
 window.deployMetadataLink = async function deployMetadata(metadata, functionalitiesManager) {
+    if(metadata) {
+        var aVar = false;
+        Object.values(metadata).forEach(it => {
+            if(it) {
+                aVar = true;
+            }
+        });
+        if(!aVar) {
+            return;
+        }
+    }
     var metadataLink = await window.validateDFOMetadata(metadata);
     var code = `
 pragma solidity ^0.7.1;
