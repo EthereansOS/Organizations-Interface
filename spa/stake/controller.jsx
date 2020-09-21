@@ -92,10 +92,14 @@ var StakeController = function (view) {
 
     context.getSecondTokenData = async function getSecondTokenData(i, tokenOnly) {
         var pool = context.view.props.stakingData.pairs[i];
-        return {
+        var data = {
             token : pool.token,
             balance : tokenOnly === true ? '0' : await (pool.symbol === 'ETH' ? window.web3.eth.getBalance(window.walletAddress) : window.blockchainCall(pool.token.methods.balanceOf, window.walletAddress))
         };
+        if(isNaN(parseInt(data.balance))) {
+            data.balance = '0';
+        }
+        return data;
     };
 
     context.getTierData = async function getTierData() {

@@ -710,6 +710,9 @@ interface IStateHolder {
                     rewardSplitTranches
                 ];
                 data.sourceCode = getSourceCode(data.stakingContractAddress || (await window.createContract.apply(window, args)).options.address, functionalityReplace);
+            },
+            async onTransaction(data, transaction) {
+                data.sourceCode = getSourceCode(data.stakingContractAddress = transaction.contractAddress);
             }
         }]
     });
