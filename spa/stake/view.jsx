@@ -94,6 +94,12 @@ var Stake = React.createClass({
                     <input ref={ref => this.firstAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="firstAmount" onChange={this.onChangeAmount}/>
                     <aside className="switchLink" target="_blank">{this.props.element.symbol}</aside>
                     <img src={this.props.element.logo}/>
+                    {this.state && this.state.firstBalance && [<br/>,<br/>,
+                    <section className="BalanceLabel">
+                        <span>Balance:</span>
+                        <span>{window.fromDecimals(this.state.firstBalance, this.props.element.decimals)}</span>
+                        <span>{this.props.element.symbol}</span>
+                    </section>]}
                 </section>
                 <section className="switchTools switchTools2">
                     {false && <a data-target="secondAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>}
@@ -102,6 +108,12 @@ var Stake = React.createClass({
                         {this.props.stakingData.pairs.map((it, i) => <option key={it.address} data-index={i} value={i + "_" + it.symbol}>{it.symbol}</option>)}
                     </select>
                     <img ref={ref => this.logo = ref} src={this.props.stakingData.pairs[0].logo}/>
+                    {this.state && this.state.secondBalance && this.pool && [<br/>,<br/>,
+                    <section className="BalanceLabel">
+                        <span>Balance:</span>
+                        <span>{window.fromDecimals(this.state.secondBalance, this.props.stakingData.pairs[this.pool.value.split('_')[0]].decimals)}</span>
+                        <span>{this.props.stakingData.pairs[this.pool.value.split('_')[0]].symbol}</span>
+                    </section>]}
                 </section>
                 <h3>&#9203; Duration</h3>
                 <section className="switchTools" ref={this.firstTier}>

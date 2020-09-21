@@ -4,6 +4,12 @@ var StakeController = function (view) {
 
     context.slippage = new UniswapFraction(window.context.slippageNumerator, window.context.slippageDenominator);
 
+    context.calculateBalance = async function calculateBalance(i) {
+        var firstBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
+        var secondBalance = (await context.getSecondTokenData(i === undefined ? context.pool.value.split('_')[0] : i)).balance;
+        context.view.setState({firstBalance, secondBalance});
+    }
+
     context.calculateApprove = async function calculateApprove(i) {
         var buidlBalance = parseInt(await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress));
         var buidlAllowance = parseInt(await window.blockchainCall(context.view.props.element.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
@@ -16,6 +22,7 @@ var StakeController = function (view) {
             approveSecond = (secondAllowance === 0 || secondAllowance < secondBalance) ? pool.symbol : false;
         }
         context.view.setState({approveFirst, approveSecond});
+        context.calculateBalance(i);
     };
 
     context.approve = async function approve(target) {
