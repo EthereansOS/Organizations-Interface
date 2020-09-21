@@ -4,6 +4,9 @@ var NewProposalController = function(view) {
 
     context.publish = function propose() {
         var data = context.checkData();
+        if(!data) {
+            return;
+        }
         data.functionalitySourceId = context.view.editor.contentTokenValue;
         data.functionalityAddress = context.view.editor.functionalityAddressValue;
         data.editor = context.view.editor;
@@ -49,6 +52,12 @@ var NewProposalController = function(view) {
             throw messages.join('\n');
         }
 
+        if(!context.view.needsSender.disabled && !context.view.needsSender.checked) {
+            if(!confirm("The 'Needs Sender' check is useful to preserve the original msg.sender of the Transaction, are you sure you want to continue without flagging it?")) {
+                return;
+            }
+        }
+
         return data;
     };
 
@@ -62,4 +71,4 @@ var NewProposalController = function(view) {
         } catch(e) {
         }
     };
-};
+}
