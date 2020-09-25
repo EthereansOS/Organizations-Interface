@@ -106,7 +106,7 @@ var FunctionsController = function (view) {
                 }
             }
         }];
-        !isNaN(parseInt(initialContext.element.minimumStaking)) && parseInt(initialContext.element.minimumStaking) > 0 && proposals.push({
+        !isNaN(parseInt(context.view.props.element.minimumStaking)) && parseInt(context.view.props.element.minimumStaking) > 0 && proposals.push({
             name: 'Sending Initial ' + window.fromDecimals(context.view.props.element.minimumStaking, context.view.props.element.decimals) + ' ' + context.view.props.element.symbol + ' for Staking',
             async call(data) {
                 await window.blockchainCall(data.element.token.methods.transfer, data.transaction.events.Proposal.returnValues.proposal, window.numberToString(data.element.minimumStaking));
