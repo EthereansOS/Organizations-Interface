@@ -77,7 +77,7 @@ var Index = React.createClass({
                                 <a href="javascript:;" onClick={() => window.location.reload()}>&#128123;<span className="BODL">DFO</span><span>hub</span></a> <a className="BrandLiInfo" href="https://dfohub.com" target="_blank"> &#8505;</a>
                             </li>
                             <li className="SearchLi">
-                                <input ref={ref => this.address = ref} placeholder="Search by Name or Address" onChange={this.load} />
+                                <input ref={ref => this.address = ref} placeholder="Search by Address" onChange={this.load} />
                                 <a href="javascript:;" type="button" data-timeout="0" onClick={this.load}>
                                     <div className="search">
                                         <div className="search__circle"></div>
