@@ -1,7 +1,7 @@
 var Camp = React.createClass({
     requiredModules : [
-        'spa/camp/pairChooser',
-        'spa/camp/pairList'
+        'spa/farm/camp/pairChooser',
+        'spa/farm/camp/pairList'
     ],
     onPair(pair) {
         this.pairChooser.setPair(pair.token0.address, pair.token1.address);

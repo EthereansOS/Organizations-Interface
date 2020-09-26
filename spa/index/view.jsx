@@ -1,7 +1,8 @@
 var Index = React.createClass({
     requiredModules: [
         'spa/deploy',
-        'spa/dFOList'
+        'spa/dFOList',
+        "spa/farm/farm"
     ],
     requiredScripts: [
         'spa/messages.jsx',
@@ -46,7 +47,7 @@ var Index = React.createClass({
     deploy(e) {
         e && e.preventDefault(true) && e.stopPropagation(true);
         var _this = this;
-        _this.setState({ dFO: null, deploy: (_this.state && _this.state.deploy) ? false : true }, () => _this.onFullscreen(true));
+        _this.setState({ dFO: null, toggle: null, deploy: (_this.state && _this.state.deploy) ? false : true }, () => _this.onFullscreen(true));
     },
     componentDidMount() {
         var address = '';
@@ -67,6 +68,13 @@ var Index = React.createClass({
             ref.innerHTML = '<a href="javascript:;" onclick="$(this).parent().parent().parent().hide()">Gotcha!</a>'
         }, 3000);
     },
+    toggleAdditionalViews(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        if(e.currentTarget.className.indexOf('Editing') !== -1) {
+            return this.setState({toggle : null});
+        }
+        this.setState({toggle : e.currentTarget.dataset.toggle, deploy : false});
+    },
     render() {
         return (
             <div className={"Main" + (window.localStorage.lightMode === 'true' ? "" : " DarkMode")}>
@@ -86,6 +94,7 @@ var Index = React.createClass({
                                 </a>
                             </li>
                             <li className="DeployLi">
+                                <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (this.state && this.state.toggle === 'farm' ? " Editing" : "")} onClick={this.toggleAdditionalViews} data-toggle='farm'>Farm</WalletEnablerButton>
                                 <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (this.state && this.state.deploy ? " Editing" : "")} onClick={this.deploy}>{this.state && this.state.deploy ? 'Back' : 'New'}</WalletEnablerButton>
                                 <a className="ChangeViewDtoW" href="javascript:;" onClick={this.toggleLightMode} ref={ref => ref && (ref.innerHTML = ("&#" + (window.localStorage.lightMode === 'true' ? "127769" : "128161") + ";"))}>&#127769;</a>
                             </li>
@@ -109,10 +118,12 @@ var Index = React.createClass({
                             </section>
                         </section>
                     </div>}
-                    {this.state && this.state.deploy && <Deploy/>}
-                    {(!this.state || !this.state.deploy) && <DFOList/>}
+                    {this.state && this.state.deploy && !this.state.toggle && <Deploy/>}
+                    {(!this.state || (!this.state.deploy && !this.state.toggle)) && <DFOList/>}
+                    {this.state && this.state.toggle && <br/>}
+                    {this.state && this.state.toggle === 'farm' && <Farm/>}
                 </section>
-                {this.state && this.state.optionalPage && React.createElement(this.state.optionalPage.component, this.state.optionalPage.props)}
+                {this.state && this.state.optionalPage && !this.state.toggle && React.createElement(this.state.optionalPage.component, this.state.optionalPage.props)}
                 <Messages/>
                 <Loader/>
             </div>

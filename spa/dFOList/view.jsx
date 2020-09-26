@@ -1,7 +1,6 @@
 var DFOList = React.createClass({
     requiredModules: [
-        "spa/dFOElement",
-        "spa/camp/camp"
+        "spa/dFOElement"
     ],
     requiredScripts: [
         'spa/loaderMini.jsx',
@@ -142,13 +141,6 @@ var DFOList = React.createClass({
         var _this = this;
         _this.state && _this.state.key && window.refreshBalances(undefined, window.list[_this.state.key], true).then(() => _this.forceUpdate())
     },
-    toggleAdditionalViews(e) {
-        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        if(e.currentTarget.className.indexOf('Editing') !== -1) {
-            return this.setState({toggle : null});
-        }
-        this.setState({toggle : e.currentTarget.dataset.toggle});
-    },
     render() {
         var _this = this;
         var list = this.getList();
@@ -165,12 +157,9 @@ var DFOList = React.createClass({
                         <span>Metadata First</span>
                         <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata} />
                     </label>
-                    <label className="DACCELISORDIIIIIIIII">
-                        <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (this.state && this.state.toggle === 'camp' ? " Editing" : "")} onClick={this.toggleAdditionalViews} data-toggle='camp'>Camp</WalletEnablerButton>
-                    </label>
                     <br />
                 </section>}
-                {(!this.state || !this.state.toggle) && <ul className="DFOLister">
+                <ul className="DFOLister">
                     {list.map(it => {
                         return (!_this.state || !_this.state.key || _this.state.key === it.key) && <li key={it.key} className="DFOInfo">
                             <section className={"DFOMAinNav" + (this.state && this.state.key ? ' DFOMAinNavAfter' : '')}>
@@ -242,8 +231,7 @@ var DFOList = React.createClass({
                         </li>
                     })}
                     {list.length === 1 && (!_this.controller || _this.controller.running) && <LoaderMini message="Loading DFOs" />}
-                </ul>}
-                {this.state && this.state.toggle === 'camp' && <Camp/>}
+                </ul>
             </section>
         );
     }
