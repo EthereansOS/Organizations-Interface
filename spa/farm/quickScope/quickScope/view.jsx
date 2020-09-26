@@ -1,7 +1,7 @@
-var Camp = React.createClass({
+var QuickScope = React.createClass({
     requiredModules : [
-        'spa/farm/camp/pairChooser',
-        'spa/farm/camp/pairList'
+        'spa/farm/quickScope/pairChooser',
+        'spa/farm/quickScope/pairList'
     ],
     onPair(pair) {
         this.pairChooser.setPair(pair.token0.address, pair.token1.address);

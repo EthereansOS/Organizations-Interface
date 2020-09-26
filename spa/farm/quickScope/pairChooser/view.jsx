@@ -97,7 +97,7 @@ var PairChooser = React.createClass({
                 <section>
                     {this.state.performing !== 'Approve' && <a href="javascript:;" data-action="Approve" onClick={this.perform} className={"ApproveButton" + (this.state.approved ? " Disabled" : "")}>Approve</a>}
                     {this.state.performing === 'Approve' && <LoaderMinimino/>}
-                    {this.state.performing !== 'Camp' && <a href="javascript:;" data-action="Camp" onClick={this.perform} className={"CampButton" + (!this.state.approved || this.state.performing ? " Disabled" : "")}>Camp</a>}
+                    {this.state.performing !== 'Camp' && <a href="javascript:;" data-action="Camp" onClick={this.perform} className={"CampButton" + (!this.state.approved || this.state.performing ? " Disabled" : "")}>Quick Scope</a>}
                     {this.state.performing === 'Camp' && <LoaderMinimino />}
                 </section>
                 {this.state.calculation && <section>

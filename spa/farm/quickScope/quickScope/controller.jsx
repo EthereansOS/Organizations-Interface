@@ -1,4 +1,4 @@
-var CampController = function (view) {
+var QuickScopeController = function (view) {
     var context = this;
     context.view = view;
 

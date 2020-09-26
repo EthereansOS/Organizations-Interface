@@ -2,9 +2,9 @@ var Farm = React.createClass({
     getInitialState() {
         return {
             menu : [{
-                "title" : "Camp",
-                "module" : "spa/farm/camp/camp",
-                "section" : "Camp"
+                "title" : "Quick Scope",
+                "module" : "spa/farm/quickScope/quickScope",
+                "section" : "QuickScope"
             }],
             menuSelection : 0
         };
