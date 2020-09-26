@@ -80,8 +80,8 @@ var PairTokenController = function (view) {
         if (parseInt(value) > parseInt(usefulData.view.state.balance)) {
             throw `You have insufficient ${usefulData.pair[usefulData.selection].symbol}`;
         }
-        for(var value of Object.values(usefulData.view.state.calculation)) {
-            if(value === '0') {
+        for(var val of Object.values(usefulData.view.state.calculation)) {
+            if(val === '0') {
                 throw 'Input amount si too low, transaction will always fail';
             }
         }
