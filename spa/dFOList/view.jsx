@@ -1,6 +1,7 @@
 var DFOList = React.createClass({
     requiredModules: [
-        "spa/dFOElement"
+        "spa/dFOElement",
+        "spa/camp/camp"
     ],
     requiredScripts: [
         'spa/loaderMini.jsx',
@@ -88,7 +89,7 @@ var DFOList = React.createClass({
     },
     sortList(list) {
         var sortedList = this[this.state.order](list);
-        if(this.state.orderByMetadata) {
+        if (this.state.orderByMetadata) {
             var finalList = sortedList.filter(it => it.dFO.metadataLink !== undefined && it.dFO.metadataLink !== null);
             finalList.push(...sortedList.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null));
             sortedList = finalList;
@@ -141,13 +142,20 @@ var DFOList = React.createClass({
         var _this = this;
         _this.state && _this.state.key && window.refreshBalances(undefined, window.list[_this.state.key], true).then(() => _this.forceUpdate())
     },
+    toggleAdditionalViews(e) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        if(e.currentTarget.className.indexOf('Editing') !== -1) {
+            return this.setState({toggle : null});
+        }
+        this.setState({toggle : e.currentTarget.dataset.toggle});
+    },
     render() {
         var _this = this;
         var list = this.getList();
         return (
             <section className={"DFOList" + (this.state && this.state.key ? ' DFOListOpenAfter' : '')}>
                 {(!this.state || !this.state.key) && <section className="ListOrderPanel">
-                <label className="ORDERINFOOOOOO">
+                    <label className="ORDERINFOOOOOO">
                         <p>Sort by</p>
                         <select onChange={this.setOrder}>
                             {Object.entries(this.state.orders).map(it => <option key={it[0]} value={it[0]} selected={_this.state.order === it[0]}>{it[1]}</option>)}
@@ -155,11 +163,14 @@ var DFOList = React.createClass({
                     </label>
                     <label className="METADATAINFOOOOOO">
                         <span>Metadata First</span>
-                        <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata}/>
+                        <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata} />
                     </label>
-                    <br/>
+                    <label className="DACCELISORDIIIIIIIII">
+                        <WalletEnablerButton className={"LinkVisualButton LinkVisualButtonB" + (this.state && this.state.toggle === 'camp' ? " Editing" : "")} onClick={this.toggleAdditionalViews} data-toggle='camp'>Camp</WalletEnablerButton>
+                    </label>
+                    <br />
                 </section>}
-                <ul className="DFOLister">
+                {(!this.state || !this.state.toggle) && <ul className="DFOLister">
                     {list.map(it => {
                         return (!_this.state || !_this.state.key || _this.state.key === it.key) && <li key={it.key} className="DFOInfo">
                             <section className={"DFOMAinNav" + (this.state && this.state.key ? ' DFOMAinNavAfter' : '')}>
@@ -231,7 +242,8 @@ var DFOList = React.createClass({
                         </li>
                     })}
                     {list.length === 1 && (!_this.controller || _this.controller.running) && <LoaderMini message="Loading DFOs" />}
-                </ul>
+                </ul>}
+                {this.state && this.state.toggle === 'camp' && <Camp/>}
             </section>
         );
     }
