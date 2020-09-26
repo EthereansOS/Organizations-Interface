@@ -42,10 +42,10 @@ var PairTokenController = function (view) {
         var tokenLAmountIn = (await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, tokenGAmountIn, path))[1];
         path[0] = path[1];
         path[1] = usefulData.tokenT.address;
-        var tokenTAmountIn = (await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, tokenLAmountIn, path))[1];
+        var tokenTAmountIn = tokenLAmountIn === '0' ? '0' : (await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, tokenLAmountIn, path))[1];
         path[0] = path[1];
         path[1] = pair[selection].address;
-        var tokenGAmountOut = (await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, tokenTAmountIn, path))[1];
+        var tokenGAmountOut = tokenTAmountIn === '0' ? '0' : (await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, tokenTAmountIn, path))[1];
         view.setState({
             calculation: {
                 tokenGAmountIn,
@@ -79,6 +79,11 @@ var PairTokenController = function (view) {
         }
         if (parseInt(value) > parseInt(usefulData.view.state.balance)) {
             throw `You have insufficient ${usefulData.pair[usefulData.selection].symbol}`;
+        }
+        for(var value of Object.values(usefulData.view.state.calculation)) {
+            if(value === '0') {
+                throw 'Input amount si too low, transaction will always fail';
+            }
         }
         var etherValue = usefulData.pair[usefulData.selection].address === window.wethAddress ? value : undefined;
         var pairAddress = usefulData.pair.options.address;
