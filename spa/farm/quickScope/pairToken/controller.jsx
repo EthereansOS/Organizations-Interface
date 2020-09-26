@@ -61,17 +61,17 @@ var PairTokenController = function (view) {
         var token = usefulData.pair[usefulData.selection].token;
         var input = usefulData.input;
         var balance = await window.blockchainCall(token.methods.balanceOf, window.walletAddress);
-        var approved = parseInt(await window.blockchainCall(token.methods.allowance, window.walletAddress, window.campContract.options.address)) > (parseInt(input || '0'));
+        var approved = parseInt(await window.blockchainCall(token.methods.allowance, window.walletAddress, window.quickScopeContract.options.address)) > (parseInt(input || '0'));
         usefulData.view.setState({ balance, approved });
     };
 
     context.performApprove = async function performApprove(view) {
         var usefulData = context.getUsefulData(view);
-        await window.blockchainCall(usefulData.pair[usefulData.selection].token.methods.approve, window.campContract.options.address, window.numberToString(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff));
+        await window.blockchainCall(usefulData.pair[usefulData.selection].token.methods.approve, window.quickScopeContract.options.address, window.numberToString(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff));
         context.checkApproveAndBalances(view);
     };
 
-    context.performCamp = async function performCamp(view) {
+    context.performQuickScope = async function performQuickScope(view) {
         var usefulData = context.getUsefulData(view);
         var value = usefulData.input;
         if (isNaN(parseInt(value)) || parseInt(value) <= 0) {
@@ -84,7 +84,7 @@ var PairTokenController = function (view) {
         var pairAddress = usefulData.pair.options.address;
         var gToken = usefulData.selection.split('token').join('');
         var tokenTAddress = usefulData.tokenT.address;
-        await window.blockchainCall(etherValue, window.campContract.methods.camp, pairAddress, gToken, tokenTAddress, value);
+        await window.blockchainCall(etherValue, window.quickScopeContract.methods.quickScope, pairAddress, gToken, tokenTAddress, value);
         context.recalculateRoutesAndPrices();
     };
 };

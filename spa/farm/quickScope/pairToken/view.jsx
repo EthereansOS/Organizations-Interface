@@ -97,8 +97,8 @@ var PairToken = React.createClass({
                 {this.state && <section>
                     {this.state.performing !== 'Approve' && <a href="javascript:;" data-action="Approve" onClick={this.perform} className={"ApproveButton" + (this.state.approved || this.props.lock ? " Disabled" : "")}>Approve</a>}
                     {this.state.performing === 'Approve' && <LoaderMinimino/>}
-                    {this.state.performing !== 'Camp' && <a href="javascript:;" data-action="Camp" onClick={this.perform} className={"CampButton" + (!this.state.approved || this.state.performing || this.props.lock ? " Disabled" : "")}>Quick Scope</a>}
-                    {this.state.performing === 'Camp' && <LoaderMinimino />}
+                    {this.state.performing !== 'QuickScope' && <a href="javascript:;" data-action="QuickScope" onClick={this.perform} className={"QuickScopeButton" + (!this.state.approved || this.state.performing || this.props.lock ? " Disabled" : "")}>Quick Scope</a>}
+                    {this.state.performing === 'QuickScope' && <LoaderMinimino />}
                 </section>}
                 {this.state && this.state.calculation && <section>
                     {this.renderCalculation(this.state.calculation, selection, otherSelection)}

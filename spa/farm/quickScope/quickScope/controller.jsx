@@ -4,8 +4,8 @@ var QuickScopeController = function (view) {
 
     context.loadData = async function loadData(view) {
         view = view || context.view;
-        view.setState({list : null});
-        window.campContract = window.newContract(window.context.CampABI, window.getNetworkElement("campAddress"));
+        view.setState({list : null, options : null});
+        window.quickScopeContract = window.newContract(window.context.QuickScopeABI, window.getNetworkElement("quickScopeAddress"));
         window.wethToken = await window.loadTokenInfos(window.wethAddress);
         var programmableEquities = (await window.AJAXRequest(window.context.programmableEquitiesURL)).tokens;
         window.logos = window.logos || {};
@@ -34,7 +34,18 @@ var QuickScopeController = function (view) {
             }
         }
         list = Object.values(list);
-        view.setState({list});
+        var options = {};
+        list.forEach(it => {
+            options[it.token0.address] = {
+                token: it.token0,
+                selected: true
+            }
+            options[it.token1.address] = {
+                token: it.token1,
+                selected: true
+            }
+        })
+        view.setState({list, options});
     };
 
     context.loadUniswapPairs = async function loadUniswapPairs(token, indexes, others) {

@@ -2,7 +2,7 @@
 
 pragma solidity ^0.7.0;
 
-contract Camp {
+contract QuickScope {
 
     IUniswapV2Router private _uniswap;
     address private _wethAddress;
@@ -20,7 +20,7 @@ contract Camp {
     receive() external payable {
     }
 
-    function camp(
+    function quickScope(
         address pairAddress,
         uint256 gToken,
         address tokenTAddress,
