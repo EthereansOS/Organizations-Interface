@@ -30,7 +30,7 @@ var Stake = React.createClass({
     changeSecond(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         var split = e.currentTarget.value.split("_");
-        this.logo.src = this.props.stakingData.pairs[split[0]].logo
+        this.logo.src = window.formatLink(this.props.stakingData.pairs[split[0]].logo)
         this.controller.calculateOther("firstAmount", parseInt(this.pool.value.split('_')[0]), this.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
         this.controller.calculateApprove(parseInt(this.pool.value.split('_')[0]));
     },
@@ -93,7 +93,7 @@ var Stake = React.createClass({
                     <a data-target="firstAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>
                     <input ref={ref => this.firstAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="firstAmount" onChange={this.onChangeAmount}/>
                     <aside className="switchLink" target="_blank">{this.props.element.symbol}</aside>
-                    <img src={this.props.element.logo}/>
+                    <img src={window.formatLink(this.props.element.logo || this.props.element.logoURI)}/>
                     {this.state && this.state.firstBalance && [<br/>,<br/>,
                     <section className="BalanceLabel">
                         <span>Balance:</span>
@@ -107,7 +107,7 @@ var Stake = React.createClass({
                     <select ref={ref => this.pool = ref} className="switchLink" target="_blank" onChange={this.changeSecond}>
                         {this.props.stakingData.pairs.map((it, i) => <option key={it.address} data-index={i} value={i + "_" + it.symbol}>{it.symbol}</option>)}
                     </select>
-                    <img ref={ref => this.logo = ref} src={this.props.stakingData.pairs[0].logo}/>
+                    <img ref={ref => this.logo = ref} src={window.formatLink(this.props.stakingData.pairs[0].logo)}/>
                     {this.state && this.state.secondBalance && this.pool && [<br/>,<br/>,
                     <section className="BalanceLabel">
                         <span>Balance:</span>
@@ -123,13 +123,13 @@ var Stake = React.createClass({
                 <section className="switchTools">
                     <span ref={ref => this.reward = ref} className="switchFinal">{window.formatMoney(0)}</span>
                     <aside className="switchLink">{this.props.element.symbol}</aside>
-                    <img src={this.props.element.logo}/>
+                    <img src={window.formatLink(this.props.element.logo || this.props.element.logoURI)}/>
                 </section>
                 <h3 className="switchWeek">Weekly</h3>
                 <section className="switchTools switchToolsWeek">
                     <span ref={ref => this.splittedReward = ref} className="switchFinal">{window.formatMoney(0)}</span>
                     <aside className="switchLink">{this.props.element.symbol}</aside>
-                    <img src={this.props.element.logo}/>
+                    <img src={window.formatLink(this.props.element.logo || this.props.element.logoURI)}/>
                 </section>
                 <section className="switchActions">
                     {window.walletAddress && (this.state.approveFirst || !this.state.approveSecond) && <a data-target="mine" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.element.symbol)}</a>}
@@ -156,9 +156,9 @@ var Stake = React.createClass({
                             <h6><b>{window.fromDecimals(it.otherBalance, this.props.stakingData.pairs[it.poolPosition].decimals)} {this.props.stakingData.pairs[it.poolPosition].symbol}</b></h6>
                         </section>
                         <section className="statusPosition">
-                            <h5>{window.fromDecimals(it.reward, this.props.element.decimals)} <img src={this.props.element.logo}></img></h5>
+                            <h5>{window.fromDecimals(it.reward, this.props.element.decimals)} <img src={window.formatLink(this.props.element.logo)}></img></h5>
                             <h6>Locked Reward</h6>
-                            <h5><b>{window.fromDecimals(it.cumulativeReward, this.props.element.decimals)}</b> <img src={this.props.element.logo}></img></h5>
+                            <h5><b>{window.fromDecimals(it.cumulativeReward, this.props.element.decimals)}</b> <img src={window.formatLink(this.props.element.logo)}></img></h5>
                             <h6>&#127873; Redeemable</h6>
                             <a className={it.cumulativeReward !== '0' && !it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.redeem(e, it.tier, it.position)}>Redeem</a>
                         </section>
