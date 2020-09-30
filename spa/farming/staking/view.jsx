@@ -52,7 +52,7 @@ var StakingView = React.createClass({
                 lis.push(...element.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
                     <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
+                        <h5 className="DFOHostingTitle"><img src={window.formatLink(_this.props.element.logo)}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
                             <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
                             <p className="DFOHostingTitle TheDappInfoX">Distribution: <b>Weekly</b></p>
                             <p className="DFOHostingTitle TheDappInfoX">Total Lock: <b>{it.blockNumber}</b> Blocks</p>
@@ -63,7 +63,7 @@ var StakingView = React.createClass({
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                             {element.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
-                            <img src={pair.logo}/>
+                            <img src={window.formatLink(pair.logo)}/>
                                 {pair.symbol}
                             </a>)}
                     </section>
@@ -74,7 +74,7 @@ var StakingView = React.createClass({
                             <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.staked, _this.props.element.decimals)}</b></h5>
                             <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
                             <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.remainingToStake, _this.props.element.decimals)}</b></h5>
-                            <a href="javascript:;" onClick={e => this.showStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonG">&#129385; Stake</a>
+                            <a href="javascript:;" onClick={e => this.showStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonG">&#129385; {element.active ? "Stake" : "Redeem"}</a>
                             {this.props && this.props.edit && element.active && <a href="javascript:;" onClick={e => this.stopStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>}
                         </section>
                     </section>

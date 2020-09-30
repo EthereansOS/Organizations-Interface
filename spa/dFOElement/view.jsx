@@ -24,6 +24,10 @@ var DFOElement = React.createClass({
     },
     componentDidMount() {
         this.controller.loadMenu();
+        window.setHomepageLink('?addr=' + this.props.element.dFO.options.address);
+    },
+    componentWillUnmount() {
+        window.setHomepageLink();
     },
     render() {
         var _this = this;
