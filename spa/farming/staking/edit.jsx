@@ -97,7 +97,8 @@ var StakingEdit = React.createClass({
     },
     onTierChange(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        var blockNumber = this.props.blockTiers[e.currentTarget.value].averages[1];
+        var blockNumber = this.props.blockTiers[e.currentTarget.value];
+        blockNumber = blockNumber ? blockNumber.averages[1] : null;
         this.setState({ blockNumber, tier: e.currentTarget.value });
     },
     onBlockLimitChange(e) {
@@ -108,13 +109,34 @@ var StakingEdit = React.createClass({
             return;
         }
         this.pairPicker && this.pairPicker.setState({ selected: null });
+        var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && this.mainTokenPicker.state.selected && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
+        if(newPair.address === mainTokenAddress) {
+            this.mainTokenPicker.setState({selected : null});
+        }
         var pairs = (this.state && this.state.pairs) || [];
         for (var pair of pairs) {
+            
             if (pair.address === newPair.address) {
                 return;
             }
         }
         pairs.push(newPair);
+        this.setState({ pairs });
+    },
+    onNewMainToken(mainToken) {
+        if (!mainToken) {
+            return;
+        }
+        var pairs = (this.state && this.state.pairs) || [];
+        var found;
+        for (var i = 0; i < pairs.length; i++) {
+            var pair = pairs[i];
+            if (pair.address === mainToken.address) {
+                found = i;
+                break;
+            }
+        }
+        !isNaN(found) && pairs.splice(found, 1);
         this.setState({ pairs });
     },
     deletePair(e) {
@@ -143,7 +165,20 @@ var StakingEdit = React.createClass({
             tier.rewardMultiplier = percentage[0];
             tier.rewardDivider = percentage[1];
         }
-        window.stake(this, startBlock, pairs.map(it => it.address), tiers);
+        var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && this.mainTokenPicker.state.selected && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
+        if(!mainTokenAddress) {
+            return this.emit('message', 'Main Token is mandatory', 'error');
+        }
+        for(var pair of pairs) {
+            if(pair.address === mainTokenAddress) {
+                return this.emit('message', 'Main Token cannot be in the pair list', 'error');
+            }
+        }
+        var rewardTokenAddress = this.rewardTokenPicker && this.rewardTokenPicker.state && this.rewardTokenPicker.state.selected && this.state.tokensList[this.rewardTokenPicker.state.key][this.rewardTokenPicker.state.selected].address;
+        if(!rewardTokenAddress) {
+            return this.emit('message', 'Reward Token is mandatory', 'error');
+        }
+        window.stake(this, startBlock, mainTokenAddress, rewardTokenAddress, pairs.map(it => it.address), tiers);
     },
     onHardCapChange(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -177,6 +212,10 @@ var StakingEdit = React.createClass({
                 <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Start Block:</b></h5>
                     <input type="number" ref={ref => (this.startBlockInput = ref) && !_this.firstTime && (_this.firstTime = true) && (ref.value = '0')} min="0" />
+                    <h5 className="DFOHostingTitle"><b>Reward With:</b></h5>
+                    <UniswapTokenPicker ref={ref => this.rewardTokenPicker = ref} tokensList={this.state.tokensList}/>
+                    <h5 className="DFOHostingTitle"><b>Main Token:</b></h5>
+                    <UniswapTokenPicker ref={ref => this.mainTokenPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewMainToken} />
                     <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                     {this.state.pairs.map((it, i) => <a key={it.address} href="javascript:;" className="DFOHostingTag">
                         <img src={it.logo}></img>
@@ -184,7 +223,7 @@ var StakingEdit = React.createClass({
                         <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>
                     </a>)}
                     {false && <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />}
-                    <UniswapTokenPicker exceptFor={this.props.element.token.options.address} ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair} />
+                    <UniswapTokenPicker ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair} />
                 </section>
             </section>
             <section className="TheDappInfo2">
