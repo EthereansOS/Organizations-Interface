@@ -485,7 +485,7 @@ interface IERC20 {
     });
 };
 
-window.stake = async function stake(view, startBlock, mainTokenAddress, rewardTokenAddress, pools, tiers, stakingContractAddress) {
+window.stake = async function stake(view, startBlock, endBlock, mainTokenAddress, rewardTokenAddress, pools, tiers, stakingContractAddress) {
     var selectedSolidityVersion = Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
     var liquidityMiningContractSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.0'];
     for(var i = 0; i < pools.length; i++) {
@@ -703,11 +703,10 @@ interface IStateHolder {
                 var args = [
                     stakingContract.abi,
                     stakingContract.bytecode,
-                    window.context.uniSwapV2FactoryAddress,
-                    window.context.uniSwapV2RouterAddress,
                     mainTokenAddress,
                     rewardTokenAddress,
                     startBlock,
+                    endBlock,
                     view.props.element.doubleProxyAddress,
                     pools,
                     timeWindows,
