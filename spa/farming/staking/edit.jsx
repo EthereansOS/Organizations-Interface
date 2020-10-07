@@ -151,6 +151,10 @@ var StakingEdit = React.createClass({
         if (isNaN(startBlock) || startBlock < 0) {
             return this.emit('message', 'Start Block must be a number greater than 0', 'error');
         }
+        var endBlock = parseInt(this.endBlockInput.value);
+        if (isNaN(endBlock) || endBlock < 0) {
+            return this.emit('message', 'End Block must be a number greater than 0', 'error');
+        }
         var pairs = (this.state && this.state.pairs || []);
         if (pairs.length === 0) {
             return this.emit('message', 'Please select at least a pair', 'error');
@@ -178,7 +182,7 @@ var StakingEdit = React.createClass({
         if(!rewardTokenAddress) {
             return this.emit('message', 'Reward Token is mandatory', 'error');
         }
-        window.stake(this, startBlock, mainTokenAddress, rewardTokenAddress, pairs.map(it => it.address), tiers);
+        window.stake(this, startBlock, endBlock, mainTokenAddress, rewardTokenAddress, pairs.map(it => it.address), tiers);
     },
     onHardCapChange(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
@@ -212,6 +216,8 @@ var StakingEdit = React.createClass({
                 <section className="DFOTitleSection BravPicciot">
                     <h5 className="DFOHostingTitle"><b>Start Block:</b></h5>
                     <input type="number" ref={ref => (this.startBlockInput = ref) && !_this.firstTime && (_this.firstTime = true) && (ref.value = '0')} min="0" />
+                    <h5 className="DFOHostingTitle"><b>End Block:</b></h5>
+                    <input type="number" ref={ref => (this.endBlockInput = ref) && !_this.firstTime && (_this.firstTime = true) && (ref.value = '0')} min="0" />
                     <h5 className="DFOHostingTitle"><b>Reward With:</b></h5>
                     <UniswapTokenPicker ref={ref => this.rewardTokenPicker = ref} tokensList={this.state.tokensList}/>
                     <h5 className="DFOHostingTitle"><b>Main Token:</b></h5>

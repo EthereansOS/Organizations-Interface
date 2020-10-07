@@ -30,8 +30,8 @@ var Stake = React.createClass({
     changeSecond(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         var split = e.currentTarget.value.split("_");
-        this.logo.src = window.formatLink(this.props.stakingData.pairs[split[0]].logo)
-        this.controller.calculateOther("firstAmount", parseInt(this.pool.value.split('_')[0]), this.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
+        this.logo.src = window.formatLink(this.props.stakingData.pairs[split[0]].logo);
+        this.controller.changeSecond("firstAmount", parseInt(this.pool.value.split('_')[0]), this.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
         this.controller.calculateApprove(parseInt(this.pool.value.split('_')[0]));
     },
     max(e) {
@@ -102,8 +102,8 @@ var Stake = React.createClass({
                     </section>]}
                 </section>
                 <section className="switchTools switchTools2">
-                    {false && <a data-target="secondAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>}
-                    <input className="ETHUSDBLOW" ref={ref => this.secondAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="secondAmount" onChange={this.onChangeAmount} disabled/>
+                    {!this.state.secondHasPair && <a data-target="secondAmount" href="javascript:;" className="switchAll" onClick={this.max}>Max</a>}
+                    <input className="ETHUSDBLOW" ref={ref => this.secondAmount = ref} type="text" placeholder="0.00" spellcheck="false" autocomplete="off" autocorrect="off" inputmode="decimal" pattern="^[0-9][.,]?[0-9]$" data-target="secondAmount" disabled={this.state.secondHasPair}/>
                     <select ref={ref => this.pool = ref} className="switchLink" target="_blank" onChange={this.changeSecond}>
                         {this.props.stakingData.pairs.map((it, i) => <option key={it.address} data-index={i} value={i + "_" + it.symbol}>{it.symbol}</option>)}
                     </select>
@@ -115,6 +115,7 @@ var Stake = React.createClass({
                         <span>{this.props.stakingData.pairs[this.pool.value.split('_')[0]].symbol}</span>
                     </section>]}
                 </section>
+                {!this.state.secondHasPair && <h3>You are the first putting liquidity in this pair!</h3>}
                 <h3>&#9203; Duration</h3>
                 <section className="switchTools" ref={this.firstTier}>
                     {this.props.stakingData.tiers.map((it, i) => <a key={it.tierKey} data-tier={i} className="TimetoStake" href="javascript:;" onClick={this.onTier}>{it.tierKey !== 'Custom' ? it.tierKey : `For ${it.blockNumber} blocks`}</a>)}
@@ -167,6 +168,9 @@ var Stake = React.createClass({
                             <h5>&#9203; <a target="_Bloank" href={window.getNetworkElement("etherscanURL") + "block/countdown/" + it.endBlock}>{it.endBlock}</a></h5>
                             <h6>Position End Block</h6>
                             <a className={it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.withdraw(e, it.tier, it.position)}>Withdraw Position</a>
+                            {this.state && !this.state.unlocking && !this.state.approveFirst && <a className="ActiveRedeem" href="javascript:;" onClick={e => this.controller.unlock(e, it.tier, it.position)}>Unlock Position</a>}
+                            {this.state && this.state.unlocking && <GhostLoader/>}
+                            {this.state && this.state.approveFirst && <a data-target="mine" href="javascript:;" className={"switchAction" + (this.state.approveFirst ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.stakingData.mainToken.symbol)}</a>}
                         </section>
                     </section>)}
                     {(!this.state || !this.state.loadingPosition) && this.state && this.state.stakingPositions && this.state.stakingPositions.length === 0 && <h3>There are no opened staking positions for you right now</h3>}
@@ -216,7 +220,6 @@ var Stake = React.createClass({
                         <p>#8 Wait for the Staking Transaction to confirm...</p>
                         <p>... <b>Done!</b> You have successfully Staked {this.props.stakingData.mainToken.symbol}. Now, you can manage your position in the "Status" page.</p>
                     </section>
-
                     <section className="ExpPar">  
                         <h1>&#128176; How to reedem Staking and Rewards</h1>  
                         <p>Once you have successfully created a Staking Position, you can manage it on the "Your Positions" section:</p>

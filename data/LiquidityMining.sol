@@ -4,11 +4,11 @@ pragma solidity ^0.7.0;
 
 contract LiquidityMining {
 
-    address private UNISWAP_V2_FACTORY;
+    address private constant UNISWAP_V2_FACTORY = 0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
 
-    address private UNISWAP_V2_ROUTER;
+    address private constant UNISWAP_V2_ROUTER = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
 
-    address private WETH_ADDRESS;
+    address private WETH_ADDRESS = IUniswapV2Router(UNISWAP_V2_ROUTER).WETH();
 
     address[] private TOKENS;
 
@@ -41,6 +41,7 @@ contract LiquidityMining {
     }
 
     uint256 private _startBlock;
+    uint256 private _endBlock;
 
     mapping(uint256 => mapping(uint256 => StakeInfo)) private _stakeInfo;
     mapping(uint256 => uint256) private _stakeInfoLength;
@@ -49,19 +50,18 @@ contract LiquidityMining {
     event Withdrawn(address sender, address indexed receiver, uint256 indexed tier, uint256 indexed poolPosition, uint256 firstAmount, uint256 secondAmount, uint256 poolAmount, uint256 reward);
     event PartialWithdrawn(address sender, address indexed receiver, uint256 indexed tier, uint256 reward);
 
-    event Unlocked(address indexed receiver, uint256 indexed tier, uint256 indexed poolPosition, uint256 firstAmount, uint256 secondAmount, uint256 poolAmount, uint256 reward);
+    event Unlocked(address indexed receiver, uint256 indexed tier, uint256 position, uint256 indexed poolPosition, uint256 firstAmount, uint256 secondAmount, uint256 poolAmount, uint256 reward);
+    event Flushed(address indexed receiver, uint256 indexed tier, uint256 position, uint256 indexed poolPosition, uint256 firstAmount, uint256 secondAmount, uint256 poolAmount, uint256 reward);
 
-    constructor(address uniswapV2FactoryAddress, address uniswapV2RouterAddress, address mainTokenAddress, address rewardTokenAddress, uint256 startBlock, address doubleProxy, address[] memory tokens, uint256[] memory timeWindows, uint256[] memory rewardMultipliers, uint256[] memory rewardDividers, uint256[] memory rewardSplitTranches) {
-
-        UNISWAP_V2_FACTORY = uniswapV2FactoryAddress;
-
-        WETH_ADDRESS = IUniswapV2Router(UNISWAP_V2_ROUTER = uniswapV2RouterAddress).WETH();
+    constructor(address mainTokenAddress, address rewardTokenAddress, uint256 startBlock, uint256 endBlock, address doubleProxy, address[] memory tokens, uint256[] memory timeWindows, uint256[] memory rewardMultipliers, uint256[] memory rewardDividers, uint256[] memory rewardSplitTranches) {
 
         _mainTokenAddress = mainTokenAddress;
 
         _rewardTokenAddress = rewardTokenAddress;
 
         _startBlock = startBlock;
+
+        _endBlock = endBlock;
 
         _doubleProxy = doubleProxy;
 
@@ -116,6 +116,10 @@ contract LiquidityMining {
         return _startBlock;
     }
 
+    function endBlock() public view returns(uint256) {
+        return _endBlock;
+    }
+
     function totalPoolAmount(uint256 poolPosition) public view returns(uint256) {
         return _totalPoolAmount[poolPosition];
     }
@@ -127,6 +131,7 @@ contract LiquidityMining {
 
     function stake(uint256 tier, uint256 poolPosition, uint256 originalFirstAmount, uint256 firstAmountMin, uint256 value, uint256 secondAmountMin) public payable {
         require(block.number >= _startBlock, "Staking is still not available");
+        require(block.number < _endBlock, "Staking has reached end block");
         require(poolPosition < TOKENS.length, "Unknown Pool");
         require(tier < TIME_WINDOWS.length, "Unknown tier");
 
@@ -231,7 +236,7 @@ contract LiquidityMining {
         uint256 reward = firstAmount * REWARD_MULTIPLIERS[tier] / REWARD_DIVIDERS[tier];
         StakeInfo memory stakeInfo = StakeInfo(msg.sender, poolPosition, firstAmount, secondAmount, poolAmount, reward, block.number + TIME_WINDOWS[tier], partialRewardBlockTimes, reward / REWARD_SPLIT_TRANCHES[tier]);
         _add(tier, stakeInfo);
-        proxy.submit("liquidityTransfer", abi.encode(address(0), 0, reward, _rewardTokenAddress));
+        proxy.submit("liquidityMiningTransfer", abi.encode(address(0), 0, reward, _rewardTokenAddress));
         emit Staked(msg.sender, tier, poolPosition, firstAmount, secondAmount, poolAmount, reward, stakeInfo.endBlock, partialRewardBlockTimes, stakeInfo.splittedReward);
     }
 
@@ -324,6 +329,7 @@ contract LiquidityMining {
             return withdraw(tier, position);
         }
         IMVDProxy proxy = IMVDProxy(IDoubleProxy(_doubleProxy).proxy());
+        address walletAddress = proxy.getMVDWalletAddress();
         uint256 reward = 0;
         for(uint256 i = 0; i < tierStakeInfo.partialRewardBlockTimes.length; i++) {
             if(tierStakeInfo.partialRewardBlockTimes[i] == 0) {
@@ -332,13 +338,40 @@ contract LiquidityMining {
         }
         IERC20 token = IERC20(_rewardTokenAddress);
         if(reward > 0) {
-            token.transferFrom(tierStakeInfo.sender, proxy.getMVDWalletAddress(), tierStakeInfo.reward);
+            token.transferFrom(tierStakeInfo.sender, walletAddress, reward);
         }
-        token.transfer(proxy.getMVDWalletAddress(), tierStakeInfo.reward);
+        token.transfer(walletAddress, tierStakeInfo.reward);
         token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(address(token), TOKENS[tierStakeInfo.poolPosition]));
         token.transfer(tierStakeInfo.sender, tierStakeInfo.poolAmount);
         _totalPoolAmount[tierStakeInfo.poolPosition] = _totalPoolAmount[tierStakeInfo.poolPosition] - tierStakeInfo.poolAmount;
-        emit Unlocked(tierStakeInfo.sender, tier, tierStakeInfo.poolPosition, tierStakeInfo.firstAmount, tierStakeInfo.secondAmount, tierStakeInfo.poolAmount, tierStakeInfo.reward + reward);
+        emit Unlocked(tierStakeInfo.sender, tier, position, tierStakeInfo.poolPosition, tierStakeInfo.firstAmount, tierStakeInfo.secondAmount, tierStakeInfo.poolAmount, tierStakeInfo.reward + reward);
+        _remove(tier, position);
+    }
+
+    function flushToDFO(uint256 tier, uint256 position) public {
+        StakeInfo memory tierStakeInfo = _stakeInfo[tier][position];
+        require(msg.sender == tierStakeInfo.sender, "Flush can be done only by position owner");
+        IMVDProxy proxy = IMVDProxy(IDoubleProxy(_doubleProxy).proxy());
+        address walletAddress = proxy.getMVDWalletAddress();
+        uint256 reward = 0;
+        for(uint256 i = 0; i < tierStakeInfo.partialRewardBlockTimes.length; i++) {
+            if(tierStakeInfo.partialRewardBlockTimes[i] > 0 && block.number >= tierStakeInfo.partialRewardBlockTimes[i]) {
+                reward += tierStakeInfo.splittedReward;
+                tierStakeInfo.partialRewardBlockTimes[i] = 0;
+            }
+        }
+        reward = reward > tierStakeInfo.reward ? tierStakeInfo.reward : reward;
+        IERC20 token = IERC20(_rewardTokenAddress);
+        if(reward > 0) {
+            token.transfer(tierStakeInfo.sender, reward);
+        }
+        if(tierStakeInfo.reward - reward > 0) {
+            token.transfer(walletAddress, tierStakeInfo.reward - reward);
+        }
+        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(address(token), TOKENS[tierStakeInfo.poolPosition]));
+        token.transfer(walletAddress, tierStakeInfo.poolAmount);
+        _totalPoolAmount[tierStakeInfo.poolPosition] = _totalPoolAmount[tierStakeInfo.poolPosition] - tierStakeInfo.poolAmount;
+        emit Flushed(tierStakeInfo.sender, tier, position, tierStakeInfo.poolPosition, tierStakeInfo.firstAmount, tierStakeInfo.secondAmount, tierStakeInfo.poolAmount, tierStakeInfo.reward + reward);
         _remove(tier, position);
     }
 

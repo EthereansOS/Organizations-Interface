@@ -11,6 +11,7 @@ var StakeController = function (view) {
     }
 
     context.calculateApprove = async function calculateApprove(i) {
+        var token = context.view.props.stakingData.pairs[i];
         var buidlBalance = parseInt(await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.balanceOf, window.walletAddress));
         var buidlAllowance = parseInt(await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
         var approveFirst = buidlAllowance === 0 || buidlAllowance < buidlBalance;
@@ -49,7 +50,18 @@ var StakeController = function (view) {
         context.calculateOther(target, i, tier);
     };
 
+    context.changeSecond = async function changeSecond(target, i , tier) {
+        var token = context.view.props.stakingData.pairs[i];
+        var uniswapV2Pair = await window.blockchainCall(window.uniswapV2Factory.methods.getPair, context.view.props.stakingData.mainToken.address, token.address);
+        var secondHasPair = uniswapV2Pair !== window.voidEthereumAddress;
+        context.view.setState({secondHasPair});
+        secondHasPair && context.calculateOther(target, i, tier);
+    };
+
     context.calculateOther = async function calculateOther(target, i, tier) {
+        if(!context.view.state.secondHasPair) {
+            return;
+        }
         var reserves = await context.calculateReserves((await context.getSecondTokenData(i, true)).token, i);
         var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? context.view.props.stakingData.pairs[i].decimals : context.view.props.stakingData.mainToken.decimals));
         value = new UniswapFraction(value.toSignificant(100).split('.')[0]);
@@ -166,7 +178,8 @@ var StakeController = function (view) {
             return;
         }
         context.view.setState({loadingPosition : true});
-        context.view.pool && await context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]))
+        context.view.pool && await context.changeSecond("firstAmount", parseInt(context.view.pool.value.split('_')[0]), context.view.domRoot.children().find('.TimetoStake.SelectedDutrationStake')[0].dataset.tier);
+        context.view.pool && await context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]));
         var currentBlock = await window.web3.eth.getBlockNumber();
         var stakingPositions = [];
         for(var tier = 0; tier < context.view.props.stakingData.tiers.length; tier++) {
@@ -244,5 +257,20 @@ var StakeController = function (view) {
         }
         await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.withdraw, tier, position);
         context.load();
+    }
+
+    context.unlock = async function unlock(e, tier, position) {
+        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        if($(e.currentTarget).hasClass('NoRedeem')) {
+            return;
+        }
+        context.view.setState({unlocking : true});
+        try {
+            await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.unlock, tier, position);
+            context.load();
+        } catch(e) {
+            alert("Transaction fail, maybe an old version of the Liquidity Mining Contract");
+        }
+        context.view.setState({unlocking : false});
     }
 };
