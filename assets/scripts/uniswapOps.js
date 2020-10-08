@@ -417,9 +417,9 @@ ${fixedInflation.swapCouples.map((it, i) => `        stateHolder.setAddress("fix
             uniswapV2Router.swapExactTokensForETH(amount, uniswapV2Router.getAmountsOut(amount, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
             return;
         }
-		// force swap to go through WETH
+        // force swap to go through WETH
         address[] memory path = new address[](3);
-	path[0] = fromAddress;
+        path[0] = fromAddress;
         path[1] = wethAddress;
         path[2] = toAddress;
         uniswapV2Router.swapExactTokensForTokens(amount, uniswapV2Router.getAmountsOut(amount, path)[2], path, dfoWalletAddress, block.timestamp + 1000);
