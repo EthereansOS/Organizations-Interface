@@ -168,10 +168,10 @@ var Stake = React.createClass({
                             <h5>&#9203; <a target="_Bloank" href={window.getNetworkElement("etherscanURL") + "block/countdown/" + it.endBlock}>{it.endBlock}</a></h5>
                             <h6>Position End Block</h6>
                             <a className={it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.withdraw(e, it.tier, it.position)}>Withdraw Position</a>
-                            <section>
+                            {this.props.stakingData.endBlock && <section>
                                 {this.state && <a data-target="reward" href="javascript:;" className={"switchAction" + (!this.state.rewardApproved ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.stakingData.rewardToken.symbol)}</a>}
                                 {this.state && <a className={"ActiveRedeem UnlockButton" + (!this.state.rewardApproved ? " UnlockButtonDisabled" : "")} href="javascript:;" onClick={e => this.controller.unlock(e, it.tier, it.position)}>{this.state.unlocking && <img width="25" src="assets/img/ghostload.gif"/>}{!this.state.unlocking && "Unlock Position"}</a>}
-                            </section>
+                            </section>}
                         </section>
                     </section>)}
                     {(!this.state || !this.state.loadingPosition) && this.state && this.state.stakingPositions && this.state.stakingPositions.length === 0 && <h3>There are no opened staking positions for you right now</h3>}

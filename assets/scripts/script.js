@@ -1606,6 +1606,7 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
         stakingManagerData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.rewardTokenAddress));
     } catch(e) {
     }
+    stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
     try {
         stakingManagerData.endBlock = await window.blockchainCall(stakingManager.methods.endBlock);
         if(active) {
@@ -1616,6 +1617,10 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
         }
     } catch(e) {
     }
+    var blockNumber = await window.web3.eth.getBlockNumber();
+    stakingManagerData.started = blockNumber > parseInt(stakingManagerData.startBlock);
+    stakingManagerData.terminated = stakingManagerData.endBlock && blockNumber > parseInt(stakingManagerData.endBlock);
+    stakingManagerData.running = stakingManagerData.started && !stakingManagerData.terminated;
     var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);
     var pools = await window.blockchainCall(stakingManager.methods.tokens);
     stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);

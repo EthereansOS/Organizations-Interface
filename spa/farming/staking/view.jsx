@@ -52,12 +52,12 @@ var StakingView = React.createClass({
                 lis.push(...element.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
                     <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle DFOHostingTitleTTT">Earn <img src={window.formatLink(_this.props.element.logo)}></img><b>{_this.props.element.symbol}</b></h5>
+                        <h5 className="DFOHostingTitle DFOHostingTitleTTT">Earn <img src={window.formatLink(element.rewardToken.logoUri || element.rewardToken.logoURI || element.rewardToken.logo)}></img><b>{element.rewardToken.symbol}</b></h5>
                         <p className="DFOHostingTitle DFOHostingTitleTTT"> by lock liquidity with:</p>
                         <a className="DFOHostingTag DFOHostingTag4">
-                            <img src="gigi"/>
-                            GIG
-                            </a>
+                            <img src={window.formatLink(element.mainToken.logoUri || element.mainToken.logoURI || element.mainToken.logo)}/>
+                            {element.mainToken.symbol}
+                        </a>
                         <p className="DFOHostingTitle DFOHostingTitleTTT">and:</p>
                             {element.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag DFOHostingTag4">
                             <img src={window.formatLink(pair.logo)}/>
@@ -71,10 +71,9 @@ var StakingView = React.createClass({
                         <h5 className="DFOHostingTitle DFOHostingTitleTTT">Total Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
                         <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">Reward Distribution: <b>Weekly</b></p>
                         <h5 className="DFOHostingTitle DFOHostingTitleTTT">Lock time: <b>~{it.tierKey}</b><span>{it.blockNumber} Blocks</span></h5>
-                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">You'll be able to open Liquidity Mining positions until the block n. <b>{it.blockNumber}</b></p>
-                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">Liquidity Mining Contract closed since the block <b>{it.blockNumber}</b>, you can only redeem for opened positions.</p>
-                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">This Liquidity Mining will start at the block n. <b>{it.blockNumber}</b>.</p>
-                            
+                        {element.active && element.running && <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">You'll be able to open Liquidity Mining positions{element.endBlock && <span> until the block n. <b><a target="_blank" href={window.getNetworkElement("etherscanURL") + "block/" + element.endBlock}>{element.endBlock}</a></b></span>}</p>}
+                        {element.active && element.terminated && <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">Liquidity Mining Contract closed since the block <b><a target="_blank" href={window.getNetworkElement("etherscanURL") + "block/" + element.endBlock}>{element.endBlock}</a></b>, you can only redeem for opened positions.</p>}
+                        {element.active && !element.started && <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">This Liquidity Mining will start at the block n. <b><a target="_blank" href={window.getNetworkElement("etherscanURL") + "block/" + element.startBlock}>{element.startBlock}</a></b>.</p>}
                     </section>
                     </section>
                     <section className="TheDappInfo1 TheDappInfoYY">
