@@ -88,7 +88,7 @@ var DFOList = React.createClass({
     },
     sortList(list) {
         var sortedList = this[this.state.order](list);
-        if(this.state.orderByMetadata) {
+        if (this.state.orderByMetadata) {
             var finalList = sortedList.filter(it => it.dFO.metadataLink !== undefined && it.dFO.metadataLink !== null);
             finalList.push(...sortedList.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null));
             sortedList = finalList;
@@ -146,7 +146,7 @@ var DFOList = React.createClass({
         return (
             <section className={"DFOList" + (this.state && this.state.key ? ' DFOListOpenAfter' : '')}>
                 {(!this.state || !this.state.key) && <section className="ListOrderPanel">
-                <label className="ORDERINFOOOOOO">
+                    <label className="ORDERINFOOOOOO">
                         <p>Sort by</p>
                         <select onChange={this.setOrder}>
                             {Object.entries(this.state.orders).map(it => <option key={it[0]} value={it[0]} selected={_this.state.order === it[0]}>{it[1]}</option>)}
@@ -154,9 +154,9 @@ var DFOList = React.createClass({
                     </label>
                     <label className="METADATAINFOOOOOO">
                         <span>Metadata First</span>
-                        <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata}/>
+                        <input type="checkbox" checked={this.state.orderByMetadata} onChange={this.setCheckOrderByMetadata} />
                     </label>
-                    <br/>
+                    <br />
                 </section>}
                 <ul className="DFOLister">
                     {list.map(it => {

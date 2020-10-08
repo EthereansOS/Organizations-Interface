@@ -32,12 +32,18 @@ var WalletEnablerButton = React.createClass({
         }).catch(() => {});
     },
     render() {
+        var _this = this;
         if(!window.walletAddress || !this.props.childOnly) {
-            return (
-                <a ref={ref => this.props.ref && this.props.ref(ref)} className={(!window.walletAddress && this.props.inactiveClassName) || this.props.className} onClick={this.onClick} href="javascript:;" type="button">
-                    {(!window.walletAddress && this.props.inactiveText) || this.props.children}
-                </a>
-            );
+            var a = <a ref={ref => this.props.ref && this.props.ref(ref)} className={(!window.walletAddress && this.props.inactiveClassName) || this.props.className} onClick={this.onClick} href="javascript:;" type="button">
+                {(!window.walletAddress && this.props.inactiveText) || this.props.children}
+            </a>;
+            a.props = a.props || {};
+            Object.keys(this.props).forEach(key => {
+                if(key.indexOf('data-') === 0) {
+                    a.props[key] = _this.props[key];
+                }
+            });
+            return (a);
         }
         return this.props.children;
     }

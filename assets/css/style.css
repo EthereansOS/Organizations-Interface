@@ -13,12 +13,13 @@ header .BrandLi {width: 130px; height: 20px;vertical-align: top;margin-top: 20px
 header .BrandLi a {text-decoration: none;font-size: 18px; color: #292929;}
 header .BrandLi a span {font-size: 20px;}
 header .MenuLi {padding: 25px;height: 20px;}
+header .DeployLi {float: right; margin: 20px 0px 0 0;}
 header .MenuLi a {font-size: 14px;font-weight: bold;text-decoration: none; color: #545454;}
 header .MenuLi a:hover {color: #000000;}
 header .ConnLi {width: 40px; float: right; margin-top: 15px;}
 header .ConnLi span {width: 30px; height: 30px; border-radius: 99%; background-color: #00ff00; display: inline-block;}
-header .SearchLi {display: inline-block; width: 650px;margin: 15px 0px 0 0; text-align: center;}
-header .SearchLi input {width: 400px; background-color: #ffffff; border: 1px solid #bbbbbb; height: 30px; font-size: 13px; outline: none; color: #000000; font-weight: normal; padding: 0 0 0 10px;}
+header .SearchLi {display: inline-block; width: 430px;margin: 15px 0px 0 0; text-align: center; float: left;}
+header .SearchLi input {width: 300px; background-color: #ffffff; border: 1px solid #bbbbbb; height: 30px; font-size: 13px; outline: none; color: #000000; font-weight: normal; padding: 0 0 0 10px;}
 header .SearchLi input:hover, .Main .MainLoad input:focus, .Main .MainLoad input:active {background-color: #ffffff; border-bottom: 2px solid #f1f1f1;} 
 header .SearchLi a {width: 40px; display: inline-block; border: none; background-color: #292929; height: 30px; vertical-align: top;}
 header .SearchLi a:hover {background-color: #000000;}
