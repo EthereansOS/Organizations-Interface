@@ -288,6 +288,7 @@ contract LiquidityMining {
 
     function partialReward(uint256 tier, uint256 position) public {
         StakeInfo memory tierStakeInfo = _stakeInfo[tier][position];
+        require(tierStakeInfo.sender != address(0), "Unknown Position!");
         if(block.number >= tierStakeInfo.endBlock) {
             return withdraw(tier, position);
         }
@@ -310,6 +311,7 @@ contract LiquidityMining {
 
     function withdraw(uint256 tier, uint256 position) public {
         StakeInfo memory tierStakeInfo = _stakeInfo[tier][position];
+        require(tierStakeInfo.sender != address(0), "Unknown Position!");
         require(block.number >= tierStakeInfo.endBlock, "Cannot actually withdraw this position");
         IERC20 token = IERC20(_rewardTokenAddress);
         if(tierStakeInfo.reward > 0) {
@@ -324,6 +326,7 @@ contract LiquidityMining {
 
     function unlock(uint256 tier, uint256 position) public {
         StakeInfo memory tierStakeInfo = _stakeInfo[tier][position];
+        require(tierStakeInfo.sender != address(0), "Unknown Position!");
         require(msg.sender == tierStakeInfo.sender, "Unlock can be done only by position owner");
         if(block.number >= tierStakeInfo.endBlock) {
             return withdraw(tier, position);
@@ -350,6 +353,7 @@ contract LiquidityMining {
 
     function flushToDFO(uint256 tier, uint256 position) public {
         StakeInfo memory tierStakeInfo = _stakeInfo[tier][position];
+        require(tierStakeInfo.sender != address(0), "Unknown Position!");
         require(msg.sender == tierStakeInfo.sender, "Flush can be done only by position owner");
         IMVDProxy proxy = IMVDProxy(IDoubleProxy(_doubleProxy).proxy());
         address walletAddress = proxy.getMVDWalletAddress();
