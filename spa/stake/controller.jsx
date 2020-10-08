@@ -5,14 +5,14 @@ var StakeController = function (view) {
     context.slippage = new UniswapFraction(window.context.slippageNumerator, window.context.slippageDenominator);
 
     context.calculateBalance = async function calculateBalance(i) {
-        var firstBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
+        var firstBalance = await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.balanceOf, window.walletAddress);
         var secondBalance = (await context.getSecondTokenData(i === undefined ? context.pool.value.split('_')[0] : i)).balance;
         context.view.setState({firstBalance, secondBalance});
     }
 
     context.calculateApprove = async function calculateApprove(i) {
-        var buidlBalance = parseInt(await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress));
-        var buidlAllowance = parseInt(await window.blockchainCall(context.view.props.element.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
+        var buidlBalance = parseInt(await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.balanceOf, window.walletAddress));
+        var buidlAllowance = parseInt(await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.allowance, window.walletAddress, context.view.props.stakingData.stakingManager.options.address));
         var approveFirst = buidlAllowance === 0 || buidlAllowance < buidlBalance;
         var approveSecond = false;
         var pool = context.view.props.stakingData.pairs[i];
@@ -28,7 +28,7 @@ var StakeController = function (view) {
     context.approve = async function approve(target) {
         context.view.setState({loadingStake : false, loadingApprove: true});
         try {
-            var token = target === 'mine' ? context.view.props.element.token : context.view.props.stakingData.pairs[context.view.pool.value.split('_')[0]].token;
+            var token = target === 'mine' ? context.view.props.stakingData.mainToken.token : context.view.props.stakingData.pairs[context.view.pool.value.split('_')[0]].token;
             await window.blockchainCall(token.methods.approve, context.view.props.stakingData.stakingManager.options.address, await window.blockchainCall(token.methods.totalSupply));
             context.calculateApprove(parseInt(context.view.pool.value.split('_')[0]));
         } catch(e) {
@@ -37,7 +37,7 @@ var StakeController = function (view) {
     };
 
     context.max = async function max(target, i, tier) {
-        var buidlBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
+        var buidlBalance = await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.balanceOf, window.walletAddress);
         if(target === 'firstAmount') {
             var tierData = (await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.getStakingInfo, tier))[1];
             parseInt(buidlBalance) > parseInt(tierData) && (buidlBalance = tierData);
@@ -51,7 +51,7 @@ var StakeController = function (view) {
 
     context.calculateOther = async function calculateOther(target, i, tier) {
         var reserves = await context.calculateReserves((await context.getSecondTokenData(i, true)).token, i);
-        var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? context.view.props.stakingData.pairs[i].decimals : context.view.props.element.decimals));
+        var value = reserves[target === 'firstAmount' ? 'secondPerBuidl' : 'buidlPerSecond'].multiply(window.toDecimals(context.view[target].value.split(',').join('') || '0', i === 1 ? context.view.props.stakingData.pairs[i].decimals : context.view.props.stakingData.mainToken.decimals));
         value = new UniswapFraction(value.toSignificant(100).split('.')[0]);
         var otherVal = (target !== 'firstAmount' ? value : value.divide(10 ** context.view.props.stakingData.pairs[i].decimals)).toSignificant(6);
         context.view[target === 'firstAmount' ? 'secondAmount' : 'firstAmount'].value = window.formatMoney(otherVal, otherVal.split('.')[1] && otherVal.split('.')[1].length);
@@ -60,11 +60,11 @@ var StakeController = function (view) {
     };
 
     context.calculateReserves = async function calculateReserves(secondToken, i) {
-        var pair = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, context.view.props.element.token.options.address, secondToken.options.address));
-        var buidlPosition  = (await window.blockchainCall(pair.methods.token0)).toLowerCase() === context.view.props.element.token.options.address.toLowerCase() ? 0 : 1;
+        var pair = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, context.view.props.stakingData.mainToken.address, secondToken.options.address));
+        var buidlPosition  = (await window.blockchainCall(pair.methods.token0)).toLowerCase() === context.view.props.stakingData.mainToken.address.toLowerCase() ? 0 : 1;
         var otherPosition = buidlPosition == 0 ? 1 : 0;
         var reserves = await window.blockchainCall(pair.methods.getReserves);
-        var firstDecimals = parseInt(await window.blockchainCall(context.view.props.element.token.methods.decimals));
+        var firstDecimals = parseInt(await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.decimals));
         var secondDecimals = i === 0 ? 18 : parseInt(await window.blockchainCall(secondToken.methods.decimals));
         if(firstDecimals > secondDecimals) {
             var x = firstDecimals - secondDecimals;
@@ -89,9 +89,9 @@ var StakeController = function (view) {
                 var tierData = await context.getTierData();
                 tierData = [tierData[1][tier], tierData[2][tier], tierData[3][tier]];
                 var value = window.web3.utils.toBN(window.toDecimals(context.view.firstAmount.value.split(',').join(''), 18)).mul(window.web3.utils.toBN(tierData[0])).div(window.web3.utils.toBN(tierData[1])).toString();
-                context.view.reward.innerText = window.formatMoney(window.fromDecimals(value, context.view.props.element.decimals, true), 18);
+                context.view.reward.innerText = window.formatMoney(window.fromDecimals(value, context.view.props.stakingData.mainToken.decimals, true), 18);
                 var splittedValue = window.web3.utils.toBN(value).div(window.web3.utils.toBN(tierData[2]));
-                context.view.splittedReward.innerText = window.formatMoney(window.fromDecimals(splittedValue, context.view.props.element.decimals, true), 18);
+                context.view.splittedReward.innerText = window.formatMoney(window.fromDecimals(splittedValue, context.view.props.stakingData.mainToken.decimals, true), 18);
             } catch(e) {
             }
         });
@@ -121,9 +121,9 @@ var StakeController = function (view) {
     };
 
     context.stake = async function stake(pool, tier) {
-        var firstAmount = window.toDecimals(context.view.firstAmount.value.split(',').join(''), context.view.props.element.decimals);
+        var firstAmount = window.toDecimals(context.view.firstAmount.value.split(',').join(''), context.view.props.stakingData.mainToken.decimals);
         var stakingInfo = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.getStakingInfo, tier);
-        var buidlBalance = await window.blockchainCall(context.view.props.element.token.methods.balanceOf, window.walletAddress);
+        var buidlBalance = await window.blockchainCall(context.view.props.stakingData.mainToken.token.methods.balanceOf, window.walletAddress);
         if(parseInt(firstAmount) < parseInt(stakingInfo[0])) {
             return alert("Amount to stake is less than the current min cap");
         }
@@ -131,7 +131,7 @@ var StakeController = function (view) {
             return alert("Amount to stake must be less than the current remaining one");
         }
         if(parseInt(firstAmount) > parseInt(buidlBalance)) {
-            return alert(`You don't have enough ${context.view.props.element.symbol} balance to stake!`);
+            return alert(`You don't have enough ${context.view.props.stakingData.mainToken.symbol} balance to stake!`);
         }
         context.view.setState({staked: null, loadingStake : true, loadingApprove: false});
         firstAmount = new UniswapFraction(firstAmount, 1);
@@ -212,14 +212,14 @@ var StakeController = function (view) {
 
     context.loadUniswapPoolAmounts = async function loadUniswapPoolAmounts(stakingInfo) {
         var otherTokenAddress = context.view.props.stakingData.pairs[stakingInfo.poolPosition].address;
-        var pool = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, otherTokenAddress, context.view.props.element.token.options.address));
+        var pool = window.newContract(window.context.uniSwapV2PairAbi, await window.blockchainCall(window.uniswapV2Factory.methods.getPair, otherTokenAddress, context.view.props.stakingData.mainToken.address));
         var token0 = await window.blockchainCall(pool.methods.token0);
         var reserves = await window.blockchainCall(pool.methods.getReserves);
         var totalSupply = await window.blockchainCall(pool.methods.totalSupply);
         var percentage = parseInt(stakingInfo.poolAmount) / parseInt(totalSupply);
         var reserve0 = window.numberToString(parseInt(reserves[0]) * percentage).split(',').join('').split('.')[0];
         var reserve1 = window.numberToString(parseInt(reserves[1]) * percentage).split(',').join('').split('.')[0];
-        if(token0 === context.view.props.element.token.options.address) {
+        if(token0 === context.view.props.stakingData.mainToken.address) {
             stakingInfo.myBalance = reserve0;
             stakingInfo.otherBalance = reserve1;
         } else {

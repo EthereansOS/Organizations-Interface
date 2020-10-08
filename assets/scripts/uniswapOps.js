@@ -485,8 +485,9 @@ interface IERC20 {
     });
 };
 
-window.stake = async function stake(view, startBlock, pools, tiers, stakingContractAddress) {
+window.stake = async function stake(view, startBlock, mainTokenAddress, rewardTokenAddress, pools, tiers, stakingContractAddress) {
     var selectedSolidityVersion = Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
+    var liquidityMiningContractSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.0'];
     for(var i = 0; i < pools.length; i++) {
         pools[i] = window.web3.utils.toChecksumAddress(pools[i]);
     }
@@ -500,11 +501,11 @@ window.stake = async function stake(view, startBlock, pools, tiers, stakingContr
         rewardDividers.push(it.rewardDivider);
         rewardSplitTranches.push(it.rewardSplitTranche);
     });
-    var dFOStakeSourceCode = (await window.AJAXRequest('data/StakingContractTemplate.sol')).format(selectedSolidityVersion[0], window.web3.utils.toChecksumAddress(window.context.uniSwapV2FactoryAddress), window.web3.utils.toChecksumAddress(window.context.uniSwapV2RouterAddress));
+    var liquidityMiningSourceCode = (await window.AJAXRequest('data/LiquidityMining.sol'));
     var functionalityReplace = '';
-    (await window.loadFunctionalityNames(view.props.element)).forEach(it => functionalityReplace = functionalityReplace || (it === 'stakingTransfer' ? 'stakingTransfer' : ''));
-    var title = ((functionalityReplace ? 'Replace' : 'New') + ' Staking Transfer Functionality');
-    functionalityReplace && (title = "New Staking Manager");
+    (await window.loadFunctionalityNames(view.props.element)).forEach(it => functionalityReplace = functionalityReplace || (it === 'liquidityMiningTransfer' ? 'liquidityMiningTransfer' : ''));
+    var title = ((functionalityReplace ? 'Replace' : 'New') + ' Liquidity Mining Transfer Functionality');
+    functionalityReplace && (title = "New Liquidity Mining Manager");
     var getSourceCode = function getSourceCode(contract, functionalityReplace) {
         return functionalityReplace ? getOneTimeSourceCode(contract) : getFunctionalitySourceCode(contract);
     };
@@ -522,7 +523,7 @@ ${!functionalityReplace ? null : `/* Update:
  */`}
 pragma solidity ^${selectedSolidityVersion[0]};
 
-contract StakingTransferFunctionality {
+contract LiquidityMiningTransferFunctionality {
 
     string private _metadataLink;
 
@@ -548,12 +549,12 @@ contract StakingTransferFunctionality {
     function onStop(address) public {
     }
 
-    function stakingTransfer(address sender, uint256, uint256 value, address receiver) public {
+    function liquidityMiningTransfer(address sender, uint256, uint256 value, address token) public {
         IMVDProxy proxy = IMVDProxy(msg.sender);
 
         require(IStateHolder(proxy.getStateHolderAddress()).getBool(_toStateHolderKey("staking.transfer.authorized", _toString(sender))), "Unauthorized action!");
 
-        proxy.transfer(receiver, value, proxy.getToken());
+        proxy.transfer(sender, value, token);
     }
 
     function _toStateHolderKey(string memory a, string memory b) private pure returns(string memory) {
@@ -619,7 +620,7 @@ interface IERC20 {
  */
 pragma solidity ^${selectedSolidityVersion[0]};
 
-contract StakingTransferFunctionality {
+contract LiquidityMiningTransferFunctionality {
 
     string private _metadataLink;
 
@@ -683,11 +684,12 @@ interface IStateHolder {
     }
     window.showProposalLoader({
         element : view.props.element,
-        contractName: 'StakingTransferFunctionality',
+        contractName: 'LiquidityMiningTransferFunctionality',
         selectedSolidityVersion : selectedSolidityVersion[1],
+        liquidityMiningContractSolidityVersion,
         title,
-        functionalityName : functionalityReplace ? '' : 'stakingTransfer',
-        functionalityMethodSignature : functionalityReplace ? 'callOneTime(address)' : 'stakingTransfer(address,uint256,uint256,address)',
+        functionalityName : functionalityReplace ? '' : 'liquidityMiningTransfer',
+        functionalityMethodSignature : functionalityReplace ? 'callOneTime(address)' : 'liquidityMiningTransfer(address,uint256,uint256,address)',
         functionalityNeedsSender : functionalityReplace ? false : true,
         functionalitySubmitable : functionalityReplace ? false : true,
         functionalityReplace : '',
@@ -695,12 +697,16 @@ interface IStateHolder {
         stakingContractAddress,
         sourceCode : 'placeHolder',
         sequentialOps : [{
-            name : 'Deploying Staking Contract',
+            name : 'Deploying Liquidity Mining Contract',
             async call(data) {
-                var stakingContract = (await window.SolidityUtilities.compile(dFOStakeSourceCode, data.selectedSolidityVersion)).optimized.DFOStake;
+                var stakingContract = (await window.SolidityUtilities.compile(liquidityMiningSourceCode, data.liquidityMiningContractSolidityVersion)).optimized.LiquidityMining;
                 var args = [
                     stakingContract.abi,
                     stakingContract.bytecode,
+                    window.context.uniSwapV2FactoryAddress,
+                    window.context.uniSwapV2RouterAddress,
+                    mainTokenAddress,
+                    rewardTokenAddress,
                     startBlock,
                     view.props.element.doubleProxyAddress,
                     pools,

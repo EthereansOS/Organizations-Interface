@@ -1587,18 +1587,25 @@ window.loadStakingData = async function loadStakingData(element) {
         var active = await window.blockchainCall(element.stateHolder.methods.getBool, elem.name);
         var split = elem.name.split('.');
         split.length === 1 && (split = elem.name.split('_'));
-        var stakingManager = window.newContract(window.context.StakeAbi, split[split.length - 1]);
-        stakingData.push(await window.setStakingManagerData(stakingManager, blockTiers, active));
+        var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, split[split.length - 1]);
+        stakingData.push(await window.setStakingManagerData(element, stakingManager, blockTiers, active));
     }
     return { stakingData, blockTiers };
 };
 
-window.setStakingManagerData = async function setStakingManagerData(stakingManager, blockTiers, active) {
+window.setStakingManagerData = async function setStakingManagerData(element, stakingManager, blockTiers, active) {
     var stakingManagerData = {
         stakingManager,
         active,
         blockTiers
     };
+    stakingManagerData.mainToken = await window.loadTokenInfos(element.token.options.address);
+    stakingManagerData.rewardToken = stakingManagerData.mainToken;
+    try {
+        stakingManagerData.mainToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.tokenAddress));
+        stakingManagerData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.rewardTokenAddress));
+    } catch(e) {
+    }
     var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);
     var pools = await window.blockchainCall(stakingManager.methods.tokens);
     stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);

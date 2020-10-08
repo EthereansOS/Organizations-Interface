@@ -22,7 +22,7 @@ var IndexController = function (view) {
                 component: NoWeb3Loader
             }
         }, async function () {
-            var stakingManager = window.newContract(window.context.StakeAbi, window.web3.utils.toChecksumAddress(window.addressBarParams.staking));
+            var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, window.web3.utils.toChecksumAddress(window.addressBarParams.staking));
             delete window.addressBarParams.staking;
             var doubleProxy = window.newContract(window.context.DoubleProxyAbi, await window.blockchainCall(stakingManager.methods.doubleProxy));
             var element = {
@@ -37,7 +37,7 @@ var IndexController = function (view) {
             Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
             var props = {
                 element,
-                stakingData: await window.setStakingManagerData(stakingManager, blockTiers, active)
+                stakingData: await window.setStakingManagerData(context.view.props.element, stakingManager, blockTiers, active)
             };
             ReactModuleLoader.load({
                 modules: ['spa/stake'],
