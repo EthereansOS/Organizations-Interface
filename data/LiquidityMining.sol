@@ -317,7 +317,7 @@ contract LiquidityMining {
         if(tierStakeInfo.reward > 0) {
             token.transfer(tierStakeInfo.sender, tierStakeInfo.reward);
         }
-        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(address(token), TOKENS[tierStakeInfo.poolPosition]));
+        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(_mainTokenAddress, TOKENS[tierStakeInfo.poolPosition]));
         token.transfer(tierStakeInfo.sender, tierStakeInfo.poolAmount);
         _totalPoolAmount[tierStakeInfo.poolPosition] = _totalPoolAmount[tierStakeInfo.poolPosition] - tierStakeInfo.poolAmount;
         emit Withdrawn(msg.sender, tierStakeInfo.sender, tier, tierStakeInfo.poolPosition, tierStakeInfo.firstAmount, tierStakeInfo.secondAmount, tierStakeInfo.poolAmount, tierStakeInfo.reward);
@@ -344,7 +344,7 @@ contract LiquidityMining {
             token.transferFrom(tierStakeInfo.sender, walletAddress, reward);
         }
         token.transfer(walletAddress, tierStakeInfo.reward);
-        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(address(token), TOKENS[tierStakeInfo.poolPosition]));
+        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(_mainTokenAddress, TOKENS[tierStakeInfo.poolPosition]));
         token.transfer(tierStakeInfo.sender, tierStakeInfo.poolAmount);
         _totalPoolAmount[tierStakeInfo.poolPosition] = _totalPoolAmount[tierStakeInfo.poolPosition] - tierStakeInfo.poolAmount;
         emit Unlocked(tierStakeInfo.sender, tier, position, tierStakeInfo.poolPosition, tierStakeInfo.firstAmount, tierStakeInfo.secondAmount, tierStakeInfo.poolAmount, tierStakeInfo.reward + reward);
@@ -372,7 +372,7 @@ contract LiquidityMining {
         if(tierStakeInfo.reward - reward > 0) {
             token.transfer(walletAddress, tierStakeInfo.reward - reward);
         }
-        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(address(token), TOKENS[tierStakeInfo.poolPosition]));
+        token = IERC20(IUniswapV2Factory(UNISWAP_V2_FACTORY).getPair(_mainTokenAddress, TOKENS[tierStakeInfo.poolPosition]));
         token.transfer(walletAddress, tierStakeInfo.poolAmount);
         _totalPoolAmount[tierStakeInfo.poolPosition] = _totalPoolAmount[tierStakeInfo.poolPosition] - tierStakeInfo.poolAmount;
         emit Flushed(tierStakeInfo.sender, tier, position, tierStakeInfo.poolPosition, tierStakeInfo.firstAmount, tierStakeInfo.secondAmount, tierStakeInfo.poolAmount, tierStakeInfo.reward + reward);
