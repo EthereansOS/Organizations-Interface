@@ -52,28 +52,37 @@ var StakingView = React.createClass({
                 lis.push(...element.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
                     <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
-                        <h5 className="DFOHostingTitle"><img src={window.formatLink(_this.props.element.logo)}></img><b>{_this.props.element.symbol}</b> for ~{it.tierKey}</h5>
-                            <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
-                            <p className="DFOHostingTitle TheDappInfoX">Distribution: <b>Weekly</b></p>
-                            <p className="DFOHostingTitle TheDappInfoX">Total Lock: <b>{it.blockNumber}</b> Blocks</p>
-                            <p className="DFOLabelTitleInfosmall TheDappInfoX">DEX: &#129412; V2 </p>
+                        <h5 className="DFOHostingTitle DFOHostingTitleTTT">Earn <img src={window.formatLink(_this.props.element.logo)}></img><b>{_this.props.element.symbol}</b></h5>
+                        <p className="DFOHostingTitle DFOHostingTitleTTT"> by lock liquidity with:</p>
+                        <a className="DFOHostingTag DFOHostingTag4">
+                            <img src="gigi"/>
+                            GIG
+                            </a>
+                        <p className="DFOHostingTitle DFOHostingTitleTTT">and:</p>
+                            {element.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag DFOHostingTag4">
+                            <img src={window.formatLink(pair.logo)}/>
+                                {pair.symbol}
+                            </a>)}
+                            <p>Via Uniswap V2</p>
                         </section>
                     </section>
                     <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
-                            {element.pairs.map(pair => <a key={pair.address} href={window.getNetworkElement('etherscanURL') + 'token/' + pair.address} target="_blank" className="DFOHostingTag">
-                            <img src={window.formatLink(pair.logo)}/>
-                                {pair.symbol}
-                            </a>)}
+                        <h5 className="DFOHostingTitle DFOHostingTitleTTT">Total Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
+                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">Reward Distribution: <b>Weekly</b></p>
+                        <h5 className="DFOHostingTitle DFOHostingTitleTTT">Lock time: <b>~{it.tierKey}</b><span>{it.blockNumber} Blocks</span></h5>
+                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">You'll be able to open Liquidity Mining positions until the block n. <b>{it.blockNumber}</b></p>
+                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">Liquidity Mining Contract closed since the block <b>{it.blockNumber}</b>, you can only redeem for opened positions.</p>
+                        <p className="DFOHostingTitle DFOHostingTitleTTT TheDappInfoX">This Liquidity Mining will start at the block n. <b>{it.blockNumber}</b>.</p>
+                            
                     </section>
                     </section>
                     <section className="TheDappInfo1 TheDappInfoYY">
                         <section className="DFOTitleSection">
                             <span className="DFOHostingTitleS">Staked:</span>
-                            <h5 className="DFOHostingTitle"><b>{window.fromDecimals(it.staked, _this.props.element.decimals)}</b></h5>
+                            <h5 className="DFOHostingTitle DFOHostingTitleTTT"><b>{window.fromDecimals(it.staked, _this.props.element.decimals)}</b></h5>
                             <span className="DFOHostingTitleS DFOHostingTitleG">Available:</span>
-                            <h5 className="DFOHostingTitle DFOHostingTitleG"><b>{window.fromDecimals(it.remainingToStake, _this.props.element.decimals)}</b></h5>
+                            <h5 className="DFOHostingTitle DFOHostingTitleTTT DFOHostingTitleG"><b>{window.fromDecimals(it.remainingToStake, _this.props.element.decimals)}</b></h5>
                             <a href="javascript:;" onClick={e => this.showStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonG">&#129385; {element.active ? "Stake" : "Redeem"}</a>
                             {this.props && this.props.edit && element.active && <a href="javascript:;" onClick={e => this.stopStake(e, element)} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Stop</a>}
                         </section>
