@@ -170,7 +170,7 @@ var Stake = React.createClass({
                             <a className={it.canWithdraw ? "ActiveRedeem" : "NoRedeem"} href="javascript:;" onClick={e => this.controller.withdraw(e, it.tier, it.position)}>Withdraw Position</a>
                             <section>
                                 {this.state && <a data-target="reward" href="javascript:;" className={"switchAction" + (!this.state.rewardApproved ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.stakingData.rewardToken.symbol)}</a>}
-                                {this.state && <a className={"ActiveRedeem UnlockButton" + (!this.state.rewardApproved ? " UnlockButtonDisabled" : "")} href="javascript:;" onClick={e => this.controller.unlock(e, it.tier, it.position)}>{this.state.unlocking && <GhostLoader/>}{!this.state.unlocking && "Unlock Position"}</a>}
+                                {this.state && <a className={"ActiveRedeem UnlockButton" + (!this.state.rewardApproved ? " UnlockButtonDisabled" : "")} href="javascript:;" onClick={e => this.controller.unlock(e, it.tier, it.position)}>{this.state.unlocking && <img width="25" src="assets/img/ghostload.gif"/>}{!this.state.unlocking && "Unlock Position"}</a>}
                             </section>
                         </section>
                     </section>)}
