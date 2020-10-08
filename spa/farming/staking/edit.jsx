@@ -109,7 +109,7 @@ var StakingEdit = React.createClass({
             return;
         }
         this.pairPicker && this.pairPicker.setState({ selected: null });
-        var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && this.mainTokenPicker.state.selected && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
+        var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && !isNaN(this.mainTokenPicker.state.selected) && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
         if(newPair.address === mainTokenAddress) {
             this.mainTokenPicker.setState({selected : null});
         }
@@ -169,7 +169,7 @@ var StakingEdit = React.createClass({
             tier.rewardMultiplier = percentage[0];
             tier.rewardDivider = percentage[1];
         }
-        var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && this.mainTokenPicker.state.selected && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
+        var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && !isNaN(this.mainTokenPicker.state.selected) && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
         if(!mainTokenAddress) {
             return this.emit('message', 'Main Token is mandatory', 'error');
         }
@@ -178,7 +178,7 @@ var StakingEdit = React.createClass({
                 return this.emit('message', 'Main Token cannot be in the pair list', 'error');
             }
         }
-        var rewardTokenAddress = this.rewardTokenPicker && this.rewardTokenPicker.state && this.rewardTokenPicker.state.selected && this.state.tokensList[this.rewardTokenPicker.state.key][this.rewardTokenPicker.state.selected].address;
+        var rewardTokenAddress = this.rewardTokenPicker && this.rewardTokenPicker.state && !isNaN(this.rewardTokenPicker.state.selected) && this.state.tokensList[this.rewardTokenPicker.state.key][this.rewardTokenPicker.state.selected].address;
         if(!rewardTokenAddress) {
             return this.emit('message', 'Reward Token is mandatory', 'error');
         }
