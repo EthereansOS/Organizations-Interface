@@ -37,7 +37,7 @@ var IndexController = function (view) {
             Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
             var props = {
                 element,
-                stakingData: await window.setStakingManagerData(context.view.props.element, stakingManager, blockTiers, active)
+                stakingData: await window.setStakingManagerData(element, stakingManager, blockTiers, active)
             };
             ReactModuleLoader.load({
                 modules: ['spa/stake'],
