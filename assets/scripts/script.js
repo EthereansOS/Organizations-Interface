@@ -1282,7 +1282,7 @@ window.loadLogo = async function loadLogo(address) {
     if(window.logos[address]) {
         return window.logos[address];
     }
-    var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : address.toLowerCase() === window.dfoHub.token.options.address.toLowerCase() ? 'assets/img/buidlv2-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
+    var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
     try {
         await window.AJAXRequest(logo);
     } catch (e) {
