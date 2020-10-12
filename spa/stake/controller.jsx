@@ -127,10 +127,10 @@ var StakeController = function (view) {
 
     context.getTierData = async function getTierData() {
         try {
-            if(!context.tierData) {
-                context.tierData = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.tierData);
+            if(!context.view.tierData) {
+                context.view.tierData = await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.tierData);
             }
-            return JSON.parse(JSON.stringify(context.tierData));
+            return JSON.parse(JSON.stringify(context.view.tierData));
         } catch(e) {
             return [];
         }
