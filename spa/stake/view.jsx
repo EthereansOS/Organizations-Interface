@@ -146,7 +146,7 @@ var Stake = React.createClass({
                     <h2>Your Positions</h2>
                     {!window.walletAddress && <a href="javascript:;" onClick={() => window.ethereum.enable().then(() => window.getAddress()).then(() => _this.emit('ethereum/ping')).then(_this.controller.load)} className="switchAction active">Connect your Wallet</a>}
                     {window.walletAddress && (!this.state || this.state.loadingPosition) && <LoaderMini />}
-                    {window.walletAddress && (!this.state || !this.state.loadingPosition) && this.state && this.state.stakingPositions && this.state.stakingPositions.map(it => <section className="statusYou">
+                    {window.walletAddress && (!this.state || !this.state.loadingPosition) && this.state && this.state.stakingPositions && this.state.stakingPositions.map((it, i) => <section className="statusYou">
                         <section className="statusPosition">
                             <h3>{it.poolAmountFromDecimals}</h3>
                             <h6 className="statusUni">&#129412; <a href="javascript:;">Uniswap-V2</a></h6>
@@ -156,8 +156,9 @@ var Stake = React.createClass({
                             <h6><b>{window.fromDecimals(it.myBalance, this.props.stakingData.mainToken.decimals)} {this.props.stakingData.mainToken.symbol}</b></h6>
                             <h6><b>{window.fromDecimals(it.otherBalance, this.props.stakingData.pairs[it.poolPosition].decimals)} {this.props.stakingData.pairs[it.poolPosition].symbol}</b></h6>
                             {this.props.stakingData.endBlock && <section>
-                                {this.state && <a data-target="reward" href="javascript:;" className={"switchAction switchActionMMINI" + (!this.state.rewardApproved ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.stakingData.rewardToken.symbol)}</a>}
-                                {this.state && <a className={"ActiveRedeem UnlockButton UnlockButtonPP" + (!this.state.rewardApproved ? " UnlockButtonDisabled" : "")} href="javascript:;" onClick={e => this.controller.unlock(e, it.tier, it.position)}>{this.state.unlocking && <img width="25" src="assets/img/ghostload.gif"/>}&#x1F513;</a>}
+                                {this.state && this.state.tryUnlock === i && !this.state.rewardApproved && <a data-target="reward" href="javascript:;" className={"switchAction switchActionMMINI" + (!this.state.rewardApproved ? " active" : "")} onClick={this.approve}>{this.state.loadingApprove && <GhostLoader/>}{!this.state.loadingApprove && ("Approve " + this.props.stakingData.rewardToken.symbol)}</a>}
+                                {this.state && this.state.tryUnlock === i && this.state.rewardApproved && <a className={"ActiveRedeem UnlockButton UnlockButtonPP" + (!this.state.rewardApproved ? " UnlockButtonDisabled" : "")} href="javascript:;" onClick={e => this.controller.unlock(e, it.tier, it.position)}>{this.state.unlocking && <img width="25" src="assets/img/ghostload.gif"/>}{!this.state.unlocking && <span>&#x1F513;</span>}</a>}
+                                {(!this.state || this.state.tryUnlock !== i) && <a className="ActiveRedeem UnlockButton UnlockButtonPP" href="javascript:;" onClick={e => this.setState({tryUnlock : i}, () => _this.state.rewardApproved && _this.controller.unlock(e, it.tier, it.position))}>&#x1F513;</a>}
                             </section>}
                         </section>
                         <section className="statusPosition">

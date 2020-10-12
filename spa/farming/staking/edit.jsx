@@ -219,9 +219,9 @@ var StakingEdit = React.createClass({
                     <h5 className="DFOHostingTitle"><b>End Block:</b></h5>
                     <input type="number" ref={ref => (this.endBlockInput = ref) && !_this.firstTime && (_this.firstTime = true) && (ref.value = '0')} min="0" />
                     <h5 className="DFOHostingTitle"><b>Reward With:</b></h5>
-                    <UniswapTokenPicker ref={ref => this.rewardTokenPicker = ref} tokensList={this.state.tokensList}/>
+                    <UniswapTokenPicker ref={ref => this.rewardTokenPicker = ref} tokensList={this.state.tokensList} exceptFor={window.wethAddress}/>
                     <h5 className="DFOHostingTitle"><b>Main Token:</b></h5>
-                    <UniswapTokenPicker ref={ref => this.mainTokenPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewMainToken} />
+                    <UniswapTokenPicker ref={ref => this.mainTokenPicker = ref} tokensList={this.state.tokensList} exceptFor={window.wethAddress} onChange={this.onNewMainToken} />
                     <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                     {this.state.pairs.map((it, i) => <a key={it.address} href="javascript:;" className="DFOHostingTag">
                         <img src={it.logo}></img>
