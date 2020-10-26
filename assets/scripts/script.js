@@ -86,17 +86,28 @@ window.getLogs = async function(a, endOnFirstResult) {
     args.fromBlock = args.fromBlock || (window.getNetworkElement('deploySearchStart') + '');
     args.toBlock = args.toBlock || (await window.web3.eth.getBlockNumber() + '');
     var to = parseInt(args.toBlock);
+    var fillWithWeb3Logs = async function(logs, args) {
+        if(window.web3.currentProvider === window.web3ForLogs.currentProvider) {
+            return logs;
+        }
+        var newArgs = {};
+        Object.entries(args).forEach(entry => newArgs[entry[0]] = entry[1]);
+        newArgs.fromBlock = window.web3.startBlock;
+        newArgs.toBlock = 'latest';
+        logs.push(...(await window.web3.eth.getPastLogs(newArgs)));
+        return logs;
+    };
     while (isNaN(to) || parseInt(args.fromBlock) <= to) {
         var newTo = parseInt(args.fromBlock) + window.context.blockSearchSection;
         newTo = newTo <= to ? newTo : to;
         args.toBlock = isNaN(newTo) ? args.toBlock : (newTo + '');
-        logs.push(...(await window.web3.eth.getPastLogs(args)));
+        logs.push(...(await window.web3ForLogs.eth.getPastLogs(args)));
         if (isNaN(to) || logs.length > 0 && endOnFirstResult === true) {
-            return logs;
+            return await fillWithWeb3Logs(logs, args);
         }
         args.fromBlock = (parseInt(args.toBlock) + 1) + '';
     }
-    return logs;
+    return await fillWithWeb3Logs(logs, args);
 };
 
 window.onEthereumUpdate = function onEthereumUpdate(millis) {
@@ -109,11 +120,9 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
                 window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.accountsChanged || window.ethereum._events.accountsChanged.length === 0) && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
                 window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.chainChanged || window.ethereum._events.chainChanged.length === 0) && window.ethereum.on('chainChanged', window.onEthereumUpdate);
-                window.web3 = new window.Web3Browser(window.ethereum);
-                window.web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
-                window.web3.eth.transactionBlockTimeout = 999999999;
-                window.web3.eth.transactionPollingTimeout = new Date().getTime();
+                window.web3 = await createWeb3(window.context.blockchainConnectionString || window.ethereum);
                 window.networkId = await window.web3.eth.net.getId();
+                window.web3ForLogs = await createWeb3(window.getNetworkElement("blockchainConnectionForLogString") || window.web3.currentProvider);
                 var network = window.context.ethereumNetwork[window.networkId];
                 if (network === undefined || network === null) {
                     return alert('This network is actually not supported!');
@@ -152,6 +161,15 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
     });
 };
 
+window.createWeb3 = async function createWeb3(connectionProvider) {
+    var web3 = new window.Web3Browser(connectionProvider);
+    web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
+    web3.eth.transactionBlockTimeout = 999999999;
+    web3.eth.transactionPollingTimeout = new Date().getTime();
+    web3.startBlock = await web3.eth.getBlockNumber();
+    return web3;
+};
+
 window.getNetworkElement = function getNetworkElement(element) {
     var network = window.context.ethereumNetwork[window.networkId];
     if (network === undefined || network === null) {
@@ -186,9 +204,36 @@ window.hasEthereumAddress = function(address) {
 }
 
 window.loadContext = async function loadContext() {
-    var x = await fetch('data/context.json');
-    window.context = await x.text();
-    window.context = JSON.parse(window.context);
+    var context = await window.AJAXRequest('data/context.json');
+    var localContext = {};
+    try {
+        localContext = await window.AJAXRequest('data/context.local.json');
+    } catch(e) {
+        console.clear && console.clear();
+    }
+    window.context = window.deepCopy(context, localContext);
+};
+
+window.deepCopy = function deepCopy(data, extension) {
+    data = data ? JSON.parse(JSON.stringify(data)) : {};
+    extension = extension ? JSON.parse(JSON.stringify(extension)) : {};
+    var keys = Object.keys(extension);
+    for(var i in keys) {
+        var key = keys[i];
+        if(!data[key]) {
+            data[key] = extension[key];
+            continue;
+        }
+        try {
+            if(Object.keys(data[key]).length > 0 && Object.keys(extension[key]).length > 0) {
+                data[key] = deepCopy(data[key], extension[key]);
+                continue;
+            }
+        } catch(e) {
+        }
+        data[key] = extension[key];
+    }
+    return data;
 };
 
 window.choosePage = async function choosePage() {
@@ -289,7 +334,9 @@ window.getSendingOptions = function getSendingOptions(transaction, value) {
                     nonce,
                     from,
                     gasPrice: window.web3.utils.toWei("13", "gwei"),
-                    value
+                    value,
+                    gas: '7900000',
+                    gasLimit: '7900000'
                 },
                 function(error, gas) {
                     if (error) {
@@ -1233,8 +1280,8 @@ window.AJAXRequest = function AJAXRequest(link, timeout, toU) {
             }
         }
         xmlhttp.onloadend = function onloadend() {
-            if (xmlhttp.status == 404) {
-                return ko(404);
+            if (!xmlhttp.status || xmlhttp.status >= 300) {
+                return ko(xmlhttp.status);
             }
         };
         xmlhttp.open(toUpload ? 'POST' : 'GET', link + (link.indexOf('?') === -1 ? '?' : '&') + ('cached_' + new Date().getTime()) + '=' + (new Date().getTime()), true);
