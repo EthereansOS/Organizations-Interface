@@ -113,6 +113,8 @@ window.transfer = async function transfer(view, tokenAddress, amounts, sendTos, 
     }
     amounts = amounts instanceof Array ? amounts : [amounts];
     var amount = 0;
+    var tokenData = await window.loadTokenInfos(!tokenAddress || tokenAddress === window.wethAddress || tokenAddress === window.voidEthereumAddress ? window.wethAddress : tokenAddress, undefined, true);
+    var decimals = await window.blockchainCall(tokenData.token.methods.decimals);
     try {
         for(var i = 0; i < sendTos.length; i++) {
             sendTos[i] = window.web3.utils.toChecksumAddress(sendTos[i]);
@@ -120,7 +122,7 @@ window.transfer = async function transfer(view, tokenAddress, amounts, sendTos, 
                 amounts.push(amounts[0]);
             }
             amount += parseFloat(amounts[i] = (amounts[i] + '').split(',').join(''));
-            amounts[i] = window.toDecimals(amounts[i], 18);
+            amounts[i] = window.toDecimals(amounts[i], decimals);
         }
     } catch(e) {
         return view.emit('message', e.message || e, 'error');
@@ -128,8 +130,7 @@ window.transfer = async function transfer(view, tokenAddress, amounts, sendTos, 
     if(!tokenId && amount <= 0) {
         return view.emit('message', 'You must specify a number greater 0 to proceed', 'error');
     }
-    var tokenData = await window.loadTokenInfos(!tokenAddress || tokenAddress === window.wethAddress || tokenAddress === window.voidEthereumAddress ? window.wethAddress : tokenAddress, undefined, true);
-    var amountWei = window.toDecimals(amount, await window.blockchainCall(tokenData.token.methods.decimals));
+    var amountWei = window.toDecimals(amount, decimals);
     amount = window.formatMoney(amount);
     tokenAddress = tokenAddress ? window.web3.utils.toChecksumAddress(tokenAddress) : tokenAddress;
     var symbol = 'ETH';
