@@ -71,6 +71,25 @@ var StakingEdit = React.createClass({
         if (isNaN(percentage) || percentage <= 0) {
             return this.emit('message', 'Percentage must be a positive number', 'error');
         }
+        var rewardTokenAddress;
+        try {
+            rewardTokenAddress = this.rewardTokenPicker && this.rewardTokenPicker.state && !isNaN(this.rewardTokenPicker.state.selected) && this.state.tokensList[this.rewardTokenPicker.state.key][this.rewardTokenPicker.state.selected].address;
+        } catch (e) {
+        }
+        if (!rewardTokenAddress) {
+            return this.emit('message', 'Reward Token is mandatory', 'error');
+        }
+        var mainTokenAddress;
+        try {
+            mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && !isNaN(this.mainTokenPicker.state.selected) && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
+        } catch (e) {
+        }
+        if (!mainTokenAddress) {
+            return this.emit('message', 'Main Token is mandatory', 'error');
+        }
+        if(!this.state || !this.state.pairs || this.state.pairs.length === 0) {
+            return this.emit('message', 'You must choose at least a pair', 'error');
+        }
         var tiers = (this.state && this.state.tiers) || [];
         tiers.push({
             hardCap,
@@ -110,12 +129,12 @@ var StakingEdit = React.createClass({
         }
         this.pairPicker && this.pairPicker.setState({ selected: null });
         var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && !isNaN(this.mainTokenPicker.state.selected) && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
-        if(newPair.address === mainTokenAddress) {
-            this.mainTokenPicker.setState({selected : null});
+        if (newPair.address === mainTokenAddress) {
+            this.mainTokenPicker.setState({ selected: null });
         }
         var pairs = (this.state && this.state.pairs) || [];
         for (var pair of pairs) {
-            
+
             if (pair.address === newPair.address) {
                 return;
             }
@@ -170,16 +189,16 @@ var StakingEdit = React.createClass({
             tier.rewardDivider = percentage[1];
         }
         var mainTokenAddress = this.mainTokenPicker && this.mainTokenPicker.state && !isNaN(this.mainTokenPicker.state.selected) && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected].address;
-        if(!mainTokenAddress) {
+        if (!mainTokenAddress) {
             return this.emit('message', 'Main Token is mandatory', 'error');
         }
-        for(var pair of pairs) {
-            if(pair.address === mainTokenAddress) {
+        for (var pair of pairs) {
+            if (pair.address === mainTokenAddress) {
                 return this.emit('message', 'Main Token cannot be in the pair list', 'error');
             }
         }
         var rewardTokenAddress = this.rewardTokenPicker && this.rewardTokenPicker.state && !isNaN(this.rewardTokenPicker.state.selected) && this.state.tokensList[this.rewardTokenPicker.state.key][this.rewardTokenPicker.state.selected].address;
-        if(!rewardTokenAddress) {
+        if (!rewardTokenAddress) {
             return this.emit('message', 'Reward Token is mandatory', 'error');
         }
         window.stake(this, startBlock, endBlock, mainTokenAddress, rewardTokenAddress, pairs.map(it => it.address), tiers);
@@ -210,6 +229,16 @@ var StakingEdit = React.createClass({
         if (!_this.props.stakingData) {
             return (<LoaderMinimino />);
         }
+        var rewardToken;
+        try {
+            rewardToken = this.rewardTokenPicker && this.rewardTokenPicker.state && !isNaN(this.rewardTokenPicker.state.selected) && this.state.tokensList[this.rewardTokenPicker.state.key][this.rewardTokenPicker.state.selected];
+        } catch (e) {
+        }
+        var mainToken;
+        try {
+            mainToken = this.mainTokenPicker && this.mainTokenPicker.state && !isNaN(this.mainTokenPicker.state.selected) && this.state.tokensList[this.mainTokenPicker.state.key][this.mainTokenPicker.state.selected];
+        } catch (e) {
+        }
         return (<section>
             <p className="WOWDescription2">Before creating a Liquidity Mining Mechanism, be sure there are already existing Uniswap V2 Liquidity pools for the DFO Voting Token. Be also assured that the DFO wallet has enough funds to cover the rewards. The min Stake is a critical feature to ensure that the maximum number of open positions are supported by the Ethereum Virtual Machine without receiving a general "Out Of Gas" error and makes it impossible for stakers to redeem their funds.</p>
             <section className="TheDappInfo1">
@@ -219,17 +248,17 @@ var StakingEdit = React.createClass({
                     <h5 className="DFOHostingTitle"><b>End Block:</b></h5>
                     <input type="number" ref={ref => (this.endBlockInput = ref) && !_this.firstTime && (_this.firstTime = true) && (ref.value = '0')} min="0" />
                     <h5 className="DFOHostingTitle"><b>Reward With:</b></h5>
-                    <UniswapTokenPicker ref={ref => this.rewardTokenPicker = ref} tokensList={this.state.tokensList} exceptFor={window.wethAddress}/>
+                    <UniswapTokenPicker readOnly={this.state && this.state.tiers && this.state.tiers.length > 0} ref={ref => this.rewardTokenPicker = ref} tokensList={this.state.tokensList} exceptFor={window.wethAddress} onChange={() => _this.forceUpdate()} />
                     <h5 className="DFOHostingTitle"><b>Main Token:</b></h5>
-                    <UniswapTokenPicker ref={ref => this.mainTokenPicker = ref} tokensList={this.state.tokensList} exceptFor={window.wethAddress} onChange={this.onNewMainToken} />
+                    <UniswapTokenPicker readOnly={this.state && this.state.tiers && this.state.tiers.length > 0} ref={ref => this.mainTokenPicker = ref} tokensList={this.state.tokensList} exceptFor={window.wethAddress} onChange={this.onNewMainToken} />
                     <h5 className="DFOHostingTitle"><b>Pairs:</b></h5>
                     {this.state.pairs.map((it, i) => <a key={it.address} href="javascript:;" className="DFOHostingTag">
                         <img src={it.logo}></img>
                         {it.symbol}
-                        <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>
+                        {(!this.state || !this.state.tiers || this.state.tiers.length === 0) && <a className="ChiudiQuella ChiudiQuellaGigi" href="javascript:;" data-index={i} onClick={_this.deletePair}>X</a>}
                     </a>)}
                     {false && <TokenPicker ref={ref => this.pairPicker = ref} tokenAddress={this.props.element.token.options.address} onChange={this.onNewPair} />}
-                    <UniswapTokenPicker ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair} />
+                    <UniswapTokenPicker readOnly={this.state && this.state.tiers && this.state.tiers.length > 0} ref={ref => this.pairPicker = ref} tokensList={this.state.tokensList} onChange={this.onNewPair} />
                 </section>
             </section>
             <section className="TheDappInfo2">
@@ -285,8 +314,9 @@ var StakingEdit = React.createClass({
                 {this.state.tiers.map((it, i) => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub">
                     <section className="TheDappInfo1">
                         <section className="DFOTitleSection">
-                            <h5 className="DFOHostingTitle"><img src={_this.props.element.logo}></img><b>{_this.props.element.symbol}</b> for {it.time}</h5>
+                            <h5 className="DFOHostingTitle"><img src={rewardToken.logo}></img><b>{rewardToken.symbol}</b> for {it.time}</h5>
                             <h5 className="DFOHostingTitle">Reward: <b className='DFOHostingTitleG'>{window.formatMoney(it.percentage)}%</b></h5>
+                            <h5 className="DFOHostingTitle">by staking <img src={mainToken.logo}></img><b>{mainToken.symbol}</b></h5>
                             <p className="DFOHostingTitle">Distribution: <b>Weekly</b></p>
                             <p className="DFOLabelTitleInfosmall">DEX: &#129412; V2 </p>
                         </section>

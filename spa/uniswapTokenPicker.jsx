@@ -19,6 +19,9 @@ var UniswapTokenPicker = React.createClass({
     open(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
         var _this = this;
+        if(_this.props.readOnly) {
+            return;
+        }
         var oldTarget = e.currentTarget;
         this.setState({ opened: true }, function () {
             _this.opened && (_this.opened.onblur = _this.opened.onblur || function onblur(e) {
