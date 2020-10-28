@@ -128,6 +128,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                     return alert('This network is actually not supported!');
                 }
                 delete window.tokensList;
+                delete window.loadedTokens;
                 var dfo = window.loadDFO(window.getNetworkElement('dfoAddress'));
                 window.loadOffChainWallets();
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
@@ -1339,6 +1340,7 @@ window.loadLogo = async function loadLogo(address) {
 };
 
 window.loadOffChainWallets = async function loadOffChainWallets() {
+    window.loadedTokens = window.loadedTokens || {};
     var loadLogoWork = async function loadLogoWork(token) {
         token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
         token.logoURI = window.formatLink(token.logoURI);
@@ -1367,10 +1369,11 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
                 if (token === true || token === false) {
                     continue;
                 }
+                token.address = window.web3.utils.toChecksumAddress(token.address);
                 token.listName = key;
                 token.token = token.token || window.newContract(window.context.votingTokenAbi, token.address);
                 loadLogoWork(token);
-                tokensList[key][i] = token;
+                tokensList[key][i] = window.loadedTokens[token.address] = token;
             }
         }
         return ok(tokensList);
@@ -1504,6 +1507,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
 };
 
 window.loadTokenInfos = async function loadTokenInfos(addresses, wethAddress) {
+    window.loadedTokens = window.loadedTokens || {};
     wethAddress = wethAddress || await window.blockchainCall(window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress).methods.WETH);
     wethAddress = window.web3.utils.toChecksumAddress(wethAddress);
     var single = (typeof addresses).toLowerCase() === 'string';
@@ -1512,14 +1516,14 @@ window.loadTokenInfos = async function loadTokenInfos(addresses, wethAddress) {
     for (var address of addresses) {
         address = window.web3.utils.toChecksumAddress(address);
         var token = window.newContract(window.context.votingTokenAbi, address);
-        tokens.push({
+        tokens.push(window.loadedTokens[address] || (window.loadedTokens[address] = {
             address,
             token,
             name: address === wethAddress ? 'Ethereum' : await window.blockchainCall(token.methods.name),
             symbol: address === wethAddress ? 'ETH' : await window.blockchainCall(token.methods.symbol),
             decimals: address === wethAddress ? '18' : await window.blockchainCall(token.methods.decimals),
             logo: await window.loadLogo(address === wethAddress ? window.voidEthereumAddress : address)
-        });
+        }));
     }
     return single ? tokens[0] : tokens;
 };
@@ -2122,4 +2126,45 @@ window.getHomepageLink = function getHomepageLink(tail) {
 
 window.setHomepageLink = function setHomepageLink(tail) {
     window.history.pushState({}, "", window.getHomepageLink(tail));
+};
+
+window.tryLoadStaking = async function tryLoadStaking(view, stakingAddressInput) {
+    stakingAddressInput = stakingAddressInput || window.addressBarParams.staking;
+    delete window.addressBarParams.staking;
+    if (!stakingAddressInput) {
+        return;
+    }
+    view.setState({
+        optionalPage: {
+            component: NoWeb3Loader
+        }
+    }, async function () {
+        var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, window.web3.utils.toChecksumAddress(stakingAddressInput));
+        var doubleProxy = window.newContract(window.context.DoubleProxyAbi, await window.blockchainCall(stakingManager.methods.doubleProxy));
+        var element = {
+            key: doubleProxy.options.address,
+            dFO: await window.loadDFO(await window.blockchainCall(doubleProxy.methods.proxy)),
+            startBlock: window.getNetworkElement('deploySearchStart')
+        };
+        await window.updateInfo(undefined, element);
+        element.logo = element.logo || element.logoURI || element.logoUri || await window.loadLogo(element.token.options.address);
+        var active = await window.blockchainCall(element.stateHolder.methods.getBool, `staking.transfer.authorized.${stakingManager.options.address.toLowerCase()}`);
+        var blockTiers = {};
+        Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
+        var props = {
+            element,
+            stakingData: await window.setStakingManagerData(element, stakingManager, blockTiers, active)
+        };
+        ReactModuleLoader.load({
+            modules: ['spa/stake'],
+            callback: function () {
+                view.setState({
+                    optionalPage: {
+                        component: window.Stake,
+                        props
+                    }
+                });
+            }
+        });
+    });
 };

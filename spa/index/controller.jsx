@@ -12,44 +12,4 @@ var IndexController = function (view) {
         }
         return dFO;
     };
-
-    context.tryLoadStaking = async function tryLoadStaking() {
-        if (!window.addressBarParams.staking) {
-            return;
-        }
-        context.view.setState({
-            optionalPage: {
-                component: NoWeb3Loader
-            }
-        }, async function () {
-            var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, window.web3.utils.toChecksumAddress(window.addressBarParams.staking));
-            delete window.addressBarParams.staking;
-            var doubleProxy = window.newContract(window.context.DoubleProxyAbi, await window.blockchainCall(stakingManager.methods.doubleProxy));
-            var element = {
-                key: doubleProxy.options.address,
-                dFO: await window.loadDFO(await window.blockchainCall(doubleProxy.methods.proxy)),
-                startBlock: window.getNetworkElement('deploySearchStart')
-            };
-            await window.updateInfo(undefined, element);
-            element.logo = element.logo || element.logoURI || element.logoUri || await window.loadLogo(element.token.options.address);
-            var active = await window.blockchainCall(element.stateHolder.methods.getBool, `staking.transfer.authorized.${stakingManager.options.address.toLowerCase()}`);
-            var blockTiers = {};
-            Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
-            var props = {
-                element,
-                stakingData: await window.setStakingManagerData(element, stakingManager, blockTiers, active)
-            };
-            ReactModuleLoader.load({
-                modules: ['spa/stake'],
-                callback: function () {
-                    context.view.setState({
-                        optionalPage: {
-                            component: window.Stake,
-                            props
-                        }
-                    });
-                }
-            });
-        });
-    };
 };

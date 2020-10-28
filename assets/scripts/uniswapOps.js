@@ -128,7 +128,7 @@ window.transfer = async function transfer(view, tokenAddress, amounts, sendTos, 
     if(!tokenId && amount <= 0) {
         return view.emit('message', 'You must specify a number greater 0 to proceed', 'error');
     }
-    var tokenData = await window.loadTokenInfos(tokenAddress, undefined, true);
+    var tokenData = await window.loadTokenInfos(!tokenAddress || tokenAddress === window.wethAddress || tokenAddress === window.voidEthereumAddress ? window.wethAddress : tokenAddress, undefined, true);
     var amountWei = window.toDecimals(amount, await window.blockchainCall(tokenData.token.methods.decimals));
     amount = window.formatMoney(amount);
     tokenAddress = tokenAddress ? window.web3.utils.toChecksumAddress(tokenAddress) : tokenAddress;

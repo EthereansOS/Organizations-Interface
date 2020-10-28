@@ -15,7 +15,8 @@ var Index = React.createClass({
             'dfo/deploy/cancel': () => this.setState({ deploy: null }),
             'ethereum/ping': () => this.forceUpdate(),
             'index/fullscreen': this.onFullscreen,
-            'stake/close' : () => this.state && this.state.optionalPage && this.setState({optionalPage : null})
+            'stake/close' : () => this.state && this.state.optionalPage && this.setState({optionalPage : null}),
+            'stake/load' : stakingAddress => window.tryLoadStaking(this, stakingAddress)
         };
     },
     onFullscreen(fullscreen) {
@@ -55,7 +56,7 @@ var Index = React.createClass({
         } catch (e) {
         }
         isEthereumAddress(address) && (this.address.value = address) && this.load({target:{dataset:{timeout:"700"}}});
-        this.controller.tryLoadStaking();
+        window.tryLoadStaking(this, window.addressBarParams.staking);
     },
     toggleLightMode(e) {
         e && e.preventDefault(true) && e.stopPropagation(true);
