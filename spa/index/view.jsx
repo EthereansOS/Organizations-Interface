@@ -107,7 +107,7 @@ var Index = React.createClass({
                             <section className="BugUpdateBunner TheDappInfoX">
                             <h2>&#128718; Dev Notes:</h2>
                             <p>ENS Integration is working! But due to the early state of ENS, we're discussing an <a href="https://github.com/MetaMask/metamask-extension/pull/7740" target="_blank">Improvement Proposal</a> with the Metamask team, to manage DFO's ENS in a decentralized way. In the meantime, Metamask can't redirect the ENS properly.</p>
-                            <p>DFOhub is a USDT free dapp. USDT is a token with some shady calls like <a target="_blank" href="https://forum.makerdao.com/t/usdt-erc20-token-smart-contract-technical-assessment/3462">these</a>... and is not an <a target="_blank" href="https://forum.openzeppelin.com/t/can-not-call-the-function-approve-of-the-usdt-contract/2130">ERC20 standard</a>. We strongly recomend to don't use USDT in DFOs.</p>
+                            <p>DFOhub is a USDT free dapp. USDT is not an <a target="_blank" href="https://forum.openzeppelin.com/t/can-not-call-the-function-approve-of-the-usdt-contract/2130">ERC20 standard</a>. We strongly recomend to don't use USDT in DFOs.</p>
                             </section>
                             <section className="BugUpdateBunner TheDappInfoXYZ">
                             <h2>Simple View</h2>
