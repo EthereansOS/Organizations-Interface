@@ -39,6 +39,7 @@
     "decentralizedFlexibleOrganizationsURLRopsten" : "https://raw.githubusercontent.com/b-u-i-d-l/bazar-tokens-list/master/dist/programmableEquities.json",
     "uniswapTokensURL" : "https://raw.githubusercontent.com/b-u-i-d-l/bazar-tokens-list/master/dist/uniswapTokens.json",
     "itemsListURL" : "https://raw.githubusercontent.com/b-u-i-d-l/WIMD-uniswap/master/wimdlist.json",
+    "outOfStandardTokens" : ["0xdac17f958d2ee523a2206206994597c13d831ec7", "0xd46ba6d942050d489dbd938a2c909a5d5039a161"],
     "uiDecimals" : 25,
     "slippageNumerator" : 5,
     "slippageDenominator" : 1000,

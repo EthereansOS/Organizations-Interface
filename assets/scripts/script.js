@@ -1351,13 +1351,18 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
         }
         token.logo = token.logoURI;
     };
+    window.context.outOfStandardTokens = window.context.outOfStandardTokens.map(it => window.web3.utils.toChecksumAddress(it));
+    var filter = function filter(it) {
+        var filter = it.chainId === window.networkId && window.context.outOfStandardTokens.indexOf(window.web3.utils.toChecksumAddress(it.address)) === -1;
+        return filter;
+    }
     return await (window.tokensList = window.tokensList || new Promise(async function(ok) {
         var tokensList = {
-            "Programmable Equities": (await window.AJAXRequest(window.getNetworkElement("decentralizedFlexibleOrganizationsURL"))).tokens.map(it => it.chainId === window.networkId && it),
-            "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.map(it => it.chainId === window.networkId && it),
-            "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.map(it => it.chainId === window.networkId && it)
+            "Programmable Equities": (await window.AJAXRequest(window.getNetworkElement("decentralizedFlexibleOrganizationsURL"))).tokens.filter(filter),
+            "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.filter(filter),
+            "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.filter(filter)
         }
-        tokensList.Tokens.push(...(await window.AJAXRequest(window.context.itemsListURL)).tokens.map(it => it.chainId === window.networkId && it));
+        tokensList.Tokens.push(...(await window.AJAXRequest(window.context.itemsListURL)).tokens.filter(filter));
         var keys = Object.keys(tokensList);
         for (var key of keys) {
             if (key === 'Indexes') {
