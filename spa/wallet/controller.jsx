@@ -4,6 +4,8 @@ var WalletController = function (view) {
 
     context.pairCreatedTopic = window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
 
+    context.transferTopic = window.web3.utils.sha3('Transfer(address,address,uint256)');
+
     context.loadWallets = async function loadWallets() {
         context.view.setState({ tokens: null, cumulativeAmountDollar: null, tokenAmounts: null, loading: true });
         try {
@@ -49,26 +51,41 @@ var WalletController = function (view) {
         if (!context.view.mounted) {
             return;
         }
-        for (var i = 0; i < tokens.length; i++) {
+        try {
+            tokenAmounts[0].amount = await window.web3.eth.getBalance(context.view.props.element.walletAddress);
             if (!context.view.mounted) {
                 return;
             }
-            var token = tokens[i];
-            var tokenAmount = tokenAmounts[i];
-            if (token === true || token === false) {
-                continue;
+        } catch (e) {
+            tokenAmounts[0].amount = '0'
+        }
+        tokenAmounts[0].amountDollars = ethereumPrice * parseFloat(window.fromDecimals(tokenAmounts[0].amount, 18));
+        var allAddresses = tokens.filter(it => it !== true && it !== false).map(it => window.web3.utils.toChecksumAddress(it.address));
+        var addresses = window.toSubArrays(allAddresses);
+        for (var address of addresses) {
+            var logs = await window.getLogs({
+                address,
+                topics: [
+                    context.transferTopic,
+                    [],
+                    window.web3.eth.abi.encodeParameter("address", context.view.props.element.walletAddress)
+                ],
+                fromBlock: context.view.props.element.startBlock,
+                toBlock: 'latest'
+            });
+            if (!context.view.mounted) {
+                return;
             }
-            if(token.i === 0) {
-                try {
-                    tokenAmount.amount = await window.web3.eth.getBalance(context.view.props.element.walletAddress);
-                    if (!context.view.mounted) {
-                        return;
-                    }
-                } catch(e) {
-                    tokenAmount.amount = '0'
+            var onlyUnique = function onlyUnique(value, index, self) {
+                return self.indexOf(value) === index;
+            };
+            var involvedAddresses = logs.map(it => window.web3.utils.toChecksumAddress(it.address)).filter(onlyUnique);
+            for (var involvedAddress of involvedAddresses) {
+                if (!context.view.mounted) {
+                    return;
                 }
-                tokenAmount.amountDollars = ethereumPrice * parseFloat(window.fromDecimals(tokenAmount.amount, 18));
-            } else {
+                var token = tokens.filter(it => it !== true && it !== false && window.web3.utils.toChecksumAddress(it.address) === involvedAddress)[0];
+                var tokenAmount = tokenAmounts[token.i];
                 try {
                     tokenAmount.amount = token.address === window.voidEthereumAddress ? await window.web3.eth.getBalance(context.view.props.element.walletAddress) : await window.blockchainCall(token.token.methods.balanceOf, context.view.props.element.walletAddress);
                     if (!context.view.mounted) {
@@ -81,9 +98,9 @@ var WalletController = function (view) {
                     tokenAmount.amountDollars = parseFloat(window.fromDecimals(tokenAmount.amount, token.decimals, true)) * parseFloat(tokenAmount.amountDollars) * ethereumPrice;
                 } catch (e) {
                 }
+                cumulativeAmountDollar += tokenAmount.amountDollars;
+                context.view.setState({ cumulativeAmountDollar, tokenAmounts });
             }
-            cumulativeAmountDollar += tokenAmount.amountDollars;
-            context.view.setState({ cumulativeAmountDollar, tokenAmounts });
         }
         context.view.setState({ cumulativeAmountDollar, tokenAmounts, loading: false });
     };
