@@ -147,6 +147,7 @@ var Token = React.createClass({
                         <section className="DFOTitleSection">
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
                             <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, '')} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.penSwapSwapURLTemplate.format(_this.props.element.token.options.address, '')} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualUniPEN">&#128039; Swap</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Info</a>
                             <a href={window.getNetworkElement("etherscanURL") + 'address/' + _this.props.element.token.options.address + '#code'} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Contract</a>
                         </section>
@@ -169,6 +170,7 @@ var Token = React.createClass({
                             {false && <p className="DFOLabelTitleInfo">Liquidity: <b>51,600.56 USD</b></p>}
                             <br/>
                             <a href={window.context.uniSwapSwapURLTemplate.format(_this.props.element.token.options.address, it.address === window.wethAddress ? '' : it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.penSwapSwapURLTemplate.format(_this.props.element.token.options.address, it.address === window.wethAddress ? '' : it.address)} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualUniPEN">&#128039; Swap</a>
                             <a href={window.context.uniSwapPoolURLTemplate.format(_this.props.element.token.options.address, it.address === window.wethAddress ? '' : it.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Pool</a>
                         </section>
                     </li>)}

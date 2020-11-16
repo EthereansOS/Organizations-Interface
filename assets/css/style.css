@@ -455,6 +455,7 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .LoaderChainPush .lds-ellipsis div {background-color: #8d40ff;}
 .Editing {background-color: #7901ff; color: #f1f1f1;}
 .LinkVisualUni {background-color: rgb(255, 0, 122); font-weight: bold;}
+.LinkVisualUniPEN {background-color: #9999FF;}
 .LinkVisualEthscan {font-weight: bold;}
 .Pistombrillo input {background-color: #eaeaea; border: 1px solid #bbbbbb; font-size: 13px; width: 200px; padding: 5px 5px; margin: 10px 0;}
 .LLinkVisualButtonSpecial {font-size: 11px !important; background-color: transparent !important; color: #5f5f5f !important; text-decoration: underline !important; padding: 5px 6px !important;}

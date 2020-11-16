@@ -8,6 +8,7 @@
     "etherscanURLRopsten": "https://ropsten.etherscan.io/",
     "uniSwapInfoURL" : "https://uniswap.info/token/",
     "uniSwapSwapURLTemplate" : "https://app.uniswap.org/#/swap?inputCurrency={0}&outputCurrency={1}",
+    "penSwapSwapURLTemplate" : "https://penguinswap.eth.link/#/swap?inputCurrency={0}&outputCurrency={1}",
     "uniSwapPoolURLTemplate" : "https://app.uniswap.org/#/pool?inputCurrency={0}&outputCurrency={1}",
     "coingeckoEthereumPriceURL": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum",
     "coingeckoEthereumPriceRequestInterval": 600000,

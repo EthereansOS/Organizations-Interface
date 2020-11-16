@@ -155,6 +155,7 @@ var Overview = React.createClass({
                             <a href={window.getNetworkElement("etherscanURL") + 'token/' + _this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualEthscan">&#128142; Etherscan</a>
                             <a href={window.context.uniSwapInfoURL + this.props.element.token.options.address} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Info</a>
                             <a href={window.context.uniSwapSwapURLTemplate.format(this.props.element.token.options.address)} target="_blank" className="LinkVisualButton LinkVisualUni">&#129412; Swap</a>
+                            <a href={window.context.penSwapSwapURLTemplate.format(this.props.element.token.options.address)} target="_blank" className="LinkVisualButton LinkVisualUni LinkVisualUniPEN">&#128039; Swap</a>
                         </section>
                     </li>
                     <li className="TheDappInfo05">
