@@ -85,7 +85,7 @@ var StakingView = React.createClass({
         }
         return (<ul className="DFOHosting HostingCategoryTitleYYY">
             <section className="HostingCategoryTitle">
-                <h2>Liquidity Mining</h2>
+                <h2>Active Liquidity Mining</h2>
                 {this.props.edit && <a href="javascript:;" onClick={() => _this.setState({ edit: !(_this.state && _this.state.edit) })} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>{_this.state && _this.state.edit ? 'Close' : 'New'}</a>}
             </section>
             {this.props && this.props.edit && this.state && this.state.edit && React.createElement(StakingEdit, props)}
@@ -93,8 +93,8 @@ var StakingView = React.createClass({
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.length === 0 && <h4>No Liquidity Mining data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({ edit: true }))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.map(this.renderStakingData)}
             {(!this.state || !this.state.edit) && <section className="HostingCategoryTitle">
-                <h2>Old data</h2>
-                {(!this.state || !this.state.edit) && this.props && !this.props.oldStakingData && !this.props.loadingOldStakingData && <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.emit('staking/old')}>Load Old Liquidity Mining Data</a>}
+                <h2>Liquidity Mining History</h2>
+                {(!this.state || !this.state.edit) && this.props && !this.props.oldStakingData && !this.props.loadingOldStakingData && <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.emit('staking/old')}>Redeem and manage positions from old LM contracts</a>}
             </section>}
             {(!this.state || !this.state.edit) && this.props && this.props.loadingOldStakingData && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.oldStakingData && this.props.oldStakingData.length === 0 && <h4>No data</h4>}
