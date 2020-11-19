@@ -1630,12 +1630,13 @@ function getPage() {
     return location;
 };
 
-window.loadStakingData = async function loadStakingData(element) {
+window.loadStakingData = async function loadStakingData(element, only) {
     var blockTiers = {};
     Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
     var json = await window.blockchainCall(element.stateHolder.methods.toJSON);
     json = JSON.parse(json.endsWith(',]') ? (json.substring(0, json.lastIndexOf(',]')) + ']') : json);
     var stakingData = [];
+    var promises = [];
     for (var i in json) {
         var elem = json[i];
         if (elem.name.indexOf('staking.transfer.authorized.') === -1 && elem.name.indexOf('authorizedtotransferforstaking_') === -1) {
@@ -1645,12 +1646,13 @@ window.loadStakingData = async function loadStakingData(element) {
         var split = elem.name.split('.');
         split.length === 1 && (split = elem.name.split('_'));
         var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, split[split.length - 1]);
-        stakingData.push(await window.setStakingManagerData(element, stakingManager, blockTiers, active));
+        promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
     }
+    stakingData = (await Promise.all(promises)).filter(it => it !== undefined && it !== null);
     return { stakingData, blockTiers };
 };
 
-window.setStakingManagerData = async function setStakingManagerData(element, stakingManager, blockTiers, active) {
+window.setStakingManagerData = async function setStakingManagerData(element, stakingManager, blockTiers, active, only) {
     var stakingManagerData = {
         stakingManager,
         active,
@@ -1673,6 +1675,9 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
             }
         }
     } catch(e) {
+    }
+    if(only !== undefined && only !== null && stakingManagerData.active !== only) {
+        return;
     }
     var blockNumber = await window.web3.eth.getBlockNumber();
     stakingManagerData.started = blockNumber > parseInt(stakingManagerData.startBlock);

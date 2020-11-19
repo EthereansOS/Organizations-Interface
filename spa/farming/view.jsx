@@ -10,10 +10,18 @@ var Farming = React.createClass({
     getDefaultSubscriptions() {
         return {
             'staking/refresh': this.controller.loadStakingData,
-            'fixedInflation/refresh': this.controller.loadFixedInflationData
+            'fixedInflation/refresh': this.controller.loadFixedInflationData,
+            'staking/old' : this.controller.loadOldStakingData
         };
     },
+    componentWillUnmount() {
+        delete this.didMountCalled;
+    },
     componentDidMount() {
+        if(this.didMountCalled) {
+            return;
+        }
+        this.didMountCalled = true;
         var _this = this;
         _this.setState({ cumulativeLoading: true }, function () {
             Promise.all([
