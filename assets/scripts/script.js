@@ -1444,7 +1444,7 @@ window.loadWallets = async function loadWallets(element, callback, alsoLogo) {
     callback && callback(tokens);
 };
 
-window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
+window.loadUniswapPairs2 = async function loadUniswapPairs2(view, address) {
     window.pairCreatedTopic = window.pairCreatedTopic || window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
     address = window.web3.utils.toChecksumAddress(address || view.props.tokenAddress);
     view.address = address;
@@ -1509,6 +1509,99 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address) {
         }
     }
     uniswapPairs.length === 0 && view.enqueue(() => view.setState({ uniswapPairs }));
+};
+
+window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondToken) {
+    window.pairCreatedTopic = window.pairCreatedTopic || window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
+    var myToken = !address ? [] : address instanceof Array ? address.map(it => window.web3.eth.abi.encodeParameter('address', it)) : [window.web3.eth.abi.encodeParameter('address', address)];
+    window.alreadyAdded = window.alreadyAdded || {};
+    var uniswapPairs = (view && view.state && view.state.uniswapPairs) || [];
+    uniswapPairs.push(...Object.values(window.alreadyAdded).filter(it => uniswapPairs.indexOf(it) === -1));
+    var blockSearchTranches = await window.loadBlockSearchTranches();
+    if(view && !view.mounted) {
+        return uniswapPairs;
+    }
+    var subArrays;
+    if(myToken.length === 0 || (myToken.length === 1 && myToken[0] === window.voidEthereumAddressExtended)) {
+        subArrays = window.toSubArrays((await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.filter(it => it.chainId === window.networkId).map(it => window.web3.eth.abi.encodeParameter("address", it.address)), 500);
+        if(view && !view.mounted) {
+            return uniswapPairs;
+        }
+        myToken = subArrays.splice(0, 1)[0];
+    } else {
+        uniswapPairs = uniswapPairs.filter(it => myToken.indexOf(window.web3.eth.abi.encodeParameter('address', it.token0.address)) !== -1 || myToken.indexOf(window.web3.eth.abi.encodeParameter('address', it.token1.address)) !== -1);
+    }
+    !subArrays && secondToken && myToken.push(window.web3.eth.abi.encodeParameter('address', secondToken));
+    view && view.enqueue(() => view.setState({ uniswapPairs }));
+    while(myToken) {
+        for(var tranche of blockSearchTranches) {
+            var logArgs = {
+                address: window.context.uniSwapV2FactoryAddress,
+                fromBlock: tranche[0],
+                toBlock : tranche[1],
+                topics: [
+                    window.pairCreatedTopic, myToken
+                ]
+            };
+            if(subArrays || secondToken) {
+                logArgs.topics.push(myToken);
+            }
+            var logs = await window.getLogs(logArgs);
+            if(view && !view.mounted) {
+                return uniswapPairs;
+            }
+            if(!subArrays && !secondToken) {
+                logArgs.topics = [logArgs.topics[0], [], myToken];
+                logs.push(...await window.getLogs(logArgs));
+                if(view && !view.mounted) {
+                    return uniswapPairs;
+                }
+            }
+            for (var log of logs) {
+                var pairTokenAddress = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
+                if (window.alreadyAdded[pairTokenAddress]) {
+                    continue;
+                }
+                var pairToken = {
+                    address: pairTokenAddress,
+                    decimals: '18',
+                    name: 'Uniswap V2 Pair'
+                };
+                var token0 = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameter('address', log.topics[1]));
+                var token1 = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameter('address', log.topics[2]));
+                try {
+                    pairToken.token0 = await window.loadTokenInfos(token0, undefined, true);
+                    if(view && !view.mounted) {
+                        return uniswapPairs;
+                    }
+                    pairToken.token1 = await window.loadTokenInfos(token1, undefined, true);
+                    if(view && !view.mounted) {
+                        return uniswapPairs;
+                    }
+                    pairToken.key = `${token0}_${token1}-${token1}_${token0}`;
+                    pairToken.fromBlock = log.blockNumber + "";
+                    pairToken.isUniswapPair = true;
+                    uniswapPairs.push(window.alreadyAdded[pairTokenAddress] = pairToken);
+                    pairToken.symbol = pairToken.token0.symbol + '/' + pairToken.token1.symbol;
+                    view && view.enqueue(() => view.setState({ uniswapPairs }));
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+        }
+        myToken = subArrays && subArrays.length > 0 ? subArrays.splice(0, 1)[0] : undefined;
+    }
+    uniswapPairs.length === 0 && view && view.enqueue(() => view.setState({ uniswapPairs }));
+    return uniswapPairs;
+};
+
+window.toSubArrays = function toSubArrays(array, chunks) {
+    var subArrays = [];
+    var i, j, chunk = chunks || 100;
+    for (i = 0, j = array.length; i < j; i += chunk) {
+        subArrays.push(array.slice(i,i+chunk));
+    }
+    return subArrays;
 };
 
 window.loadTokenInfos = async function loadTokenInfos(addresses, wethAddress) {
@@ -2186,4 +2279,24 @@ window.toSubArrays = function toSubArrays(array, chunks) {
         subArrays.push(array.slice(i,i+chunk));
     }
     return subArrays;
+};
+
+window.loadBlockSearchTranches = async function loadBlockSearchTranches() {
+    var startBlock = parseInt(window.numberToString(window.getNetworkElement("deploySearchStart") || "0"));
+    var endBlock = parseInt(window.numberToString(await window.web3.eth.getBlockNumber()));
+    var limit = window.context.blockSearchLimit || 50000;
+    var toBlock = endBlock;
+    var fromBlock = endBlock - limit;
+    fromBlock = fromBlock < startBlock ? startBlock : fromBlock;
+    var blocks = [];
+    while (true) {
+        blocks.push([window.numberToString(fromBlock), window.numberToString(toBlock)]);
+        if (fromBlock === startBlock) {
+            break;
+        }
+        toBlock = fromBlock - 1;
+        fromBlock = toBlock - limit;
+        fromBlock = fromBlock < startBlock ? startBlock : fromBlock;
+    }
+    return blocks;
 };

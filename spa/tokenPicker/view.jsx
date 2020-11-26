@@ -4,12 +4,18 @@ var TokenPicker = React.createClass({
         this.onTypeTimeout && clearTimeout(this.onTypeTimeout);
         var _this = this;
         var target = e.currentTarget;
+        var value = target.value;
         this.onTypeTimeout = setTimeout(function() {
-            _this.setState({search: target.value, selected: null});
+            _this.setState({search: value, selected: null}, () => {
+                _this.props.tokenAddress && window.isEthereumAddress(_this.state.search) && window.loadUniswapPairs(_this, _this.props.tokenAddress, _this.state.search);
+            });
         }, 600);
     },
     toggle(e) {
         e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+        if(e.relatedTarget && e.relatedTarget.tagName === 'INPUT') {
+            return;
+        }
         if(e.type === 'click' || (e.type === 'blur' && e.relatedTarget && e.relatedTarget.tagName === 'A' && e.relatedTarget.dataset.item)) {
             var _this = this;
             var item = JSON.parse((e.type==='click' ? e.currentTarget : e.relatedTarget).dataset.item);
@@ -31,12 +37,14 @@ var TokenPicker = React.createClass({
         if(!this.state || !this.state.uniswapPairs) {
             return null;
         }
+        var pairs = !this.props.tokenAddress ? this.state.uniswapPairs : Object.values(window.alreadyAdded).map(it => it.token0.address !== this.props.tokenAddress ? it.token0 : it.token1);
+
         if(!this.state.search) {
-            return this.state.uniswapPairs;
+            return pairs;
         }
         var list = [];
         var search = this.state.search.trim().toLowerCase();
-        for(var token of this.state.uniswapPairs) {
+        for(var token of pairs) {
             (token.address.trim().toLowerCase().indexOf(search) !== -1 || token.name.trim().toLowerCase().indexOf(search) !== -1 || token.symbol.trim().toLowerCase().indexOf(search) !== -1) && list.push(token);
         }
         return list;
@@ -50,7 +58,7 @@ var TokenPicker = React.createClass({
         var list = this.getList();
         return (<section className="PikaPikaYaYa" tabindex="-1" onBlur={this.toggle}>
             <section className="PikaPikaSearch">
-                <input onFocus={this.toggle} ref={ref => this.input = ref} type="text" placeholder="Search Name/Address" onKeyUp={this.onType} onChange={this.onType}/>
+                <input onFocus={this.toggle} ref={ref => (this.input = ref) && (ref.value = (this.state && this.state.search) || '')} type="text" placeholder="Search Name/Address" onKeyUp={this.onType} onChange={this.onType}/>
             </section>
             <section className="PikaPikaFind">
                 {!list && <h4>Loading tokens...</h4>}
