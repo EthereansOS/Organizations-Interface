@@ -37,7 +37,7 @@ var TokenPicker = React.createClass({
         if(!this.state || !this.state.uniswapPairs) {
             return null;
         }
-        var pairs = !this.props.tokenAddress ? this.state.uniswapPairs : Object.values(window.alreadyAdded).map(it => it.token0.address !== this.props.tokenAddress ? it.token0 : it.token1);
+        var pairs = !this.props.tokenAddress ? this.state.uniswapPairs : Object.values(window.loadedUniswapPairs).map(it => it.token0.address !== this.props.tokenAddress ? it.token0 : it.token1);
 
         if(!this.state.search) {
             return pairs;

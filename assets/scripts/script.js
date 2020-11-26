@@ -129,6 +129,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 }
                 delete window.tokensList;
                 delete window.loadedTokens;
+                window.loadedUniswapPairs = {};
                 var dfo = window.loadDFO(window.getNetworkElement('dfoAddress'));
                 window.loadOffChainWallets();
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
@@ -1476,17 +1477,17 @@ window.loadUniswapPairs2 = async function loadUniswapPairs2(view, address) {
         return;
     }
     var uniswapPairs = [];
-    var alreadyAdded = {};
+    var loadedUniswapPairs = {};
     for (var log of logs) {
         for (var topic of log.topics) {
             if (topic === window.pairCreatedTopic || topic.toLowerCase() === myToken.toLowerCase()) {
                 continue;
             }
             var pairTokenAddress = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
-            if (alreadyAdded[pairTokenAddress]) {
+            if (loadedUniswapPairs[pairTokenAddress]) {
                 continue;
             }
-            alreadyAdded[pairTokenAddress] = true;
+            loadedUniswapPairs[pairTokenAddress] = true;
             var pairToken = window.newContract(window.context.uniSwapV2PairAbi, pairTokenAddress);
             var token0 = window.web3.utils.toChecksumAddress(await window.blockchainCall(pairToken.methods.token0));
             if (address !== view.address) {
@@ -1514,9 +1515,9 @@ window.loadUniswapPairs2 = async function loadUniswapPairs2(view, address) {
 window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondToken) {
     window.pairCreatedTopic = window.pairCreatedTopic || window.web3.utils.sha3('PairCreated(address,address,address,uint256)');
     var myToken = !address ? [] : address instanceof Array ? address.map(it => window.web3.eth.abi.encodeParameter('address', it)) : [window.web3.eth.abi.encodeParameter('address', address)];
-    window.alreadyAdded = window.alreadyAdded || {};
+    window.loadedUniswapPairs = window.loadedUniswapPairs || {};
     var uniswapPairs = (view && view.state && view.state.uniswapPairs) || [];
-    uniswapPairs.push(...Object.values(window.alreadyAdded).filter(it => uniswapPairs.indexOf(it) === -1));
+    uniswapPairs.push(...Object.values(window.loadedUniswapPairs).filter(it => uniswapPairs.indexOf(it) === -1));
     var blockSearchTranches = await window.loadBlockSearchTranches();
     if(view && !view.mounted) {
         return uniswapPairs;
@@ -1559,7 +1560,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
             }
             for (var log of logs) {
                 var pairTokenAddress = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameters(['address', 'uint256'], log.data)[0]);
-                if (window.alreadyAdded[pairTokenAddress]) {
+                if (window.loadedUniswapPairs[pairTokenAddress]) {
                     continue;
                 }
                 var pairToken = {
@@ -1581,7 +1582,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
                     pairToken.key = `${token0}_${token1}-${token1}_${token0}`;
                     pairToken.fromBlock = log.blockNumber + "";
                     pairToken.isUniswapPair = true;
-                    uniswapPairs.push(window.alreadyAdded[pairTokenAddress] = pairToken);
+                    uniswapPairs.push(window.loadedUniswapPairs[pairTokenAddress] = pairToken);
                     pairToken.symbol = pairToken.token0.symbol + '/' + pairToken.token1.symbol;
                     view && view.enqueue(() => view.setState({ uniswapPairs }));
                 } catch (e) {
