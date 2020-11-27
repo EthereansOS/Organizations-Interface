@@ -159,7 +159,7 @@ var Token = React.createClass({
                     </section>
                     {!this.state || !this.state.uniswapPairs && <LoaderMinimino/>}
                     {this.state && this.state.uniswapPairs && this.state.uniswapPairs.length === 0 && <p>No Uniswap V2 pair found</p>}
-                    {this.state && this.state.uniswapPairs && this.state.uniswapPairs.map(it => <li key={it.pairToken.options.address} className="TheDappInfo1 TheDappInfoY TheDappInfoSub">
+                    {this.state && this.state.uniswapPairs && this.state.uniswapPairs.filter(it => it !== undefined && it !== null && it.pairToken !== undefined && it.pairToken !== null).map(it => <li key={it.pairToken.options.address} className="TheDappInfo1 TheDappInfoY TheDappInfoSub">
                         <section className="DFOTitleSection">
                             <h5 className="DFOHostingTitle">&#129412; V2 <b>{_this.props.element.symbol} - {it.symbol}</b></h5>
                             <span className="DFOLabelTitleInfosmall">{window.fromDecimals(it.mainReserve, _this.props.element.decimals)} {_this.props.element.symbol}</span>
