@@ -2301,3 +2301,36 @@ window.loadBlockSearchTranches = async function loadBlockSearchTranches() {
     }
     return blocks;
 };
+
+window.decodeStructArrayABI = function decodeStructArrayABI(types, realData) {
+    var w3 = window.web3 && window.web3.eth.abi ? window.web3 : new Web3Browser();
+    var data = realData;
+    var res = w3.eth.abi.decodeParameters(["uint256","uint256"], data);
+    var length = parseInt(res[1]);
+    data = "0x" + data.substring(130 + (types.join('').indexOf('[]') === -1 ? 0 : (64 * length)));
+    var results = [];
+    for(var i = 0; i < length; i++) {
+        var result = w3.eth.abi.decodeParameters(types, data);
+        var input = [];
+        for(var j = 0; j < types.length; j++) {
+            input.push(result[j]);
+        }
+        results.push(input);
+        var payload = w3.eth.abi.encodeParameters(types, input);
+        data = "0x" + data.substring(payload.length);
+    }
+    return results;
+};
+
+window.encodeStructArrayABI = function encodeStructArrayABI(types, inputs) {
+    var w3 = window.web3 && window.web3.eth.abi ? window.web3 : new Web3Browser();
+    var header = w3.eth.abi.encodeParameters(["uint256","uint256"], [32, inputs.length]);
+    var results = [];
+    for(var input of inputs) {
+        if(types.join('').indexOf('[]') !== -1) {
+            header += w3.eth.abi.encodeParameter("uint256", (32 * inputs.length) + (results.join('').length / 2)).substring(2);
+        }
+        results.push(w3.eth.abi.encodeParameters(types, input).substring(2));
+    }
+    return header + results.join('');
+};
