@@ -1364,6 +1364,7 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
             "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.filter(filter),
             "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.filter(filter)
         }
+        tokensList.Items.forEach(it => it.symbol = it.name);
         var keys = Object.keys(tokensList);
         for (var key of keys) {
             if (key === 'Indexes') {
