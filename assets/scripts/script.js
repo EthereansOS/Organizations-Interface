@@ -1360,10 +1360,10 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
     return await (window.tokensList = window.tokensList || new Promise(async function(ok) {
         var tokensList = {
             "Programmable Equities": (await window.AJAXRequest(window.getNetworkElement("decentralizedFlexibleOrganizationsURL"))).tokens.filter(filter),
+            "Items" : (await window.AJAXRequest(window.context.itemsListURL)).tokens.filter(filter),
             "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.filter(filter),
             "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.filter(filter)
         }
-        tokensList.Tokens.push(...(await window.AJAXRequest(window.context.itemsListURL)).tokens.filter(filter));
         var keys = Object.keys(tokensList);
         for (var key of keys) {
             if (key === 'Indexes') {
