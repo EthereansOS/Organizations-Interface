@@ -270,13 +270,17 @@ var StakeController = function (view) {
         }
         context.view.setState({unlocking : true});
         try {
+            window.bypassEstimation = true;
             await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.unlock, tier, position);
             context.load();
         } catch(e) {
-            if((e.message || e).indexOf('User denied') === -1) {
-                alert("Transaction fail, maybe an old version of the Liquidity Mining Contract");
+            console.error(e);
+            if((e.message || e).toLowerCase().indexOf('user denied') === -1) {
+                alert("Error message: " + (e.message || e));
+                //alert("Transaction fail, maybe an old version of the Liquidity Mining Contract");
             }
         }
+        window.bypassEstimation = false;
         context.view.setState({unlocking : false});
     }
 };
