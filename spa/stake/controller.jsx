@@ -273,8 +273,8 @@ var StakeController = function (view) {
             await window.blockchainCall(context.view.props.stakingData.stakingManager.methods.unlock, tier, position);
             context.load();
         } catch(e) {
-            if((e.message || e).indexOf('User denied') === -1) {
-                alert("Transaction fail, maybe an old version of the Liquidity Mining Contract");
+            if((e.message || e).toLowerCase().indexOf('user denied') === -1) {
+                alert(`Transaction fail (${e.message || e}), maybe an old version of the Liquidity Mining Contract`);
             }
         }
         context.view.setState({unlocking : false});
