@@ -256,7 +256,7 @@ window.addToPool = async function addToPool(view, firstToken, secondToken, first
     if(parseInt(amount) > parseInt(await (!firstToken ? window.web3.eth.getBalance(view.props.element.walletAddress) : window.blockchainCall(window.newContract(window.context.votingTokenAbi, firstToken).methods.balanceOf, view.props.element.walletAddress)))) {
         return view.emit('message', 'Insufficient amount to add to pool', 'error');
     }
-    var selectedSolidityVersion = Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
+    var selectedSolidityVersion = await window.getSupportedSolidityVersion();//Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
     var discussion =  `https://${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth?ensd=${view.props.element.ens ? `${view.props.element.ens}.` : ''}dfohub.eth`;
     var title = `Adding to Pool ${amountNormal} ${firstToken ? await window.blockchainCall(window.newContract(window.context.votingTokenAbi, firstToken).methods.symbol) : 'ETH'} for ${secondToken ? await window.blockchainCall(window.newContract(window.context.votingTokenAbi, secondToken).methods.symbol) : 'ETH'}`;
     var sourceCode = (await window.AJAXRequest('data/AddToPoolTemplate.sol')).format(
@@ -284,6 +284,14 @@ window.addToPool = async function addToPool(view, firstToken, secondToken, first
     });
 };
 
+window.getSupportedSolidityVersion = async function getSupportedSolidityVersion() {
+    var supportedSolidityVersion = '0.7.0';
+    return [
+        supportedSolidityVersion,
+        (await window.SolidityUtilities.getCompilers()).releases[supportedSolidityVersion]
+    ]
+}
+
 window.fixedInflation = async function fixedInflation(view, fixedInflation) {
     var transfers = {};
     for(var i = 0; i < fixedInflation.swapCouples.length; i++){
@@ -293,7 +301,7 @@ window.fixedInflation = async function fixedInflation(view, fixedInflation) {
         transfers[fixedInflation.swapCouples[i].from] = transfers[fixedInflation.swapCouples[i].from] || {amount : '0'};
         transfers[fixedInflation.swapCouples[i].from].amount = window.web3.utils.toBN(transfers[fixedInflation.swapCouples[i].from].amount).add(window.web3.utils.toBN(fixedInflation.swapCouples[i].amount)).toString();
     }
-    var selectedSolidityVersion = Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
+    var selectedSolidityVersion = await window.getSupportedSolidityVersion();//Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
     var functionalityReplace = '';
     (await window.loadFunctionalityNames(view.props.element)).forEach(it => functionalityReplace = functionalityReplace || (it === 'fixedInflation' ? 'fixedInflation' : ''));
     var title = ((functionalityReplace ? 'Replace' : 'New') + ' Fixed Inflation');
@@ -488,8 +496,8 @@ interface IERC20 {
 };
 
 window.stake = async function stake(view, startBlock, endBlock, mainTokenAddress, rewardTokenAddress, pools, tiers, stakingContractAddress) {
-    var selectedSolidityVersion = Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
-    var liquidityMiningContractSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.0'];
+    var selectedSolidityVersion = await window.getSupportedSolidityVersion();//Object.entries((await window.SolidityUtilities.getCompilers()).releases)[0];
+    var liquidityMiningContractSolidityVersion = selectedSolidityVersion[1];//(await window.SolidityUtilities.getCompilers()).releases['0.7.0'];
     for(var i = 0; i < pools.length; i++) {
         pools[i] = window.web3.utils.toChecksumAddress(pools[i]);
     }
