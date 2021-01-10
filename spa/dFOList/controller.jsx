@@ -35,6 +35,9 @@ var DFOListController = function (view) {
     }
 
     context.getLogs = async function getLogs(fromBlock, toBlock, event, topics) {
+        if(!window.dfoHub || !window.dfoHub.dFO) {
+            return setTimeout(() => context.getLogs(fromBlock, toBlock, event, topics), 300);
+        }
         var logs = await window.getDFOLogs({
             address: window.dfoHub.dFO.options.allAddresses,
             topics,

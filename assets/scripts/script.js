@@ -8,12 +8,20 @@ window.pragmaSolidityRule = new RegExp("pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\
 window.base64Regex = new RegExp("data:([\\S]+)\\/([\\S]+);base64", "gs");
 
 window.Main = async function Main() {
-    await window.loadContext();
+    var button = document.getElementsByTagName('a')[0];
+    var connect = window.sessionStorage.connect;
+    window.sessionStorage.removeItem("connect");
+    if(connect !== undefined) {
+        return window.connectFromHomepage(button);
+    }
+    button.className = "ConnectButton";
+    button.innerHTML = "Connect";
 };
 
 window.connectFromHomepage = async function(button) {
     button.innerHTML = '<spa class="loaderMinimino"></span>';
     button.className = '';
+    await window.loadContext();
     window.onEthereumUpdate(0).then(window.choosePage);
 };
 
@@ -75,8 +83,7 @@ window.loadDFO = async function loadDFO(address, allAddresses) {
     dfo.options.allAddresses = allAddresses;
     try {
         dfo.metadataLink = window.web3.eth.abi.decodeParameter('string', await window.blockchainCall(dfo.methods.read, 'getMetadataLink', '0x'));
-    } catch(e) {
-    }
+    } catch (e) {}
     return dfo;
 };
 
@@ -87,7 +94,7 @@ window.getLogs = async function(a, endOnFirstResult) {
     args.toBlock = args.toBlock || (await window.web3.eth.getBlockNumber() + '');
     var to = parseInt(args.toBlock);
     var fillWithWeb3Logs = async function(logs, args) {
-        if(window.web3.currentProvider === window.web3ForLogs.currentProvider) {
+        if (window.web3.currentProvider === window.web3ForLogs.currentProvider) {
             return logs;
         }
         var newArgs = {};
@@ -108,6 +115,24 @@ window.getLogs = async function(a, endOnFirstResult) {
         args.fromBlock = (parseInt(args.toBlock) + 1) + '';
     }
     return await fillWithWeb3Logs(logs, args);
+};
+
+window.timeoutCall = function timeoutCall(call) {
+    return new Promise(function(ok) {
+        var callback = function callback(result) {
+            clearInterval(interval);
+            return ok(result);
+        };
+        var i = 0;
+        var interval = setInterval(() => {
+            if(i++ > 0) {
+                clearInterval(interval);
+                window.sessionStorage.setItem("connect", true);
+                return window.location.reload();
+            }
+            call(callback);
+        }, 500);
+    });
 };
 
 window.onEthereumUpdate = function onEthereumUpdate(millis) {
@@ -168,7 +193,7 @@ window.createWeb3 = async function createWeb3(connectionProvider) {
     web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
     web3.eth.transactionBlockTimeout = 999999999;
     web3.eth.transactionPollingTimeout = new Date().getTime();
-    web3.startBlock = await web3.eth.getBlockNumber();
+    web3.startBlock = await window.timeoutCall(async call => call(await web3.eth.getBlockNumber()));
     return web3;
 };
 
@@ -210,7 +235,7 @@ window.loadContext = async function loadContext() {
     var localContext = {};
     try {
         localContext = await window.AJAXRequest('data/context.local.json');
-    } catch(e) {
+    } catch (e) {
         console.clear && console.clear();
     }
     window.context = window.deepCopy(context, localContext);
@@ -220,19 +245,18 @@ window.deepCopy = function deepCopy(data, extension) {
     data = data ? JSON.parse(JSON.stringify(data)) : {};
     extension = extension ? JSON.parse(JSON.stringify(extension)) : {};
     var keys = Object.keys(extension);
-    for(var i in keys) {
+    for (var i in keys) {
         var key = keys[i];
-        if(!data[key]) {
+        if (!data[key]) {
             data[key] = extension[key];
             continue;
         }
         try {
-            if(Object.keys(data[key]).length > 0 && Object.keys(extension[key]).length > 0) {
+            if (Object.keys(data[key]).length > 0 && Object.keys(extension[key]).length > 0) {
                 data[key] = deepCopy(data[key], extension[key]);
                 continue;
             }
-        } catch(e) {
-        }
+        } catch (e) {}
         data[key] = extension[key];
     }
     return data;
@@ -1328,7 +1352,7 @@ window.shortenWord = function shortenWord(word, charsAmount) {
 window.loadLogo = async function loadLogo(address) {
     address = window.web3.utils.toChecksumAddress(address);
     window.logos = window.logos || {};
-    if(window.logos[address]) {
+    if (window.logos[address]) {
         return window.logos[address];
     }
     var logo = address === window.voidEthereumAddress ? 'assets/img/eth-logo.png' : window.context.trustwalletImgURLTemplate.format(address);
@@ -1360,7 +1384,7 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
     return await (window.tokensList = window.tokensList || new Promise(async function(ok) {
         var tokensList = {
             "Programmable Equities": (await window.AJAXRequest(window.getNetworkElement("decentralizedFlexibleOrganizationsURL"))).tokens.filter(filter),
-            "Items" : (await window.AJAXRequest(window.context.itemsListURL)).tokens.filter(filter),
+            "Items": (await window.AJAXRequest(window.context.itemsListURL)).tokens.filter(filter),
             "Tokens": (await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.filter(filter),
             "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.filter(filter)
         }
@@ -1520,42 +1544,43 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
     var uniswapPairs = (view && view.state && view.state.uniswapPairs) || [];
     uniswapPairs.push(...Object.values(window.loadedUniswapPairs).filter(it => uniswapPairs.indexOf(it) === -1));
     var blockSearchTranches = await window.loadBlockSearchTranches();
-    if(view && !view.mounted) {
+    if (view && !view.mounted) {
         return uniswapPairs;
     }
     var subArrays;
-    if(myToken.length === 0 || (myToken.length === 1 && myToken[0] === window.voidEthereumAddressExtended)) {
+    if (myToken.length === 0 || (myToken.length === 1 && myToken[0] === window.voidEthereumAddressExtended)) {
         subArrays = window.toSubArrays((await window.AJAXRequest(window.context.uniswapTokensURL)).tokens.filter(it => it.chainId === window.networkId).map(it => window.web3.eth.abi.encodeParameter("address", it.address)), 500);
-        if(view && !view.mounted) {
+        if (view && !view.mounted) {
             return uniswapPairs;
         }
         myToken = subArrays.splice(0, 1)[0];
     } else {
         uniswapPairs = uniswapPairs.filter(it => myToken.indexOf(window.web3.eth.abi.encodeParameter('address', it.token0.address)) !== -1 || myToken.indexOf(window.web3.eth.abi.encodeParameter('address', it.token1.address)) !== -1);
-    }
-    !subArrays && secondToken && myToken.push(window.web3.eth.abi.encodeParameter('address', secondToken));
+    }!subArrays && secondToken && myToken.push(window.web3.eth.abi.encodeParameter('address', secondToken));
     view && view.enqueue(() => view.setState({ uniswapPairs }));
-    while(myToken) {
-        for(var tranche of blockSearchTranches) {
+    while (myToken) {
+        for (var tranche of blockSearchTranches) {
             var logArgs = {
                 address: window.context.uniSwapV2FactoryAddress,
                 fromBlock: tranche[0],
-                toBlock : tranche[1],
+                toBlock: tranche[1],
                 topics: [
                     window.pairCreatedTopic, myToken
                 ]
             };
-            if(subArrays || secondToken) {
+            if (subArrays || secondToken) {
                 logArgs.topics.push(myToken);
             }
             var logs = await window.getLogs(logArgs);
-            if(view && !view.mounted) {
+            if (view && !view.mounted) {
                 return uniswapPairs;
             }
-            if(!subArrays && !secondToken) {
-                logArgs.topics = [logArgs.topics[0], [], myToken];
+            if (!subArrays && !secondToken) {
+                logArgs.topics = [logArgs.topics[0],
+                    [], myToken
+                ];
                 logs.push(...await window.getLogs(logArgs));
-                if(view && !view.mounted) {
+                if (view && !view.mounted) {
                     return uniswapPairs;
                 }
             }
@@ -1573,11 +1598,11 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
                 var token1 = window.web3.utils.toChecksumAddress(window.web3.eth.abi.decodeParameter('address', log.topics[2]));
                 try {
                     pairToken.token0 = await window.loadTokenInfos(token0, undefined, true);
-                    if(view && !view.mounted) {
+                    if (view && !view.mounted) {
                         return uniswapPairs;
                     }
                     pairToken.token1 = await window.loadTokenInfos(token1, undefined, true);
-                    if(view && !view.mounted) {
+                    if (view && !view.mounted) {
                         return uniswapPairs;
                     }
                     pairToken.key = `${token0}_${token1}-${token1}_${token0}`;
@@ -1601,7 +1626,7 @@ window.toSubArrays = function toSubArrays(array, chunks) {
     var subArrays = [];
     var i, j, chunk = chunks || 100;
     for (i = 0, j = array.length; i < j; i += chunk) {
-        subArrays.push(array.slice(i,i+chunk));
+        subArrays.push(array.slice(i, i + chunk));
     }
     return subArrays;
 };
@@ -1758,20 +1783,18 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     try {
         stakingManagerData.mainToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.tokenAddress));
         stakingManagerData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.rewardTokenAddress));
-    } catch(e) {
-    }
+    } catch (e) {}
     stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
     try {
         stakingManagerData.endBlock = await window.blockchainCall(stakingManager.methods.endBlock);
-        if(active) {
+        if (active) {
             var currentBlock = await window.web3.eth.getBlockNumber();
-            if(currentBlock > parseInt(stakingManagerData.endBlock)) {
+            if (currentBlock > parseInt(stakingManagerData.endBlock)) {
                 stakingManagerData.active = false;
             }
         }
-    } catch(e) {
-    }
-    if(only !== undefined && only !== null && stakingManagerData.active !== only) {
+    } catch (e) {}
+    if (only !== undefined && only !== null && stakingManagerData.active !== only) {
         return;
     }
     var blockNumber = await window.web3.eth.getBlockNumber();
@@ -1806,7 +1829,7 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     return stakingManagerData;
 };
 
-window.updateInfo = async function updateInfo(view, element) {
+window.updateInfo = async function updateInfo(view, element, light) {
     if (!element || element.updating) {
         return;
     }
@@ -1815,52 +1838,67 @@ window.updateInfo = async function updateInfo(view, element) {
     var votingTokenAddress;
     var stateHolderAddress;
     var functionalitiesManagerAddress;
-    element.walletAddress = element.dFO.options.address;
 
-    try {
-        var delegates = await window.web3.eth.call({
-            to: element.dFO.options.address,
-            data: element.dFO.methods.getDelegates().encodeABI()
-        });
+    if (!element.walletAddress) {
+
+        element.walletAddress = element.dFO.options.address;
+
         try {
-            delegates = window.web3.eth.abi.decodeParameter("address[]", delegates);
-        } catch (e) {
-            delegates = window.web3.eth.abi.decodeParameters(["address", "address", "address", "address", "address", "address"], delegates);
+            var delegates = await window.web3.eth.call({
+                to: element.dFO.options.address,
+                data: element.dFO.methods.getDelegates().encodeABI()
+            });
+            try {
+                delegates = window.web3.eth.abi.decodeParameter("address[]", delegates);
+            } catch (e) {
+                delegates = window.web3.eth.abi.decodeParameters(["address", "address", "address", "address", "address", "address"], delegates);
+            }
+            votingTokenAddress = delegates[0];
+            stateHolderAddress = delegates[2];
+            functionalitiesManagerAddress = delegates[4];
+            element.walletAddress = delegates[5];
+            element.doubleProxyAddress = delegates[6];
+        } catch (e) {}
+
+        if (!votingTokenAddress) {
+            votingTokenAddress = await window.blockchainCall(element.dFO.methods.getToken);
+            stateHolderAddress = await window.blockchainCall(element.dFO.methods.getStateHolderAddress);
+            functionalitiesManagerAddress = await window.blockchainCall(element.dFO.methods.getMVDFunctionalitiesManagerAddress);
+            try {
+                element.walletAddress = await window.blockchainCall(element.dFO.methods.getMVDWalletAddress);
+            } catch (e) {}
         }
-        votingTokenAddress = delegates[0];
-        stateHolderAddress = delegates[2];
-        functionalitiesManagerAddress = delegates[4];
-        element.walletAddress = delegates[5];
-        element.doubleProxyAddress = delegates[6];
-    } catch (e) {}
 
-    if (!votingTokenAddress) {
-        votingTokenAddress = await window.blockchainCall(element.dFO.methods.getToken);
-        stateHolderAddress = await window.blockchainCall(element.dFO.methods.getStateHolderAddress);
-        functionalitiesManagerAddress = await window.blockchainCall(element.dFO.methods.getMVDFunctionalitiesManagerAddress);
+        if (!element.doubleProxyAddress) {
+            try {
+                element.doubleProxyAddress = await window.blockchainCall(element.dFO.methods.getDoubleProxyAddress);
+            } catch (e) {}
+        }
+
+        element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
+        element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
+
+        element.token = window.newContract(window.context.votingTokenAbi, votingTokenAddress);
+        element.name = await window.blockchainCall(element.token.methods.name);
+        element.symbol = await window.blockchainCall(element.token.methods.symbol);
+        element.decimals = await window.blockchainCall(element.token.methods.decimals);
+        element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
+        element.icon = window.makeBlockie(element.dFO.options.address);
         try {
-            element.walletAddress = await window.blockchainCall(element.dFO.methods.getMVDWalletAddress);
+            element.metadata = await window.AJAXRequest(window.formatLink(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x'))));
+            Object.entries(element.metadata).forEach(it => element[it[0]] = it[1] || element[it[0]]);
         } catch (e) {}
-    }
-
-    if (!element.doubleProxyAddress) {
+        element.functionalitiesAmount = parseInt(await window.blockchainCall(element.functionalitiesManager.methods.getFunctionalitiesAmount));
         try {
-            element.doubleProxyAddress = await window.blockchainCall(element.dFO.methods.getDoubleProxyAddress);
+            element !== window.dfoHub && (element.ens = await window.blockchainCall(window.dfoHubENSResolver.methods.subdomain, element.dFO.options.originalAddress));
         } catch (e) {}
+        element.ens = element.ens || '';
+        element.ensComplete = element.ens + '.dfohub.eth';
+        element.ensComplete.indexOf('.') === 0 && (element.ensComplete = element.ensComplete.substring(1));
     }
-
-    element.token = window.newContract(window.context.votingTokenAbi, votingTokenAddress);
-    element.name = await window.blockchainCall(element.token.methods.name);
-    element.symbol = await window.blockchainCall(element.token.methods.symbol);
-    element.totalSupply = await window.blockchainCall(element.token.methods.totalSupply);
-    try {
-        element.metadata = await window.AJAXRequest(window.formatLink(element.metadataLink = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getMetadataLink', '0x'))));
-        Object.entries(element.metadata).forEach(it => element[it[0]] = it[1] || element[it[0]]);
-    } catch (e) {}
-    element.decimals = await window.blockchainCall(element.token.methods.decimals);
-    element.stateHolder = window.newContract(window.context.stateHolderAbi, stateHolderAddress);
-    element.functionalitiesManager = window.newContract(window.context.functionalitiesManagerAbi, functionalitiesManagerAddress);
-    element.functionalitiesAmount = parseInt(await window.blockchainCall(element.functionalitiesManager.methods.getFunctionalitiesAmount));
+    if (light) {
+        return view && view.forceUpdate();
+    }
     element.lastUpdate = element.startBlock;
     window.refreshBalances(view, element);
     element.minimumBlockNumberForEmergencySurvey = '0';
@@ -1886,23 +1924,16 @@ window.updateInfo = async function updateInfo(view, element) {
         } catch (e) {
             element.minimumStaking = "0";
         }
-        element.icon = window.makeBlockie(element.dFO.options.address);
         try {
             element.link = window.web3.eth.abi.decodeParameter("string", await window.blockchainCall(element.dFO.methods.read, 'getLink', '0x'));
         } catch (e) {}
         try {
             element.index = window.web3.eth.abi.decodeParameter("uint256", await window.blockchainCall(element.dFO.methods.read, 'getIndex', '0x'));
         } catch (e) {}
-        try {
-            element !== window.dfoHub && (element.ens = await window.blockchainCall(window.dfoHubENSResolver.methods.subdomain, element.dFO.options.originalAddress));
-        } catch (e) {}
         element.votesHardCap = '0'
         try {
             element.votesHardCap = window.web3.eth.abi.decodeParameter("uint256", await window.blockchainCall(element.dFO.methods.read, 'getVotesHardCap', '0x'));
         } catch (e) {}
-        element.ens = element.ens || '';
-        element.ensComplete = element.ens + '.dfohub.eth';
-        element.ensComplete.indexOf('.') === 0 && (element.ensComplete = element.ensComplete.substring(1));
         try {
             view && view && setTimeout(function() {
                 view && view.forceUpdate();
@@ -1927,7 +1958,7 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
     element.walletETHDollar = ethereumPrice;
     element.walletBUIDL = await window.blockchainCall(window.dfoHub.token.methods.balanceOf, element.walletAddress);
     element.walletBUIDLDollar = '0';
-    element.walletUSDC = '0';
+    /*element.walletUSDC = '0';
     element.walletUSDCDollar = '0';
     element.walletDAI = '0';
     element.walletDAIDollar = '0';
@@ -1935,14 +1966,14 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
         element.walletDAI = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("daiTokenAddress")).methods.balanceOf, element.walletAddress);
         element.walletDAIDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 18), [window.getNetworkElement("daiTokenAddress"), window.wethAddress]))[1], 18, true);
         element.walletDAIDollar = parseFloat(window.fromDecimals(element.walletDAI, 18, true)) * parseFloat(element.walletDAIDollar) * ethereumPrice;
-    } catch (e) {}
+    } catch (e) {}*/
     try {
         element.communityTokensDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', element.decimals), [element.token.options.address, window.wethAddress]))[1], 18, true);
         element.singleCommunityTokenDollar = element.communityTokensDollar;
         element.communityTokensDollar = parseFloat(window.fromDecimals(element.communityTokens, 18, true)) * element.communityTokensDollar * ethereumPrice;
-        element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdcTokenAddress")).methods.balanceOf, element.walletAddress);
+        /*element.walletUSDC = await window.blockchainCall(window.newContract(window.context.votingTokenAbi, window.getNetworkElement("usdcTokenAddress")).methods.balanceOf, element.walletAddress);
         element.walletUSDCDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', 6), [window.getNetworkElement("usdcTokenAddress"), window.wethAddress]))[1], 18, true);
-        element.walletUSDCDollar = parseFloat(window.fromDecimals(element.walletUSDC, 6, true)) * parseFloat(element.walletUSDCDollar) * ethereumPrice;
+        element.walletUSDCDollar = parseFloat(window.fromDecimals(element.walletUSDC, 6, true)) * parseFloat(element.walletUSDCDollar) * ethereumPrice;*/
     } catch (e) {}
     try {
         element.walletBUIDLDollar = window.fromDecimals((await window.blockchainCall(window.uniswapV2Router.methods.getAmountsOut, window.toDecimals('1', window.dfoHub.decimals), [window.dfoHub.token.options.address, window.wethAddress]))[1], 18, true);
@@ -1951,23 +1982,20 @@ window.refreshBalances = async function refreshBalances(view, element, silent) {
     element.walletCumulativeDollar = element.communityTokensDollar + element.walletETHDollar + element.walletUSDCDollar;
     element !== window.dfoHub && (element.walletCumulativeDollar += element.walletBUIDLDollar);
     element.walletCumulativeDollar && (element.walletCumulativeDollar = window.formatMoney(element.walletCumulativeDollar));
-    element.walletUSDCDollar && (element.walletUSDCDollar = window.formatMoney(element.walletUSDCDollar));
+    //element.walletUSDCDollar && (element.walletUSDCDollar = window.formatMoney(element.walletUSDCDollar));
     element.communityTokensDollar && (element.communityTokensDollar = window.formatMoney(element.communityTokensDollar));
     try {
         element.unlockedMarketCapDollar = parseFloat(element.singleCommunityTokenDollar.split(',').join('.')) * parseFloat(window.fromDecimals(element.availableSupply, element.decimals, true));
-    } catch(e) {
-    }
+    } catch (e) {}
     try {
         element.lockedMarketCapDollar = parseFloat(element.singleCommunityTokenDollar.split(',').join('.')) * parseFloat(window.fromDecimals(element.communityTokens, element.decimals, true));
-    } catch(e) {
-    }
+    } catch (e) {}
     try {
         element.totalMarketCapDollar = parseFloat(element.singleCommunityTokenDollar.split(',').join('.')) * parseFloat(window.fromDecimals(element.totalSupply, element.decimals, true));
-    } catch(e) {
-    }
+    } catch (e) {}
     element.walletETHDollar && (element.walletETHDollar = window.formatMoney(element.walletETHDollar));
     element.walletBUIDLDollar && (element.walletBUIDLDollar = window.formatMoney(element.walletBUIDLDollar));
-    element.walletDAIDollar && (element.walletDAIDollar = window.formatMoney(element.walletDAIDollar));
+    //element.walletDAIDollar && (element.walletDAIDollar = window.formatMoney(element.walletDAIDollar));
     element.myBalanceOf = window.walletAddress ? await window.blockchainCall(element.token.methods.balanceOf, window.walletAddress) : '0';
     view && view.forceUpdate();
     if (silent === true) {
@@ -2093,14 +2121,14 @@ window.proposeNewMetadataLink = async function proposeNewMetadataLink(element, m
 };
 
 window.deployMetadataLink = async function deployMetadata(metadata, functionalitiesManager) {
-    if(metadata) {
+    if (metadata) {
         var aVar = false;
         Object.values(metadata).forEach(it => {
-            if(it) {
+            if (it) {
                 aVar = true;
             }
         });
-        if(!aVar) {
+        if (!aVar) {
             return;
         }
     }
@@ -2173,13 +2201,13 @@ window.checkCoverSize = function checkCoverSize(cover, width, height) {
 
 window.formatLink = function formatLink(link) {
     link = (link ? link instanceof Array ? link[0] : link : '');
-    if(link.indexOf('assets') === 0 || link.indexOf('/assets') === 0) {
+    if (link.indexOf('assets') === 0 || link.indexOf('/assets') === 0) {
         return link;
     }
-    for(var temp of window.context.ipfsUrlTemplates) {
+    for (var temp of window.context.ipfsUrlTemplates) {
         link = link.split(temp).join(window.context.ipfsUrlChanger);
     }
-    while(link && link.startsWith('/')) {
+    while (link && link.startsWith('/')) {
         link = link.substring(1);
     }
     return (!link ? '' : link.indexOf('http') === -1 ? ('https://' + link) : link).split('https:').join('').split('http:').join('');
@@ -2243,7 +2271,7 @@ window.tryLoadStaking = async function tryLoadStaking(view, stakingAddressInput)
         optionalPage: {
             component: NoWeb3Loader
         }
-    }, async function () {
+    }, async function() {
         var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, window.web3.utils.toChecksumAddress(stakingAddressInput));
         var doubleProxy = window.newContract(window.context.DoubleProxyAbi, await window.blockchainCall(stakingManager.methods.doubleProxy));
         var element = {
@@ -2262,7 +2290,7 @@ window.tryLoadStaking = async function tryLoadStaking(view, stakingAddressInput)
         };
         ReactModuleLoader.load({
             modules: ['spa/stake'],
-            callback: function () {
+            callback: function() {
                 view.setState({
                     optionalPage: {
                         component: window.Stake,
@@ -2278,7 +2306,7 @@ window.toSubArrays = function toSubArrays(array, chunks) {
     var subArrays = [];
     var i, j, chunk = chunks || 100;
     for (i = 0, j = array.length; i < j; i += chunk) {
-        subArrays.push(array.slice(i,i+chunk));
+        subArrays.push(array.slice(i, i + chunk));
     }
     return subArrays;
 };
@@ -2306,14 +2334,14 @@ window.loadBlockSearchTranches = async function loadBlockSearchTranches() {
 window.decodeStructArrayABI = function decodeStructArrayABI(types, realData) {
     var w3 = window.web3 && window.web3.eth.abi ? window.web3 : new Web3Browser();
     var data = realData;
-    var res = w3.eth.abi.decodeParameters(["uint256","uint256"], data);
+    var res = w3.eth.abi.decodeParameters(["uint256", "uint256"], data);
     var length = parseInt(res[1]);
     data = "0x" + data.substring(130 + (types.join('').indexOf('[]') === -1 ? 0 : (64 * length)));
     var results = [];
-    for(var i = 0; i < length; i++) {
+    for (var i = 0; i < length; i++) {
         var result = w3.eth.abi.decodeParameters(types, data);
         var input = [];
-        for(var j = 0; j < types.length; j++) {
+        for (var j = 0; j < types.length; j++) {
             input.push(result[j]);
         }
         results.push(input);
@@ -2325,10 +2353,10 @@ window.decodeStructArrayABI = function decodeStructArrayABI(types, realData) {
 
 window.encodeStructArrayABI = function encodeStructArrayABI(types, inputs) {
     var w3 = window.web3 && window.web3.eth.abi ? window.web3 : new Web3Browser();
-    var header = w3.eth.abi.encodeParameters(["uint256","uint256"], [32, inputs.length]);
+    var header = w3.eth.abi.encodeParameters(["uint256", "uint256"], [32, inputs.length]);
     var results = [];
-    for(var input of inputs) {
-        if(types.join('').indexOf('[]') !== -1) {
+    for (var input of inputs) {
+        if (types.join('').indexOf('[]') !== -1) {
             header += w3.eth.abi.encodeParameter("uint256", (32 * inputs.length) + (results.join('').length / 2)).substring(2);
         }
         results.push(w3.eth.abi.encodeParameters(types, input).substring(2));

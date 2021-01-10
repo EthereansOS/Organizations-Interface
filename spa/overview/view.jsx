@@ -28,10 +28,12 @@ var Overview = React.createClass({
     },
     componentDidMount() {
         var _this = this;
-        window.blockchainCall(_this.props.element.dFO.methods.read, 'getMinimumBlockNumberForSurvey', '0x').then(blocks => {
+        delete _this.props.element.updating;
+        window.updateInfo(_this, _this.props.element);
+        /*window.blockchainCall(_this.props.element.dFO.methods.read, 'getMinimumBlockNumberForSurvey', '0x').then(blocks => {
             _this.props.element.blocks = window.web3.eth.abi.decodeParameters(['uint256'], blocks)[0];
             _this.forceUpdate();
-        });
+        });*/
         this.controller.checkStakingAndFixedInflaction();
     },
     renderChangeButton(name) {

@@ -62,7 +62,7 @@ var DFOList = React.createClass({
                 var element = list[i];
                 if (!element.updating) {
                     list.splice(i, 1);
-                    window.updateInfo(this, element);
+                    window.updateInfo(this, element, true);
                 } else {
                     i++;
                 }
@@ -93,9 +93,6 @@ var DFOList = React.createClass({
             finalList.push(...sortedList.filter(it => it.dFO.metadataLink === undefined || it.dFO.metadataLink === null));
             sortedList = finalList;
         }
-        /*var index = sortedList.indexOf(window.dfoHub);
-        sortedList.splice(index, 1);
-        sortedList.unshift(window.dfoHub);*/
         return sortedList;
     },
     sortFromLast(list) {
