@@ -137,7 +137,7 @@ window.timeoutCall = function timeoutCall(call) {
 
 window.onEthereumUpdate = function onEthereumUpdate(millis) {
     return new Promise(function(ok) {
-        setTimeout(async function() {
+        setTimeout(async function onEthereumUpdateWork() {
             var update = false;
             if (!window.networkId || window.networkId !== parseInt(window.ethereum.chainId)) {
                 delete window.contracts;
@@ -145,9 +145,9 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.ethereum && window.ethereum.autoRefreshOnNetworkChange && (window.ethereum.autoRefreshOnNetworkChange = false);
                 window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.accountsChanged || window.ethereum._events.accountsChanged.length === 0) && window.ethereum.on('accountsChanged', window.onEthereumUpdate);
                 window.ethereum && window.ethereum.on && (!window.ethereum._events || !window.ethereum._events.chainChanged || window.ethereum._events.chainChanged.length === 0) && window.ethereum.on('chainChanged', window.onEthereumUpdate);
-                window.web3 = await createWeb3(window.context.blockchainConnectionString || window.ethereum);
+                window.web3 = await window.createWeb3(window.context.blockchainConnectionString || window.ethereum);
                 window.networkId = await window.web3.eth.net.getId();
-                window.web3ForLogs = await createWeb3(window.getNetworkElement("blockchainConnectionForLogString") || window.web3.currentProvider);
+                window.web3ForLogs = await window.createWeb3(window.getNetworkElement("blockchainConnectionForLogString") || window.web3.currentProvider);
                 var network = window.context.ethereumNetwork[window.networkId];
                 if (network === undefined || network === null) {
                     return alert('This network is actually not supported!');
@@ -193,7 +193,7 @@ window.createWeb3 = async function createWeb3(connectionProvider) {
     web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
     web3.eth.transactionBlockTimeout = 999999999;
     web3.eth.transactionPollingTimeout = new Date().getTime();
-    web3.startBlock = await window.timeoutCall(async call => call(await web3.eth.getBlockNumber()));
+    web3.startBlock = window.ethereum && window.ethereum.isMetaMask ? await window.timeoutCall(async call => call(await web3.eth.getBlockNumber())) : await web3.eth.getBlockNumber();
     return web3;
 };
 
