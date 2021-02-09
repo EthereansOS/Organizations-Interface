@@ -20,6 +20,10 @@ var DFOListController = function (view) {
     };
 
     context.loadEvents = async function loadEvents(topics, toBlock, lastBlockNumber) {
+        if(window.context.bypassLoadDFOs) {
+            delete context.running;
+            return context.view.forceUpdate();
+        }
         if (!context.running || toBlock === window.getNetworkElement("deploySearchStart")) {
             delete context.running;
             return context.view.mounted && context.view.forceUpdate();

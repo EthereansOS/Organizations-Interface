@@ -7,11 +7,29 @@ window.solidityImportRule = new RegExp("import( )+\"(\\d+)\"( )*;", "gs");
 window.pragmaSolidityRule = new RegExp("pragma( )+solidity( )*(\\^|>)\\d+.\\d+.\\d+;", "gs");
 window.base64Regex = new RegExp("data:([\\S]+)\\/([\\S]+);base64", "gs");
 
+if ('WebSocket' in window) {
+    var OldWebSocket = WebSocket;
+    WebSocket = function(address) {
+        window.webSocket = new OldWebSocket(address);
+        setTimeout(function() {
+            var oldOnMessage = window.webSocket.onmessage;
+            window.webSocket.onmessage = function onnessage(msg) {
+                if(msg.data == 'refreshcss') {
+                    return oldOnMessage(msg);
+                }
+                //console.log(msg);
+                oldOnMessage(msg);
+            }
+        }, 300);
+        return window.webSocket;
+    }
+}
+
 window.Main = async function Main() {
     var button = document.getElementsByTagName('a')[0];
     var connect = window.sessionStorage.connect;
     window.sessionStorage.removeItem("connect");
-    if(connect !== undefined) {
+    if (connect !== undefined) {
         return window.connectFromHomepage(button);
     }
     button.className = "ConnectButton";
@@ -22,6 +40,7 @@ window.connectFromHomepage = async function(button) {
     button.innerHTML = '<spa class="loaderMinimino"></span>';
     button.className = '';
     await window.loadContext();
+    window.context.bypassConnect && window.sessionStorage.setItem("connect", true);
     window.onEthereumUpdate(0).then(window.choosePage);
 };
 
@@ -125,7 +144,7 @@ window.timeoutCall = function timeoutCall(call) {
         };
         var i = 0;
         var interval = setInterval(() => {
-            if(i++ > 0) {
+            if (i++ > 0) {
                 clearInterval(interval);
                 window.sessionStorage.setItem("connect", true);
                 return window.location.reload();
@@ -164,6 +183,9 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.uniswapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
                 window.uniswapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress);
                 window.wethAddress = window.web3.utils.toChecksumAddress(await window.blockchainCall(window.uniswapV2Router.methods.WETH));
+                window.liquidityMiningFactory = window.newContract(window.context.LiquidityMiningFactoryABI, window.getNetworkElement("liquidityMiningFactoryAddress"));
+                window.dfoBasedLiquidityMiningExtensionFactory = window.newContract(window.context.DFOBasedLiquidityMiningExtensionFactoryABI, window.getNetworkElement("DFOBasedLiquidityMiningExtensionFactory"));
+                window.ammAggregator = window.newContract(window.context.AMMAggregatorABI, window.getNetworkElement("ammAggregatorAddress"));
                 window.list = {
                     DFO: {
                         key: 'DFO',
@@ -176,7 +198,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
             }
             delete window.walletAddress;
             try {
-                window.walletAddress = (await window.web3.eth.getAccounts())[0];
+                window.walletAddress = window.context.walletAddress || (await window.web3.eth.getAccounts())[0];
             } catch (e) {}
             try {
                 window.walletAvatar = window.makeBlockie(window.walletAddress);
@@ -193,7 +215,7 @@ window.createWeb3 = async function createWeb3(connectionProvider) {
     web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
     web3.eth.transactionBlockTimeout = 999999999;
     web3.eth.transactionPollingTimeout = new Date().getTime();
-    web3.startBlock = window.ethereum && window.ethereum.isMetaMask ? await window.timeoutCall(async call => call(await web3.eth.getBlockNumber())) : await web3.eth.getBlockNumber();
+    web3.startBlock = (typeof connectionProvider).toLowerCase() !== 'string' && window.ethereum && window.ethereum.isMetaMask ? await window.timeoutCall(async call => call(await web3.eth.getBlockNumber())) : await web3.eth.getBlockNumber();
     return web3;
 };
 
@@ -343,7 +365,7 @@ window.setData = function setData(root, data) {
 
 window.getAddress = async function getAddress() {
     await window.ethereum.enable();
-    return (window.walletAddress = (await window.web3.eth.getAccounts())[0]);
+    return (window.walletAddress = window.context.walletAddress || (await window.web3.eth.getAccounts())[0]);
 };
 
 window.getSendingOptions = function getSendingOptions(transaction, value) {
@@ -1190,17 +1212,17 @@ window.showProposalLoader = async function showProposalLoader(initialContext) {
         async call(data) {
             data.transaction = await window.blockchainCall(
                 data.element.dFO.methods.newProposal,
-                data.functionalityName,
-                data.emergency,
+                data.functionalityName || "",
+                data.emergency || false,
                 window.getNetworkElement('defaultOcelotTokenAddress'),
                 isNaN(data.functionalitySourceId) ? 0 : data.functionalitySourceId,
                 window.hasEthereumAddress(data.functionalityAddress) ? data.functionalityAddress : window.voidEthereumAddress,
-                data.functionalitySubmitable,
+                data.functionalitySubmitable || data.functionalityMethodSignature === 'callOneTime(address)',
                 data.functionalityMethodSignature || "",
                 data.functionalityOutputParameters || "",
-                data.functionalityInternal,
-                data.functionalityNeedsSender,
-                data.functionalityReplace
+                data.functionalityInternal || false,
+                data.functionalityNeedsSender || false,
+                data.functionalityReplace || ""
             );
             if (!parseInt(data.element.minimumStaking)) {
                 $.publish('loader/toggle', false);
@@ -1365,6 +1387,9 @@ window.loadLogo = async function loadLogo(address) {
 };
 
 window.loadOffChainWallets = async function loadOffChainWallets() {
+    if(window.context.bypassTokens) {
+        return;
+    }
     window.loadedTokens = window.loadedTokens || {};
     var loadLogoWork = async function loadLogoWork(token) {
         token.logoURI = token.logoURI || window.context.trustwalletImgURLTemplate.format(window.web3.utils.toChecksumAddress(token.address));
@@ -1389,6 +1414,7 @@ window.loadOffChainWallets = async function loadOffChainWallets() {
             "Indexes": (await window.AJAXRequest(window.context.indexesURL)).tokens.filter(filter)
         }
         tokensList.Items.forEach(it => it.symbol = it.name);
+        window.itemsTokens = tokensList.Items;
         var keys = Object.keys(tokensList);
         for (var key of keys) {
             if (key === 'Indexes') {
@@ -1759,16 +1785,22 @@ window.loadStakingData = async function loadStakingData(element, only) {
     var promises = [];
     for (var i in json) {
         var elem = json[i];
-        if (elem.name.indexOf('staking.transfer.authorized.') === -1 && elem.name.indexOf('authorizedtotransferforstaking_') === -1) {
+        if (elem.name.indexOf('liquiditymining.authorized.') === -1 && elem.name.indexOf('staking.transfer.authorized.') === -1 && elem.name.indexOf('authorizedtotransferforstaking_') === -1) {
             continue;
         }
         var active = await window.blockchainCall(element.stateHolder.methods.getBool, elem.name);
         var split = elem.name.split('.');
         split.length === 1 && (split = elem.name.split('_'));
-        var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, split[split.length - 1]);
-        promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
+        var liquidityMiningContractAddress = split[split.length - 1];
+        if (elem.name.indexOf('liquiditymining.authorized.') === -1) {
+            var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
+            promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
+        } else {
+            var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
+            promises.push(window.setNewLiquidityMiningManagerData(element, stakingManager, blockTiers, active, only));
+        }
     }
-    stakingData = (await Promise.all(promises)).filter(it => it !== undefined && it !== null);
+    stakingData = (await Promise.allSettled(promises)).filter(it => it !== undefined && it !== null && it.value !== undefined && it.value !== null).map(it => it.value || it);
     return { stakingData, blockTiers };
 };
 
@@ -1826,6 +1858,65 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     }
     stakingManagerData.pairs = pairs;
     stakingManagerData.tiers = tiers;
+    stakingManagerData.old = true;
+    return stakingManagerData;
+};
+
+window.setNewLiquidityMiningManagerData = async function setNewLiquidityMiningManagerData(element, stakingManager, blockTiers, active, only) {
+    var stakingManagerData = {
+        stakingManager,
+        active,
+        blockTiers
+    };
+    stakingManagerData.mainToken = await window.loadTokenInfos(element.token.options.address);
+    stakingManagerData.rewardToken = stakingManagerData.mainToken;
+    try {
+        stakingManagerData.mainToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.tokenAddress));
+        stakingManagerData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.rewardTokenAddress));
+    } catch (e) {}
+    stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
+    try {
+        stakingManagerData.endBlock = await window.blockchainCall(stakingManager.methods.endBlock);
+        if (active) {
+            var currentBlock = await window.web3.eth.getBlockNumber();
+            if (currentBlock > parseInt(stakingManagerData.endBlock)) {
+                stakingManagerData.active = false;
+            }
+        }
+    } catch (e) {}
+    if (only !== undefined && only !== null && stakingManagerData.active !== only) {
+        return;
+    }
+    var blockNumber = await window.web3.eth.getBlockNumber();
+    stakingManagerData.started = blockNumber > parseInt(stakingManagerData.startBlock);
+    stakingManagerData.terminated = stakingManagerData.endBlock && blockNumber > parseInt(stakingManagerData.endBlock);
+    stakingManagerData.running = stakingManagerData.started && !stakingManagerData.terminated;
+    var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);
+    var pools = await window.blockchainCall(stakingManager.methods.tokens);
+    stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
+    var pairs = await window.loadTokenInfos(pools, window.wethAddress);
+    for (var i in pairs) {
+        pairs[i].amount = await window.blockchainCall(stakingManager.methods.totalPoolAmount, i);
+    }
+    var tiers = [];
+    for (var i = 0; i < rawTiers[0].length; i++) {
+        var tier = {
+            blockNumber: rawTiers[0][i],
+            percentage: 100 * parseFloat(rawTiers[1][i]) / parseFloat(rawTiers[2][i]),
+            rewardSplitTranche: rawTiers[3][i],
+            time: window.calculateTimeTier(rawTiers[0][i]),
+            tierKey: window.getTierKey(rawTiers[0][i])
+        };
+        var stakingInfo = await window.blockchainCall(stakingManager.methods.getStakingInfo, i);
+        tier.minCap = stakingInfo[0];
+        tier.hardCap = stakingInfo[1];
+        tier.remainingToStake = stakingInfo[2];
+        tier.staked = window.web3.utils.toBN(tier.hardCap).sub(window.web3.utils.toBN(tier.remainingToStake)).toString()
+        tiers.push(tier);
+    }
+    stakingManagerData.pairs = pairs;
+    stakingManagerData.tiers = tiers;
+    stakingManagerData.old = false;
     return stakingManagerData;
 };
 
@@ -2289,11 +2380,11 @@ window.tryLoadStaking = async function tryLoadStaking(view, stakingAddressInput)
             stakingData: await window.setStakingManagerData(element, stakingManager, blockTiers, active)
         };
         ReactModuleLoader.load({
-            modules: ['spa/stake'],
+            modules: ['spa/stake', 'spa/stake_old'],
             callback: function() {
                 view.setState({
                     optionalPage: {
-                        component: window.Stake,
+                        component: props.stakingData.old ? window.StakeOld : window.Stake,
                         props
                     }
                 });
@@ -2363,3 +2454,55 @@ window.encodeStructArrayABI = function encodeStructArrayABI(types, inputs) {
     }
     return header + results.join('');
 };
+
+window.onTextChange = function onTextChange(e) {
+    window.preventItem(e);
+    var view = $(e.currentTarget).findReactComponent();
+    if (view.state && view.state.performing) {
+        return;
+    }
+    var value = e.currentTarget.value;
+    var callback = view[e.currentTarget.dataset.action];
+    var timeVar = e.currentTarget.dataset.action + "Timeout";
+    view[timeVar] && window.clearTimeout(view[timeVar]);
+    view[timeVar] = setTimeout(() => callback(value), window.context.inputTimeout);
+};
+
+window.preventItem = function preventItem(e) {
+    if (!e) {
+        return;
+    }
+    e.preventDefault && e.preventDefault(true);
+    e.stopPropagation && e.stopPropagation(true);
+    return e || true;
+};
+
+window.goTo = async function goTo(block) {
+    await fastForward(parseInt(block) - parseInt(await window.web3.eth.getBlockNumber()));
+};
+
+window.fastForward = async function fastForward(times) {
+    var blockNumber = parseInt(await window.web3.eth.getBlockNumber()) + (times = times || 1);
+    while (times-- > 0) {
+        fetch('http://localhost:8545', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "id": new Date().getTime(), "jsonrpc": "2.0", "method": "evm_mine", "params": [] })
+        });
+    }
+    while (parseInt(await window.web3.eth.getBlockNumber()) !== blockNumber) {
+        await new Promise(ok => setTimeout(ok, 1000));
+    }
+};
+
+window.unlockAccounts = function unlockAccounts(accounts) {
+    return Promise.all((accounts = accounts instanceof Array ? accounts : [accounts]).map(it => fetch('http://localhost:8545', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "id": new Date().getTime(), "jsonrpc": "2.0", "method": "evm_unlockUnknownAccount", "params": [it = window.web3.utils.toChecksumAddress(it)] })
+    })));
+}

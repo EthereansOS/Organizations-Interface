@@ -7,7 +7,8 @@ var Index = React.createClass({
         'spa/messages.jsx',
         'spa/loader.jsx',
         'spa/walletEnablerButton.jsx',
-        'spa/noWeb3Loader.jsx'
+        'spa/noWeb3Loader.jsx',
+        'spa/imported/ReactImporter.jsx'
     ],
     getDefaultSubscriptions() {
         return {
@@ -99,7 +100,7 @@ var Index = React.createClass({
                             </li>
                         </ul>
                     </header>
-                    {!(this.state && this.state.optionalPage) && <div className="BETABANNER">
+                    {!(this.state && this.state.optionalPage) && !window.context.bypassBetaBanner && <div className="BETABANNER">
                         <section>
                             <h1>&#128123;</h1>
                             <h2>Welcome to the DFOhub <span>{window.context.dappVersion}</span></h2>

@@ -19,7 +19,7 @@ var ReactModuleManager = function() {
         var elementName = undefined
         var reactClass = typeof viewName !== 'string' ? viewName : window[viewName] !== undefined ? window[viewName] : undefined
 
-        if (reactClass !== undefined && reactClass.prototype.constructor.displayName !== undefined) {
+        if (reactClass !== undefined && reactClass.prototype && reactClass.prototype.constructor.displayName !== undefined) {
             elementName = reactClass.prototype.constructor.displayName
             if (reactClass.prototype.oldRender === undefined) {
                 var requireCalled = true;
@@ -72,12 +72,12 @@ var ReactModuleManager = function() {
                                 rendered = ReactModuleManager.createElementNew(rendered.type.displayName, props, children);
                             }
                         } catch(e) {
-
                         }
                         ReactModuleLoader.load({
                             modules: this.requiredModules,
                             scripts: this.requiredScripts,
                             callback: function() {
+                              Object.keys(window).filter(key => key.indexOf('_') === 0 && window[key.substring(1)] && !window[key].default).forEach(key => (window[key] = window[key] || {}).default = window[key.substring(1)]);
                               requireCalled = 'true';
                               var _this = this;
                               this.forceUpdate(function() {
@@ -244,7 +244,7 @@ var ReactModuleManager = function() {
         var element;
         var involveLoadedModules = true
 
-        if (typeof viewName !== 'string' || window[viewName] === undefined) {
+        if (typeof viewName === 'symbol' || typeof viewName !== 'string' || window[viewName] === undefined) {
             element = React.createElement2.apply(React, callerArguments)
             involveLoadedModules = typeof viewName !== 'string'
             if (elementName !== undefined) {
@@ -260,6 +260,9 @@ var ReactModuleManager = function() {
         if (involveLoadedModules === true && window.loadedModules[viewName] === undefined) {
             window.loadedModules[viewName] = element
         }
+
+        (typeof viewName).toLowerCase() === 'string' && (window['_' + viewName] = { default : window[viewName] });
+
         return element
     }
     return {
@@ -284,6 +287,9 @@ React.defaultLoader = function() {
 React.defaultCatcher = function(e) {
     return React.createElement('h1', {}, 'An error occurred during rendering: "' + (e.message || e) + '".\nPlease try refresh the page.');
 };
+window.useState = React.useState;
+window.useEffect = React.useEffect;
+window.Fragment = React.Fragment;
 React.createElement2 = React.createElement;
 React.createElement = ReactModuleManager.createElement
 createReactClass && (React.createClass = createReactClass)

@@ -4,7 +4,8 @@ var StakingView = React.createClass({
         'spa/farming/staking/edit.jsx'
     ],
     requiredModules: [
-        'spa/stake'
+        'spa/stake',
+        'spa/stake_old'
     ],
     getDefaultSubscriptions() {
         return {
@@ -78,7 +79,7 @@ var StakingView = React.createClass({
         this.props && Object.entries(this.props).forEach(entry => props[entry[0]] = entry[1]);
         this.state && Object.entries(this.state).forEach(entry => props[entry[0]] = entry[1]);
         if (props.stakeToShow) {
-            return React.createElement(Stake, {
+            return React.createElement(props.stakeToShow.old ? StakeOld : Stake, {
                 element: props.element,
                 stakingData: props.stakeToShow
             });
