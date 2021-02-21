@@ -59,7 +59,7 @@ var WalletController = function (view) {
         } catch (e) {
             tokenAmounts[0].amount = '0'
         }
-        tokenAmounts[0].amountDollars = ethereumPrice * parseFloat(window.fromDecimals(tokenAmounts[0].amount, 18));
+        cumulativeAmountDollar += tokenAmounts[0].amountDollars = ethereumPrice * parseFloat(window.fromDecimals(tokenAmounts[0].amount, 18));
         var allAddresses = tokens.filter(it => it !== true && it !== false).map(it => window.web3.utils.toChecksumAddress(it.address));
         var addresses = window.toSubArrays(allAddresses);
         for (var address of addresses) {
