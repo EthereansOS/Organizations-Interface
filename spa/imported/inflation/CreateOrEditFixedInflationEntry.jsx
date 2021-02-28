@@ -110,18 +110,14 @@ const CreateOrEditFixedInflationEntry = (props) => {
         }],
         [function () {
             return <>
-                <div className="CreateList">
-                    <h6 className="text-secondary"><b>Operations:</b></h6>
-                </div>
+                <h6><b>Operations:</b></h6>
                 {operations.length === 0 && <div className="CreateList"><p>No operations</p></div>}
-                {editingOperation === null && operations.map((entryOperation, entryOperationIndex) => <div key={entryOperationIndex} className="CreateList">
-                    <div className="col-md-9 col-12">
-                        <b>{entryOperation.actionType} {entryOperation.amount !== 0 ? entryOperation.amount : `${entryOperation.percentage}%`} {entryOperation.inputToken.symbol} to {entryOperation.receivers.length} wallet(s)</b>
-                    </div>
-                    <div className="col-md-3 col-12 flex">
-                        <button className="btn btn-sm btn-danger ml-1" onClick={() => editOrAddEntryOperation(entryOperationIndex)}><b>EDIT</b></button>
-                        <button className="btn btn-sm btn-outline-danger mr-1" onClick={() => removeEntryOperation(entryOperationIndex)}><b>X</b></button>
-                    </div>
+                {editingOperation === null && operations.map((entryOperation, entryOperationIndex) => <div key={entryOperationIndex} className="CreateListOp">
+                        <p>{entryOperation.actionType} {entryOperation.amount !== 0 ? entryOperation.amount : `${entryOperation.percentage}% (supply)`} {entryOperation.inputToken.symbol} to {entryOperation.receivers.length} receiver(s)</p>
+                        <div className="Web2ActionsBTNs">
+                            <a className="web2ActionBTN" onClick={() => editOrAddEntryOperation(entryOperationIndex)}><b>EDIT</b></a>
+                            <a className="web2ActionBTN" onClick={() => removeEntryOperation(entryOperationIndex)}><b>X</b></a>
+                        </div>
                 </div>)}
                 <div className="Web2ActionsBTNs">
                     <a onClick={editOrAddEntryOperation} className="web2ActionBTN">+</a>

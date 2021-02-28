@@ -242,62 +242,58 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
 
     const getTransferThirdStep = () => {
         return <>
-            <div className="row mb-4">
-                <h6 className="text-secondary"><b>Transfer</b></h6>
-            </div>
-            <div className="row w-50 mb-4">
-                <select value={transferType} onChange={(e) => setTransferType(e.target.value)} className="custom-select wusd-pair-select">
-                    <option value="">Select type</option>
-                    {!enterInETH && <option value="percentage">Percentage</option>}
-                    <option value="amount">Amount</option>
-                </select>
-            </div>
+            <h6><b>Transfer</b></h6>
+            <select value={transferType} onChange={(e) => setTransferType(e.target.value)} className="SelectRegular">
+                <option value="">Select type</option>
+                {!enterInETH && <option value="percentage">Percentage</option>}
+                <option value="amount">Amount</option>
+            </select>
             {
                 transferType ?
                     transferType == 'percentage' ?
-                        <div className="row mb-4 justify-content-center align-items-center">
-                            <input type="number" min={0} max={100} value={percentage} onChange={(e) => setPercentage(e.target.value)} className="form-control mr-2" style={{ width: '33%' }} />% of {inputToken.symbol} <Coin address={inputToken.address} className="ml-2" />
+                        <div className="SpecialInputPerch">
+                            <aside>%</aside>
+                            <input type="number" min={0} max={100} value={percentage} onChange={(e) => setPercentage(e.target.value)} className="TextRegular" />
+                            <p>Of {inputToken.symbol} Existing Supply</p>
                         </div>
                         :
-                        <div className="row mb-4 justify-content-center align-items-center">
-                            <Input showCoin={true} address={inputToken.address} name={inputToken.symbol} value={amount} onChange={(e) => setAmount(e.target.value)} />
+                        <div className="InputTokensRegular">
+                            <div className="InputTokenRegular">
+                                <Input showCoin={true} address={inputToken.address} name={inputToken.symbol} value={amount} onChange={(e) => setAmount(e.target.value)} />
+                            </div>
                         </div>
                     : <div />
             }
             {
                 transferType ? <>
-                    <div className="row">
-                        <h6><b>Receiver</b></h6>
+                    <h6><b>Receiver</b></h6>
+                    <div className="CheckboxQuestions">
+                        <input type="text" value={currentReceiver} onChange={(e) => setCurrentReceiver(e.target.value)} className="TextRegular" placeholder="Address" aria-label="Receiver" aria-describedby="button-add" />
                     </div>
-                    <div className="row">
-                        <div className="input-group mb-3">
-                            <input type="text" value={currentReceiver} onChange={(e) => setCurrentReceiver(e.target.value)} className="form-control" placeholder="Address" aria-label="Receiver" aria-describedby="button-add" />
-                            <button onClick={() => {
-                                if (!window.isEthereumAddress(currentReceiver)) return;
-                                const exists = receivers.filter((r) => r.address === currentReceiver).length > 0;
-                                if (exists) return;
-                                setReceivers(receivers.concat({ address: currentReceiver, percentage: receivers.length === 0 ? 100 : 0 }));
-                                setCurrentReceiver("");
-                            }} className="btn btn-outline-secondary ml-2" type="button" id="button-add">Add</button>
-                        </div>
+                    <div className="Web2ActionsBTNs">
+                        <a onClick={() => {
+                            if (!window.isEthereumAddress(currentReceiver)) return;
+                            const exists = receivers.filter((r) => r.address === currentReceiver).length > 0;
+                            if (exists) return;
+                            setReceivers(receivers.concat({ address: currentReceiver, percentage: receivers.length === 0 ? 100 : 0 }));
+                            setCurrentReceiver("");
+                        }} className="web2ActionBTN" type="button" id="button-add">+</a>
                     </div>
-                    <div className="row mb-4">
+                    <div className="ReceiversList">
                         {
                             receivers.map((receiver, index) => {
                                 return (
-                                    <div key={receiver.address} className="col-12 mb-2">
-                                        <div className="row align-items-center">
-                                            <div className="col-md-8 col-12">
-                                                <b>{receiver.address}</b>
-                                            </div>
-                                            <div className="col-md-2 col-12">
-                                                {index !== receivers.length - 1 && <input type="number" min={0} max={100} onChange={(e) => onPercentageChange(index, e.target.value)} className="form-control mr-1" value={receiver.percentage} />}
-                                                {index === receivers.length - 1 && receivers.length !== 1 && <span>{receiver.percentage}</span>}
-                                            </div>
-                                            <div className="col-md-2 col-12">
-                                                <button onClick={() => setReceivers(receivers.filter((_, i) => i !== index))} className="btn btn-danger btn-sm">X</button>
-                                            </div>
+                                    <div key={receiver.address} className="ReceiverSingle">
+                                        <p>{receiver.address}</p>
+                                        <div className="DeleteAddress">
+                                            <a onClick={() => setReceivers(receivers.filter((_, i) => i !== index))} className="web2ActionBTN">X</a>
                                         </div>
+                                        {index !== receivers.length - 1 &&
+                                            <div className="SpecialInputPerch">
+                                                <aside>%</aside>
+                                                <input type="number" min={0} max={100} onChange={(e) => onPercentageChange(index, e.target.value)} className="TextRegular" value={receiver.percentage} />
+                                            </div>}
+                                        {index === receivers.length - 1 && receivers.length !== 1 && <span>{receiver.percentage}</span>}
                                     </div>
                                 )
                             })
@@ -325,116 +321,109 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
 
     const getSwapThirdStep = () => {
         return <>
-            <div className="InputForm">
-                <h6><b>Swap Operation</b></h6>
-                <select value={transferType} onChange={onTransferChange} className="SelectRegular">
-                    <option value="">Select type</option>
-                    {!enterInETH && <option value="percentage">Percentage</option>}
-                    <option value="amount">Amount</option>
-                </select>
-                {
-                    transferType ?
-                        transferType == 'percentage' ?
-                            <div className="row mb-4 justify-content-center align-items-center">
-                                <input type="number" min={0} max={100} value={percentage} onChange={(e) => setPercentage(e.target.value)} className="form-control mr-2" style={{ width: '33%' }} />% of {inputToken.symbol} <Coin address={inputToken.address} className="ml-2" />
-                            </div>
-                            :
-                            <div className="row mb-4 justify-content-center align-items-center">
+            <h6><b>Swap</b></h6>
+            <select value={transferType} onChange={onTransferChange} className="SelectRegular">
+                <option value="">Select type</option>
+                {!enterInETH && <option value="percentage">Percentage</option>}
+                <option value="amount">Amount</option>
+            </select>
+            {
+                transferType ?
+                    transferType == 'percentage' ?
+                        <div className="SpecialInputPerch">
+                            <aside>%</aside>
+                            <input type="number" min={0} max={100} value={percentage} onChange={(e) => setPercentage(e.target.value)} className="TextRegular" />
+                            <p>Of {inputToken.symbol} Existing Supply</p>
+                        </div>
+                        :
+                        <div className="InputTokensRegular">
+                            <div className="InputTokenRegular">
                                 <Input showCoin={true} address={inputToken.address} name={inputToken.symbol} value={amount} onChange={(e) => setAmount(e.target.value)} />
                             </div>
-                        : <div />
-                }
-                <div className="row mb-4">
-                    <TokenInput label={"Path"} placeholder={"LPT address"} width={60} onClick={(address) => onAddPathToken(address)} text={"Load"} />
-                </div>
-                {loading && <Loading />}
-                {!loading && pathTokens.map((pathToken, index) => {
-                    var realInputToken = enterInETH ? amm.ethAddress : inputToken.address;
-                    var lastOutputToken = pathTokens.length === 1 ? realInputToken : pathTokens[pathTokens.length - 2].outputTokenAddress;
-                    return <Fragment key={pathToken.address}>
-                        <div className="row mb-4">
-                            {pathToken && <div className="col-12">
-                                <b>{pathToken.symbol} {pathToken.symbols.map((symbol) => <span>{symbol} </span>)}</b> {index === pathTokens.length - 1 ? <button className="btn btn-sm btn-outline-danger ml-1" onClick={() => removePathTokens(index)}><b>Remove</b></button> : <div />}
-                            </div>}
                         </div>
-                        <div className="row w-50 mb-4">
-                            <select value={pathToken.outputTokenAddress} disabled={index !== pathTokens.length - 1} onChange={e => setPathTokens(pathTokens.map((pt, i) => i === index ? { ...pt, outputTokenAddress: e.target.value } : pt))} className="custom-select wusd-pair-select">
-                                {pathToken.lpTokensAddresses.filter(it => index !== pathTokens.length - 1 ? true : it !== lastOutputToken).map(lpTokenAddress => <option value={lpTokenAddress}>{pathToken.symbols[pathToken.lpTokensAddresses.indexOf(lpTokenAddress)]}</option>)}
-                            </select>
-                        </div>
-                    </Fragment>
-                })}
-                {renderExitInETH && <div className="row">
-                    <div className="col-12">
-                        <label>
-                            <input name="enterInETH" type="radio" value="true" onChange={changeExitInETH} checked={exitInETH} />
+                    : <div />
+            }
+            <div className="CreateList CreateListS">
+                <TokenInput label={"Path"} placeholder={"Pool Address"} onClick={(address) => onAddPathToken(address)} text={"Load"} />
+            </div>
+            {loading && <Loading />}
+            {!loading && pathTokens.map((pathToken, index) => {
+                var realInputToken = enterInETH ? amm.ethAddress : inputToken.address;
+                var lastOutputToken = pathTokens.length === 1 ? realInputToken : pathTokens[pathTokens.length - 2].outputTokenAddress;
+                return <Fragment key={pathToken.address}>
+                    <div className="row mb-4">
+                        {pathToken && <div className="col-12">
+                            <b>{pathToken.symbol} {pathToken.symbols.map((symbol) => <span>{symbol} </span>)}</b> {index === pathTokens.length - 1 ? <button className="btn btn-sm btn-outline-danger ml-1" onClick={() => removePathTokens(index)}><b>Remove</b></button> : <div />}
+                        </div>}
+                    </div>
+                    <div className="row w-50 mb-4">
+                        <select value={pathToken.outputTokenAddress} disabled={index !== pathTokens.length - 1} onChange={e => setPathTokens(pathTokens.map((pt, i) => i === index ? { ...pt, outputTokenAddress: e.target.value } : pt))} className="custom-select wusd-pair-select">
+                            {pathToken.lpTokensAddresses.filter(it => index !== pathTokens.length - 1 ? true : it !== lastOutputToken).map(lpTokenAddress => <option value={lpTokenAddress}>{pathToken.symbols[pathToken.lpTokensAddresses.indexOf(lpTokenAddress)]}</option>)}
+                        </select>
+                    </div>
+                </Fragment>
+            })}
+            {renderExitInETH && <div className="row">
+                <div className="col-12">
+                    <label>
+                        <input name="enterInETH" type="radio" value="true" onChange={changeExitInETH} checked={exitInETH} />
                         Ethereum
                     </label>
-                        <label>
-                            <input name="enterInETH" type="radio" value="false" onChange={changeExitInETH} checked={!exitInETH} />
+                    <label>
+                        <input name="enterInETH" type="radio" value="false" onChange={changeExitInETH} checked={!exitInETH} />
                         Token
                     </label>
+                </div>
+            </div>}
+            {
+                transferType ? <>
+                    <h6><b>Receiver(s)</b></h6>
+                    <div className="CheckboxQuestions">
+                        <input type="text" value={currentReceiver} onChange={(e) => setCurrentReceiver(e.target.value)} className="TextRegular" placeholder="Address" aria-label="Receiver" aria-describedby="button-add" />
+                        <div className="Web2ActionsBTNs"></div>
+                        <a onClick={() => {
+                            const exists = receivers.filter((r) => r.address === currentReceiver).length > 0;
+                            if (exists) return;
+                            setReceivers(receivers.concat({ address: currentReceiver, percentage: receivers.length === 0 ? 100 : 0 }));
+                            setCurrentReceiver("");
+                        }} className="Web2ActionsBTN" type="button" id="button-add">+</a>
                     </div>
-                </div>}
-                {
-                    transferType ? <>
-                        <div className="row">
-                            <h6><b>Receiver</b></h6>
-                        </div>
-                        <div className="row">
-                            <div className="input-group mb-3">
-                                <input type="text" value={currentReceiver} onChange={(e) => setCurrentReceiver(e.target.value)} className="form-control" placeholder="Address" aria-label="Receiver" aria-describedby="button-add" />
-                                <button onClick={() => {
-                                    const exists = receivers.filter((r) => r.address === currentReceiver).length > 0;
-                                    if (exists) return;
-                                    setReceivers(receivers.concat({ address: currentReceiver, percentage: receivers.length === 0 ? 100 : 0 }));
-                                    setCurrentReceiver("");
-                                }} className="btn btn-outline-secondary ml-2" type="button" id="button-add">Add</button>
-                            </div>
-                        </div>
-                        <div className="row mb-4">
-                            {
-                                receivers.map((receiver, index) => {
-                                    return (
-                                        <div className="col-12 mb-2">
-                                            {
-                                                receivers.length === 1 ? <div className="row align-items-center">
-                                                    <b>{receiver.address}</b>
-                                                    <button onClick={() => setReceivers(receivers.filter((_, i) => i !== index))} className="btn btn-danger btn-sm ml-2">X</button>
-                                                </div> : <div className="row align-items-center">
-                                                        <div className="col-md-8 col-12">
-                                                            <b>{receiver.address}</b>
-                                                        </div>
-                                                        <div className="col-md-2 col-12">
-                                                            <input type="number" min={0} max={100} onChange={(e) => onPercentageChange(index, e.target.value)} className="form-control mr-1" value={receiver.percentage} />
-                                                        </div>
-                                                        <div className="col-md-2 col-12">
-                                                            <button onClick={() => setReceivers(receivers.filter((_, i) => i !== index))} className="btn btn-danger btn-sm">X</button>
-                                                        </div>
-                                                    </div>
-                                            }
+                    <div className="ReceiversList">
+                        {
+                            receivers.map((receiver, index) => {
+                                return (
+                                    <div key={receiver.address} className="ReceiverSingle">
+                                        <p>{receiver.address}</p>
+                                        <div className="DeleteAddress">
+                                            <a onClick={() => setReceivers(receivers.filter((_, i) => i !== index))} className="web2ActionBTN">X</a>
                                         </div>
-                                    )
-                                })
-                            }
-                        </div>
-                    </> : <div />
-                }
-            </div>
+                                        {index !== receivers.length - 1 &&
+                                            <div className="SpecialInputPerch">
+                                                <aside>%</aside>
+                                                <input type="number" min={0} max={100} onChange={(e) => onPercentageChange(index, e.target.value)} className="TextRegular" value={receiver.percentage} />
+                                            </div>}
+                                        {index === receivers.length - 1 && receivers.length !== 1 && <span>{receiver.percentage}</span>}
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </> : <div />
+            }
         </>
     }
 
     const getThirdStep = () => {
         var disabled = (!amount && !percentage) || !transferType || receivers.length === 0 || !isValidPercentage() || (actionType === 'swap' && pathTokens.length === 0);
-        return <div className="col-12 flex flex-column align-items-center">
+        return <div className="InputForm">
             {actionType === 'transfer' ? getTransferThirdStep() : getSwapThirdStep()}
-            <div className="row justify-content-center">
-                <button onClick={() => setStep(step - 1)} className="btn btn-light mr-4">Back</button>
-                <button
+            <div className="Web2ActionsBTNs">
+                <a onClick={() => setStep(step - 1)} className="backActionBTN">Back</a>
+                <a
                     onClick={() => !disabled && props.saveEditOperation(getEntry())}
                     disabled={disabled}
-                    className={"btn btn-secondary" + (disabled ? " disabled" : "")}
-                >Add</button>
+                    className={"web2ActionBTN" + (disabled ? " disabled" : "")}
+                >Add</a>
             </div>
         </div>
     }
