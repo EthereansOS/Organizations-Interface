@@ -30,15 +30,16 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
     // check if an entry has been passed in the props
     useEffect(() => {
         if (operation) {
+            var inputTokenAddress = operation.inputToken ? operation.inputToken.address ? operation.inputToken.address : operation.inputToken : null
             setActionType(operation.actionType);
-            onSelectInputToken(operation.inputToken ? operation.inputToken.address ? operation.inputToken.address : operation.inputToken : null);
+            onSelectInputToken(inputTokenAddress);
             setInputTokenMethod(operation.inputTokenMethod)
             setAmount(operation.amount);
             setPercentage(operation.percentage);
             setTransferType(operation.transferType);
             setReceivers(operation.receivers);
             setPathTokens(operation.pathTokens);
-            setEnterInETH(operation.enterInETH || false);
+            setEnterInETH(operation.enterInETH || inputTokenAddress === window.voidEthereumAddress);
             setExitInETH(operation.exitInETH || false);
             setRenderExitInETH(operation.exitInETH || false);
             setAmm(operation.amm);
