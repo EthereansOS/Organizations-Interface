@@ -28,6 +28,75 @@ const CreateOrEditFixedInflation = (props) => {
                 operations: []
             });
         }
+        var fixedInflationContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('FixedInflationABI'), props.fixedInflationContractAddress);
+        setExtensionAddress(await fixedInflationContract.methods.extension().call());
+        var entry = await fixedInflationContract.methods.entry().call();
+        var clonedEntry = {};
+        Object.entries(entry[0]).forEach(it => clonedEntry[it[0]] = it[1]);
+        (clonedEntry.callerRewardPercentage = window.numberToString(parseFloat(window.fromDecimals(clonedEntry.callerRewardPercentage, 18, true)) * 100));
+        clonedEntry.operations = [];
+        for (var operation of entry[1]) {
+            var op = {};
+            Object.entries(operation).forEach(it => op[it[0]] = it[1]);
+            var inputTokenDecimals = '18';
+            var inputTokenSymbol = 'ETH';
+            try {
+                var inputTokenContract = window.newContract(window.context.votingTokenAbi, op.inputTokenAddress);
+                inputTokenDecimals = await window.blockchainCall(inputTokenContract.methods.decimals);
+                inputTokenSymbol = await window.blockchainCall(inputTokenContract.methods.symbol);
+            } catch (e) {
+            }
+            op.inputToken = { address: op.inputTokenAddress, symbol: inputTokenSymbol, decimals: inputTokenDecimals };
+            op.actionType = op.ammPlugin === window.voidEthereumAddress ? 'transfer' : 'swap';
+            op.inputTokenMethod = op.inputTokenAmountIsByMint ? 'mint' : 'reserve';
+            op.transferType = op.inputTokenAmountIsPercentage ? 'percentage' : 'amount';
+            !op.inputTokenAmountIsPercentage && (op.amount = window.fromDecimals(op.inputTokenAmount, inputTokenDecimals, true));
+            op.inputTokenAmountIsPercentage && (op.percentage = window.numberToString(parseFloat(window.fromDecimals(op.inputTokenAmount, 18, true)) * 100));
+            if (op.ammPlugin && op.ammPlugin !== window.voidEthereumAddress) {
+                const ammAggregator = await props.dfoCore.getContract(props.dfoCore.getContextElement('AMMAggregatorABI'), props.dfoCore.getContextElement('ammAggregatorAddress'));
+                const ammContract = await props.dfoCore.getContract(props.dfoCore.getContextElement("AMMABI"), op.ammPlugin);
+                const ammData = await ammContract.methods.data().call();
+                const ethAddress = ammData[0];
+                op.amm = { ammAggregator, ammContract, ammData, ethAddress };
+                op.pathTokens = [];
+                for (var i in op.liquidityPoolAddresses) {
+                    var address = op.liquidityPoolAddresses[i];
+                    op.amm.info = op.amm.info || await ammAggregator.methods.info(address).call();
+                    const lpInfo = await ammContract.methods.byLiquidityPool(address).call();
+                    const lpTokensAddresses = lpInfo[2];
+                    const symbols = [];
+                    let outputTokenAddress = op.swapPath[i];
+                    for (let i = 0; i < lpTokensAddresses.length; i++) {
+                        const currentTokenAddress = lpTokensAddresses[i];
+                        if (currentTokenAddress !== window.voidEthereumAddress) {
+                            const currentToken = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), currentTokenAddress);
+                            const currentTokenSymbol = await currentToken.methods.symbol().call();
+                            symbols.push(currentTokenSymbol);
+                        }
+                        ethAddress === currentTokenAddress && (symbols[symbols.length - 1] = `ETH (${symbols[symbols.length - 1]})`);
+                    }
+                    const pathTokenContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), address);
+                    const symbol = await pathTokenContract.methods.symbol().call();
+                    const decimals = await pathTokenContract.methods.decimals().call();
+                    op.pathTokens.push({ symbol, address, decimals, output: null, outputTokenAddress, lpTokensAddresses, symbols });
+                }
+            }
+            op.oldReceivers = op.receivers;
+            op.receivers = [];
+            var lastPercentage = 100;
+            for (i in op.oldReceivers) {
+                var address = op.oldReceivers[parseInt(i)];
+                var percentage = 0;
+                i !== op.oldReceivers.length - 1 && (percentage = window.numberToString(parseFloat(window.fromDecimals(op.receiversPercentages[i], 18, true)) * 100));
+                lastPercentage -= percentage;
+                op.receivers.push({
+                    address,
+                    percentage: i !== op.oldReceivers.length - 1 ? percentage : lastPercentage
+                });
+            }
+            clonedEntry.operations.push(op);
+        }
+        setEntry(clonedEntry);
     }, []);
 
     function onExtensionType(e) {
@@ -39,6 +108,36 @@ const CreateOrEditFixedInflation = (props) => {
     function creationComplete(newEntry) {
         setEntry(newEntry);
         setStep(0);
+    }
+
+    function elaborateEntry(entry) {
+        var elaboratedEntry = {
+            id: window.web3.utils.sha3('0'),
+            name: entry.name,
+            lastBlock: entry.lastBlock,
+            blockInterval: entry.blockInterval,
+            callerRewardPercentage: window.toDecimals(window.numberToString((entry.callerRewardPercentage || 0) / 100), 18),
+            operations: entry.operations.map(operation => {
+                var receivers = operation.receivers.map(it => it.address);
+                var receiversPercentages = operation.receivers.map(it => window.toDecimals(window.numberToString(it.percentage / 100), 18));
+                receiversPercentages.pop();
+                return {
+                    inputTokenAddress: operation.enterInETH && operation.amm ? operation.amm.ethAddress : operation.inputToken.address,
+                    inputTokenAmount: window.toDecimals(window.numberToString(operation.amount || parseFloat(operation.percentage) / 100), operation.transferType === 'percentage' ? "18" : operation.inputToken.decimals),
+                    inputTokenAmountIsPercentage: operation.percentage !== '',
+                    inputTokenAmountIsByMint: operation.inputTokenMethod === 'mint',
+                    ammPlugin: operation.amm ? operation.amm.ammContract.options.address : window.voidEthereumAddress,
+                    liquidityPoolAddresses: operation.pathTokens ? operation.pathTokens.map(it => it.address) : [],
+                    swapPath: operation.pathTokens ? operation.pathTokens.map(it => it.outputTokenAddress) : [],
+                    receivers: receivers,
+                    receiversPercentages: receiversPercentages,
+                    enterInETH: (operation.enterInETH && operation.amm !== undefined && operation.amm !== null) || false,
+                    exitInETH: operation.exitInETH || false
+                }
+            })
+        };
+        console.log(JSON.stringify(elaboratedEntry));
+        return elaboratedEntry;
     }
 
     var deployMethodologies = {
@@ -63,33 +162,7 @@ const CreateOrEditFixedInflation = (props) => {
         },
         async deployedContract(preDeployedContract, builtPayload) {
             setDeployMessage(`${preDeployedContract ? "2/3" : "1/2"} - Deploying Liqudity Mining Contract...`);
-            var elaboratedEntry = {
-                id: window.web3.utils.sha3('0'),
-                name: entry.name,
-                lastBlock: entry.lastBlock,
-                blockInterval: entry.blockInterval,
-                callerRewardPercentage: window.toDecimals(window.numberToString((entry.callerRewardPercentage || 0) / 100), 18),
-                operations: entry.operations.map(operation => {
-                    var receivers = operation.receivers.map(it => it.address);
-                    var receiversPercentages = operation.receivers.map(it => window.toDecimals(window.numberToString(it.percentage / 100), 18));
-                    receiversPercentages.pop();
-                    return {
-                        inputTokenAddress: operation.enterInETH && operation.amm ? operation.amm.ethAddress : operation.inputToken.address,
-                        inputTokenAmount: window.toDecimals(window.numberToString(operation.amount || parseFloat(operation.percentage) / 100), operation.transferType === 'percentage' ? "18" : operation.inputToken.decimals),
-                        inputTokenAmountIsPercentage: operation.percentage !== '',
-                        inputTokenAmountIsByMint: operation.inputTokenMethod === 'mint',
-                        ammPlugin: operation.amm ? operation.amm.ammContract.options.address : window.voidEthereumAddress,
-                        liquidityPoolAddresses: operation.pathTokens ? operation.pathTokens.map(it => it.address) : [],
-                        swapPath: operation.pathTokens ? operation.pathTokens.map(it => it.outputTokenAddress) : [],
-                        receivers: receivers,
-                        receiversPercentages: receiversPercentages,
-                        enterInETH: (operation.enterInETH && operation.amm !== undefined && operation.amm !== null) || false,
-                        exitInETH: operation.exitInETH || false
-                    }
-                })
-            };
-
-            console.log(JSON.stringify(elaboratedEntry));
+            var elaboratedEntry = elaborateEntry(entry);
 
             var data = window.newContract(props.dfoCore.getContextElement("FixedInflationABI")).methods.init(
                 preDeployedContract || extensionAddress,
@@ -207,8 +280,62 @@ const CreateOrEditFixedInflation = (props) => {
 
     async function deploy(entry) {
         var sequentialOps = [{
-            name : "Clone Extension",
-            description : "Fixed Inflation Extension will comunicate with the DFO for Token and ETH transmission to the Fixed Inflation Contract",
+            name: "Generate SmartContract Proposal",
+            async call(data) {
+                data.selectedSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.6'];
+                data.bypassFunctionalitySourceId = true;
+                data.contractName = 'ProposalCode';
+
+                data.functionalityMethodSignature = 'callOneTime(address)';
+
+                var fileName = 'FixedInflationSetEntry';
+                var newEntries = [elaborateEntry(data.entry)];
+
+                var entryCode = `FixedInflationEntry("${newEntries[0].name}", ${newEntries[0].blockInterval}, ${newEntries[0].lastBlock || 0}, ${newEntries[0].callerRewardPercentage})`;
+                var operations = "";
+                var functions = "";
+
+                for (var i in newEntries) {
+                    var entry = newEntries[i];
+                    var operationSetsIndex = `operationSets_${i}`;
+                    var line = "";
+                    for (var j in entry.operations) {
+                        var operation = entry.operations[j];
+                        line += `\n        operationSets[${j}] = _${operationSetsIndex}_${j}();`
+                    }
+                    operations += "        " + line + "\n";
+                }
+                for (var i in newEntries) {
+                    for (var j in newEntries[i].operations) {
+                        var operation = newEntries[i].operations[j];
+                        var line = `    function _operationSets_${i}_${j}() private view returns(FixedInflationOperation memory) {`
+                        line += `\n        address[] memory liquidityPoolAddresses_${i}_${j} = new address[](${operation.liquidityPoolAddresses.length});`
+                        for (var z in operation.liquidityPoolAddresses) {
+                            line += `\n        liquidityPoolAddresses_${i}_${j}[${z}] = ${web3.utils.toChecksumAddress(operation.liquidityPoolAddresses[z])};`;
+                        }
+                        line += `\n        address[] memory swapPath_${i}_${j} = new address[](${operation.swapPath.length});`
+                        for (var z in operation.swapPath) {
+                            line += `\n        swapPath_${i}_${j}[${z}] = ${web3.utils.toChecksumAddress(operation.swapPath[z])};`;
+                        }
+                        line += `\n        address[] memory receivers_${i}_${j} = new address[](${operation.receivers.length});`
+                        for (var z in operation.receivers) {
+                            line += `\n        receivers_${i}_${j}[${z}] = ${web3.utils.toChecksumAddress(operation.receivers[z])};`;
+                        }
+                        line += `\n        uint256[] memory receiversPercentages_${i}_${j} = new uint256[](${operation.receiversPercentages.length});`
+                        for (var z in operation.receiversPercentages) {
+                            line += `\n        receiversPercentages_${i}_${j}[${z}] = ${operation.receiversPercentages[z]};`;
+                        }
+                        line += `\n        return FixedInflationOperation(${web3.utils.toChecksumAddress(operation.inputTokenAddress)}, ${operation.inputTokenAmount}, ${operation.inputTokenAmountIsPercentage}, ${operation.inputTokenAmountIsByMint}, ${operation.ammPlugin}, liquidityPoolAddresses_${i}_${j}, swapPath_${i}_${j}, ${operation.enterInETH}, ${operation.exitInETH}, receivers_${i}_${j}, receiversPercentages_${i}_${j});`
+                        functions += line + "\n    }\n\n";
+                    }
+                }
+                data.sourceCode = (await (await fetch(`data/${fileName}.sol`)).text()).format(extensionAddress, entryCode.trim(), newEntries[0].operations.length, operations.trim(), functions.trim());
+                console.log(data.sourceCode);
+            }
+        }];
+        sequentialOps = props.fixedInflationContractAddress ? sequentialOps : [{
+            name: "Clone Extension",
+            description: "Fixed Inflation Extension will comunicate with the DFO for Token and ETH transmission to the Fixed Inflation Contract",
             async call(data) {
                 var transaction = await window.blockchainCall(dfoHubBasedFixedInflationExtensionFactory.methods.cloneModel);
                 var receipt = await window.web3.eth.getTransactionReceipt(transaction.transactionHash);
@@ -221,32 +348,7 @@ const CreateOrEditFixedInflation = (props) => {
             name: "Deploy Fixed Inflation Contract",
             description: 'New Fixed Inflation Contract will be deployed.',
             async call(data) {
-                data.elaboratedEntry = {
-                    id: window.web3.utils.sha3('0'),
-                    name: data.entry.name,
-                    lastBlock: data.entry.lastBlock,
-                    blockInterval: data.entry.blockInterval,
-                    callerRewardPercentage: window.toDecimals(window.numberToString((data.entry.callerRewardPercentage || 0) / 100), 18),
-                    operations: data.entry.operations.map(operation => {
-                        var receivers = operation.receivers.map(it => it.address);
-                        var receiversPercentages = operation.receivers.map(it => window.toDecimals(window.numberToString(it.percentage / 100), 18));
-                        receiversPercentages.pop();
-                        return {
-                            inputTokenAddress: operation.enterInETH && operation.amm ? operation.amm.ethAddress : operation.inputToken.address,
-                            inputTokenAmount: window.toDecimals(window.numberToString(operation.amount || parseFloat(operation.percentage) / 100), operation.transferType === 'percentage' ? "18" : operation.inputToken.decimals),
-                            inputTokenAmountIsPercentage: operation.percentage !== '',
-                            inputTokenAmountIsByMint: operation.inputTokenMethod === 'mint',
-                            ammPlugin: operation.amm ? operation.amm.ammContract.options.address : window.voidEthereumAddress,
-                            liquidityPoolAddresses: operation.pathTokens ? operation.pathTokens.map(it => it.address) : [],
-                            swapPath: operation.pathTokens ? operation.pathTokens.map(it => it.outputTokenAddress) : [],
-                            receivers: receivers,
-                            receiversPercentages: receiversPercentages,
-                            enterInETH: (operation.enterInETH && operation.amm !== undefined && operation.amm !== null) || false,
-                            exitInETH: operation.exitInETH || false
-                        }
-                    })
-                };
-                console.log(JSON.stringify(data.elaboratedEntry));
+                data.elaboratedEntry = elaborateEntry(data.entry);
                 var deployPayload = window.newContract(props.dfoCore.getContextElement("FixedInflationABI")).methods.init(
                     data.extensionAddress,
                     window.web3.utils.sha3("init(address)").substring(0, 10) + window.web3.eth.abi.encodeParameter("address", data.element.doubleProxyAddress).substring(2),
@@ -261,14 +363,15 @@ const CreateOrEditFixedInflation = (props) => {
                 data.fixedInflationAddress = window.web3.eth.abi.decodeParameter("address", transaction.logs.filter(it => it.topics[0] === window.web3.utils.sha3('FixedInflationDeployed(address,address,bytes)'))[0].topics[1]);
             }
         }, {
-            name : "Generate SmartContract Proposal",
+            name: "Generate SmartContract Proposal",
             async call(data) {
                 data.selectedSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.6'];
                 data.bypassFunctionalitySourceId = true;
                 data.contractName = 'ProposalCode';
                 var fileName = "NewFixedInflationExtension";
+
                 data.functionalityMethodSignature = 'callOneTime(address)';
-                if(JSON.parse(await window.blockchainCall(data.element.functionalitiesManager.methods.functionalityNames)).filter(it => it === 'manageFixedInflation').length === 0) {
+                if (JSON.parse(await window.blockchainCall(data.element.functionalitiesManager.methods.functionalityNames)).filter(it => it === 'manageFixedInflation').length === 0) {
                     fileName = "ManageFixedInflationFunctionality";
                     data.functionalityMethodSignature = 'manageFixedInflation(address,uint256,address[],uint256[],uint256[],address)';
                     data.functionalityName = 'manageFixedInflation';
@@ -276,16 +379,17 @@ const CreateOrEditFixedInflation = (props) => {
                     data.functionalityNeedsSender = true;
                 }
                 data.sourceCode = (await (await fetch(`data/${fileName}.sol`)).text()).format(window.web3.utils.toChecksumAddress(data.extensionAddress));
+
                 console.log(data.sourceCode);
             }
         }];
 
         var context = {
-            element : props.element,
+            element: props.element,
             sequentialOps,
             entry,
-            sourceCode : 'test',
-            title : 'New Fixed Inflation'
+            sourceCode: 'test',
+            title: (!props.fixedInflationContractAddress ? 'New' : 'Edit') + ' Fixed Inflation'
         };
         window.showProposalLoader(context);
     };
@@ -331,7 +435,7 @@ const CreateOrEditFixedInflation = (props) => {
     return (
         !entry ? <Loading /> :
             fixedInflationAddress ? success() :
-                isNaN(step) ? <CreateOrEditFixedInflationEntry entry={copy(entry)} continue={creationComplete} saveEntry={saveEntry} notFirstTime={notFirstTime} /> :
+                isNaN(step) ? <CreateOrEditFixedInflationEntry entry={copy(entry)} continue={creationComplete} saveEntry={saveEntry} cancelEdit={props.cancelEdit} notFirstTime={notFirstTime} /> :
                     render()
     );
 }

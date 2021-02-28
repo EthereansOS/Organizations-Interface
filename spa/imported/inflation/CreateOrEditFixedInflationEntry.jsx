@@ -141,6 +141,7 @@ const CreateOrEditFixedInflationEntry = (props) => {
                 {steps[step][0]()}
             </div>
             <div className="Web2ActionsBTNs">
+                <a onClick={props.cancelEdit} className="backActionBTN">Cancel</a>
                 {step !== 0 && <a onClick={() => setStep(step - 1)} className="backActionBTN">Back</a>}
                 {step !== steps.length - 1 && <a disabled={steps[step][1]()} onClick={() => !steps[step][1]() && setStep(step + 1)} className={"web2ActionBTN" + (steps[step][1]() ? " disabled" : "")}>Next</a>}
                 {step === steps.length - 1 && <a disabled={steps[step][1]()} onClick={() => !steps[step][1]() && props.saveEntry(entryName, lastBlock, blockInterval, callerRewardPercentage, operations)} className={"web2ActionBTN" + (steps[step][1]() ? " disabled" : "")}>Save</a>}
