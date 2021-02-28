@@ -44,6 +44,7 @@
     "ipfsHost": "https://ipfs.infura.io:5001/api/v0/",
     "ipfsUrlTemplates": ["ipfs://ipfs/", "ipfs://"],
     "ipfsUrlChanger" : "https://gateway.ipfs.io/ipfs/",
+    "covenantsURL" : "https://covenants.eth.link/#",
     "icons": {
         "0x7c974104df9dd7fb91205ab3d66d15aff1049de8": "https://gateway.ipfs.io/ipfs/QmXjPmCChUCNeMSoRpSb3wKUARxbucZSQ3W5sZwMf749RX",
         "0xa4d9c768e1c6cabb127a6326c0668b49235639e8": "https://gateway.ipfs.io/ipfs/QmS377M8hhRYEMrDNuko1h5htnhHAjT5gFUHWAgB2UP765",

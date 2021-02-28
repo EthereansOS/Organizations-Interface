@@ -28,7 +28,7 @@ window.exports = {};
 
 function injectGlobalProps(p) {
     var props = {...p};
-    props.dfoCore = props.dfoCore || {...window};
+    props.dfoCore = {...window, ...props.dfoCore};
     props.dfoCore.address = window.walletAddress;
     props.dfoCore.web3 = window.web3;
     props.dfoCore.networkId = window.networkId;

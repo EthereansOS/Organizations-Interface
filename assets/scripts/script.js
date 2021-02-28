@@ -175,7 +175,7 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 delete window.loadedTokens;
                 window.loadedUniswapPairs = {};
                 var dfo = window.loadDFO(window.getNetworkElement('dfoAddress'));
-                window.loadOffChainWallets();
+                !window.context.bypassLoadTokens && window.loadOffChainWallets();
                 window.ENSController = window.newContract(window.context.ENSAbi, window.context.ensAddress);
                 try {
                     window.dfoHubENSResolver = window.newContract(window.context.resolverAbi, await window.blockchainCall(window.ENSController.methods.resolver, nameHash.hash(nameHash.normalize("dfohub.eth"))));

@@ -3,7 +3,26 @@ var FarmingController = function (view) {
     context.view = view;
 
     context.loadFixedInflationData = async function loadFixedInflationData() {
-        context.view.setState({fixedInflationData : null});
+        context.view.setState({ fixedInflationData: null });
+        var fixedInflationData = {};
+        var dfoCore = {
+            async loadDeployedFixedInflationContracts() {
+            },
+            deployedFixedInflationContracts: []
+        }
+        var json = await window.blockchainCall(context.view.props.element.stateHolder.methods.toJSON);
+        json = JSON.parse(json.endsWith(',]') ? (json.substring(0, json.lastIndexOf(',]')) + ']') : json);
+        var deployedFixedInflationContractsExtensions = json.map(it => it.name).filter(it => it.startsWith('fixedinflation.authorized.')).map(it => window.web3.utils.toChecksumAddress(it.split('fixedinflation.authorized.').join('')));
+        for (var extensionAddress of deployedFixedInflationContractsExtensions) {
+            var extension = window.newContract(window.context.FixedInflationExtensionABI, extensionAddress);
+            var data = await window.blockchainCall(extension.methods.data);
+            dfoCore.deployedFixedInflationContracts.push({ address: data[0] });
+        }
+        context.view.setState({ fixedInflationData, dfoCore });
+    };
+
+    context.loadFixedInflationDataOld = async function loadFixedInflationDataOld() {
+        context.view.setState({ fixedInflationData: null });
         var fixedInflationData = {};
         var uniSwapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
         try {
