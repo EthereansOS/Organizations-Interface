@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 
 const Coin = (props) => {
     const { forcedImage } = props;
-    const [image, setImage] = useState(`https://assets.trustwalletapp.com/blockchains/ethereum/assets/${props.address}/logo.png`)
+    const [image, setImage] = useState(props.dfoCore.getContextElement('trustwalletImgURLTemplate').split('{0}').join(window.web3.utils.toChecksumAddress(props.address)));
     const { icons } = require('../../../data/context.json').default;
 
     var imageLink = props.address === window.voidEthereumAddress ? ethereumLogoImage : image;

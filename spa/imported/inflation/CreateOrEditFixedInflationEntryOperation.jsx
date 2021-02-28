@@ -97,7 +97,7 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
             const ammContract = await props.dfoCore.getContract(props.dfoCore.getContextElement("AMMABI"), info['amm']);
             const ammData = await ammContract.methods.data().call();
             const ethAddress = ammData[0];
-            var realInputToken = enterInETH ? ethAddress : inputToken.address;
+            var realInputToken = window.web3.utils.toChecksumAddress(enterInETH ? ethAddress : inputToken.address);
             if (amm && amm.ammContract.options.address !== ammContract.options.address) {
                 return;
             }
@@ -344,11 +344,11 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                         </div>
                     : <div />
             }
-            <div className="CreateList CreateListS">
+            {transferType && <div className="CreateList CreateListS">
                 <TokenInput label={"Path"} placeholder={"Pool Address"} onClick={(address) => onAddPathToken(address)} text={"Load"} />
-            </div>
-            {loading && <Loading />}
-            {!loading && pathTokens.map((pathToken, index) => {
+            </div>}
+            {transferType && loading && <Loading />}
+            {transferType && !loading && pathTokens.map((pathToken, index) => {
                 var realInputToken = enterInETH ? amm.ethAddress : inputToken.address;
                 var lastOutputToken = pathTokens.length === 1 ? realInputToken : pathTokens[pathTokens.length - 2].outputTokenAddress;
                 return <Fragment key={pathToken.address}>
@@ -364,7 +364,7 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                     </div>
                 </Fragment>
             })}
-            {renderExitInETH && <div className="row">
+            {transferType && renderExitInETH && <div className="row">
                 <div className="col-12">
                     <label>
                         <input name="enterInETH" type="radio" value="true" onChange={changeExitInETH} checked={exitInETH} />
