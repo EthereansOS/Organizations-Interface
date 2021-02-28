@@ -85,7 +85,7 @@ const CreateOrEditFixedInflation = (props) => {
             op.receivers = [];
             var lastPercentage = 100;
             for (i in op.oldReceivers) {
-                var address = op.oldReceivers[parseInt(i)];
+                var address = op.oldReceivers[i = parseInt(i)];
                 var percentage = 0;
                 i !== op.oldReceivers.length - 1 && (percentage = window.numberToString(parseFloat(window.fromDecimals(op.receiversPercentages[i], 18, true)) * 100));
                 lastPercentage -= percentage;
