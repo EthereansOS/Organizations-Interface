@@ -123,8 +123,8 @@ const CreateOrEditFixedInflation = (props) => {
                 receiversPercentages.pop();
                 return {
                     inputTokenAddress: operation.enterInETH && operation.amm ? operation.amm.ethAddress : operation.inputToken.address,
-                    inputTokenAmount: window.toDecimals(window.numberToString(operation.amount || parseFloat(operation.percentage) / 100), operation.transferType === 'percentage' ? "18" : operation.inputToken.decimals),
-                    inputTokenAmountIsPercentage: operation.percentage !== '',
+                    inputTokenAmount: window.toDecimals(window.numberToString(operation.transferType === 'percentage' ? (parseFloat(operation.percentage) / 100) : operation.amount), operation.transferType === 'percentage' ? "18" : operation.inputToken.decimals),
+                    inputTokenAmountIsPercentage: operation.transferType === 'percentage',
                     inputTokenAmountIsByMint: operation.inputTokenMethod === 'mint',
                     ammPlugin: operation.amm ? operation.amm.ammContract.options.address : window.voidEthereumAddress,
                     liquidityPoolAddresses: operation.pathTokens ? operation.pathTokens.map(it => it.address) : [],
