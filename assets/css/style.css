@@ -762,3 +762,127 @@ header .ChangeViewDtoW {text-decoration: none;font-size: 15px !important;}
 .switchActionMMINI {font-size: 10px; color: #616060;}
 .switchActionMMINI img {width: 10px !important;}
 .UnlockButtonPP {background-color: transparent !important;font-size: 10px;}
+
+ .DFOHosting .btn-Fantasy {border: 2px solid #4d4c4a; color: #ffffff;background-color: #4d4c4a;}
+ .DFOHosting .btn-Fantasy:hover {color: #ffffff; border-color: #4d4c4a;}
+ .DFOHosting .Footer {width: 100%; min-width: 100%; display: inline-block; text-align: center; position: fixed; bottom: 0; left: 0;}
+ .DFOHosting .Footer img {display: none;}
+ .DFOHosting .FooterP { width: 80%; margin: 20px auto 0px auto; display: inline-block; text-align: center;}
+ .DFOHosting .FooterP p {padding: 5px 5px 5px 5px; display: inline-block; width: 100%; font-size: 10px;}
+ .DFOHosting .FooterP p a {text-decoration: underline;}
+ .DFOHosting .page-container, .dapp-container {z-index: 5; position: relative;margin-bottom: 100px;}
+ .DFOHosting .card {background-color: transparent;}
+ .DFOHosting .navbar {z-index: 5;}
+ .DFOHosting .CoveExpl {width: 99%; margin: 30px auto; display: inline-block;}
+ .DFOHosting .CovDesc {width: 50%; text-align: left;display: inline-block;vertical-align: middle;}
+ .DFOHosting .CovDesc h3 {font-size: 24px; margin-bottom: 20px; display: inline-block; font-weight: bold; width: 100%;}
+ .DFOHosting .CovDesc p {font-size: 13px; margin-bottom: 10px; display: inline-block;}
+ .DFOHosting .CovLinks {margin-top: 10px; display: inline-block;}
+ .DFOHosting .CovLinks h5 {font-size: 15px; display: inline-block; font-weight: bold; width: 100%; margin-top: 20px;}
+ .DFOHosting .CovLinks a {font-size: 13px; display: inline-block; margin: 5px 5px; text-decoration: underline !important; cursor: pointer; color: #000000;}
+ .DFOHosting .ConnectBTN {display: inline-block;margin: 30px auto;text-align: center;cursor: pointer; background-image: linear-gradient(90deg, #00C0FF 0%, #FFCF00 49%, #FC4F4F 80%, #00C0FF 100%);color: #ffffff !important;text-shadow: #c0c0c0 1px 1px;text-decoration: none;cursor: auto;box-shadow: none;border: 1px solid transparent;outline: none;opacity: 1;padding: 10px 30px;border-radius: 12px;font-weight: 500;text-decoration: none;display: inline-block;animation: slidebg 10s linear infinite;}
+ .DFOHosting .Web3 {width: 80%; font-size: 15px; text-align: center;}
+ .DFOHosting .Web3 a {text-decoration: underline !important; color: #7474f7; font-weight: bold;}
+ .DFOHosting .CovAMMs {width: 30%; display: inline-block; vertical-align: middle; background-color: #5f5b53; border-radius: 8px; margin-left: 8%; padding: 20px 2%;font-weight: bold !important;box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px;}
+ .DFOHosting .CovAMMs h5 {font-size: 15px; display: inline-block; font-weight: bold; width: 100%; margin-bottom: 20px; color: #ffffff;}
+ .DFOHosting .CovAMMs a {font-size: 13px; display: inline-block; text-decoration: none !important; font-weight: bold !important; cursor: pointer; width: 100%; text-align: left;color: #ffffff !important;}
+ .DFOHosting .disclamer {font-size: 9px; color: #636363; width: 60%; text-align: center;}
+ .DFOHosting .disclamer a {text-decoration: underline !important;}
+ .DFOHosting .IndexRegularText iframe {border: 2px solid #9e6915; border-radius: 8px;}
+    @keyframes slidebg {
+       to {
+         background-position:20vw;
+       }
+     }
+     .DFOHosting .DescCov {text-align: center; width: 80%; display: inline-block; margin: 30px auto;}
+     .DFOHosting .DescCov p {font-size: 14px;}
+     .DFOHosting .DescCov h2 {text-align: center; font-size: 30px; font-weight: bold !important;}
+     .DFOHosting .DescCov h5 {text-align: center; font-size: 20px;font-weight: bold !important; margin: 10px auto;}
+     .DFOHosting .CovTITLE {margin: 20px auto; display: inline-block; width: 90%; text-align: center;}
+     .DFOHosting .CovTITLE figure {width: 40%; display: inline-block; height: auto;}
+     .DFOHosting .CovTITLE figure img {width: 100%; display: inline-block; height: auto;}
+     .DFOHosting .LogoWUSD {width: 80%; margin: 10px auto;display: inline-block;}
+     .DFOHosting .LogoWUSD img {width: 100%; display: inline-block; height: auto;}
+     .DFOHosting .xTitle {width: 100%; display: inline-block; text-align: left; font-weight: bold; margin: 0px auto 10px auto; font-size: 17px;}
+     .DFOHosting .xTitle img {margin-right: 10px; width: 35px; height: 35px;}
+     .DFOHosting .HealthContainer {width:80%; display: inline-block; margin: 10px auto 40px auto;}
+     .DFOHosting .StatsIndicator {width: 45%; padding: 4px 0% 4px 5%; height: auto; display: inline-block;}
+     .DFOHosting .StatsBro {display: inline-block; text-align: left; width: 22%; padding-left: 3%; margin-right: 10% !important;vertical-align: middle !important;}
+     .DFOHosting .StatsBroO {margin-bottom: 20px;}
+     .DFOHosting .StatsSis {width: 65%;text-align: left; display: inline-block; vertical-align: middle !important;}
+     .DFOHosting .StatsIndicator p, .StatsIndicator a {font-size: 13px;}
+     .DFOHosting .StatsIndicator h6 {font-size: 14px;}
+     .DFOHosting .StatsLink {display: inline-block; width: 90%; margin: 5px auto; text-align: center;}
+     .DFOHosting .StatsLink a {font-size: 11px; margin: 5px 5px; display: inline-block; padding: 2px 5px; border-radius: 5px; cursor: pointer;}
+     .DFOHosting .health-bar {border-radius: 8px; width: 100%;text-align: left;font-weight: bold;padding: 4px 0;font-size: 14px;}
+     .DFOHosting .health-bar aside {border-radius: 8px; text-align: center; padding: 5px 0;}
+     .DFOHosting .health-bar aside span {background-color: transparent; color: #ffffff;}
+    
+    
+     .DFOHosting .SelectRegular {width: 100%; display: inline-block; font-size: 13px; font-weight: bold; padding: 7px 2%;border: 1px solid; border-radius: 8px; background-color: transparent;max-width: 370px;}
+     .DFOHosting .QuestionRegular {width: 100%; display: inline-block; font-size: 14px; margin: 15px auto 0px auto;}
+     .DFOHosting .QuestionRegular input {display: inline-block; vertical-align: middle;}
+     .DFOHosting .QuestionRegular label {display: inline-block; margin: 0 0 0 10px; vertical-align: middle;}
+     .DFOHosting .Resultsregular {display: inline-block; margin: 10px auto; width: 100%;}
+     .DFOHosting .Resultsregular p {font-size: 16px;}
+     .DFOHosting .Resultsregular img {display: inline-block; margin: auto 5px; width: 25px; height: 25px;}
+     .DFOHosting .DisclamerRegular {width: 100%; display: inline-block; margin: 50px auto;}
+     .DFOHosting .DisclamerRegular p {display: inline-block; width: 80%; font-size: 15px;}
+     .DFOHosting .InputTokensRegular {display: inline-block; width: 80%; margin: 15px auto; max-width: 370px;}
+     .DFOHosting .InputTokensRegular p {display: inline-block; width: 80%; font-size: 15px; margin: 10px auto;}
+     .DFOHosting .InputTokenRegular {width: 100%;max-width: 370px;}
+     .DFOHosting .InputTokenRegular section {width: 100%; display: inline-block;}
+     .DFOHosting .InputTokenRegular aside {width: 100%; display: inline-block; margin-top: 3px; text-align: left;}
+     .DFOHosting .InputTokenRegular aside a {display: inline-block; padding: 2px 4px; background-color: #9e6915; color: #ffffff !important; border-radius: 8px; font-size: 10px; font-weight: bold;vertical-align: middle;}
+     .DFOHosting .InputTokenRegular aside p {display: inline-block; font-size: 12px; margin-left: 10px; vertical-align: middle; color: #5f5b53;}
+     .DFOHosting .ApproveBTN {display: inline-block; padding: 8px 17px; background-color: #9e6915; color: #ffffff; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer;}
+     .DFOHosting .ApproveBTN:hover {color: #ffffff; text-decoration: none;}
+     .DFOHosting .ApproveBTN:disabled {font-weight: normal;}
+     .DFOHosting .Web3ActionBTN {display: inline-block; padding: 8px 17px; background-color: #7474f7; color: #ffffff; border-radius: 20px; font-size: 16px; font-weight: bold; cursor: pointer;}
+     .DFOHosting  .Web3ActionBTN:hover {color: #ffffff; text-decoration: none;}
+     .DFOHosting  .Web3ActionBTN:disabled {font-weight: normal !important;}
+     .DFOHosting .Rebalance {width: 100%; display: inline-block; text-align: center;}
+     .DFOHosting .Rebalance aside {width: 45%; padding-right: 5%; display: inline-block; text-align: left;}
+     .DFOHosting .Rebalance aside h6 {font-size: 18px; margin: 10px auto; display: inline-block; width: 100%;}
+     .DFOHosting .Rebalance aside p {font-size: 11.5px; margin: 2px auto; display: inline-block; width: 100%;}
+     .DFOHosting .CreditAction {width: 45%; display: inline-block; text-align: center;}
+     .DFOHosting .grimoireBox {z-index: 20; position: relative; display: inline-block; width: 85%; margin: 5px auto; border-radius: 12px;}
+     .DFOHosting .grimoireAll {width: 100%; display: inline-block; padding: 20px 2%; text-align: center;}
+     .DFOHosting .MintBurn {width: 100%; display: inline-block;}
+     .DFOHosting .PairSelector {width: 80%; margin: 10px auto; display: inline-block; vertical-align: middle;}
+     .DFOHosting .Web3BTNs {display: inline-block; width: 80%; margin: 15px auto; max-width: 370px; text-align: center;}
+     .DFOHosting  .Web3BTNs a {margin: 5px 20px;}
+     .DFOHosting .LogoM {background-position: 0 -50px;}
+     .DFOHosting .page-container {background-image: url(./assets/images/index.jpg) !important;box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px;}
+     .DFOHosting .dapp-container {background-image: url(./assets/images/index.jpg) !important;box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px;}
+     .DFOHosting .TitleCov {color: #ffffff;}
+     .DFOHosting .fantasyMenu:hover, .fantasy .fantasyMenu {color: #ffffff;}
+     .DFOHosting .BtnConnectAfter, .fantasy .BtnConnect,.fantasy .menuIconEth, .fantasy .ChangeMod {display: none !important;}
+     .DFOHosting .IndexRegular {color: #000000;}
+     .DFOHosting .Footer img {display: block; position: absolute; bottom: 0; left: 0; min-width: 100%; width: 100%; height: auto; z-index: 1;}
+     .DFOHosting .Footer p {color: #252525; display: none;}
+     .DFOHosting .Footer p a {font-weight: bold; color: #000000 !important;}
+     .DFOHosting .FooterP p {color: #000000;}
+     .DFOHosting .FooterP p a, .penguin .disclamer a {font-weight: bold; color: #000000 !important;}
+     .DFOHosting .grimoireBox {background-color: #4d4c4a; border: 1px solid #9e6915;}
+     .DFOHosting .GrimoureContent {color: #ffffff;}
+     
+     
+     .DarkMode .DFOHosting .dapp-container {background-color: #2d2e40 !important;box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px;}
+     .DarkMode .DFOHosting .sidebar-menu-link, .penguin .nav-link, .penguin .fantasyMenu:hover, .penguin .fantasyMenu, .penguin .form-check-label, .penguin .infoList, .penguin .StatsBro, .penguin .StatsBroO, .penguin .IndexRegular, .penguin .Web3, .penguin .disclamer, .penguin .TitleCov, .penguin .xTitle, .penguin .StatsIndicator a, .penguin .QuestionRegular label,.penguin .DisclamerRegular p, .penguin .InputTokensRegular p, .penguin .Resultsregular p, .penguin .Resultsregular p, .penguin .Rebalance aside h6, .penguin .Rebalance aside p {color: #ffffff;}
+     .DarkMode .DFOHosting .custom-control-label::before, .penguin .custom-file-label, .penguin .custom-select, .penguin .custom-select:focus {transition: none; background: url("./assets/images/arrowdown.png") right 0.75rem center/15px 10px no-repeat;border-color: #9e6915 !important; box-shadow: none;}
+     .DarkMode .DFOHosting .token-filter-input {border-color: #9e6915 !important;}
+     .DarkMode .DFOHosting .wusd-pair-select, .penguin .token-filter-input {background-color: #2d2e40 !important; color: #ffffff;}
+     .DarkMode .DFOHosting .LogoM {background-position: 0 0px;}
+     .DarkMode .DFOHosting .BtnConnect {border: 1px solid #7474f7; color: #7474f7;}
+     .DarkMode .DFOHosting .BtnConnectAfter {border: 1px solid #9e6915; color: #9e6915;}
+     .DarkMode .DFOHosting .FooterP p {color: #adadad;}
+     .DarkMode .DFOHosting .FooterP p a, .penguin .disclamer a {font-weight: bold; color: #adadad !important;}
+     .DarkMode .DFOHosting .card {border: 1px solid #000000; color: #ffffff;}
+     .DarkMode .DFOHosting .StatsLink a {border: 1px solid #9e6915; color: #9e6915;text-decoration: none;}
+     .DarkMode .DFOHosting .StatsLink a:hover {color: #9e6915; text-decoration: none !important;}
+     .DarkMode .DFOHosting .nav-item-selected {border-bottom: 8px solid #7474f7;}
+     .DarkMode .DFOHosting .health-bar {background-color: #1c1c27;}
+     .DarkMode .DFOHosting .SelectRegular {border-color: #9e6915; color: #9e6915;}
+     .DarkMode .DFOHosting .input-group-text {background-color: transparent;border-top: 1px solid #9e6915; border-right: 1px solid #9e6915; border-bottom: 1px solid #9e6915; border-left: 0px solid #9e6915; color: #ffffff;}
+     .DarkMode .DFOHosting .form-control, .penguin .form-control:focus {background-color: transparent;border-top: 1px solid #9e6915; border-left: 1px solid #9e6915; border-bottom: 1px solid #9e6915; border-right: 0px solid #9e6915; color: #ffffff;}
