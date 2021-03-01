@@ -54,10 +54,10 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
         setRenderExitInETH(false);
         if (!address) return setInputToken(null);
         setLoading(true);
-        const inputTokenContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), address);
+        const inputTokenContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), props.dfoCore.web3.utils.toChecksumAddress(address));
         const symbol = address === window.voidEthereumAddress ? "ETH" : await inputTokenContract.methods.symbol().call();
         const decimals = address === window.voidEthereumAddress ? "18" : await inputTokenContract.methods.decimals().call();
-        setInputToken({ symbol, address, decimals });
+        setInputToken({ symbol, address: props.dfoCore.web3.utils.toChecksumAddress(address), decimals });
         setLoading(false);
     }
 
@@ -96,22 +96,22 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
             const info = await ammAggregator.methods.info(address).call();
             const ammContract = await props.dfoCore.getContract(props.dfoCore.getContextElement("AMMABI"), info['amm']);
             const ammData = await ammContract.methods.data().call();
-            const ethAddress = ammData[0];
-            var realInputToken = window.web3.utils.toChecksumAddress(enterInETH ? ethAddress : inputToken.address);
+            const ethAddress = props.dfoCore.web3.utils.toChecksumAddress(ammData[0]);
+            var realInputToken = props.dfoCore.web3.utils.toChecksumAddress(enterInETH ? ethAddress : inputToken.address);
             if (amm && amm.ammContract.options.address !== ammContract.options.address) {
                 return;
             }
             if (pathTokens.filter(it => it.address === address).length > 0) {
                 return;
             }
-            const lastOutputToken = pathTokens.length === 0 ? realInputToken : pathTokens[pathTokens.length - 1].outputTokenAddress;
+            const lastOutputToken = props.dfoCore.web3.utils.toChecksumAddress(pathTokens.length === 0 ? realInputToken : pathTokens[pathTokens.length - 1].outputTokenAddress);
             const lpInfo = await ammContract.methods.byLiquidityPool(address).call();
             const lpTokensAddresses = lpInfo[2];
             const symbols = [];
             let outputTokenAddress = null;
             let hasLastOutputToken = false;
             for (let i = 0; i < lpTokensAddresses.length; i++) {
-                const currentTokenAddress = lpTokensAddresses[i];
+                const currentTokenAddress = props.dfoCore.web3.utils.toChecksumAddress(lpTokensAddresses[i]);
                 outputTokenAddress = outputTokenAddress ? outputTokenAddress : currentTokenAddress !== lastOutputToken ? currentTokenAddress : null
                 if (currentTokenAddress !== window.voidEthereumAddress) {
                     const currentToken = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), currentTokenAddress);
@@ -344,22 +344,17 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                         </div>
                     : <div />
             }
-            {transferType && <div className="CreateList CreateListS">
-                <TokenInput label={"Path"} placeholder={"Pool Address"} onClick={(address) => onAddPathToken(address)} text={"Load"} />
-            </div>}
             {transferType && loading && <Loading />}
             {transferType && !loading && pathTokens.map((pathToken, index) => {
-                var realInputToken = enterInETH ? amm.ethAddress : inputToken.address;
-                var lastOutputToken = pathTokens.length === 1 ? realInputToken : pathTokens[pathTokens.length - 2].outputTokenAddress;
+                var realInputToken = props.dfoCore.web3.utils.toChecksumAddress(enterInETH ? amm.ethAddress : inputToken.address);
+                var lastOutputToken = props.dfoCore.web3.utils.toChecksumAddress(pathTokens.length === 1 ? realInputToken : pathTokens[pathTokens.length - 2].outputTokenAddress);
                 return <Fragment key={pathToken.address}>
-                    <div className="row mb-4">
-                        {pathToken && <div className="col-12">
-                            <b>{pathToken.symbol} {pathToken.symbols.map((symbol) => <span>{symbol} </span>)}</b> {index === pathTokens.length - 1 ? <button className="btn btn-sm btn-outline-danger ml-1" onClick={() => removePathTokens(index)}><b>Remove</b></button> : <div />}
-                        </div>}
-                    </div>
-                    <div className="row w-50 mb-4">
-                        <select value={pathToken.outputTokenAddress} disabled={index !== pathTokens.length - 1} onChange={e => setPathTokens(pathTokens.map((pt, i) => i === index ? { ...pt, outputTokenAddress: e.target.value } : pt))} className="custom-select wusd-pair-select">
-                            {pathToken.lpTokensAddresses.filter(it => index !== pathTokens.length - 1 ? true : it !== lastOutputToken).map(lpTokenAddress => <option value={lpTokenAddress}>{pathToken.symbols[pathToken.lpTokensAddresses.indexOf(lpTokenAddress)]}</option>)}
+                    {pathToken && <div className="PathSelected">
+                        <p>{pathToken.symbol} {pathToken.symbols.map((symbol) => <span>{symbol} </span>)}</p> {index === pathTokens.length - 1 ? <a className="backActionBTN" onClick={() => removePathTokens(index)}>x</a> : <div />}
+                    </div>}
+                    <div className="PathSelected">
+                        <select value={pathToken.outputTokenAddress} disabled={index !== pathTokens.length - 1} onChange={e => setPathTokens(pathTokens.map((pt, i) => i === index ? { ...pt, outputTokenAddress: e.target.value } : pt))} className="SelectRegular">
+                            {pathToken.lpTokensAddresses.filter(it => index !== pathTokens.length - 1 ? true : props.dfoCore.web3.utils.toChecksumAddress(it) !== lastOutputToken).map(lpTokenAddress => <option value={lpTokenAddress}>{pathToken.symbols[pathToken.lpTokensAddresses.indexOf(lpTokenAddress)]}</option>)}
                         </select>
                     </div>
                 </Fragment>
@@ -376,6 +371,11 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                     </label>
                 </div>
             </div>}
+            {transferType && <div className="CreateList CreateListS">
+                <TokenInput label={"Path"} placeholder={"Pool Address"} deleteAfterInsert={true} onClick={(address) => onAddPathToken(address)} text={"Load"} />
+                <p>Insert a Liquidity Pool address to build the path for this swap operation</p>
+            </div>}
+
             {
                 transferType ? <>
                     <h6><b>Receiver(s)</b></h6>
