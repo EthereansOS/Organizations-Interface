@@ -65,7 +65,7 @@ function ImportReact(args) {
             delete props.props;
             props.parentReactElement = this;
             props.element = this.props.element;
-            return <div className={props.className}>{React.createElement(window[elementToRender], injectGlobalProps(props))}</div>
+            return <div className={args.className}>{React.createElement(window[elementToRender], injectGlobalProps(props))}</div>
         }
     });
 }

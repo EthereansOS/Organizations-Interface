@@ -6,5 +6,6 @@ ImportReact({
         'spa/imported/shared/TokenInput.jsx',
         'spa/imported/StakingEditWrapped.jsx'
     ],
+    className : 'DappBox',
     render : 'StakingEditWrapped'
 });

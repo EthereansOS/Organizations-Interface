@@ -9,5 +9,6 @@ ImportReact({
         'spa/imported/inflation/CreateOrEditFixedInflationEntry.jsx',
         'spa/imported/inflation/CreateOrEditFixedInflationEntryOperation.jsx',
     ],
+    className : 'DappBox',
     render : 'CreateOrEditFixedInflation'
 });
