@@ -356,18 +356,17 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                     </div>
                 </Fragment>
             })}
-            {transferType && renderExitInETH && <div className="row">
-                <div className="col-12">
+            {transferType && renderExitInETH && 
+                <div className="CheckboxQuestions">
                     <label>
                         <input name="enterInETH" type="radio" value="true" onChange={changeExitInETH} checked={exitInETH} />
-                        Ethereum
+                        <span>ETH</span>
                     </label>
                     <label>
                         <input name="enterInETH" type="radio" value="false" onChange={changeExitInETH} checked={!exitInETH} />
-                        Token
+                        <span>WETH</span>
                     </label>
-                </div>
-            </div>}
+                </div>}
             {transferType && <div className="CreateList CreateListS">
                 <TokenInput label={"Path"} placeholder={"Pool Address"} deleteAfterInsert={true} onClick={(address) => onAddPathToken(address)} text={"Load"} />
                 <p>Insert a Liquidity Pool address to build the path for this swap operation</p>
@@ -384,7 +383,7 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                             if (exists) return;
                             setReceivers(receivers.concat({ address: currentReceiver, percentage: receivers.length === 0 ? 100 : 0 }));
                             setCurrentReceiver("");
-                        }} className="Web2ActionsBTN" type="button" id="button-add">+</a>
+                        }} className="Web2ActionBTN" type="button" id="button-add">+</a>
                     </div>
                     <div className="ReceiversList">
                         {
