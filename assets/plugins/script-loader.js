@@ -128,6 +128,7 @@ var ScriptLoader = function() {
             ScriptLoader.babels = ScriptLoader.babels || {};
             context.babels = context.babels || {};
             ScriptLoader.babels[script.src] = ScriptLoader.babels[script.src] || new Promise(function(ok) {
+                var location = script.src;
                 var src = script.src || 'gen_' + new Date().getTime() + '.jsx';
                 var babelTransform = function(code) {
                     var newScript = document.createElement('script')
@@ -142,6 +143,7 @@ var ScriptLoader = function() {
                     transform.map.sourcesContent[0] = transform.map.sourcesContent[0].split('<React.Fragment>').join('<>').split('</React.Fragment>').join('</>');
                     evaluation += '\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,' + window.Base64.encode(JSON.stringify(transform.map));
                     newScript.src = 'data:text/javascript;charset=utf-8,' + escape(evaluation);
+                    newScript.dataset.file = location;
                     newScript.onload = function() {
                         context.log('Loaded script "' + src + '".')
                         if (window.scriptsLoaded === undefined) {

@@ -14,11 +14,43 @@ if ('WebSocket' in window) {
         setTimeout(function() {
             var oldOnMessage = window.webSocket.onmessage;
             window.webSocket.onmessage = function onnessage(msg) {
-                if(msg.data == 'refreshcss') {
-                    return oldOnMessage(msg);
+                if(msg.data === 'connected') {
+                    return;
                 }
-                //console.log(msg);
-                oldOnMessage(msg);
+                if(msg.data == 'refreshcss') {
+                    return oldOnMessage(msg); 
+                }
+                var regex = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/`
+                var requiredScripts = [];
+                var dataFiles = $('script[data-file]');
+                dataFiles.each(function() {
+                    requiredScripts.push(this.dataset.file.split(regex).join('')); 
+                })
+                dataFiles.remove();
+                $('script[src="assets/scripts/script.js"]').remove();
+                requiredScripts.unshift('assets/scripts/script.js');
+                window.scriptsLoaded && (window.scriptsLoaded = window.scriptsLoaded.filter(it => !it.endsWith('.jsx') && it.indexOf('assets/scripts/script.js') === -1));
+                ScriptLoader.babels = {};
+                if(window.loadedModules) {
+                    Object.keys(window.loadedModules).forEach(it => {
+                        delete window[it];
+                        delete window["_" + it];
+                        delete window[it + "Controller"];
+                        delete window["_" + it + "Controller"];
+                    });
+                    window.loadedModules = {};
+                }
+                ScriptLoader.load({
+                    scripts : requiredScripts,
+                    callback : async function() {
+                        await window.loadContext();
+                        if($('.globalCatcher').length > 0) {
+                            return ReactDOM.render(React.createElement(Index), document.body);
+                        }
+                        var element = $('.DFOElement');
+                        (element.length !== 0 ? element : $('.DFOList')).findReactComponent().forceUpdate();
+                    }
+                });
             }
         }, 300);
         return window.webSocket;
