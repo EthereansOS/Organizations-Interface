@@ -89,7 +89,7 @@ const Explore = (props) => {
                         return 0;
                        }).map(({ contract, entry, operations }, i) => {
                         return (
-                            <FixedInflationComponent key={entry.name + "_" + i} className={"InflationContract"} contract={contract} entry={entry} operations={operations} showButton={true} hasBorder={true} />
+                            <FixedInflationComponent key={entry.name + "_" + i} className={"InflationContract"} contract={contract} entry={entry} operations={operations} showButton={true} hasBorder={true} edit={props.edit}/>
                         )
                     })
                 }

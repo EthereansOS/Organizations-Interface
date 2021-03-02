@@ -26,6 +26,9 @@ var FixedInflationView = React.createClass({
         this.emit('message');
         window.blockchainCall(this.props.element.dFO.methods.submit, 'fixedInflation', '0x').then(() => _this.emit('fixedInflation/refresh')).catch(e => _this.emit('message', e.message || e, 'error'));
     },
+    componentDidUpdate() {
+        this.state && this.state.edit && !this.props.edit && this.setState({edit : false});
+    },
     render() {
         var _this = this;
         var props = {};
@@ -34,11 +37,11 @@ var FixedInflationView = React.createClass({
         return (<ul className="DFOHosting DFOHostingBBBB">
             <section className="HostingCategoryTitle">
                 <h2>Inflation</h2>
-                {false && this.props.dfoCore.edit && <a href="javascript:;" onClick={() => _this.setState({edit : !(_this.state && _this.state.edit)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
+                {this.props.edit && !props.fixedInflationContractAddress && <a href="javascript:;" onClick={() => _this.setState({edit : !(_this.state && _this.state.edit)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Create</a>}
             </section>
             {(!this.state || !this.state.edit) && (!this.props || !this.props.fixedInflationData) && <LoaderMinimino/>}
-            {(!this.state || !this.state.edit) && props.dfoCore && props.dfoCore.deployedFixedInflationContracts && props.dfoCore.deployedFixedInflationContracts.length  === 0 && <h4>No Fixed inflation data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({edit: true}))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
-            {(!this.state || !this.state.edit) && props.dfoCore && React.createElement(FixedInflationViewWrapped, props)}
+            {(!this.state || !this.state.edit) && props.dfoCore && props.dfoCore.deployedFixedInflationContracts && props.dfoCore.deployedFixedInflationContracts.length  === 0 && <h4>No Fixed inflation data</h4>}
+            {(!this.state || !this.state.edit) && props.dfoCore && React.createElement(FixedInflationViewWrapped, {...props, edit : this.props.edit})}
             {this.props && this.props.edit && this.state && this.state.edit && React.createElement(FixedInflationEdit, props)}
         </ul>);
     }
