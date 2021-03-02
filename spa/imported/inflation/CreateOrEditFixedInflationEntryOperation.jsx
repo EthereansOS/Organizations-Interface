@@ -193,9 +193,6 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                 <option value="transfer">Transfer</option>
                 <option value="swap">Swap</option>
             </select>
-            <div className="row mb-4">
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quaerat animi ipsam nemo at nobis odit temporibus autem possimus quae vel, ratione numquam modi rem accusamus, veniam neque voluptates necessitatibus enim!</p>
-            </div>
             <div className="Web2ActionsBTNs">
                 <a onClick={() => {
                     setActionType("");
