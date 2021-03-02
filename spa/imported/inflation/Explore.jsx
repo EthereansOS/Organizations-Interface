@@ -60,7 +60,6 @@ const Explore = (props) => {
     }
 
     return loading ? <Loading /> : (
-        <section className="DappBox">
         <div className="MainExploration">
             {/*<div className="SortSection">
                     <select className="SelectRegular">
@@ -95,7 +94,6 @@ const Explore = (props) => {
                 }
             </div>
         </div>
-        </section>
     )
 }
 
