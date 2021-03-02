@@ -10,5 +10,6 @@ ImportReact({
         'spa/imported/inflation/ExploreInflationContract.jsx',
         'spa/imported/inflation/FixedInflationComponent.jsx',
     ],
+    className : 'DappBox',
     render : 'Explore'
 });
