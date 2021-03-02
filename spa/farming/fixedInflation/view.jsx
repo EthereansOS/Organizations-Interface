@@ -33,7 +33,7 @@ var FixedInflationView = React.createClass({
         this.state && Object.entries(this.state).forEach(entry => props[entry[0]] = entry[1]);
         return (<ul className="DFOHosting DFOHostingBBBB">
             <section className="HostingCategoryTitle">
-                <h2>Fixed Inflation</h2>
+                <h2>Inflation</h2>
                 {false && this.props.dfoCore.edit && <a href="javascript:;" onClick={() => _this.setState({edit : !(_this.state && _this.state.edit)})} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>Edit</a>}
             </section>
             {(!this.state || !this.state.edit) && (!this.props || !this.props.fixedInflationData) && <LoaderMinimino/>}
