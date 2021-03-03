@@ -45,11 +45,15 @@ if ('WebSocket' in window) {
                     scripts : requiredScripts,
                     callback : async function() {
                         await window.loadContext();
-                        if($('.globalCatcher').length > 0) {
-                            return ReactDOM.render(React.createElement(Index), document.body);
+                        try {
+                            if($('.globalCatcher').length > 0) {
+                                return ReactDOM.render(React.createElement(Index), document.body);
+                            }
+                            var element = $('.DFOElement');
+                            (element.length !== 0 ? element : $('.DFOList')).findReactComponent().forceUpdate();
+                        } catch(e) {
+                            return oldOnMessage(msg);
                         }
-                        var element = $('.DFOElement');
-                        (element.length !== 0 ? element : $('.DFOList')).findReactComponent().forceUpdate();
                     }
                 });
             }

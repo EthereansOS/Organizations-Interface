@@ -1,4 +1,4 @@
-var FixedInflationView = React.createClass({
+var _FixedInflationView = React.createClass({
     requiredScripts : [
         'spa/loaderMinimino.jsx',
         'spa/farming/fixedInflation/edit.jsx'

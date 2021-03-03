@@ -24,7 +24,7 @@ function require(name) {
         window[elementName]
     );
 }
-window.exports = {};
+window.exports = window.exports || {};
 
 function injectGlobalProps(p) {
     var props = {...p};

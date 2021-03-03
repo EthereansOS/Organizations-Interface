@@ -1,4 +1,4 @@
-var FixedInflationEdit = React.createClass({
+var _FixedInflationEdit = React.createClass({
     getInitialState() {
         var state = {
             swapCouples : [],
