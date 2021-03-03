@@ -88,13 +88,13 @@ const CreateOrEditFixedInflationEntry = (props) => {
                     <label>
                         <h5>Start Block</h5>
                         <input type="checkbox" checked={hasLastBlock} onChange={onHasLastBlockChange} />
-                        <p>The first execution of this Inflation Contract will be after this typed block. If Disabled the Contract will be available to execute by the deployment block</p>
+                        <p>The first operation of the inflation contract will become executable immediately after the preset block ends. If this function is not used, the operation will be executable immediately after the contract’s deployment block ends.</p>
                     </label>
                     {hasLastBlock && <input type="number" className="TextRegular" placeholder="Start Block" label="Start Block:" min="0" onChange={e => setLastBlock(parseInt(e.target.value))} value={lastBlock} />}
                     <label>
                         <h5>Executor Reward</h5>
                         <input type="checkbox" checked={hasCallerRewardPercentage} onChange={onHasCallerRewardPercentageChange} />
-                        <p>By activating the Executor Reward, you can set a % of reward by all of the operations for the executor of the inflation.</p>
+                        <p>Anyone can execute an operation, and a % of the tokens involved can be given as a reward.</p>
                     </label>
                     {hasCallerRewardPercentage &&
                         <div className="SpecialInputPerch">

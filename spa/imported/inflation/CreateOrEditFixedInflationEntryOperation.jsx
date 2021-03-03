@@ -228,7 +228,7 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                             {!enterInETH && <option value="mint">By mint</option>}
                             <option value="reserve">By reserve</option>
                         </select>
-                        <p>Selecting "by reserve", the input token of this operation will be received via tranfer, instead by selecting "by Mint" the input token will be minted. The logic of this action MUST be carefully coded into the Extension! more info: <a>Documentation</a></p>
+                        <p>If “by reserve” is selected, the input token will be sent from a wallet. If “by mint” is selected, it will be minted and then sent. The logic of this action must be carefully coded into the extension! To learn more, read the <a>Documentation (coming Soon)</a></p>
                     </>
             }
             <div className="Web2ActionsBTNs">
@@ -369,7 +369,7 @@ const CreateOrEditFixedInflationEntryOperation = (props) => {
                 </div>}
             {transferType && <div className="CreateList CreateListS">
                 <TokenInput label={"Path"} placeholder={"Pool Address"} deleteAfterInsert={true} onClick={(address) => onAddPathToken(address)} text={"Load"} />
-                <p>Insert a Liquidity Pool address to build the path for this swap operation</p>
+                <p>Insert the address of the Liquidity Pool where the swap operation will occur</p>
             </div>}
 
             {
