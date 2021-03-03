@@ -37,6 +37,7 @@ if ('WebSocket' in window) {
                         delete window["_" + it];
                         delete window[it + "Controller"];
                         delete window["_" + it + "Controller"];
+                        delete window.controllerPool[it];
                     });
                     window.loadedModules = {};
                 }
