@@ -1,7 +1,9 @@
 var StakingView = React.createClass({
     requiredScripts: [
         'spa/loaderMinimino.jsx',
-        'spa/farming/staking/edit.jsx'
+        'spa/farming/staking/edit.jsx',
+        'spa/farming/staking/edit_old.jsx',
+        'spa/farming/fixedInflation/viewWrapped.jsx'
     ],
     requiredModules: [
         'spa/stake',
@@ -31,6 +33,9 @@ var StakingView = React.createClass({
         });
     },
     renderStakingData(element) {
+        if(!element.old) {
+            return React.createElement(StakingViewWrapped, this.getProps());
+        }
         var _this = this;
         var lis = [];
         lis.push(...element.tiers.map(it => <li key={it.blockNumber} className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
@@ -73,11 +78,16 @@ var StakingView = React.createClass({
         </li>));
         return lis;
     },
-    render() {
-        var _this = this;
+    getProps() {
         var props = {};
         this.props && Object.entries(this.props).forEach(entry => props[entry[0]] = entry[1]);
         this.state && Object.entries(this.state).forEach(entry => props[entry[0]] = entry[1]);
+        delete props.props;
+        return props;
+    },
+    render() {
+        var _this = this;
+        var props = this.getProps();
         if (props.stakeToShow) {
             return React.createElement(props.stakeToShow.old ? StakeOld : Stake, {
                 element: props.element,
@@ -89,7 +99,8 @@ var StakingView = React.createClass({
                 <h2>Active Liquidity Mining</h2>
                 {this.props.edit && <a href="javascript:;" onClick={() => _this.setState({ edit: !(_this.state && _this.state.edit) })} className={"LinkVisualButton LinkVisualPropose LinkVisualButtonB" + (_this.state && _this.state.edit ? 'EditDFOYo Editing' : '')}>{_this.state && _this.state.edit ? 'Close' : 'New'}</a>}
             </section>
-            {this.props && this.props.edit && this.state && this.state.edit && React.createElement(StakingEdit, props)}
+            {this.props && this.props.edit && this.state && this.state.edit && props.stakingData && props.stakingData.old && React.createElement(StakingEditOld, props)}
+            {this.props && this.props.edit && this.state && this.state.edit && props.stakingData && !props.stakingData.old && React.createElement(StakingEdit, props)}
             {(!this.state || !this.state.edit) && (!this.props || !this.props.stakingData) && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.length === 0 && <h4>No Liquidity Mining data <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({ edit: true }))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.map(this.renderStakingData)}

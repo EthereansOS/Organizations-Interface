@@ -47,7 +47,7 @@ const Create = (props) => {
             setSelectedRewardToken(props.farmingContract.rewardToken);
         }
         if (currentBlockNumber === 0) {
-            props.dfoCore.getBlockNumber().then((blockNumber) => {
+            props.dfoCore.web3.eth.getBlockNumber().then((blockNumber) => {
                 setCurrentBlockNumber(blockNumber);
                 setLockedStartBlock(blockNumber);
             });

@@ -252,7 +252,7 @@ window.createWeb3 = async function createWeb3(connectionProvider) {
     web3.currentProvider.setMaxListeners && window.web3.currentProvider.setMaxListeners(0);
     web3.eth.transactionBlockTimeout = 999999999;
     web3.eth.transactionPollingTimeout = new Date().getTime();
-    web3.startBlock = (typeof connectionProvider).toLowerCase() !== 'string' && window.ethereum && window.ethereum.isMetaMask ? await window.timeoutCall(async call => call(await web3.eth.getBlockNumber())) : await web3.eth.getBlockNumber();
+    web3.startBlock = parseInt((typeof connectionProvider).toLowerCase() !== 'string' && window.ethereum && window.ethereum.isMetaMask ? await window.timeoutCall(async call => call(await web3.eth.getBlockNumber())) : await web3.eth.getBlockNumber()) - 100;
     return web3;
 };
 
@@ -1842,7 +1842,7 @@ window.loadStakingData = async function loadStakingData(element, only) {
             promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
         } else {
             var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
-            promises.push(window.setNewLiquidityMiningManagerData(element, stakingManager, blockTiers, active, only));
+            promises.push(window.setNewFarmingManagerData(element, stakingManager, blockTiers, active, only));
         }
     }
     stakingData = (await Promise.allSettled(promises)).filter(it => it !== undefined && it !== null && it.value !== undefined && it.value !== null).map(it => it.value || it);
@@ -1907,7 +1907,7 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     return stakingManagerData;
 };
 
-window.setNewLiquidityMiningManagerData = async function setNewLiquidityMiningManagerData(element, stakingManager, blockTiers, active, only) {
+window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, stakingManager, blockTiers, active, only) {
     var stakingManagerData = {
         stakingManager,
         active,
