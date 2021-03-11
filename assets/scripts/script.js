@@ -220,8 +220,8 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.uniswapV2Factory = window.newContract(window.context.uniSwapV2FactoryAbi, window.context.uniSwapV2FactoryAddress);
                 window.uniswapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress);
                 window.wethAddress = window.web3.utils.toChecksumAddress(await window.blockchainCall(window.uniswapV2Router.methods.WETH));
-                window.liquidityMiningFactory = window.newContract(window.context.LiquidityMiningFactoryABI, window.getNetworkElement("liquidityMiningFactoryAddress"));
-                window.dfoBasedLiquidityMiningExtensionFactory = window.newContract(window.context.DFOBasedLiquidityMiningExtensionFactoryABI, window.getNetworkElement("DFOBasedLiquidityMiningExtensionFactory"));
+                window.farmFactory = window.newContract(window.context.FarmFactoryABI, window.getNetworkElement("farmFactoryAddress"));
+                window.dfoBasedFarmExtensionFactory = window.newContract(window.context.DFOBasedFarmExtensionFactoryABI, window.getNetworkElement("dFOBasedFarmExtensionFactoryAddress"));
                 window.ammAggregator = window.newContract(window.context.AMMAggregatorABI, window.getNetworkElement("ammAggregatorAddress"));
                 window.list = {
                     DFO: {

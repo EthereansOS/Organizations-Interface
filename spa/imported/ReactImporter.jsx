@@ -16,6 +16,13 @@ function require(name) {
             }
         }
     }
+    if(name === 'react-router') {
+        return {
+            useParams() {
+                return {}
+            }
+        };
+    }
     var elementName = name.substring(name.lastIndexOf('/') + 1);
     return (
         elementName === 'context.json' ? { ...window.context, default : window.context } :

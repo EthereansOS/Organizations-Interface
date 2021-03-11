@@ -1,3 +1,9 @@
+/* Discussion:
+ * //discord.gg/34we8bh
+ */
+/* Description:
+ * Farming Management Functionality
+ */
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.6;
 pragma abicoder v2;
@@ -14,39 +20,10 @@ contract ProposalCode {
         return _metadataLink;
     }
 
-    function onStart(address, address) public {
+    function callOneTime(address) public {
         IMVDProxy proxy = IMVDProxy(msg.sender);
         IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
-        stateHolder.setBool(_toStateHolderKey("liquiditymining.authorized", _toString({0})), true);
-    }
-
-    function onStop(address) public {
-    }
-
-    function manageLiquidityMining(address sender, uint256, bool transfer, address erc20TokenAddress, address to, uint256 value, bool byMint) public {
-        IMVDProxy proxy = IMVDProxy(msg.sender);
-        IStateHolder stateHolder = IStateHolder(proxy.getStateHolderAddress());
-        require(stateHolder.getBool(_toStateHolderKey("liquiditymining.authorized", _toString(sender))), "Unauthorized action");
-        IERC20 token = IERC20(erc20TokenAddress);
-        if(transfer) {
-            if(byMint) {
-                uint256 lastAmount = token.balanceOf(msg.sender);
-                token.mint(value);
-                proxy.flushToWallet(erc20TokenAddress, false, 0);
-                if(lastAmount > 0) {
-                    proxy.transfer(msg.sender, lastAmount, address(token));
-                }
-            }
-            proxy.transfer(to, value, erc20TokenAddress);
-        } else {
-            if(erc20TokenAddress == address(0)) {
-                return;
-            }
-            token.transferFrom(sender, byMint ? address(this) : proxy.getMVDWalletAddress(), value);
-            if(byMint) {
-                token.burn(value);
-            }
-        }
+        stateHolder.setBool(_toStateHolderKey("farming.authorized", _toString({0})), true);
     }
 
     function _toStateHolderKey(string memory a, string memory b) private pure returns(string memory) {

@@ -7,10 +7,10 @@ ImportReact({
         'spa/imported/farm/Create.jsx',
         'spa/imported/farm/Explore.jsx',
         'spa/imported/farm/ExploreFarmingContract.jsx',
-        'spa/imported/farm/FarmingComponent.jsx',
+        'spa/imported/farm/CreateOrEditFarmingSetup.jsx',
         'spa/imported/farm/Hosted.jsx',
         'spa/imported/farm/Positions.jsx',
-        'spa/imported/farm/SetupComponent.jsx'
+        'spa/imported/farm/CreateOrEditFarmingSetups.jsx'
     ],
     getInitialState() {
         var _this = this;
