@@ -38,7 +38,7 @@ const Create = (props) => {
     const [farmingExtensionTemplateCode, setFarmingExtensionTemplateCode] = useState("");
 
     useEffect(async () => {
-        setFarmingExtensionTemplateCode(await (await fetch(FarmingExtensionTemplateLocation)).text());
+        //setFarmingExtensionTemplateCode(await (await fetch(FarmingExtensionTemplateLocation)).text());
         if (props.farmingContract?.rewardToken) {
             setSelectedRewardToken(props.farmingContract.rewardToken);
         } else if (address) {
@@ -109,6 +109,7 @@ const Create = (props) => {
             }
             console.log(data);
             setDeployData(data);
+            return data;
         } catch (error) {
             console.error(error);
             setDeployData(null);
@@ -118,6 +119,8 @@ const Create = (props) => {
     }
 
     async function deployDFO(entry) {
+        var farmingData = await initializeDeployData();
+        const encodedSetups = abi.encode(["tuple(bool,uint256,uint256,uint256,uint256,uint256,address,address,address,address,bool,uint256,uint256,uint256)[]"], [farmingData.setups]);
         var sequentialOps = [{
             name: "Generate SmartContract Proposal",
             async call(data) {
@@ -187,12 +190,12 @@ const Create = (props) => {
             name: "Deploy Farm Contract",
             description: 'New Farm Contract will be deployed.',
             async call(data) {
-                data.elaboratedEntry = elaborateEntry(data.entry);
                 var deployPayload = window.newContract(props.dfoCore.getContextElement("FarmMainABI")).methods.init(
                     data.extensionAddress,
-                    window.web3.utils.sha3("init(bool,address,address)").substring(0, 10) + window.web3.eth.abi.encodeParameters(["bool", "address", "address"], [byMint, data.element.doubleProxyAddress, window.voidEthereumAddress]).substring(2),
-                    data.elaboratedEntry,
-                    data.elaboratedEntry.operations
+                    window.web3.utils.sha3("init(bool,address,address)").substring(0, 10) + window.web3.eth.abi.encodeParameters(["bool", "address", "address"], [farmingData.byMint, data.element.doubleProxyAddress, window.voidEthereumAddress]).substring(2),
+                    window.getNetworkElement("ethItemOrchestratorAddress"),
+                    farmingData.rewardTokenAddress,
+                    encodedSetups
                 ).encodeABI();
                 var transaction = await window.blockchainCall(farmFactory.methods.deploy, deployPayload);
                 var receipt = await window.web3.eth.getTransactionReceipt(transaction.transactionHash);
@@ -486,7 +489,7 @@ const Create = (props) => {
                     onRemoveFarmingSetup={(i) => removeFarmingSetup(i)} 
                     onEditFarmingSetup={(setup, i) => editFarmingSetup(setup, i)} 
                     onCancel={() => { setFarmingSetups([]); props.updateFarmingContract(null);}} 
-                    onFinish={() => setIsDeploy(true)} 
+                    onFinish={deployDFO} 
                 />
             </div>
         )

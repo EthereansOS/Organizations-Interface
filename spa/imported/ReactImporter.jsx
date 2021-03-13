@@ -45,8 +45,7 @@ function injectGlobalProps(p) {
     };
     props.dfoCore.getContract = function getContract(abi, address) {
         return new Promise(function(ok) {
-            address && ok(window.newContract(abi, address));
-            !address && ok(window.newContract(abi));
+            ok(window.newContract(abi, address || undefined));
         });
     };
     props.dfoCore.toDecimals = function toDecimals() {
@@ -54,6 +53,9 @@ function injectGlobalProps(p) {
     }
     props.dfoCore.fromDecimals = function fromDecimals() {
         return window.toDecimals.apply(window, arguments);
+    }
+    props.dfoCore.getBlockNumber = async function getBlockNumber() {
+        return parseInt(await window.web3.eth.getBlockNumber());
     }
     return props;
 };

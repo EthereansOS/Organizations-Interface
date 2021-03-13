@@ -33,6 +33,11 @@ ImportReact({
                 var farmingSetups = _this.state.farmingSetups.map(it => it);
                 farmingSetups.splice(index, 1);
                 _this.setState({farmingSetups});
+            },
+            dfoCore : {
+                async loadDeployedFarmingContracts() {
+                    return [];
+                }
             }
         }
     },

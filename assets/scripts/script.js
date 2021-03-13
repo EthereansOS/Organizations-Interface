@@ -641,7 +641,8 @@ window.fromDecimals = function fromDecimals(n, d, noFormat) {
 window.toDecimals = function toDecimals(n, d) {
     n = (n && n.value || n);
     d = (d && d.value || d);
-    if (!n || !d) {
+    d = d || "18";
+    if (!n) {
         return "0";
     }
     var decimals = (typeof d).toLowerCase() === 'string' ? parseInt(d) : d;
@@ -1830,18 +1831,18 @@ window.loadStakingData = async function loadStakingData(element, only) {
     var promises = [];
     for (var i in json) {
         var elem = json[i];
-        if (elem.name.indexOf('liquiditymining.authorized.') === -1 && elem.name.indexOf('staking.transfer.authorized.') === -1 && elem.name.indexOf('authorizedtotransferforstaking_') === -1) {
+        if (elem.name.indexOf('farming.authorized.') === -1 && elem.name.indexOf('staking.transfer.authorized.') === -1 && elem.name.indexOf('authorizedtotransferforstaking_') === -1) {
             continue;
         }
         var active = await window.blockchainCall(element.stateHolder.methods.getBool, elem.name);
         var split = elem.name.split('.');
         split.length === 1 && (split = elem.name.split('_'));
         var liquidityMiningContractAddress = split[split.length - 1];
-        if (elem.name.indexOf('liquiditymining.authorized.') === -1) {
+        if (elem.name.indexOf('farming.authorized.') === -1) {
             var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
             promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
         } else {
-            var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
+            var stakingManager = window.newContract(window.context.FarmMainABI, liquidityMiningContractAddress);
             promises.push(window.setNewFarmingManagerData(element, stakingManager, blockTiers, active, only));
         }
     }

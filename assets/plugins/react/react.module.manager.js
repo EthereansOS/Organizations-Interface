@@ -77,7 +77,7 @@ var ReactModuleManager = function() {
                             modules: this.requiredModules,
                             scripts: this.requiredScripts,
                             callback: function() {
-                              Object.keys(window).filter(key => key.indexOf('_') === 0 && window[key.substring(1)] && !window[key].default).forEach(key => (window[key] = window[key] || {}).default = window[key.substring(1)]);
+                              Object.keys(window).filter(key => key.indexOf('_') === 0 && window[key.substring(1)] && window[key] && !window[key].default).forEach(key => (window[key] = window[key] || {}).default = window[key.substring(1)]);
                               requireCalled = 'true';
                               var _this = this;
                               this.forceUpdate(function() {
