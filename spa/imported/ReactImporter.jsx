@@ -40,8 +40,7 @@ function injectGlobalProps(p) {
     props.dfoCore.web3 = window.web3;
     props.dfoCore.networkId = window.networkId;
     props.dfoCore.getContextElement = function getContextElement(elementName) {
-        var element = window.getNetworkElement(elementName);
-        return element || window.context[elementName];
+        return window.getNetworkElement(elementName) || window.context[elementName];
     };
     props.dfoCore.getContract = function getContract(abi, address) {
         return new Promise(function(ok) {

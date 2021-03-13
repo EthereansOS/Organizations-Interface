@@ -40,7 +40,7 @@ const Create = (props) => {
     useEffect(async () => {
         //setFarmingExtensionTemplateCode(await (await fetch(FarmingExtensionTemplateLocation)).text());
         if (props.farmingContract?.rewardToken) {
-            setSelectedRewardToken(props.farmingContract.rewardToken);
+            onSelectRewardToken(props.farmingContract.rewardToken.address);
         } else if (address) {
             onSelectRewardToken(address);
         }
@@ -332,7 +332,7 @@ const Create = (props) => {
         return <div className="col-12">
             <div className="row justify-content-center mb-4">
                 <div className="col-9">
-                    <TokenInput placeholder={"Reward token"} label={"Reward token address"} onClick={(address) => onSelectRewardToken(address)} text={"Load"} />
+                    <TokenInput tokenAddress={selectedRewardToken?.address} placeholder={"Reward token"} label={"Reward token address"} onClick={onSelectRewardToken} text={"Load"} />
                 </div>
             </div>
             {
@@ -362,6 +362,7 @@ const Create = (props) => {
                 }
                 {
                     selectedRewardToken && <div className="col-12">
+                        {props.cancelEdit && <button className="btn btn-secondary" onClick={props.cancelEdit}>Cancel</button>}
                         <button className="btn btn-secondary" onClick={() => {
                             props.updateFarmingContract({ rewardToken: { ...selectedRewardToken, byMint } });
                             setDeployStep(0);

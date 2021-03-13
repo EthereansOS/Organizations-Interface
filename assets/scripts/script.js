@@ -1842,8 +1842,7 @@ window.loadStakingData = async function loadStakingData(element, only) {
             var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
             promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
         } else {
-            var stakingManager = window.newContract(window.context.FarmMainABI, liquidityMiningContractAddress);
-            promises.push(window.setNewFarmingManagerData(element, stakingManager, blockTiers, active, only));
+            promises.push(window.setNewFarmingManagerData(element, liquidityMiningContractAddress, blockTiers, active, only));
         }
     }
     stakingData = (await Promise.allSettled(promises)).filter(it => it !== undefined && it !== null && it.value !== undefined && it.value !== null).map(it => it.value || it);
@@ -1908,62 +1907,27 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     return stakingManagerData;
 };
 
-window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, stakingManager, blockTiers, active, only) {
-    var stakingManagerData = {
-        stakingManager,
+window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, farmExtensionAddress, blockTiers, active, only) {
+    var extension = window.newContract(window.context.DFOBasedFarmExtensionABI, farmExtensionAddress);
+    var contract = window.newContract(window.context.FarmMainABI, (await window.blockchainCall(extension.methods.data))[0]);
+    var farmData = {
+        extension,
+        contract,
         active,
-        blockTiers
+        blockTiers,
+        old : false
     };
-    stakingManagerData.mainToken = await window.loadTokenInfos(element.token.options.address);
-    stakingManagerData.rewardToken = stakingManagerData.mainToken;
-    try {
-        stakingManagerData.mainToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.tokenAddress));
-        stakingManagerData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(stakingManager.methods.rewardTokenAddress));
-    } catch (e) {}
-    stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
-    try {
-        stakingManagerData.endBlock = await window.blockchainCall(stakingManager.methods.endBlock);
-        if (active) {
-            var currentBlock = await window.web3.eth.getBlockNumber();
-            if (currentBlock > parseInt(stakingManagerData.endBlock)) {
-                stakingManagerData.active = false;
-            }
-        }
-    } catch (e) {}
-    if (only !== undefined && only !== null && stakingManagerData.active !== only) {
-        return;
+    farmData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(contract.methods._rewardTokenAddress));
+    farmData.setupsCount = parseInt(await window.blockchainCall(contract.methods._farmingSetupsInfoCount));
+    farmData.tiers = [];
+    for(var i = 0; i < farmData.setupsCount; i++) {
+        var setupData = await window.blockchainCall(contract.methods._setupsInfo, i);
+        var setup = {};
+        Object.entries(setupData).forEach(it => setup[it[0]] = it[1]);
+        setup.mainToken = await window.loadTokenInfos(setup.mainTokenAddress);
+        farmData.tiers.push(setup);
     }
-    var blockNumber = await window.web3.eth.getBlockNumber();
-    stakingManagerData.started = blockNumber > parseInt(stakingManagerData.startBlock);
-    stakingManagerData.terminated = stakingManagerData.endBlock && blockNumber > parseInt(stakingManagerData.endBlock);
-    stakingManagerData.running = stakingManagerData.started && !stakingManagerData.terminated;
-    var rawTiers = await window.blockchainCall(stakingManager.methods.tierData);
-    var pools = await window.blockchainCall(stakingManager.methods.tokens);
-    stakingManagerData.startBlock = await window.blockchainCall(stakingManager.methods.startBlock);
-    var pairs = await window.loadTokenInfos(pools, window.wethAddress);
-    for (var i in pairs) {
-        pairs[i].amount = await window.blockchainCall(stakingManager.methods.totalPoolAmount, i);
-    }
-    var tiers = [];
-    for (var i = 0; i < rawTiers[0].length; i++) {
-        var tier = {
-            blockNumber: rawTiers[0][i],
-            percentage: 100 * parseFloat(rawTiers[1][i]) / parseFloat(rawTiers[2][i]),
-            rewardSplitTranche: rawTiers[3][i],
-            time: window.calculateTimeTier(rawTiers[0][i]),
-            tierKey: window.getTierKey(rawTiers[0][i])
-        };
-        var stakingInfo = await window.blockchainCall(stakingManager.methods.getStakingInfo, i);
-        tier.minCap = stakingInfo[0];
-        tier.hardCap = stakingInfo[1];
-        tier.remainingToStake = stakingInfo[2];
-        tier.staked = window.web3.utils.toBN(tier.hardCap).sub(window.web3.utils.toBN(tier.remainingToStake)).toString()
-        tiers.push(tier);
-    }
-    stakingManagerData.pairs = pairs;
-    stakingManagerData.tiers = tiers;
-    stakingManagerData.old = false;
-    return stakingManagerData;
+    return farmData;
 };
 
 window.updateInfo = async function updateInfo(view, element, light) {

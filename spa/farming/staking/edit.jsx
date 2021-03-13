@@ -5,19 +5,15 @@ ImportReact({
         'spa/imported/shared/Coin.jsx',
         'spa/imported/shared/TokenInput.jsx',
         'spa/imported/farm/Create.jsx',
-        'spa/imported/farm/Explore.jsx',
-        'spa/imported/farm/ExploreFarmingContract.jsx',
         'spa/imported/farm/CreateOrEditFarmingSetup.jsx',
-        'spa/imported/farm/Hosted.jsx',
-        'spa/imported/farm/Positions.jsx',
         'spa/imported/farm/CreateOrEditFarmingSetups.jsx'
     ],
     getInitialState() {
         var _this = this;
         return {
-            farmingContract : null,
-            farmingSetups : [],
-            creationStep : 0,
+            farmingContract : _this.props.farmingContract,
+            farmingSetups : _this.props.farmingSetups,
+            creationStep : _this.props.creationStep,
             setFarmingContractStep(creationStep) {
                 _this.setState({creationStep});
             },
