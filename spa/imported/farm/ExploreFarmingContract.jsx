@@ -27,7 +27,7 @@ const ExploreFarmingContract = (props) => {
     const getContractMetadata = async () => {
         setLoading(true);
         try {
-            const lmContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('FarmMainABI'), address);
+            const lmContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('FarmMainABI'), address || props.farmingContractAddress);
             setContract(lmContract);
             const rewardTokenAddress = await lmContract.methods._rewardTokenAddress().call();
             const rewardToken = await props.dfoCore.getContract(props.dfoCore.getContextElement("ERC20ABI"), rewardTokenAddress);
@@ -80,7 +80,6 @@ const ExploreFarmingContract = (props) => {
 
     const updateSetups = async () => {
         console.log(newFarmingSetups);
-        setSetupsLoading(true);
         try {
             const newSetupsInfo = [];
             const ammAggregator = await props.dfoCore.getContract(props.dfoCore.getContextElement('AMMAggregatorABI'), props.dfoCore.getContextElement('ammAggregatorAddress'));
@@ -116,18 +115,46 @@ const ExploreFarmingContract = (props) => {
                 };
                 newSetupsInfo.push(setupInfo);
             }));
-            const gas = await extension.methods.setFarmingSetups(newSetupsInfo).estimateGas({ from: props.dfoCore.address });
-            console.log(`gas ${gas}`);
-            const result = await extension.methods.setFarmingSetups(newSetupsInfo).send({ from: props.dfoCore.address, gas });
+            await deployDFO(newSetupsInfo);
         } catch (error) {
             console.error(error);
-        } finally {
-            setSetupsLoading(false);
-            setIsAdd(false);
-            setNewFarmingSetups([]);
-            await getContractMetadata();
         }
     }
+
+    async function deployDFO(newSetupsInfo) {
+        var sequentialOps = [{
+            name: "Generate SmartContract Proposal",
+            async call(data) {
+                var extensionAddress = await window.blockchainCall(contract.methods._extension);
+                data.selectedSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.6'];
+                data.bypassFunctionalitySourceId = true;
+                data.contractName = 'ProposalCode';
+
+                data.functionalityMethodSignature = 'callOneTime(address)';
+
+                var fileName = 'FarmingSetFarmingSetupsProposal';
+
+                var code = "";
+
+                for (var i in data.newSetupsInfo) {
+                    var newSetupInfo = data.newSetupsInfo[i];
+                    var setup = newSetupInfo.info;
+                    code += `        farmingSetups[${i}] = FarmingSetupConfiguration(${newSetupInfo.add}, ${newSetupInfo.disable}, ${newSetupInfo.index}, FarmingSetupInfo(${setup.free}, ${setup.blockDuration}, ${setup.originalRewardPerBlock}, ${setup.minStakeable}, ${setup.maxStakeable}, ${setup.renewTimes}, ${window.web3.utils.toChecksumAddress(setup.ammPlugin)}, ${window.web3.utils.toChecksumAddress(setup.liquidityPoolTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.mainTokenAddress)}, ${window.voidEthereumAddress}, ${setup.involvingETH}, ${setup.penaltyFee}, 0, 0));\n`;
+                }
+                data.sourceCode = (await (await fetch(`data/${fileName}.sol`)).text()).format(data.newSetupsInfo.length, code.trim(), window.web3.utils.toChecksumAddress(extensionAddress));
+                console.log(data.sourceCode);
+            }
+        }];
+
+        var context = {
+            element: props.element,
+            sequentialOps,
+            newSetupsInfo,
+            sourceCode: 'test',
+            title: 'Edit Farming'
+        };
+        window.showProposalLoader(context);
+    };
 
 
     if (loading) {
@@ -149,22 +176,19 @@ const ExploreFarmingContract = (props) => {
             {
                 contract ? 
                 <div className="row">
-                    <FarmingComponent className="FarmContractOpen" dfoCore={props.dfoCore} contract={contract} goBack={true} hostedBy={isHost} />
+                    <FarmingComponent className="FarmContractOpen" dfoCore={props.dfoCore} contract={contract} goBack={false} hostedBy={true} />
                 </div> : <div/>
             }
-            {
-                isHost && <>
-                    { !isAdd && <button className="btn btn-primary" onClick={() => setIsAdd(true)}>Add new setups</button> }
-                </>
-            }
+            { contract && !isAdd && <a href={window.context.covenantsURL + "farm/dapp/" + contract.options.address} target="_blank" className="btn btn-primary">Stake</a> }
+            { !isAdd && <button className="btn btn-primary" onClick={() => setIsAdd(true)}>Add new setups</button> }
             <div className="ListOfThings">
-                {
+                {/*
                     (!isAdd && farmingSetups.length > 0) && farmingSetups.map((farmingSetup, setupIndex) => {
                         return (
                             <SetupComponent key={setupIndex} className="FarmSetup" setupIndex={farmingSetup.setupIndex} setupInfo={farmingSetup.setupInfo} lmContract={contract} dfoCore={props.dfoCore} setup={farmingSetup} hostedBy={isHost} hasBorder />
                         )
                     })
-                }
+                */}
                 {
                     (isAdd && !isFinished) && <CreateOrEditFarmingSetups 
                         rewardToken={token} 

@@ -4,9 +4,7 @@ ImportReact({
         'spa/imported/shared/Input.jsx',
         'spa/imported/shared/Coin.jsx',
         'spa/imported/shared/TokenInput.jsx',
-        'spa/imported/farm/Create.jsx',
-        'spa/imported/farm/CreateOrEditFarmingSetup.jsx',
-        'spa/imported/farm/CreateOrEditFarmingSetups.jsx'
+        'spa/imported/farm/Create.jsx'
     ],
     getInitialState() {
         var _this = this;

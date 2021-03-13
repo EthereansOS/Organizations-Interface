@@ -2,7 +2,16 @@ var StakingView = React.createClass({
     requiredScripts: [
         'spa/loaderMinimino.jsx',
         'spa/farming/staking/edit.jsx',
-        'spa/farming/staking/edit_old.jsx'
+        'spa/farming/staking/edit_old.jsx',
+        'spa/imported/farm/ExploreFarmingContract.jsx',
+        'spa/imported/farm/FarmingComponent.jsx',
+        'spa/imported/farm/SetupComponent.jsx',
+        'spa/imported/shared/Input.jsx',
+        'spa/imported/shared/Coin.jsx',
+        'spa/imported/shared/TokenInput.jsx',
+        'spa/imported/shared/ApproveButton.jsx',
+        'spa/imported/farm/CreateOrEditFarmingSetup.jsx',
+        'spa/imported/farm/CreateOrEditFarmingSetups.jsx'
     ],
     requiredModules: [
         'spa/stake',
@@ -35,6 +44,7 @@ var StakingView = React.createClass({
         });
     },
     renderFarmData(element) {
+        return React.createElement(ExploreFarmingContract, {...this.getProps(), farmingContractAddress : element.contract.options.address});
         var _this = this;
         return [<li className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
             <section className="TheDappInfo1 TheDappInfoYY">

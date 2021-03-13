@@ -56,6 +56,9 @@ function injectGlobalProps(p) {
     props.dfoCore.getBlockNumber = async function getBlockNumber() {
         return parseInt(await window.web3.eth.getBlockNumber());
     }
+    props.dfoCore.toFixed = async function toFixed(number) {
+        return window.numberToString(number);
+    }
     return props;
 };
 
