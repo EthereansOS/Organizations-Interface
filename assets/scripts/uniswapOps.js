@@ -409,21 +409,30 @@ ${fixedInflation.swapCouples.map((it, i) => `        stateHolder.setAddress("fix
                 from.approve(address(uniswapV2Router), 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff);
             }
         }
-        address[] memory path = new address[](2);
-        path[0] = fromAddress;
-        path[1] = stateHolder.getAddress(string(abi.encodePacked("fixedInflation.swapCouples[", iString, "].to")));
-        if(path[1] == address(0)) {
+        address toAddress = stateHolder.getAddress(string(abi.encodePacked("fixedInflation.swapCouples[", iString, "].to")));
+        if(toAddress == address(0)) {
             return;
         }
-        if(path[0] == wethAddress) {
+        if(fromAddress == wethAddress) {
+            address[] memory path = new address[](2);
+            path[0] = fromAddress;
+            path[1] = toAddress; 
             uniswapV2Router.swapExactETHForTokens{value: amount}(uniswapV2Router.getAmountsOut(amount, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
             return;
         }
         if(path[1] == wethAddress) {
+            address[] memory path = new address[](2);
+            path[0] = fromAddress;
+            path[1] = toAddress; 
             uniswapV2Router.swapExactTokensForETH(amount, uniswapV2Router.getAmountsOut(amount, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
             return;
         }
-        uniswapV2Router.swapExactTokensForTokens(amount, uniswapV2Router.getAmountsOut(amount, path)[1], path, dfoWalletAddress, block.timestamp + 1000);
+        // force swap to go through WETH
+        address[] memory path = new address[](3);
+        path[0] = fromAddress;
+        path[1] = wethAddress;
+        path[2] = toAddress;
+        uniswapV2Router.swapExactTokensForTokens(amount, uniswapV2Router.getAmountsOut(amount, path)[2], path, dfoWalletAddress, block.timestamp + 1000);
     }
 
     function _toUint256(bytes memory bs) private pure returns(uint256 x) {
