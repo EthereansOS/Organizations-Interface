@@ -1124,6 +1124,14 @@ window.sendGeneratedProposal = function sendGeneratedProposal(element, ctx, temp
     window.showProposalLoader(initialContext);
 };
 
+window.getSupportedSolidityVersion = async function getSupportedSolidityVersion() {
+    var supportedSolidityVersion = '0.7.0';
+    return [
+        supportedSolidityVersion,
+        (await window.SolidityUtilities.getCompilers()).releases[supportedSolidityVersion]
+    ]
+};
+
 window.generateAndCompileContract = async function generateAndCompileContract(sourceCode, lines, descriptions, updates, prefixedLines, postFixedLines) {
     sourceCode = JSON.parse(JSON.stringify(sourceCode));
     var bodyStart = 3;
@@ -1149,7 +1157,7 @@ window.generateAndCompileContract = async function generateAndCompileContract(so
     }
 
     var compilers = (await window.SolidityUtilities.getCompilers()).releases;
-    var version = Object.keys(compilers)[0];
+    var version = (await window.getSupportedSolidityVersion())[0]//Object.keys(compilers)[0];
     sourceCode.unshift('');
     sourceCode.unshift('pragma solidity ^' + version + ';');
 
