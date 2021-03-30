@@ -792,6 +792,10 @@ window.numberToString = function numberToString(num, locale) {
     return numStr;
 };
 
+window.formatNumber = function formatNumber(value) {
+    return parseFloat(window.numberToString(value).split(',').join(''));
+};
+
 window.onload = function() {
     Main().catch(function(e) {
         return alert(e.message || e);
@@ -1916,15 +1920,18 @@ window.setNewFarmingManagerData = async function setNewFarmingManagerData(elemen
         old : false
     };
     farmData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(contract.methods._rewardTokenAddress));
-    farmData.setupsCount = parseInt(await window.blockchainCall(contract.methods._farmingSetupsInfoCount));
-    farmData.tiers = [];
+    farmData.setups = await window.blockchainCall(contract.methods.setups);
+    farmData.setupsCount = farmData.setups.length;
+    farmData.tiers = {};
     for(var i = 0; i < farmData.setupsCount; i++) {
-        var setupData = await window.blockchainCall(contract.methods._setupsInfo, i);
+        var setupData = (await window.blockchainCall(contract.methods.setup, i))[1];
         var setup = {};
         Object.entries(setupData).forEach(it => setup[it[0]] = it[1]);
         setup.mainToken = await window.loadTokenInfos(setup.mainTokenAddress);
-        farmData.tiers.push(setup);
+        farmData.tiers[farmData.setups[i].infoIndex] = setup;
     }
+    farmData.tiers = Object.values(farmData.tiers);
+    farmData.setupsCount = farmData.tiers.length;
     return farmData;
 };
 

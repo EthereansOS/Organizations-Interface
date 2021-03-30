@@ -141,7 +141,7 @@ const Create = (props) => {
         }
     }
 
-    async function deployDFO(entry) {
+    async function deployDFO() {
         var farmingData = await initializeDeployData();
         var sequentialOps = [{
             name: "Clone Extension",

@@ -104,6 +104,12 @@ const CreateOrEditFarmingSetup = (props) => {
     }
 
     const addSetup = () => {
+        if(hasMinStakeable && window.formatNumber(minStakeable) <= 0) {
+            return;
+        }
+        if(isRenewable && window.formatNumber(renewTimes) <= 0) {
+            return;
+        }
         const setup = {
             free: selectedFarmingType === 'free',
             blockDuration,
@@ -122,11 +128,17 @@ const CreateOrEditFarmingSetup = (props) => {
         editSetup ? onEditFarmingSetup(setup, props.editSetupIndex) : onAddFarmingSetup(setup);
     }
 
+    function next() {
+        if(selectedFarmingType === 'locked' && window.formatNumber(maxStakeable) <= 0) {
+            return;
+        }
+        liquidityPoolToken && window.formatNumber(blockDuration) > 0 && window.formatNumber(rewardPerBlock) > 0 && setCurrentStep(1);
+    }
+
     const getFirstStep = () => {
         return <div className="CheckboxQuestions">
             <p className="BreefRecapB">Load the Pool you want to reward for this setup by its Ethereum address.</p>
             <TokenInput placeholder={"Liquidity pool address"} tokenAddress={(editSetup && (editSetup.liquidityPoolTokenAddress || (editSetup.liquidityPoolToken && editSetup.liquidityPoolToken.address))) || ""} onClick={onSelectLiquidityPoolToken} text={"Load"} />
-            
             {
                 loading ? <div className="row justify-content-center">
                     <div className="spinner-border text-secondary" role="status">
@@ -183,8 +195,8 @@ const CreateOrEditFarmingSetup = (props) => {
                         </>
                     }
                     <div className="Web2ActionsBTNs">
-                        <a onClick={() => onCancel()} className="backActionBTN">Back</a>
-                        <a onClick={() => setCurrentStep(1)} className="web2ActionBTN">Next</a>
+                        <a onClick={onCancel} className="backActionBTN">Back</a>
+                        <a onClick={next} className="web2ActionBTN">Next</a>
                     </div>
                 </>
             }

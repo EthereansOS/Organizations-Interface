@@ -45,30 +45,6 @@ var StakingView = React.createClass({
     },
     renderFarmData(element) {
         return React.createElement(ExploreFarmingContract, {...this.getProps(), farmAddress : element.contract.options.address});
-        var _this = this;
-        return [<li className="TheDappInfoAll TheDappInfoSub KingJulianAlwaysWatchingYou">
-            <section className="TheDappInfo1 TheDappInfoYY">
-                <section className="DFOTitleSection">
-                    <h5 className="DFOHostingTitle DFOHostingTitleTTT">Earn <img src={window.formatLink(element.rewardToken.logoUri || element.rewardToken.logoURI || element.rewardToken.logo)}></img><b>{element.rewardToken.symbol}</b></h5>
-                    <p className="DFOHostingTitle DFOHostingTitleTTT"> through {element.setupsCount} tiers</p>
-                </section>
-            </section>
-            <section className="TheDappInfo1 TheDappInfoYY">
-                <section className="DFOTitleSection">
-                    {"\u00a0"}
-                </section>
-            </section>
-            <section className="TheDappInfo1 TheDappInfoYY">
-                <section className="DFOTitleSection">
-                    <span className="DFOHostingTitleS">{"\u00a0"}</span>
-                    <h5 className="DFOHostingTitle DFOHostingTitleTTT"><b>{"\u00a0"}</b></h5>
-                    <span className="DFOHostingTitleS DFOHostingTitleG">{"\u00a0"}</span>
-                    <h5 className="DFOHostingTitle DFOHostingTitleTTT DFOHostingTitleG"><b>{"\u00a0"}</b></h5>
-                    <a href={window.context.covenantsURL + "farm/dapp/" + element.contract.options.address} target="_blank" className="LinkVisualButton LinkVisualPropose LinkVisualButtonG">&#129385; Stake</a>
-                    {this.props && this.props.edit && element.active && <a href="javascript:;" onClick={() => _this.setState({edit : true, farmingContract : element, cancelEdit : _this.cancelEdit, creationStep : null})} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Edit</a>}
-                </section>
-            </section>
-        </li>];
     },
     renderStakingData(element) {
         if (!element.old) {
@@ -141,7 +117,9 @@ var StakingView = React.createClass({
             {this.props && this.props.edit && this.state && this.state.edit && props.stakingData && !props.stakingData.old && React.createElement(StakingEdit, props)}
             {(!this.state || !this.state.edit) && (!this.props || !this.props.stakingData) && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.length === 0 && <h4>No Farming Contracts <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({ edit: true }))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
-            {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.map(this.renderStakingData)}
+            {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.length > 0 && <section className="DappBox">
+                {this.props.stakingData.map(this.renderStakingData)}
+            </section>}
             {(!this.state || !this.state.edit) && <section className="HostingCategoryTitle">
                 <h2>Farming Contracts History</h2>
                 {(!this.state || !this.state.edit) && this.props && !this.props.oldStakingData && !this.props.loadingOldStakingData && <a href="javascript:;" className="LinkVisualButton LinkVisualPropose LinkVisualButtonB" onClick={() => this.emit('staking/old')}>Redeem and manage positions from old LM contracts</a>}

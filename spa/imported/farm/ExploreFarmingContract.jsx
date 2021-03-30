@@ -13,10 +13,10 @@ const ExploreFarmingContract = (props) => {
     if (!address) {
         address = farmAddress;
     }
+    const isHost = props.edit;
     const [farmingSetups, setFarmingSetups] = useState([]);
     const [contract, setContract] = useState(null);
     const [metadata, setMetadata] = useState(null);
-    const [isHost, setIsHost] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [loading, setLoading] = useState(true);
     const [extension, setExtension] = useState(null);
@@ -32,6 +32,9 @@ const ExploreFarmingContract = (props) => {
         }
     }, []);
 
+    useEffect(() => {
+        isAdd && !isHost && setIsAdd(false);
+    });
 
     const getContractMetadata = async () => {
         setLoading(true);
@@ -47,8 +50,6 @@ const ExploreFarmingContract = (props) => {
             const extensionContract = await dfoCore.getContract(dfoCore.getContextElement('FarmExtensionABI'), extensionAddress);
             setExtension(extensionContract);
             const { host, byMint } = await extensionContract.methods.data().call();
-            const isHost = host.toLowerCase() === dfoCore.address.toLowerCase();
-            setIsHost(isHost);
             const setups = await lmContract.methods.setups().call();
             const blockNumber = await dfoCore.getBlockNumber();
             const freeSetups = [];
@@ -165,21 +166,42 @@ const ExploreFarmingContract = (props) => {
                 };
                 newSetupsInfo.push(setupInfo);
             }
-            console.log(newSetupsInfo);
-            const gas = await extension.methods.setFarmingSetups(newSetupsInfo).estimateGas({ from: dfoCore.address });
-            console.log(`gas ${gas}`);
-            const result = await extension.methods.setFarmingSetups(newSetupsInfo).send({ from: dfoCore.address, gas });
-            setTotalRewardToSend(calculatedTotalToSend);
+            await deployDFO(newSetupsInfo);
         } catch (error) {
             console.error(error);
-        } finally {
-            setSetupsLoading(false);
-            setIsAdd(false);
-            setNewFarmingSetups([]);
-            await getContractMetadata();
         }
     }
 
+    async function deployDFO(setups) {
+        var sequentialOps = [{
+            name: "Generate SmartContract Proposal",
+            async call(data) {
+                data.selectedSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.6'];
+                data.bypassFunctionalitySourceId = true;
+                data.contractName = 'ProposalCode';
+
+                data.functionalityMethodSignature = 'callOneTime(address)';
+
+                var fileName = 'FarmingSetFarmingSetupsProposal';
+                var setupsCode = '';
+                for(var i in setups) {
+                    var setup = setups[i];
+                    setupsCode = "        " + 
+                    `farmingSetups[${i}] = FarmingSetupConfiguration(${setup.add}, ${setup.disable}, ${setup.index}, FarmingSetupInfo(${setup.info.free}, ${setup.info.blockDuration}, ${setup.info.originalRewardPerBlock}, ${setup.info.minStakeable}, ${setup.info.maxStakeable}, ${setup.info.renewTimes}, ${window.web3.utils.toChecksumAddress(setup.info.ammPlugin)}, ${window.web3.utils.toChecksumAddress(setup.info.liquidityPoolTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.mainTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.ethereumAddress)}, ${setup.info.involvingETH}, ${setup.info.penaltyFee}, ${setup.info.setupsCount}, ${setup.info.lastSetupIndex}));` +
+                    "\n";
+                }
+                data.sourceCode = (await (await fetch(`data/${fileName}.sol`)).text()).format(setups.length, setupsCode.trim(), metadata.metadata.fullExtension);
+                console.log(data.sourceCode);
+            }
+        }];
+        var context = {
+            element: props.element,
+            sequentialOps,
+            sourceCode: 'test',
+            title: 'Manage Farming Setups'
+        };
+        window.showProposalLoader(context);
+    };
 
     if (loading) {
         return (<Loading/>);
@@ -204,7 +226,7 @@ const ExploreFarmingContract = (props) => {
             {
                 (contract && metadata) ?
                     <div className="row">
-                        <FarmingComponent className="FarmContractOpen" dfoCore={dfoCore} contract={metadata.contract} metadata={metadata.metadata} goBack={true} withoutBack={withoutBack} hostedBy={isHost} />
+                        <FarmingComponent className="FarmContractOpen" dfoCore={dfoCore} contract={metadata.contract} metadata={metadata.metadata} goBack={false} withoutBack={withoutBack} hostedBy={isHost} />
                     </div> : <div />
             }
             {

@@ -1,3 +1,9 @@
+/* Discussion:
+ * //discord.gg/34we8bh
+ */
+/* Description:
+ * Edit Farming Setups
+ */
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.7.6;
 pragma abicoder v2;
@@ -28,7 +34,7 @@ contract ProposalCode {
 }
 
 interface IFarmExtension {
-    function setFarmingSetups(FarmingSetupConfiguration[] memory farmingSetups) external;
+    function setFarmingSetups(FarmingSetupConfiguration[] calldata farmingSetups) external;
 }
 
 struct FarmingSetupConfiguration {
