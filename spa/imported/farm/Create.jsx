@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { Coin, Input, TokenInput } from '../../../../components/shared';
-import { setFarmingContractStep, updateFarmingContract, addFarmingSetup, removeFarmingSetup  } from '../../../../store/actions';
-import { ethers } from "ethers";
+import { setFarmingContractStep, updateFarmingContract, addFarmingSetup, removeFarmingSetup } from '../../../../store/actions';
+import { ethers } from "ethers";
 import ContractEditor from '../../../../components/editor/ContractEditor';
 import CreateOrEditFarmingSetups from './CreateOrEditFarmingSetups';
 import FarmingExtensionTemplateLocation from '../../../../data/FarmingExtensionTemplate.sol';
@@ -11,7 +11,6 @@ import { useParams } from 'react-router';
 const abi = new ethers.utils.AbiCoder();
 
 const Create = (props) => {
-
     const { address } = useParams();
     const { inputRewardToken } = props;
     // utils
@@ -37,6 +36,10 @@ const Create = (props) => {
     const [deployData, setDeployData] = useState(null);
     const [farmingExtensionTemplateCode, setFarmingExtensionTemplateCode] = useState("");
 
+    const [hasTreasuryAddress, setHasTreasuryAddress] = useState(false);
+    const [farmingContract, setFarmingContract] = useState("");
+    const [totalRewardToSend, setTotalRewardToSend] = useState(0);
+
     useEffect(async () => {
         //setFarmingExtensionTemplateCode(await (await fetch(FarmingExtensionTemplateLocation)).text());
         if (props.farmingContract?.rewardToken) {
@@ -50,6 +53,10 @@ const Create = (props) => {
             });
         }
     }, []);
+
+    useEffect(() => {
+        setByMint(false);
+    }, [selectedRewardToken]);
 
     const addFarmingSetup = (setup) => {
         setFarmingSetups(farmingSetups.concat(setup));
@@ -69,46 +76,62 @@ const Create = (props) => {
 
     const onSelectRewardToken = async (address) => {
         setLoading(true);
-        const rewardToken = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), address);
-        const symbol = await rewardToken.methods.symbol().call();
-        setSelectedRewardToken({ symbol, address });
-        setLoading(false);
+        try {
+            const rewardToken = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), address);
+            const symbol = await rewardToken.methods.symbol().call();
+            const decimals = await rewardToken.methods.decimals().call();
+            setSelectedRewardToken({ symbol, address, decimals });
+        } catch (error) {
+            console.error(error);
+            setSelectedRewardToken(null);
+        } finally {
+            setLoading(false);
+        }
     }
 
     const initializeDeployData = async () => {
         setDeployLoading(true);
         try {
-            const host = selectedHost === 'wallet' ? hostWalletAddress : hostDeployedContract;
-            const hasExtension = (selectedHost === "deployed-contract" && hostDeployedContract && !deployContract);
-            const data = { setups: [], rewardTokenAddress: selectedRewardToken.address, byMint, deployContract, host, hasExtension, extensionInitData: extensionPayload || '' };
+            const data = { setups: [], rewardTokenAddress: selectedRewardToken.address, byMint, deployContract, extensionInitData: extensionPayload || '' };
             const ammAggregator = await props.dfoCore.getContract(props.dfoCore.getContextElement('AMMAggregatorABI'), props.dfoCore.getContextElement('ammAggregatorAddress'));
+            console.log(farmingSetups);
+            var calculatedTotalToSend = "0";
             for (let i = 0; i < farmingSetups.length; i++) {
                 const setup = farmingSetups[i];
-                const isFree = !setup.maxLiquidity;
-                const result = await ammAggregator.methods.findByLiquidityPool(isFree ? setup.data.address : setup.secondaryToken.address).call();
+                calculatedTotalToSend =
+                    props.dfoCore.web3.utils.toBN(calculatedTotalToSend).add(
+                        props.dfoCore.web3.utils.toBN(window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.rewardPerBlock), selectedRewardToken.decimals)),
+                        ).mul(props.dfoCore.web3.utils.toBN(window.numberToString(setup.blockDuration)))
+                    ).toString();
+                const isFree = setup.free;
+                const result = await ammAggregator.methods.findByLiquidityPool(setup.liquidityPoolToken.address).call();
                 const { amm } = result;
+                var mainTokenAddress = isFree ? setup.liquidityPoolToken.tokens[0].address : setup.mainToken.address;
+                const mainTokenContract = await props.dfoCore.getContract(props.dfoCore.getContextElement('ERC20ABI'), mainTokenAddress);
+                const mainTokenDecimals = mainTokenAddress === window.voidEthereumAddress ? 18 : await mainTokenContract.methods.decimals().call();
 
-                const parsedSetup = 
-                [
-                    isFree,
-                    parseInt(setup.period),
-                    props.dfoCore.fromDecimals(setup.rewardPerBlock),
-                    props.dfoCore.fromDecimals(setup.minStakeable),
-                    !isFree ? props.dfoCore.fromDecimals(setup.maxLiquidity) : 0,
-                    setup.renewTimes,
-                    amm,
-                    isFree ? setup.data.address : setup.secondaryToken.address,
-                    result[2][0],
-                    props.dfoCore.voidEthereumAddress,
-                    setup.involvingEth,
-                    isFree ? 0 : props.dfoCore.fromDecimals(parseFloat(parseFloat(setup.penaltyFee) / 100).toString()),
-                    0,
-                    0
-                ];
+                const parsedSetup =
+                    [
+                        isFree,
+                        parseInt(setup.blockDuration),
+                        window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.rewardPerBlock), selectedRewardToken.decimals)),
+                        window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.minStakeable), mainTokenDecimals)),
+                        !isFree ? window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.maxStakeable)), mainTokenDecimals) : 0,
+                        setup.renewTimes,
+                        amm,
+                        setup.liquidityPoolToken.address,
+                        mainTokenAddress,
+                        props.dfoCore.voidEthereumAddress,
+                        setup.involvingEth,
+                        isFree ? 0 : props.dfoCore.fromDecimals(window.numberToString(parseFloat(setup.penaltyFee) / 100)),
+                        0,
+                        0
+                    ];
                 data.setups.push(parsedSetup)
             }
             console.log(data);
             setDeployData(data);
+            setTotalRewardToSend(calculatedTotalToSend);
             return data;
         } catch (error) {
             console.error(error);
@@ -120,62 +143,7 @@ const Create = (props) => {
 
     async function deployDFO(entry) {
         var farmingData = await initializeDeployData();
-        const encodedSetups = abi.encode(["tuple(bool,uint256,uint256,uint256,uint256,uint256,address,address,address,address,bool,uint256,uint256,uint256)[]"], [farmingData.setups]);
         var sequentialOps = [{
-            name: "Generate SmartContract Proposal",
-            async call(data) {
-                data.selectedSolidityVersion = (await window.SolidityUtilities.getCompilers()).releases['0.7.6'];
-                data.bypassFunctionalitySourceId = true;
-                data.contractName = 'ProposalCode';
-
-                data.functionalityMethodSignature = 'callOneTime(address)';
-
-                var fileName = 'FixedInflationSetEntry';
-                var newEntries = [elaborateEntry(data.entry)];
-
-                var entryCode = `FixedInflationEntry("${newEntries[0].name}", ${newEntries[0].blockInterval}, ${newEntries[0].lastBlock || 0}, ${newEntries[0].callerRewardPercentage})`;
-                var operations = "";
-                var functions = "";
-
-                for (var i in newEntries) {
-                    var entry = newEntries[i];
-                    var operationSetsIndex = `operationSets_${i}`;
-                    var line = "";
-                    for (var j in entry.operations) {
-                        var operation = entry.operations[j];
-                        line += `\n        operationSets[${j}] = _${operationSetsIndex}_${j}();`
-                    }
-                    operations += "        " + line + "\n";
-                }
-                for (var i in newEntries) {
-                    for (var j in newEntries[i].operations) {
-                        var operation = newEntries[i].operations[j];
-                        var line = `    function _operationSets_${i}_${j}() private view returns(FixedInflationOperation memory) {`
-                        line += `\n        address[] memory liquidityPoolAddresses_${i}_${j} = new address[](${operation.liquidityPoolAddresses.length});`
-                        for (var z in operation.liquidityPoolAddresses) {
-                            line += `\n        liquidityPoolAddresses_${i}_${j}[${z}] = ${web3.utils.toChecksumAddress(operation.liquidityPoolAddresses[z])};`;
-                        }
-                        line += `\n        address[] memory swapPath_${i}_${j} = new address[](${operation.swapPath.length});`
-                        for (var z in operation.swapPath) {
-                            line += `\n        swapPath_${i}_${j}[${z}] = ${web3.utils.toChecksumAddress(operation.swapPath[z])};`;
-                        }
-                        line += `\n        address[] memory receivers_${i}_${j} = new address[](${operation.receivers.length});`
-                        for (var z in operation.receivers) {
-                            line += `\n        receivers_${i}_${j}[${z}] = ${web3.utils.toChecksumAddress(operation.receivers[z])};`;
-                        }
-                        line += `\n        uint256[] memory receiversPercentages_${i}_${j} = new uint256[](${operation.receiversPercentages.length});`
-                        for (var z in operation.receiversPercentages) {
-                            line += `\n        receiversPercentages_${i}_${j}[${z}] = ${operation.receiversPercentages[z]};`;
-                        }
-                        line += `\n        return FixedInflationOperation(${web3.utils.toChecksumAddress(operation.inputTokenAddress)}, ${operation.inputTokenAmount}, ${operation.inputTokenAmountIsPercentage}, ${operation.inputTokenAmountIsByMint}, ${operation.ammPlugin}, liquidityPoolAddresses_${i}_${j}, swapPath_${i}_${j}, ${operation.enterInETH}, ${operation.exitInETH}, receivers_${i}_${j}, receiversPercentages_${i}_${j});`
-                        functions += line + "\n    }\n\n";
-                    }
-                }
-                data.sourceCode = (await (await fetch(`data/${fileName}.sol`)).text()).format(extensionAddress, entryCode.trim(), newEntries[0].operations.length, operations.trim(), functions.trim());
-                console.log(data.sourceCode);
-            }
-        }];
-        sequentialOps = props.farmContractAddress ? sequentialOps : [{
             name: "Clone Extension",
             description: "Farm Extension will comunicate with the DFO for Token and ETH transmission to the Farming Contract Contract",
             async call(data) {
@@ -195,7 +163,7 @@ const Create = (props) => {
                     window.web3.utils.sha3("init(bool,address,address)").substring(0, 10) + window.web3.eth.abi.encodeParameters(["bool", "address", "address"], [farmingData.byMint, data.element.doubleProxyAddress, window.voidEthereumAddress]).substring(2),
                     window.getNetworkElement("ethItemOrchestratorAddress"),
                     farmingData.rewardTokenAddress,
-                    encodedSetups
+                    abi.encode(["tuple(bool,uint256,uint256,uint256,uint256,uint256,address,address,address,address,bool,uint256,uint256,uint256)[]"], [farmingData.setups])
                 ).encodeABI();
                 var transaction = await window.blockchainCall(farmFactory.methods.deploy, deployPayload);
                 var receipt = await window.web3.eth.getTransactionReceipt(transaction.transactionHash);
@@ -229,7 +197,6 @@ const Create = (props) => {
         var context = {
             element: props.element,
             sequentialOps,
-            entry,
             sourceCode: 'test',
             title: (!props.fixedInflationContractAddress ? 'New' : 'Edit') + ' Farming'
         };
@@ -253,7 +220,7 @@ const Create = (props) => {
             ];
             console.log(deployData);
             const encodedSetups = abi.encode(["tuple(bool,uint256,uint256,uint256,uint256,uint256,address,address,address,address,bool,uint256,uint256,uint256)[]"], [setups]);
-            const params = [extensionAddress ? extensionAddress : hostDeployedContract, extensionPayload || extensionInitData || "0x", props.dfoCore.getContextElement("ethItemOrchestratorAddress"), rewardTokenAddress, encodedSetups || 0];
+            const params = [props.dfoCore.web3.utils.toChecksumAddress(extensionAddress ? extensionAddress : hostDeployedContract), extensionPayload || extensionInitData || "0x", props.dfoCore.getContextElement("ethItemOrchestratorAddress"), rewardTokenAddress, encodedSetups || 0];
             console.log(params)
             console.log(extensionInitData);
             console.log(extensionPayload);
@@ -261,10 +228,10 @@ const Create = (props) => {
             const payload = props.dfoCore.web3.utils.sha3(`init(${types.join(',')})`).substring(0, 10) + (props.dfoCore.web3.eth.abi.encodeParameters(types, params).substring(2));
             console.log(payload);
             const gas = await farmFactory.methods.deploy(payload).estimateGas({ from: props.dfoCore.address });
-            // const gas = 8000000;
-            console.log(gas);
             deployTransaction = await farmFactory.methods.deploy(payload).send({ from: props.dfoCore.address, gas });
-            console.log(deployTransaction);
+            deployTransaction = await props.dfoCore.web3.eth.getTransactionReceipt(deployTransaction.transactionHash);
+            var farmMainContractAddress = props.dfoCore.web3.eth.abi.decodeParameter("address", deployTransaction.logs.filter(it => it.topics[0] === props.dfoCore.web3.utils.sha3("FarmMainDeployed(address,address,bytes)"))[0].topics[1]);
+            setFarmingContract(farmMainContractAddress);
         } catch (error) {
             console.error(error);
             error = true;
@@ -301,7 +268,7 @@ const Create = (props) => {
             } else {
                 const { abi, bytecode } = deployContract;
                 const gasLimit = await new props.dfoCore.web3.eth.Contract(abi).deploy({ data: bytecode }).estimateGas({ from: props.dfoCore.address });
-                const extension = await new props.dfoCore.web3.eth.Contract(abi).deploy({ data: bytecode }).send({ from: props.dfoCore.address, gasLimit });
+                const extension = await new props.dfoCore.web3.eth.Contract(abi).deploy({ data: bytecode }).send({ from: props.dfoCore.address, gasLimit, gas: gasLimit });
                 console.log(extension.options.address);
                 setDeployData({ ...deployData, extensionAddress: extension.options.address });
             }
@@ -316,62 +283,86 @@ const Create = (props) => {
 
     function filterDeployedContract(contractData) {
         var abi = contractData.abi;
-        if(abi.filter(abiEntry => abiEntry.type === 'constructor').length > 0) {
+        if (abi.filter(abiEntry => abiEntry.type === 'constructor').length > 0) {
             return false;
         }
-        if(abi.filter(abiEntry => abiEntry.type === 'function' && abiEntry.stateMutability !== 'view' && abiEntry.stateMutability !== 'pure' && abiEntry.name === 'transferTo' && (!abiEntry.outputs || abiEntry.outputs.length === 0) && abiEntry.inputs && abiEntry.inputs.length === 1 && abiEntry.inputs[0].type === 'uint256').length === 0) {
+        if (abi.filter(abiEntry => abiEntry.type === 'function' && abiEntry.stateMutability !== 'view' && abiEntry.stateMutability !== 'pure' && abiEntry.name === 'transferTo' && (!abiEntry.outputs || abiEntry.outputs.length === 0) && abiEntry.inputs && abiEntry.inputs.length === 1 && abiEntry.inputs[0].type === 'uint256').length === 0) {
             return false;
         }
-        if(abi.filter(abiEntry => abiEntry.type === 'function' && abiEntry.stateMutability === 'payable' && abiEntry.name === 'backToYou' && (!abiEntry.outputs || abiEntry.outputs.length === 0) && abiEntry.inputs && abiEntry.inputs.length === 1 && abiEntry.inputs[0].type === 'uint256').length === 0) {
+        if (abi.filter(abiEntry => abiEntry.type === 'function' && abiEntry.stateMutability === 'payable' && abiEntry.name === 'backToYou' && (!abiEntry.outputs || abiEntry.outputs.length === 0) && abiEntry.inputs && abiEntry.inputs.length === 1 && abiEntry.inputs[0].type === 'uint256').length === 0) {
             return false;
         }
         return true;
     }
 
+    function onHasTreasuryAddress(e) {
+        setTreasuryAddress("");
+        setHasTreasuryAddress(e.target.checked);
+    }
+
+    function onTreasuryAddressChange(e) {
+        var addr = e.currentTarget.value;
+        setTreasuryAddress(window.isEthereumAddress(addr) ? addr : "");
+    }
+
+    function onHostSelection(e) {
+        setSelectedHost(e.target.value);
+        setHostWalletAddress("");
+        setHostDeployedContract("");
+        setExtensionPayload("");
+        setUseDeployedContract(false);
+        setTreasuryAddress("");
+        setHasTreasuryAddress(false);
+        setDeployContract(null);
+    }
+
+    function canDeploy() {
+        if (!selectedHost) {
+            return false;
+        }
+        if (selectedHost === 'address') {
+            if (hasTreasuryAddress && !window.isEthereumAddress(treasuryAddress)) {
+                return false;
+            }
+            return window.isEthereumAddress(hostWalletAddress);
+        }
+        if (selectedHost === 'deployedContract') {
+            if (useDeployedContract) {
+                return window.isEthereumAddress(hostDeployedContract);
+            }
+            return deployContract !== undefined && deployContract !== null && deployContract.contract !== undefined && deployContract.contract !== null;
+        }
+        return window.isEthereumAddress(hostDeployedContract);
+    }
+
     const getCreationComponent = () => {
-        return <div className="col-12">
-            <div className="row justify-content-center mb-4">
-                <div className="col-9">
-                    <TokenInput tokenAddress={selectedRewardToken?.address} placeholder={"Reward token"} label={"Reward token address"} onClick={onSelectRewardToken} text={"Load"} />
-                </div>
-            </div>
+        return <div className="CheckboxQuestions">
+            <h6>Reward token address</h6>
+            <p className="BreefRecapB">The reward token is the token chosen to reward farmers and can be one per contract.</p>
+            <TokenInput placeholder={"Reward token"} onClick={onSelectRewardToken} tokenAddress={(selectedRewardToken && selectedRewardToken.address) || ""} text={"Load"} />
             {
                 loading ? <div className="row justify-content-center">
                     <div className="spinner-border text-secondary" role="status">
                         <span className="visually-hidden"></span>
                     </div>
-                </div> : <>  
-                <div className="row mb-4">
-                    { selectedRewardToken && <div className="col-12">
-                            <Coin address={selectedRewardToken.address} /> {selectedRewardToken.symbol}    
-                        </div>
-                    }
-                </div>
-                {
-                    selectedRewardToken && <div className="col-12">
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Quaerat animi ipsam nemo at nobis odit temporibus autem possimus quae vel, ratione numquam modi rem accusamus, veniam neque voluptates necessitatibus enim!</p>
-                    </div>
-                }
-                {
-                    selectedRewardToken && <div className="form-check my-4">
-                        <input className="form-check-input" type="checkbox" value={byMint} onChange={(e) => setByMint(e.target.checked)} id="setByMint" />
-                        <label className="form-check-label" htmlFor="setByMint">
-                            By mint
-                        </label>
-                    </div>
-                }
-                {
-                    selectedRewardToken && <div className="col-12">
-                        {props.cancelEdit && <button className="btn btn-secondary" onClick={props.cancelEdit}>Cancel</button>}
-                        <button className="btn btn-secondary" onClick={() => {
+                </div> : <>
+                    {selectedRewardToken && <div className="CheckboxQuestions">
+                        <p><Coin address={selectedRewardToken.address} /> {selectedRewardToken.symbol}</p>
+                        <p className="BreefRecapB">If “by reserve” is selected, the input token will be sent from a wallet. If “by mint” is selected, it will be minted and then sent. The logic of this action must be carefully coded into the extension! To learn more, read the Documentation <a>Documentation (coming Soon)</a></p>
+                        <select value={byMint === true ? "true" : "false"} onChange={e => setByMint(e.target.value === 'true')} className="SelectRegular">
+                            <option value="">Select method</option>
+                            {/*!enterInETH &&*/ <option value="true">By mint</option>}
+                            <option value="false">By reserve</option>
+                        </select>
+                    </div>}
+                    {selectedRewardToken && <div className="Web2ActionsBTNs">
+                        <a className="web2ActionBTN" onClick={() => {
                             props.updateFarmingContract({ rewardToken: { ...selectedRewardToken, byMint } });
                             setDeployStep(0);
-                        }}>Start</button>
-                    </div>
-                }
+                        }}>Start</a>
+                    </div>}
                 </>
             }
-           
         </div>
     }
 
@@ -393,8 +384,8 @@ const Create = (props) => {
                     <h6><b>Deploy extension</b></h6>
                 </div>
                 <div className="row">
-                    <button onClick={() => setDeployStep(0)} className="btn btn-light mr-4">Back</button>
-                    <button onClick={() => deployExtension()} className="btn btn-secondary ml-4">Deploy extension</button>
+                    <a onClick={() => setDeployStep(0)} className="backActionBTN mr-4">Back</a>
+                    <a onClick={() => deployExtension()} className="Web3ActionBTN">Deploy extension</a>
                 </div>
             </div>
         } else if (deployStep === 2) {
@@ -403,7 +394,8 @@ const Create = (props) => {
                     <h6><b>Deploy Farming Contract</b></h6>
                 </div>
                 <div className="row">
-                    <button onClick={() => deploy()} className="btn btn-secondary">Deploy contract</button>
+                    <a onClick={() => setDeployStep(hostDeployedContract ? 0 : 1)} className="backActionBTN mr-4">Back</a>
+                    <a onClick={() => deploy()} className="Web3ActionBTN">Deploy contract</a>
                 </div>
             </div>
         } else if (deployStep === 3) {
@@ -415,63 +407,54 @@ const Create = (props) => {
         }
 
         return (
-            <div className="col-12">
-                <div className="row">
-                    <h6><b>Host</b></h6>
-                </div>
-                <div className="row mb-2">
-                    <p className="text-left text-small">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Omnis delectus incidunt laudantium distinctio velit reprehenderit quaerat, deserunt sint fugit ex consectetur voluptas suscipit numquam. Officiis maiores quaerat quod necessitatibus perspiciatis!</p>
-                </div>
-                <div className="row mb-4">
-                    <div className="col-12 p-0">
-                        <select className="custom-select wusd-pair-select" value={selectedHost} onChange={(e) => setSelectedHost(e.target.value)}>
-                            <option value="">Choose an host..</option>
-                            <option value="deployed-contract">Contract</option>
-                            <option value="wallet">Wallet</option>
-                        </select>
-                    </div>
-                </div>
+            <div className="CheckboxQuestions">
+                <h6>Host</h6>
+                <p className="BreefRecapB">The host is the Contract, Wallet, DAO, or DFO with permissions to manage and add new setups in this contract. The host permissions are set into the extension contract. If you choose "Standard Extension (Address, wallet)," the extension must have all of the tokens needed to fill every setup rewards. You can also program extension permissions by your Organization, DFO to mint or transfer directly from the treasury, using the DFOhub website or a custom contract (more info in the Documentation).</p>
+                <select className="SelectRegular" value={selectedHost} onChange={onHostSelection}>
+                    <option value="">Choose the host type</option>
+                    <option value="address">Standard Extension (Address, wallet)</option>
+                    <option value="deployedContract">Custom Extension (Deployed Contract)</option>
+                    <option value="fromSourceCode">Custom Extension (Deploy Contract)</option>
+                </select>
                 {
-                    selectedHost === 'wallet' ? <>
-                        <div className="row mb-2">
-                            <input type="text" className="form-control" value={hostWalletAddress || ""} onChange={(e) => setHostWalletAddress(e.target.value.toString())} placeholder={"Wallet address"} aria-label={"Wallet address"}/>
+                    selectedHost === 'address' ? <>
+                        <div className="InputTokensRegular InputRegularB">
+                            <input type="text" className="TextRegular" value={hostWalletAddress || ""} onChange={(e) => setHostWalletAddress(e.target.value.toString())} placeholder={"Wallet address"} aria-label={"Host address"} />
                         </div>
-                        <div className="row mb-4">
-                            <p className="text-left text-small">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Omnis delectus incidunt laudantium distinctio velit reprehenderit quaerat, deserunt sint fugit ex consectetur voluptas suscipit numquam. Officiis maiores quaerat quod necessitatibus perspiciatis!</p>
+                        <div className="CheckboxQuestions">
+                            <h6><input type="checkbox" checked={hasTreasuryAddress} onChange={onHasTreasuryAddress} /> External Treasury</h6>
+                            {hasTreasuryAddress && <input type="text" className="TextRegular" value={treasuryAddress || ""} onChange={onTreasuryAddressChange} placeholder={"Treasury address"} aria-label={"Treasury address"} />}
+                            <p className="BreefRecapB">[Optional] Separate the Extension to the treasury used to send tokens to the Farm contract to activate setups.</p>
                         </div>
-                        <div className="row mb-4">
-                            <h6><b>Treasury address</b></h6>
-                            <input type="text" className="form-control" value={treasuryAddress || ""} onChange={(e) => setTreasuryAddress(e.target.value.toString())} placeholder={"Treasury address"} aria-label={"Treasury address"}/>
+                    </> : selectedHost === 'fromSourceCode' ? <>
+                            <p className="BreefRecapB">Deploy a custom extension contract. In the IDE, we loaded a simple extension contract, and you can use it as a guide. Before building a custom contract, we kindly recommend reading the Covenants Documentation. Do it at your own risk.</p>
+                            <ContractEditor filterDeployedContract={filterDeployedContract} dfoCore={props.dfoCore} onContract={setDeployContract} templateCode={farmingExtensionTemplateCode} />
+                            <h6>Extension payload</h6>
+                            <div className="InputTokensRegular InputRegularB">
+                                <input type="text" className="TextRegular" value={extensionPayload || ""} onChange={(e) => setExtensionPayload(e.target.value.toString())} placeholder={"Payload"} aria-label={"Payload"} />
+                            </div>
+                    </> : selectedHost === 'deployedContract' ? <>
+                        <div className="InputTokensRegular InputRegularB">
+                            <input type="text" className="TextRegular" value={hostDeployedContract} onChange={(e) => setHostDeployedContract(e.target.value.toString())} placeholder="Insert extension address" aria-label={"Deployed contract address"} />
                         </div>
-                    </> : selectedHost === 'deployed-contract' ? <>
-                        <div className="form-check my-4">
-                            <input className="form-check-input" type="checkbox" value={useDeployedContract} onChange={(e) => setUseDeployedContract(e.target.checked)} id="setIsDeploy" />
-                            <label className="form-check-label" htmlFor="setIsDeploy">
-                                Use deployed contract
-                            </label>
+                        <h6>[Optional] Extension payload</h6>
+                        <div className="InputTokensRegular InputRegularB">
+                            <input type="text" className="TextRegular" value={extensionPayload || ""} onChange={(e) => setExtensionPayload(e.target.value.toString())} placeholder={"Payload"} aria-label={"Payload"} />
                         </div>
-                        {
-                            !useDeployedContract ? <ContractEditor filterDeployedContract={filterDeployedContract} dfoCore={props.dfoCore} onContract={setDeployContract} templateCode={farmingExtensionTemplateCode} /> : <>
-                                <div className="row mb-2">
-                                    <input type="text" className="form-control" value={hostDeployedContract} onChange={(e) => setHostDeployedContract(e.target.value.toString())} placeholder={"Deployed contract address"} aria-label={"Deployed contract address"}/>
-                                </div>
-                            </>
-                        }
-                    </> : <div/>
+                    </> : <></>
                 }
-                <div>
-                    <h6><b>Extension payload</b></h6>
-                    <input type="text" className="form-control" value={extensionPayload || ""} onChange={(e) => setExtensionPayload(e.target.value.toString())} placeholder={"Payload"} aria-label={"Payload"}/>
-                </div>
-                <div className="row justify-content-center my-4">
-                    <button onClick={() => {
+                <div className="Web2ActionsBTNs">
+                    <a onClick={() => {
                         setSelectedHost(null);
                         setIsDeploy(false);
-                    } } className="btn btn-light mr-4">Back</button>
-                    <button onClick={() => {
+                    }} className="backActionBTN">Back</a>
+                    <a onClick={() => {
+                        if (!canDeploy()) {
+                            return;
+                        }
                         initializeDeployData();
-                        setDeployStep((selectedHost === 'deployed-contract' && hostDeployedContract && !deployContract) ? 2 : 1);
-                    }} className="btn btn-secondary ml-4" /*disabled={!selectedHost || (selectedHost === 'wallet' && (!hostWalletAddress || !isValidAddress(hostWalletAddress))) || (selectedHost === 'deployed-contract' && ((!useDeployedContract && (!deployContract || !deployContract.contract)) || (useDeployedContract && !hostDeployedContract)))}*/>Deploy</button>
+                        setDeployStep(hostDeployedContract ? 2 : 1);
+                    }} className="web2ActionBTN" disabled={!canDeploy()}>Deploy</a>
                 </div>
             </div>
         )
@@ -483,35 +466,44 @@ const Create = (props) => {
                 <div className="row flex-column align-items-start mb-4">
                     <h5 className="text-secondary"><b>Farm {props.farmingContract.rewardToken.symbol}</b></h5>
                 </div>
-                <CreateOrEditFarmingSetups 
-                    rewardToken={selectedRewardToken} 
-                    farmingSetups={farmingSetups} 
-                    onAddFarmingSetup={(setup) => addFarmingSetup(setup)} 
-                    onRemoveFarmingSetup={(i) => removeFarmingSetup(i)} 
-                    onEditFarmingSetup={(setup, i) => editFarmingSetup(setup, i)} 
-                    onCancel={() => { setFarmingSetups([]); props.updateFarmingContract(null);}} 
+                <CreateOrEditFarmingSetups
+                    rewardToken={selectedRewardToken}
+                    farmingSetups={farmingSetups}
+                    onAddFarmingSetup={addFarmingSetup}
+                    onRemoveFarmingSetup={removeFarmingSetup}
+                    onEditFarmingSetup={editFarmingSetup}
+                    onCancel={() => { props.updateFarmingContract(null); }}
                     onFinish={deployDFO} 
                 />
             </div>
         )
     }
 
+    if (farmingContract) {
+        return (
+            <div>
+                <h3>Farming Contract Deployed!</h3>
+                <p>The contract address is <a href={props.dfoCore.getContextElement("etherscanURL") + "address/" + farmingContract} target="_blank">{farmingContract}</a></p>
+                <p>To activate all the setups you created, {byMint ? "be sure to grant the permission to mint at least" : "you must send"} <b>{window.fromDecimals(totalRewardToSend, selectedRewardToken.decimals, true)}</b> {selectedRewardToken.symbol} <Coin address={selectedRewardToken.address} /> {byMint ? "for the extension" : "to its extension, having address"} <a href={props.dfoCore.getContextElement("etherscanURL") + "address/" + deployData.extensionAddress} target="_blank">{deployData.extensionAddress}</a></p>
+                <p>If you need more information, copy the two addresses and check documentation.</p>
+            </div>
+        );
+    }
+
     if (isDeploy) {
         return (
             <div className="create-component">
                 <div className="row mb-4">
-                    { getDeployComponent() }
+                    {getDeployComponent()}
                 </div>
             </div>
         )
     }
 
     return (
-        <div className="create-component">
-            <div className="row mb-4">
-                { !props.farmingContract && getCreationComponent() }
-                { props.farmingContract && getFarmingContractStatus() }
-            </div>
+        <div>
+            { !props.farmingContract && getCreationComponent()}
+            { props.farmingContract && getFarmingContractStatus()}
         </div>
     )
 }
@@ -526,7 +518,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         setFarmingContractStep: (index) => dispatch(setFarmingContractStep(index)),
         updateFarmingContract: (contract) => dispatch(updateFarmingContract(contract)),
-        addFarmingSetup: (setup) => dispatch(addFarmingSetup(setup)), 
+        addFarmingSetup: (setup) => dispatch(addFarmingSetup(setup)),
         removeFarmingSetup: (index) => dispatch(removeFarmingSetup(index)),
     }
 }

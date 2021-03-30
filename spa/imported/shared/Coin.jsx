@@ -5,7 +5,7 @@ import ethereumLogoImage from '../../../assets/images/eth.png';
 import { connect } from 'react-redux';
 
 const Coin = (props) => {
-    const { forcedImage } = props;
+    const { forcedImage, height } = props;
     const [image, setImage] = useState(props.dfoCore.getContextElement('trustwalletImgURLTemplate').split('{0}').join(window.web3.utils.toChecksumAddress(props.address)));
     const { icons } = require('../../../data/context.json').default;
 
@@ -25,7 +25,7 @@ const Coin = (props) => {
         }
     }
 
-    return <img className={props.className} src={forcedImage || imageLink} onError={(e) => onImageError()} />
+    return <img className={props.className} height={height || 24} src={forcedImage || imageLink} onError={(e) => onImageError()} />
 }
 
 Coin.propTypes = {

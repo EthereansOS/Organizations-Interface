@@ -53,11 +53,11 @@ function injectGlobalProps(p) {
     props.dfoCore.fromDecimals = function fromDecimals() {
         return window.toDecimals.apply(window, arguments);
     }
+    props.dfoCore.toFixed = function toFixed(number) {
+        return window.numberToString(number);
+    }
     props.dfoCore.getBlockNumber = async function getBlockNumber() {
         return parseInt(await window.web3.eth.getBlockNumber());
-    }
-    props.dfoCore.toFixed = async function toFixed(number) {
-        return window.numberToString(number);
     }
     return props;
 };

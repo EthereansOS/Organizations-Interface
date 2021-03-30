@@ -6,12 +6,14 @@ const TokenInput = (props) => {
     const [tokenAddress, setTokenAddress] = useState(props.tokenAddress || "");
 
     function onClickLocal() {
+        if (!tokenAddress) return;
         onClick(tokenAddress);
         props.deleteAfterInsert && setTokenAddress('');
     }
 
     return (
         <div className="LoadInput">
+            { label && <h6><b>{label}</b></h6> }
             <input type="text" className="TextRegular" value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value)} placeholder={placeholder} aria-label={placeholder}/>
             <a className="web2ActionBTN" onClick={onClickLocal}>{text}</a>
         </div>

@@ -1822,7 +1822,7 @@ function getPage() {
     return location;
 };
 
-window.loadStakingData = async function loadStakingData(element, only) {
+window.loadStakingData = async function loadStakingData(element, old) {
     var blockTiers = {};
     Object.keys(window.context.blockTiers).splice(2, Object.keys(window.context.blockTiers).length).forEach(it => blockTiers[it] = window.context.blockTiers[it]);
     var json = await window.blockchainCall(element.stateHolder.methods.toJSON);
@@ -1839,17 +1839,18 @@ window.loadStakingData = async function loadStakingData(element, only) {
         split.length === 1 && (split = elem.name.split('_'));
         var liquidityMiningContractAddress = split[split.length - 1];
         if (elem.name.indexOf('farming.authorized.') === -1) {
-            var stakingManager = window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress);
-            promises.push(window.setStakingManagerData(element, stakingManager, blockTiers, active, only));
+            if(!old) {
+                promises.push(window.setStakingManagerData(element, window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress), blockTiers, active));
+            }
         } else {
-            promises.push(window.setNewFarmingManagerData(element, liquidityMiningContractAddress, blockTiers, active, only));
+            promises.push(window.setNewFarmingManagerData(element, liquidityMiningContractAddress, blockTiers, active));
         }
     }
     stakingData = (await Promise.allSettled(promises)).filter(it => it !== undefined && it !== null && it.value !== undefined && it.value !== null).map(it => it.value || it);
     return { stakingData, blockTiers };
 };
 
-window.setStakingManagerData = async function setStakingManagerData(element, stakingManager, blockTiers, active, only) {
+window.setStakingManagerData = async function setStakingManagerData(element, stakingManager, blockTiers, active) {
     var stakingManagerData = {
         stakingManager,
         active,
@@ -1871,9 +1872,6 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
             }
         }
     } catch (e) {}
-    if (only !== undefined && only !== null && stakingManagerData.active !== only) {
-        return;
-    }
     var blockNumber = await window.web3.eth.getBlockNumber();
     stakingManagerData.started = blockNumber > parseInt(stakingManagerData.startBlock);
     stakingManagerData.terminated = stakingManagerData.endBlock && blockNumber > parseInt(stakingManagerData.endBlock);
@@ -1907,7 +1905,7 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     return stakingManagerData;
 };
 
-window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, farmExtensionAddress, blockTiers, active, only) {
+window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, farmExtensionAddress, blockTiers, active) {
     var extension = window.newContract(window.context.DFOBasedFarmExtensionABI, farmExtensionAddress);
     var contract = window.newContract(window.context.FarmMainABI, (await window.blockchainCall(extension.methods.data))[0]);
     var farmData = {

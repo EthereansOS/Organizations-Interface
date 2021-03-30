@@ -43,7 +43,7 @@ const Positions = (props) => {
                     {
                         farmingSetups.length > 0 && farmingSetups.map((farmingSetup) => {
                             return (
-                                <SetupComponent className="FarmSetup" setupIndex={farmingSetup.setupIndex} setupInfo={farmingSetup.setupInfo} lmContract={farmingSetup.contract} dfoCore={props.dfoCore} setup={farmingSetup} hasBorder />
+                                <SetupComponent className="FarmSetup" setupIndex={farmingSetup.setupIndex} setupInfo={farmingSetup.setupInfo} key={`${farmingSetup.contract.options.address}-${farmingSetup.setupInfo}`} lmContract={farmingSetup.contract} dfoCore={props.dfoCore} setup={farmingSetup} hasBorder />
                             )
                         })
                     }
