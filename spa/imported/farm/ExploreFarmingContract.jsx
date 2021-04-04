@@ -234,8 +234,8 @@ const ExploreFarmingContract = (props) => {
                     { !isAdd && <button className="btn btn-primary" onClick={() => setIsAdd(true)}>Add new setups</button>}
                 </>
             }
-            {false && <div className="ListOfThings">
-                {
+            {isAdd && <div className="ListOfThings">
+                {false && 
                     (!isAdd && farmingSetups.length > 0) && <div>
                         {freeSetups.length > 0 && <h3>Free setups</h3>}
                         {

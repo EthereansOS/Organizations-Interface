@@ -44,7 +44,9 @@ var StakingView = React.createClass({
         });
     },
     renderFarmData(element) {
-        return React.createElement(ExploreFarmingContract, {...this.getProps(), farmAddress : element.contract.options.address});
+        var props = {...this.getProps(), farmAddress : element.contract.options.address};
+        element.readonly && delete props.edit;
+        return React.createElement(ExploreFarmingContract, props);
     },
     renderStakingData(element) {
         if (!element.old) {
@@ -108,6 +110,10 @@ var StakingView = React.createClass({
                 stakingData: props.stakeToShow
             });
         }
+        var oldStakingData = (!this.state || !this.state.edit) && this.props && this.props.oldStakingData && this.props.oldStakingData;
+        var newOldStakingData = oldStakingData && oldStakingData.filter(it => !it.old);
+        newOldStakingData && newOldStakingData.forEach(it => it.readonly = true);
+        oldStakingData = oldStakingData && oldStakingData.filter(it => it.old);
         return (<ul className="DFOHosting HostingCategoryTitleYYY">
             <section className="HostingCategoryTitle">
                 <h2>Active Farming Contracts</h2>
@@ -126,7 +132,10 @@ var StakingView = React.createClass({
             </section>}
             {(!this.state || !this.state.edit) && this.props && this.props.loadingOldStakingData && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.oldStakingData && this.props.oldStakingData.length === 0 && <h4>No data</h4>}
-            {(!this.state || !this.state.edit) && this.props && this.props.oldStakingData && this.props.oldStakingData.map(this.renderStakingData)}
+            {newOldStakingData && newOldStakingData.length > 0 && <section className="DappBox">
+                {newOldStakingData.map(this.renderFarmData)}
+            </section>}
+            {oldStakingData && oldStakingData.map(this.renderStakingData)}
         </ul>);
     }
 });
