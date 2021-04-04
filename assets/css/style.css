@@ -1044,6 +1044,7 @@ a:disabled {cursor:wait !important;}
 .InputForm .Web2ActionsBTNs {width: 100%;}
 .CreateListOp {width: 100%; padding: 10px 10px; border: 1px solid #9e6915; border-radius: 12px;}
 .CreateListOp p {font-size: 15px;}
+.web2ActionBTN {text-decoration: none !important;}
 
 .dapp-container,  .DappBox {background-color: #ffffff !important;box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px;}
 .custom-control-label::before,  .custom-file-label,  .custom-select,  .custom-select:focus {transition: none; background: url("./assets/images/arrowdownblack.png") right 0.75rem center/15px 10px no-repeat;}
@@ -1075,6 +1076,49 @@ a:disabled {cursor:wait !important;}
 .FromETHPrestoDesc img {width: 15px; height: 15px;}
 .InputTokenRegularS {position: relative;}
 .InputTokenRegularS .PrestoSelector {padding: 2px 5px; position: absolute; left: -80px; top: 2px;}
+.FarmSetup .Web3ActionBTN, .FarmSetup .ApproveBTN {padding: 4px 14px;}
+.BreefExpl {font-size: 11px;margin-top: 4px;margin-bottom: 5px;}
+.BreefRecap {font-size: 12px;margin-top: 4px;margin-bottom: 5px;}
+.BreefRecapB {font-size: 13px !important;margin: 15px auto; max-width: 500px; display: block;}
+.Web3ActionBTN .spinner-border,  .Web3ActionBTN .spinner-border-sm, .ApproveBTN .spinner-border, .ApproveBTN .spinner-border-sm {color: #ffffff !important;}
+.Tranferpos {display: inline-block; width: 80%; margin: 5px auto; text-align: center;}
+.Tranferpos input {margin: 5px auto;}
+.DiffWallet {width: 390px; display: block; margin: 10px auto; text-align: center;}
+.BetaAllert {width: 100%;display: block;margin: 20px auto;text-align: center;padding: 10px;color: #ffffff;background-color: #7474f7;border-radius: 12px;}
+.MetamaskAddButton {color: #7474f7; border-radius: 8px; border: 1px solid #7474f7;padding: 2px 8px;font-size: 12px; margin-left: 5px; text-decoration: none !important;}
+.MetamaskAddButton:hover {color: #7474f7; border-radius: 8px; border: 1px solid #7474f7;padding: 2px 8px;font-size: 12px; margin-left: 5px; text-decoration: none !important;}
+.UnlockInfo {font-size: 14px !important;width: 90% !important;display: block !important;}
+.UnlockInfoBal {font-size: 12px !important;width: 90% !important;}
+.UnlockDiv, .Tranferpos {padding: 10px 8px; border: 1px solid #9e6915; border-radius: 12px;}
+.Web3ActionBTNV {display: inline-block; margin: 10px auto;}
+.BalanceImputPRCD {font-size: 13px; margin-left: 5px;}
+.BLKEMD {text-decoration: underline !important;}
+.hiddenLink {text-decoration: underline; font-size: 12px; color: #50555C; display: block; margin: 5px auto;}
+.hiddenLink:hover {color: #50555C;}
+.TokenSelectedB {padding: 10px; border: 1px solid #7474f7; display: inline-block;width: auto;border-radius: 12px;}
+
+.PrestoSelector {padding: 5px; margin: 2px 3px; border-radius: 8px; border: 1px solid #9e6915;}
+.PrestoSelector span {font-size: 14px; margin: auto 5px auto auto; display: inline-block; vertical-align: middle;}
+.FromETHPrestoDesc {width: 100%;}
+.FromETHPrestoDesc p {width: 100%;font-size: 12px;}
+.FromETHPrestoDesc img {width: 15px; height: 15px;}
+.InputTokenRegularS {position: relative;}
+.InputTokenRegularS .PrestoSelector {padding: 2px 5px; position: absolute; left: -80px; top: 2px;}
+.OnlyMobileVersion {display: none !important;}
+.HIDEO {display: none !important;}
+.SetupListITEM {padding: 20px; display: block; margin: 10px auto; border: 1px solid #7474F7; border-radius: 12px;}
+.SetupListITEM p {font-size: 14px;vertical-align: middle;margin-block-start: 0em;margin-block-end: 0em;margin-inline-start: 0px; margin-inline-end: 0px;margin-bottom: 0rem; text-align: left;}
+.SetupListITEMINFO {width: 62%; display: inline-block; margin-right: 8%; vertical-align: middle;}
+.SetupListITEMACTIONS {width: 30%;display: inline-block;vertical-align: middle;}
+.SetupListITEMACTIONS .web2ActionBTN {display: block; width: 100%; text-align: center; font-size: 12px; padding: 4px 6px; margin: 5px auto;}
+.youDIDit {width: 80%; display: block; margin: 5px auto;}
+.youDIDit p {font-size: 13px; text-align: left;}
+.youDIDit .SuccessText {font-size: 20px; text-align: center; margin: 10px auto;}
+.youDIDit .SuccessTextNow {font-size: 25px; text-align: center; margin: 10px auto; color: #7474F7; font-weight: bold;}
+.youDIDit .SuccessTextLink {font-size: 11px; padding: 5px 8px; border: 1px solid #9e6915; color: #ffffff !important; display: inline-block; background-color: #9e6915; border-radius: 6px;}
+.youDIDit .SuccessTextLink a {color: #ffffff !important; text-decoration: none !important; font-weight: bold;font-size: 11px;}
+.Disclamerfinish {font-size: 10px !important; text-align: left; margin: 10px auto; background-color: #7474F7; font-weight: bold; padding: 12px 20px; border-radius: 12px; color: #ffffff !important;}
+
 
 .DarkMode .DappBox h1, .DarkMode .DappBox .aside, .DarkMode .DappBox input[type="file"], .DarkMode .DappBox p, .DarkMode .DappBox h2, .DarkMode .DappBox h3, .DarkMode .DappBox h4, .DarkMode .DappBox h5, .DarkMode .DappBox h6, .DarkMode .DappBox label, .DarkMode .DappBox span {color: #ffffff;}
 .DarkMode .DappBox .dapp-container, .DarkMode .DappBox  {background-color: #2d2e40 !important;box-shadow: rgb(0 0 0 / 1%) 0px 0px 1px, rgb(0 0 0 / 4%) 0px 4px 8px, rgb(0 0 0 / 4%) 0px 16px 24px, rgb(0 0 0 / 1%) 0px 24px;}
