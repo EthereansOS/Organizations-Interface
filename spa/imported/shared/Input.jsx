@@ -26,10 +26,10 @@ const Input = (props) => {
         <>
             { label && <h6><b>{label}</b></h6> }
             <div className="input-group" tabIndex={0}>
-                <input disabled={props.disabled} type="number" lang="en-US" step="any" className={`form-control ${parseFloat(val) > parseFloat(balance) ? 'is-invalid' : ''}`} value={val} min={min} max={max || balance} onChange={(e) => onRealChange(e.target.value)}/>
+                <input disabled={props.disabled} type="number" lang="en-US" step="any" className={`form-control ${showBalance && parseFloat(val) > window.formatNumber(balance) ? 'is-invalid' : ''}`} value={val} min={min} max={max || balance} onChange={(e) => onRealChange(e.target.value)}/>
                 {
                     showCoin && <div className={`input-group-append`}>
-                        <span className={`input-group-text ${parseFloat(val) > parseFloat(balance) ? 'is-invalid' : ''}`} id=""><Coin address={address} forcedImage={tokenImage} /> {name}</span>
+                        <span className={`input-group-text ${showBalance && parseFloat(val) > window.formatNumber(balance) ? 'is-invalid' : ''}`} id=""><Coin address={address} forcedImage={tokenImage} /> {name}</span>
                     </div>
                 }
             </div>
@@ -38,7 +38,7 @@ const Input = (props) => {
                 showMax && 
                     <a onClick={() => onChange(onDetectedChange(0, balance))} type="button">MAX</a>
             }
-            { showBalance && <span>Balance: {window.formatMoney(balance, 2)} {name} {extra ? extra : ''}</span> }
+            { showBalance && <span className="BalanceImputPRCD">Balance: {balance.indexOf("0.00") === 0 ? balance : window.formatMoney(balance, 2)} {name} {extra ? extra : ''}</span> }
             </aside>
         </>
     )
