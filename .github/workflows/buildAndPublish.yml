@@ -11,7 +11,7 @@ jobs:
   buildAndPublish:
     runs-on: ubuntu-latest
     env:
-      working-directory: ./src/bazar-tokens-list
+      working-directory: ./bazar-tokens-list
     strategy:
       matrix:
         node-version: [12.x]
