@@ -1,0 +1,4 @@
+{
+    "blockchainConnectionString" : "https://:6468be9157664f8ca5a91164522d5daa@mainnet.infura.io/v3/c0da1c53999d422f86c606319b63b4d8",
+    "blockchainConnectionStringRopsten" : "https://:6468be9157664f8ca5a91164522d5daa@ropsten.infura.io/v3/c0da1c53999d422f86c606319b63b4d8"
+}

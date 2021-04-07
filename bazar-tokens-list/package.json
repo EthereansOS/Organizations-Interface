@@ -1,0 +1,26 @@
+{
+  "name": "bazar-tokens-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b-u-i-d-l/bazar-tokens-list.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/b-u-i-d-l/bazar-tokens-list/issues"
+  },
+  "homepage": "https://github.com/b-u-i-d-l/bazar-tokens-list#readme",
+  "dependencies": {
+    "@ethersproject/solidity": "^5.0.5",
+    "dotenv": "^8.2.0",
+    "request": "^2.88.2",
+    "solidity-create2-deployer": "^0.4.0",
+    "web3": "^1.2.11"
+  }
+}

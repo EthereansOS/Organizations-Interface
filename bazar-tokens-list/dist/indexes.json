@@ -1,0 +1,2069 @@
+{
+    "name": "indexes",
+    "keywords": [],
+    "tags": {},
+    "version": {
+        "major": 1,
+        "minor": 5,
+        "patch": 7
+    },
+    "timestamp": "2021-03-30T00:35:06.703Z",
+    "tokens": [
+        {
+            "address": "0xB4e16d0168e52d35CaCD2c6185b44281Ec28C9Dc",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xA478c2975Ab1Ea89e8196811F51A7B7Ade33eB11",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x07F068ca326a469Fc1d87d85d448990C8cBa7dF9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "RENUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAE461cA67B15dc8dc81CE7615e0320dA1A9aB8D5",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x33C2d48Bc95FB7D0199C5C693e7a9F527145a9Af",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BNTDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xBb2b8038a1640196FbE3e38816F3e67Cba72D940",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x43AE24960e5534731Fc831386c07755A2dc33D47",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "SNXETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB784CED6994c928170B417BBd052A096c6fB17E2",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NMRETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa2107FA5B38d9bbd2C461D6EDf11B11A50F6b974",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x392D008A7133544D88C6ceeb999880a8ba71Aa3e",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ANTUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xde0D948e7b1C16dBEB96db12d5a865FFA9167e60",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NMRDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xc6F348dd3B91a56D117ec0071C1e9b83C0996De4",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHZRX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9B533F1cEaa5ceb7e5b8994ef16499E47A66312D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "OXTETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8a01BA64FBc7B12ee13F817DFa862881feC531b8",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCLINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x11b1f53204d03E5529F09EB3091939e4Fd8c9CF3",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANAETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xf49C43Ae0fAf37217bDcB00DF478cF793eDd6687",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xec2D2240D02A8cf63C3fA0B7d2C5a3169a319496",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "REPETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3fd4Cf9303c4BC9E13772618828712C8EaC7Dd2F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BNTETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8Bd1661Da98EBDd3BD080F0bE4e6d9bE8cE9858c",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "RENETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x004375Dff511095CC5A197A54140a24eFEF3A416",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x231B7589426Ffe1b75405526fC32aC09D44364c4",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3041CbD36888bECc7bbCBc0045E3B1f144466f5f",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x6D4fd456eDecA58Cf53A8b586cd50754547DBDB2",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xfa19de406e8F5b9100E4dD5CaD8a503a6d686Efe",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ANTETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x88D97d199b9ED37C29D846d00D443De980832a22",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UMAETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAEF16913b6C50EBCf627a394921F306985FC8604",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "STORJETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x0d4a11d5EEaaC28EC3F61d100daF4d40471f1852",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xf421c3f2e695C2D4C0765379cCace8adE4a480D9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BANDETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xd8C8a2B125527bf97c8e4845b25dE7e964468F77",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8878Df9E1A7c87dcBf6d3999D997f262C05D8C70",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LRCETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8A4615A8A1ad94257567762C16007d02F76EDe00",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LOOMETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3e8468f66d30Fc99F745481d4B383f89861702C6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "GNOETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xE6f19dAb7d43317344282F803f8E8d240708174a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "KEEPETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xF88A988F08a5DA88B25F52710a8C665B107d0b71",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "CVCDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x20e16467A40157F3C2D83BD120a5B72748a8ecB8",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCBAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x123FcA7E8272A8E9c3bb7113C259ABc4901E792B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "CVCETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB20bd5D04BE54f870D5C0d3cA85d82b34B836405",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9d090ffD76dDfd94f49040DF91eDD6977e30e6C6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANADAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9f65DF828d21C8860ee1499dA6397D50d85E14a0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCZRX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x05556053D0966c7701201A2103dcb56CF75BdD92",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDTZRX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xDb45de0A6e52A379924A355E6c5137B95D9C3806",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NMRUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xBc4D96f5f291f2F843B448200c9e9Fe5ad741D23",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "RENLINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x15ab0333985FD1E289adF4fBBe19261454776642",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHMLN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xCFfDdeD873554F362Ac02f8Fb1f02E5ada10516f",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "COMPETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x6F81d90E771B551451382b4c8B41C86B978d3420",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCCOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7396D82C6Ed040aDC9D6428ccEc5969e282F7Ab7",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANAMLN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xf3194E22d3212A6F930a7C6A88003d43F68befAB",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAICOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5E505d55d9324506FD11B9a9a79eF176Ac52eB5E",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "KNCMLN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x942Be9e8a12cFAAF997Cd266487Eaf8553B119d2",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "COMPUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3A1B4f6Dce585eF469a5DAA73A6EB87ce13E859D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCSNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5487BB5c9f0b84875D2Fb0F0900a50A94255AFf9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "COMPSNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xCa245F22294a51Ba6b6531B78Ef98F678B682090",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "OXTSNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2d0A1c45cD6f7CDb718703d0897c877EFc9dB9F7",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "RENDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x05B1aD78501CF9B69CA6b768664E4177203eBFc1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UMAUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xA70d458A4d9Bc0e6571565faee18a48dA5c0D593",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BALETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x26A2db3eA75FCe4CC7864C69ECD3397E864764be",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCBAL",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x79CDa9b30AD6775Aa50A76dab2371dA7cb1E3710",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "KNCZRX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x6F4795E8A5669ab8d69f79fb27B46E069f6619AA",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIBAL",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xf3aCb45f9a675b98a6e7366985DD7BD1dca522c8",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LHRETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x4ecA81E80c73A3e2C3D3Be8fF483E58243E37721",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LHRUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xcA9B553d9f8cCD9D6ad546707f1EC3B9150292b1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAISNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xe5eDEef795A4Ac7eF477cB3068f5e5d12788B6Cb",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "SNXUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x0DE0Fa91b6DbaB8c8503aAA2D1DFa91a192cB149",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x08aa3763A810087fECe6A9769724de8ece26aFE0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BALUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD6cF8F60C4a556b0306D5e67c91688A805f16129",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BNTUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x248Aba53caFb77Ebe6EEfaC3b4dE8A9d0d2134EC",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDTKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa14c9AA1337F25135Ce6917464fC5f01CC3C9CA9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xb062fcBB48154FD385f104B38A2F9F3FFD82ffe0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DNTETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x543a59743FE2967553512166f739c965ecD78763",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xb0fB35Cc576034b01bED6f4D0333b1bd3859615C",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x98c6938F15cb8e12AfF2a8cA9b0a9f2fC6e20901",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIbuidl",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x73DEd57Cac2B34A07D2C598a302164637C07FA45",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3375ACcF7291dF28885822b37d872aeB9d14029d",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "SNXKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5A3Cb6B3E42C8101Cbc0AB4c35DA4f92e0Dd2586",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKSNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x22228474041f3D98ec314Eb71362b6F79971d5fB",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7808e5c594b25Fa35Cf0E5567a76f01483912513",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIZRX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAa00332c1108F1D74A76158Ab48a83ACdC17fB65",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NMRSTORJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5966338c2038c342A0bc03470BD99b670dD5d20D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BALSNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2fDbAdf3C4D5A8666Bc06645B8358ab803996E28",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x14E8A3398fB000fB0CDB0254F183b7bD424F79B8",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BNTUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xcf4A0967C6c0b0fCD416283b8664f735391a36EC",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKCOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xADa6780fD5Ff42c47D75Dadb98F3Bd07D2E90703",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "REPv2DAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8979A3Ef9D540480342AC0F56e9D4c88807b1CBa",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "REPv2ETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xdE37cD310c70e7Fa9d7eD3261515B107D5Fe1F2d",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x136ebE33c2f3992Ce2CA9bF66349264Be2c63240",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAISTORJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7a19EA3a21AE29D2793d06036b44aABAe9D6E41a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "PVYETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x770EFE350c90aEad105a5dDfbF448031F1B4F6Aa",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "COMETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xadaFB7eCC4Fa0794c7A895Da0a53b153871E59B6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "arteETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8A943B25CB57B9EeFDF45a179b90AD1cF4D95F96",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "artebuidl",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7286656F87b60e7560eF0A0e53CfA41F450eF993",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIANT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7E12f5D848F97502bBbB1a4702b42f10b9556352",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LRCUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9Db10C305c671153662119D453C4D2c123725566",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3dA1313aE46132A397D90d95B1424A9A7e3e0fCE",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xf00F7A64B170D41789C6f16a7eb680a75A050e6D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAICRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x210a97bA874a8e279C95b350aE8bA143A143C159",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3eEd0Af1c5F350C6571525D9E3EEea7d2608af81",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "CRVUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB4D8E80aF92FE7d2FB68d82B20bae6fcE73f32e4",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x04840Eaa3497E4C3934698ff88050Ceb9893f78F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UniFiETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3CB33F866e68Ef42505EFC1e30d21010dDbA8a31",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UniFiUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x294796ba2CF37912249AD9BB0D340E8DC19f8B16",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "arteUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xE6FA7f2822235591166Ac134D189F958a110c0E7",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3F98C872C281DdD053ec4c1aD1485beF64Cb5589",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD515c37b7e22db51e51Ea4d240F7a143034184f1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIBAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD8a2aa8d4bed6495F42342442DC37864779c7137",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKBAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xd89fbe528f16f7D8286B84Df7741A71F633E88f0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "bastETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xaf5a67e524158f813784E8d39b91Ec30c3A13dE1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "FARMETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x1A41827FeF88113206aa5cad5092dE4030e74854",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "FARMUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAE04041f493Abb01E59D852E2874480b7360801c",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlFARM",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x786dB68c08B06827a7aC951EcB1C9bB21134a973",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "arteFARM",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7E051b75688Ea34256DDF477423767AFA1953e24",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "FARMKEEP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x89b830b0aF348D8e4c8e35Ca8DF66dFf230f03F5",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "FARMLRC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB9e7cDf8BB40AcC6f6C0cCa93FAb488a22D8aF15",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BEANSETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x6a2a19d5A051486a2eBC8Ff4Ed1Eac4A45AFE74A",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHYKZ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3e0B4BC4dd79DBAf932f5Bc889C09c613FDF9aA4",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BANDUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2e231cbf03ea19f8a5BED1c053E678729703D0bA",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NERDETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x54C73b5f3f9Afe6690b085798B08f338524213d6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "arteBEANS",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8dAbe078c0b946497B00fCA45A32d015473bd763",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BEANSUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x08650bb9dc722C9c8C62E79C2BAfA2d3fc5B3293",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHAMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa9027c6ef402a628d968E961Fd137C6C233a68a1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YEVOETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3D35FeD1859226d4299f3077bC66B3C714A4E056",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YEVOYKZ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB49Ac553Aeff303B1c73af00A8511Cb1585c1204",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFILINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD73B0C2E9EEE99d0618B29BC3D3d75810538639F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHSPCR",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xcD5A19707f6A12236C6436102Db709F4308Ed124",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YKZYKZ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xd3d2E2692501A5c9Ca623199D38826e513033a17",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xEBFb684dD2b01E698ca6c14F10e4f289934a54D6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5ac13261c181a9c3938BfE1b649E65D10F98566B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa85ca05b3A7bf19955Ca3D5523cFf008aEF161a5",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIbuidl",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xF111616F8FCF0C648c62600FE9DF030a42099991",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIUniFi",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xf00e80f0DE9aEa0B33aA229a4014572777E422EE",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9b2662DC8b80B0fE79310AD316b943CB5Bb15e8b",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNILINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAA873C9DA6541f13C89416C17271b4c21bf7B2d7",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIWBTC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAcD2556F64D4BE9Aaa205278895653D3e6d639aE",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xF80960072b76804d4e0C12bebE784E6Bf95883b9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIUNI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8a1643D77621d171df97Df4fc86051F54F7EBA90",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCTBTC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xac336A0F92099893e6545Ce75F99302b29cff4e6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNISNX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD5b593F5D6055d0d887FDd6EFa121feaf68Bd1af",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ANTUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xA7aA615486D95B01EBeBE93cACD9A62047D1258b",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "SSJETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x539937ea44AD51297cea28A7D90DC3f737DF381a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UMAUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x96FDd7f65aF35a724F44cC2071Feb060EF27E7b6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UniFiSSJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x28745ab0C22f704517CeBcb1119C612419c6ED6F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "arteSSJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x43FAe7859b8F905be3e54A516566823298b87d1B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlSSJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xEF604873cFcEaD6f04d72b057189BF32c8661E2b",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNISSJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x020A772625885Bc3be48819eB9968a993822E479",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "OXTUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x050cC733c85bE71d4a902119Dd27112dFd142588",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIYFO",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xE7E1F559BDFEBef1EfEbDF438cF453d1D9c36cF5",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFOETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x854056Fd40C1B52037166285B2e54Fee774d33f6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "TBTCETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xc31508Fa519E5b3f1287759B15EB7150CF76b7Ef",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANAUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xfB4D92fF44f2858996E115e14E0FDB67df68865C",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "SNXCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAC6Ab578387A0471eD6458B543C980B6027F16bd",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "TBTCUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x85324Dd97Ec1276A28B9D6CA70Ad58fA4759724B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YKZETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xe5Ea6FCA0A54aD195d6dFa4170DF5EBfda0Fd378",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "REPUNI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x278103B317522ca9bD6b5FCfEE7cCa9569462E3E",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x83C72Bf7c69795B53497dB3d214b4e42362f1b5e",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNICOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8564A1837136bb3d2AB571E03197cbEBb87c004d",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "COMPKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5e4206B6AA6e919B2bc6E813EA0ffB9B3C8aC042",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIREN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2eBC9a3685FCFfe3A4d4fCa47D5328EC9324662D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNILRC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB359a8745eF4070B88a8c02884D17412687D483c",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIOXT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3fB41aEdc135f619B8eA7Ecf7268F26595e29f6D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANAUNI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x896d652AFEc3f34bCE61d29450d57c68879Efd1c",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIBAL",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xDFC14d2Af169B0D36C4EFF567Ada9b2E0CAE044f",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "AAVEETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x674E114dAd81838d151d9BedA2271228eeAe0E8B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "AAVEUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x38E12fDd8DC51e48830863151e1Afa7799e6fE97",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIAAVE",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x75D52F0e442f823A9Da1FDdF31B66FDAb6530636",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NMRUNI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xbAe1264CeC9371238da484C42b56B0dC8C31c6B9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIWBTC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa7c526F724150115fD1C4B4BA102D8455A48AFcf",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIBAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x71Aa44cbEd2CA17077aeE7C5087e86a53Fc01f6E",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNICRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x36DB88Afe3a3f9F0078838fBC74eB551cBB8770F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BONUSETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x592a17a1a3Bb1D70DC9B602957F35C9A5088394B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNILHR",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD980bCe7E49421118163a8Bec57855D411FC617a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "OXTCOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9Ff2D0A5522EbA53C5703D6Cf0d2B1abE75857c7",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIBAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xAEA5163FA3fCAEf84112866bda8b67C9B45F86F0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NMRBAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3a8afc58b70b34a0a5615d3A5FfE623cA1fA92B8",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NUETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x549be60d3eB08Ac305660E6075959Be1FC09417a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NUUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2d3Bb351C409E39e78e1f0daA757aDf921b5fE44",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "RENCOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xb91ac1d9807368c8BAc2503bB85649502fFA9c38",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANABAL",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xBFBBdaFb46c67222B0c904A4B7cD8E5E940c595e",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UMALINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x420e4A32fB59105E167d89c3410545a6068B2415",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIBbtc",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x22387c3FF644b555e3eAA9E83f45df7FB0DDE8fd",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BbtcETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x6759cFF0e38Bf92F841d741E0c9BAF540C2976BD",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIREN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xb33BA20b93eC6fD2e7faBE643930223B439293bC",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BNTCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xD77ffd33896B7dCE899d53705B90162d1c53694d",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANALINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xB45e247a01a63BfFfF0B746CAcfDbd5C20448c58",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "REPREPv2",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x5731f7cdb21E15C50fFA1627cC1118F7900cb390",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKGNO",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xE9cc31da55080593369e3Cdf589BD1DE85E0151A",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKAAVE",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9d62572dEb716d67F3bad300ce1191A3B6916dA9",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DNTDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9F0f17fE37ef58b2c1dcD3e5635D23066D79DFF7",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCMLN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7C466abE103b7307AC2fA4a4788AD3f777270163",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "FRZETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x1701Af82a55d0449cbE2d5DA334A54d775259F67",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LOOMUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xdDf45514bC45223f50ee95BECAF972d1f8aFF7DD",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANAOXT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3CD132ac73A4043Bb4f1674369E70BE6f88EdD73",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xea7f7bDc13d65D0B2BE40670ceA045a7C16eA879",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BNTLINK",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa5cEd798AdA58DDD10d08008b447399A6a84908c",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LRCCOMP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xDbb317929A4924e032bc21add1ce8e30A978C257",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIAAVE",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x89fF36ED0fdb9B23ED1a898219E2726965a99A56",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKSTORJ",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3b43c6068393Bfdf519142b9507D9f28c6d977ca",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCNU",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8728754FE63E926888eFA4d7E269875D3C9a54c1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NUUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xa69c787595354BcF484e919a2233Ca89c8c6251A",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DNTKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x02621C56959272a32963d274Cc51ca1E1A0DEE48",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKKNC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x38c8ffEe49f286f25d25BAd919FF7552e5DaF081",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "KEEPTBTC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xdE1eDF7c2612aDf040dDF96172F3963DE872bC1e",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "TBTCCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2e81eC0B8B4022fAC83A21B2F2B4B8f5ED744D70",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ETHGRT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xDfa42Ba0130425b21a1568507B084CC246fb0C8F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "USDCGRT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x49604b4bC98f1196D4B2116f8a1Fac64ab69cef8",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIAAVE",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xBc6eD317679f15854099b027DBe4Fd729274D395",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAITBTC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x2a075797290E3e9cA5E7946B52BCe4e7E4E91173",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCGRT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x48978eF5BeB2d69e27DeF9C046cEbE18Ab5708Ad",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WBTCAAVE",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x6476340acAE01ED51AbD8A13e1B335E8351b47Ad",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "GRTUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xF4F2C5DfFD3Fb1533cE3eAfF3D48D304f9525864",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ANTLRC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7C62Fe44A893268411e9f0BB1Ed944f7c8598F92",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIGRT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x11a18212580F5DD34a412429bf6bC466F30aDA7e",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "OXTUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x3AdA019e873601D1998Cc12F174131287247Ded6",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "OXTDAI",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x954975D6457a51c3D49A2c827B6b9B3d4a22c8ce",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YFIREP",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x1f447690A6ddF18400533b705516159E1312f892",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "AAVEUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x760AfBF17014E9cB32eD183908cC6dBd9f9300F1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WUSDETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x896344E206bA811C5599DDc0233Db0cE5d977a10",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIWUSD",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x70a245188F1A3B9A79ae93D2Da93fD266c53Cb0A",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WUSDUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9c318d724217F83FF331ac76b34fbF40831d8C2D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LINKLOOM",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xd5559b9d26637956742De16A4C3E8DD4E175577B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "GRTCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xBD0cad57A0D75e8711E01ecE151464404834Bc7a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANABAND",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x9DA379075864dDE093706aE8d03B3c64AF9E3E23",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "LOOMCRV",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xeee65150b8Ac2cD3bf474e9b79Db0C7d6915fF8C",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BMEETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x174cBa98E2166A1376CE6730FFd605BA93160742",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "RENLRC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8E5Ebc66B2F1bF6De4007f564Fb9Fd03A48501C2",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "GILETH",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xFb3Ace45CB56E804B765393aA085486295175649",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANAUSDC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8F190eDeFBB2A597572bf21f3F73469636Aa59b1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "KEEPUSDT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0xe1F6847580a342c761A65a1A9d07E4BB9A254F78",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "MANALRC",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x7946B298bB7647D2ee8F85e5C8c5D085c4fa338c",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "CVCOXT",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x8dC020ceD0d450a57B71a81Aa30F0d078B822E79",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIMLN",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x53BeCf7DfDBBBCB16319d51dfAD61f0fF4FD4e4d",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "GRTZRX",
+            "chainId": 1,
+            "tags": []
+        },
+        {
+            "address": "0x1c5DEe94a34D795f9EEeF830B68B80e44868d316",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DAIWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x55F5A152C22114fF023E899F204beDDA3461Ecc5",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "sdgdsWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x8D2202DB8e50d1EB84Bf3895e01b798620c8e528",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x8d8dEBC2EcD2Ed1d0535AF9E41Ef9A71B6a22adF",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlsdgds",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x20B3380Dc65Dc825D3EDCaf29dFC94b10DE3dE7a",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "bunWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x495110043FB2ab7b8E7C3B8a8016aC5E72785c3D",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "svag2WETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x33A071794273cfFF0FbFE8E67E301EBfc5Cd59B4",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ufragWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0xbAE2DAd212E689f71Fbf9a27AD7631bFd3241CDd",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "DFVCWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x6212a75361aCf39Da82ba0801113c780D9981B3f",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WETHTESTES",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x8806A58A57a59f9913f5a3f1C4B58C0D9dc888d0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "666WETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x2A5E04eA917B4ca85ADF6759eDAAb2F5A1B98313",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "wardWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x03AB296EB071a26C9eBC3C2B15B51C389affCA5A",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "wardDAI",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x8c2c3B4BA72E9f8c65177096d2CAC2481FD7d5b2",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WETH111",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x22D4929Bda32fd9721738CEeF36287D4cb4230Be",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "tttWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0xF72Ed72e903352eB2938c323Cf5D2453c6D45429",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "poopWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x73447C91e4398114b078C3490924011567d6430B",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "pooperWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x03f3cDb07Ed578497fE70dDd759082AEB50e9082",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YPOWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0xf923f19E61d5BFF9b0f32F1A13Cb9A69309A1130",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WETHYPPO",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x7224C2f0cd9f4b7BfF2c71b5D3085d79C1771373",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "YPOYPPO",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x5Db6cA9a3660dB57414d95bEBf565D43280A2Ed0",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "WETHBEATS",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x6cE04B850b03dA2071C4D50214E0186fbA1e2d52",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "NNTWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x43530C5B36772D90d0B4DD64419A8ce371c48F67",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ASDbuidl",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x807162A5Bc9Bbf2Aa44Ef58C3ae26927Bb66363e",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "ASDWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0xa5d21c6e0a3dC9a2f71574AEd8aE7F3E0d18755b",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "BUIDLERASD",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x4E99615101cCBB83A462dC4DE2bc1362EF1365e5",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIWETH",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x8E7f1aD9dF63c2e9fdf08021311a853B7704E70F",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "buidlARTEZA",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x36a59aC1b05D10Cc00bD8e7e5D98B967aeB4feDb",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "UNIDAI",
+            "chainId": 3,
+            "tags": []
+        },
+        {
+            "address": "0x0c3922c26E969C8033f28DB9f0F1Fc966f1cBDD1",
+            "decimals": 18,
+            "name": "Uniswap V2 Pair",
+            "symbol": "gilWETH",
+            "chainId": 3,
+            "tags": []
+        }
+    ]
+}
