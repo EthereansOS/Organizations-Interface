@@ -64,7 +64,7 @@
     "decentralizedFlexibleOrganizationsURL" : "https://raw.githubusercontent.com/EthereansOS/bazar-tokens-list/master/dist/decentralizedFlexibleOrganizations.json",
     "decentralizedFlexibleOrganizationsURLRopsten" : "https://raw.githubusercontent.com/EthereansOS/bazar-tokens-list/master/dist/programmableEquities.json",
     "uniswapTokensURL" : "https://raw.githubusercontent.com/EthereansOS/bazar-tokens-list/master/dist/uniswapTokens.json",
-    "itemsListURL" : "https://raw.githubusercontent.com/EthereansOS/ITEMswap/master/src/constants/ethItemLists/dist/tokensList.json",
+    "itemsListURL" : "https://raw.githubusercontent.com/EthereansOS/ITEMS-Swap/master/src/constants/ethItemLists/dist/tokensList.json",
     "outOfStandardTokens" : ["0xdac17f958d2ee523a2206206994597c13d831ec7", "0xd46ba6d942050d489dbd938a2c909a5d5039a161"],
     "uiDecimals" : 25,
     "slippageNumerator" : 5,
