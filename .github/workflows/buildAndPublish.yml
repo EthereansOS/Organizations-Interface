@@ -27,15 +27,18 @@ jobs:
         node-version: ${{ matrix.node-version }}
 
     - name: Dependencies Installation
+      working-directory: ./bazar-tokens-list
       run: npm install
 
     - name: Create env parameters
+      working-directory: ./bazar-tokens-list
       run: |
         touch .env
         echo BLOCKCHAIN_CONNECTION_STRING =${{ secrets.BLOCKCHAIN_CONNECTION_STRING }} >> .env
         echo BLOCKCHAIN_CONNECTION_STRING_ROPSTEN =${{ secrets.BLOCKCHAIN_CONNECTION_STRING_ROPSTEN }} >> .env
 
     - name: Build JSONs
+      working-directory: ./bazar-tokens-list
       run: npm run build
 
     - name: Commit changes
@@ -44,6 +47,6 @@ jobs:
         author_name: King Julian
         author_email: dfohubsucks@protonmail.com
         message: "Build JSONs"
-        add: "dist/*"
+        add: "./bazar-tokens-list/dist/*"
       env:
         GITHUB_TOKEN: ${{ secrets.COMMIT_AUTH_TOKEN }}
