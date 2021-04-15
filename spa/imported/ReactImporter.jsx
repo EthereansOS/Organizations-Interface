@@ -59,6 +59,100 @@ function injectGlobalProps(p) {
     props.dfoCore.getBlockNumber = async function getBlockNumber() {
         return parseInt(await window.web3.eth.getBlockNumber());
     }
+    props.dfoCore.loadFarmingSetup = async function loadFarmingSetup(contract, i) {
+
+        try {
+            return await contract.methods.setup(i).call();
+        } catch(e) {
+        }
+
+        var models = {
+            setup : {
+                types : [
+                    "uint256",
+                    "bool",
+                    "uint256",
+                    "uint256",
+                    "uint256",
+                    "uint256",
+                    "uint256",
+                    "uint256"
+                ],
+                names : [
+                    "infoIndex",
+                    "active",
+                    "startBlock",
+                    "endBlock",
+                    "lastUpdateBlock",
+                    "objectId",
+                    "rewardPerBlock",
+                    "totalSupply"
+                ]
+            },
+            info : {
+                types : [
+                    "bool",
+                    "uint256",
+                    "uint256",
+                    "uint256",
+                    "uint256",
+                    "uint256",
+                    "address",
+                    "address",
+                    "address",
+                    "address",
+                    "bool",
+                    "uint256",
+                    "uint256",
+                    "uint256"
+                ],
+                names : [
+                    "free",
+                    "blockDuration",
+                    "originalRewardPerBlock",
+                    "minStakeable",
+                    "maxStakeable",
+                    "renewTimes",
+                    "ammPlugin",
+                    "liquidityPoolTokenAddress",
+                    "mainTokenAddress",
+                    "ethereumAddress",
+                    "involvingETH",
+                    "penaltyFee",
+                    "setupsCount",
+                    "lastSetupIndex"
+                ]
+            }
+        };
+        var data = await this.web3.eth.call({
+            to : contract.options.address,
+            data : contract.methods.setup(i).encodeABI()
+        });
+        var types = [
+            `tuple(${models.setup.types.join(',')})`,
+            `tuple(${models.info.types.join(',')})`
+        ];
+        try {
+            data = abi.decode(types, data);
+        } catch(e) {
+        }
+        var setup = {};
+        for(var i in models.setup.names) {
+            var name = models.setup.names[i];
+            var value = data[0][i];
+            value !== true && value !== false && (value = value.toString());
+            setup[name] = value;
+        }
+        var info = {};
+        for(var i in models.info.names) {
+            var name = models.info.names[i];
+            var value = data[1][i];
+            value !== true && value !== false && (value = value.toString());
+            info[name] = value;
+        }
+        info.startBlock = info.startBlock || "0";
+        return [setup, info];
+    }
     return props;
 };
 

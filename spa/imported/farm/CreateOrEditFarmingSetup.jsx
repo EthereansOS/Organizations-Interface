@@ -9,6 +9,8 @@ const CreateOrEditFarmingSetup = (props) => {
     // general purpose
     const [loading, setLoading] = useState(false);
     const [blockDuration, setBlockDuration] = useState((editSetup && editSetup.blockDuration) ? editSetup.blockDuration : 0);
+    const [startBlock, setStartBlock] = useState((editSetup && editSetup.startBlock) ? editSetup.startBlock : 0);
+    const [hasStartBlock, setHasStartBlock] = useState((editSetup && editSetup.startBlock) ? true : false);
     const [hasMinStakeable, setHasMinStakeable] = useState((editSetup && editSetup.minStakeable) ? editSetup.minStakeable : false);
     const [minStakeable, setMinSteakeable] = useState((editSetup && editSetup.minStakeable) ? editSetup.minStakeable : 0);
     const [isRenewable, setIsRenewable] = useState((editSetup && editSetup.renewTimes) ? editSetup.renewTimes > 0 : false);
@@ -113,6 +115,7 @@ const CreateOrEditFarmingSetup = (props) => {
         const setup = {
             free: selectedFarmingType === 'free',
             blockDuration,
+            startBlock,
             minStakeable,
             renewTimes,
             involvingEth,
@@ -206,7 +209,16 @@ const CreateOrEditFarmingSetup = (props) => {
     const getSecondStep = () => {
         return (
             <div className="CheckboxQuestions">
-                <h6><input type="checkbox" checked={hasMinStakeable} onChange={(e) => onUpdateHasMinStakeable(e.target.checked)} id="minStakeable" /> Min stakeable</h6>
+                <h6><input type="checkbox" checked={hasStartBlock} onChange={(e) => {
+                    setStartBlock(0);
+                    setHasStartBlock(e.target.checked);
+                }}/> Start Block</h6>
+                {
+                    hasStartBlock && <div className="InputTokensRegular InputRegularB">
+                        <Input min={0} value={startBlock} onChange={(e) => setStartBlock(e.target.value)} />
+                    </div>
+                }
+                <p className="BreefRecapB">[Optional <b>&#128171; Recommended</b>] Set a start block for this setup. Farmers will be able to activate it after that. This feature helps by giving the host the time needed to send reward tokens to the contract or vote via a DFO/DAO for more complex functionalities. more info in the <a target="_blank" href="https://docs.ethos.wiki/covenants/protocols/farm/manage-farming-setups/activate-disactivate-farming-setup">Grimoire</a></p>                <h6><input type="checkbox" checked={hasMinStakeable} onChange={(e) => onUpdateHasMinStakeable(e.target.checked)} id="minStakeable" /> Min stakeable</h6>
                 {
                     hasMinStakeable && <div className="InputTokensRegular">
                             <Input min={0} showCoin={true} address={(!mainToken?.isEth && !liquidityPoolToken.tokens[mainTokenIndex].isEth) ? `${mainToken?.address || liquidityPoolToken.tokens[mainTokenIndex].address}` : involvingEth ? props.dfoCore.voidEthereumAddress : `${mainToken?.address || liquidityPoolToken.tokens[mainTokenIndex].address}`} value={minStakeable} name={(!mainToken?.isEth && !liquidityPoolToken.tokens[mainTokenIndex].isEth) ? `${mainToken?.symbol || liquidityPoolToken.tokens[mainTokenIndex].symbol}` : involvingEth ? 'ETH' : `${mainToken?.symbol || liquidityPoolToken.tokens[mainTokenIndex].symbol}`} onChange={(e) => setMinSteakeable(e.target.value)} />

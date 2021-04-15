@@ -61,7 +61,7 @@ const ExploreFarmingContract = (props) => {
 
             const res = [];
             for (let i = 0; i < setups.length; i++) {
-                const { '0': setup, '1': setupInfo } = await lmContract.methods.setup(i).call();
+                const { '0': setup, '1': setupInfo } = await props.dfoCore.loadFarmingSetup(lmContract, i);
                 if (!canActivateSetup) {
                     canActivateSetup = parseInt(setupInfo.renewTimes) > 0 && !setup.active && parseInt(setupInfo.lastSetupIndex) === parseInt(i);
                 }
@@ -150,6 +150,7 @@ const ExploreFarmingContract = (props) => {
                     info: {
                         free: isFree,
                         blockDuration: parseInt(setup.blockDuration),
+                        startBlock: parseInt(setup.startBlock),
                         originalRewardPerBlock: window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.rewardPerBlock), token.decimals)),
                         minStakeable: window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.minStakeable), mainTokenDecimals)),
                         maxStakeable : !isFree ? window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.maxStakeable)), mainTokenDecimals) : 0,
@@ -187,7 +188,7 @@ const ExploreFarmingContract = (props) => {
                 for(var i in setups) {
                     var setup = setups[i];
                     setupsCode = "        " + 
-                    `farmingSetups[${i}] = FarmingSetupConfiguration(${setup.add}, ${setup.disable}, ${setup.index}, FarmingSetupInfo(${setup.info.free}, ${setup.info.blockDuration}, ${setup.info.originalRewardPerBlock}, ${setup.info.minStakeable}, ${setup.info.maxStakeable}, ${setup.info.renewTimes}, ${window.web3.utils.toChecksumAddress(setup.info.ammPlugin)}, ${window.web3.utils.toChecksumAddress(setup.info.liquidityPoolTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.mainTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.ethereumAddress)}, ${setup.info.involvingETH}, ${setup.info.penaltyFee}, ${setup.info.setupsCount}, ${setup.info.lastSetupIndex}));` +
+                    `farmingSetups[${i}] = FarmingSetupConfiguration(${setup.add}, ${setup.disable}, ${setup.index}, FarmingSetupInfo(${setup.info.free}, ${setup.info.blockDuration}, ${setup.info.startBlock}, ${setup.info.originalRewardPerBlock}, ${setup.info.minStakeable}, ${setup.info.maxStakeable}, ${setup.info.renewTimes}, ${window.web3.utils.toChecksumAddress(setup.info.ammPlugin)}, ${window.web3.utils.toChecksumAddress(setup.info.liquidityPoolTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.mainTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.ethereumAddress)}, ${setup.info.involvingETH}, ${setup.info.penaltyFee}, ${setup.info.setupsCount}, ${setup.info.lastSetupIndex}));` +
                     "\n";
                 }
                 data.sourceCode = (await (await fetch(`data/${fileName}.sol`)).text()).format(setups.length, setupsCode.trim(), metadata.metadata.fullExtension);

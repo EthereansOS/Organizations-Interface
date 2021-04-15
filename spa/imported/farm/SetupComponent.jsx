@@ -71,8 +71,17 @@ const SetupComponent = (props) => {
     const [selectedAmmIndex, setSelectedAmmIndex] = useState(0);
     const [amms, setAmms] = useState(0);
     const [loadingPrestoData, setLoadingPrestoData] = useState(false);
+    const [delayedBlock, setDelayedBlock] = useState(0);
 
-    var farmingPresto = new props.dfoCore.web3.eth.Contract(props.dfoCore.getContextElement("FarmingPrestoABI"), props.dfoCore.getContextElement("farmingPrestoAddress"));
+    function getFarmingPrestoAddress() {
+        var prestoAddress = props.dfoCore.getContextElement("farmingPrestoAddress");
+        var oldPrestoAddress = props.dfoCore.getContextElement("farmingPrestoAddressOld");
+        var oldFarmingPrestoContracts = props.dfoCore.getContextElement("oldFarmingPrestoContracts").map(it => props.dfoCore.web3.utils.toChecksumAddress(it));
+        var lmContractAddress = props.dfoCore.web3.utils.toChecksumAddress(lmContract.options.address);
+        return oldFarmingPrestoContracts.indexOf(lmContractAddress) === -1 ? prestoAddress : oldPrestoAddress;
+    }
+
+    var farmingPresto = new props.dfoCore.web3.eth.Contract(props.dfoCore.getContextElement("FarmingPrestoABI"), getFarmingPrestoAddress());
 
     useEffect(() => {
         getSetupMetadata();
@@ -109,14 +118,14 @@ const SetupComponent = (props) => {
     const getSetupMetadata = async () => {
         setLoading(true);
         try {
-            const { '0': farmSetup, '1': farmSetupInfo } = await lmContract.methods.setup(setupIndex).call();
+            const { '0': farmSetup, '1': farmSetupInfo } = await props.dfoCore.loadFarmingSetup(lmContract, setupIndex);
             setSetup(farmSetup);
             setSetupInfo(farmSetupInfo);
             setShowPrestoError(false);
             await loadData(farmSetup, farmSetupInfo, true);
             if (!intervalId.current) {
                 intervalId.current = setInterval(async () => {
-                    const { '0': s, '1': si } = await lmContract.methods.setup(setupIndex).call();
+                    const { '0': s, '1': si } = await props.dfoCore.loadFarmingSetup(lmContract, setupIndex);
                     setSetup(s);
                     setSetupInfo(si);
                     await loadData(s, si);
@@ -210,6 +219,8 @@ const SetupComponent = (props) => {
 
         const activateSetup = parseInt(farmSetupInfo.renewTimes) > 0 && !farmSetup.active && parseInt(farmSetupInfo.lastSetupIndex) === parseInt(setupIndex);
         setCanActivateSetup(activateSetup);
+        var startBlock = window.formatNumber(farmSetupInfo.startBlock || 0);
+        setDelayedBlock(bNumber > startBlock ? 0 : startBlock);
 
         const { host, byMint } = await extContract.methods.data().call();
         let isSetupReady = false;
@@ -305,16 +316,17 @@ const SetupComponent = (props) => {
         if (parseInt(setup.totalSupply) === 0) return -1;
         const yearlyBlocks = 2304000;
         try {
-            const ethPrice = await axios.get(dfoCore.getContextElement("coingeckoEthereumPriceURL"));
+            const ethPrice = await window.getEthereumPrice();
             const wusdAddress = await dfoCore.getContextElement("WUSDAddress");
             if (setupInfo.free) {
                 const searchTokens = `${rewardTokenAddress},${setupTokens.map((token) => (token && token.address) ? `${token.address},` : '')}`.slice(0, -1);
-                const { data } = await axios.get(dfoCore.getContextElement("coingeckoCoinPriceURL") + searchTokens);
+                const res = await window.getTokenPricesInDollarsOnCoingecko(searchTokens);
+                const { data } = res;
                 const rewardTokenPriceUsd = rewardTokenAddress !== dfoCore.voidEthereumAddress ? rewardTokenAddress.toLowerCase() === wusdAddress.toLowerCase() ? 1 : data[rewardTokenAddress.toLowerCase()].usd : ethPrice;
                 let den = 0;
                 await Promise.all(setupTokens.map(async (token) => {
                     if (token && token.address) {
-                        const tokenPrice = token.address !== dfoCore.voidEthereumAddress ? token.address.toLowerCase() === wusdAddress.toLowerCase() ? 1 : data[token.address.toLowerCase()].usd : ethPrice.data[0].current_price;
+                        const tokenPrice = token.address !== dfoCore.voidEthereumAddress ? token.address.toLowerCase() === wusdAddress.toLowerCase() ? 1 : data[token.address.toLowerCase()].usd : ethPrice;
                         den += (tokenPrice * token.liquidity * 10 ** (18 - token.decimals));
                     }
                 }))
@@ -325,7 +337,8 @@ const SetupComponent = (props) => {
                 const mainTokenContract = mainTokenAddress !== dfoCore.voidEthereumAddress ? await dfoCore.getContract(dfoCore.getContextElement('ERC20ABI'), mainTokenAddress) : null;
                 const decimals = mainTokenAddress !== dfoCore.voidEthereumAddress ? await mainTokenContract.methods.decimals().call() : 18;
                 const searchTokens = `${rewardTokenAddress},${mainTokenAddress}`;
-                const { data } = await axios.get(dfoCore.getContextElement("coingeckoCoinPriceURL") + searchTokens);
+                const res = await window.getTokenPricesInDollarsOnCoingecko(searchTokens);
+                const { data } = res;
                 const rewardTokenPriceUsd = rewardTokenAddress !== dfoCore.voidEthereumAddress ? rewardTokenAddress.toLowerCase() === wusdAddress.toLowerCase() ? 1 : data[rewardTokenAddress.toLowerCase()].usd : ethPrice;
                 const mainTokenPriceUsd = mainTokenAddress !== dfoCore.voidEthereumAddress ? mainTokenAddress.toLowerCase() === wusdAddress.toLowerCase() ? 1 : data[mainTokenAddress.toLowerCase()].usd : ethPrice;
                 const num = (parseInt(setup.rewardPerBlock) * 10 ** (18 - rewardTokenDecimals) * yearlyBlocks) * rewardTokenPriceUsd * 100;
@@ -1122,7 +1135,8 @@ const SetupComponent = (props) => {
     return (
         <div className={className}>
             <div className="FarmSetupMain">
-                <h5><b>{setupInfo.free ? "Free Farming" : "Locked Farming"} {(!setup.active && canActivateSetup) ? <span className="text-secondary">{setupReady ? "(new)" : "(soon)"}</span> : (!setup.active) ? <span className="text-danger">(inactive)</span> : <></>} {(parseInt(setup.endBlock) <= blockNumber && parseInt(setup.endBlock) !== 0) && <span>(ended)</span>}</b> <a target="_blank" href={`${window.getNetworkElement("etherscanURL")}/token/${setupInfo.liquidityPoolTokenAddress}`}>{AMM.name}</a></h5>
+                {!delayedBlock && <h5><b>{setupInfo.free ? "Free Farming" : "Locked Farming"} {(!setup.active && canActivateSetup) ? <span className="text-secondary">{setupReady ? "(new)" : "(soon)"}</span> : (!setup.active) ? <span className="text-danger">(inactive)</span> : <></>} {(parseInt(setup.endBlock) <= blockNumber && parseInt(setup.endBlock) !== 0) && <span>(ended)</span>}</b> <a target="_blank" href={`${props.dfoCore.getContextElement("etherscanURL")}token/${setupInfo.liquidityPoolTokenAddress}`}>{AMM.name}</a></h5>}
+                {delayedBlock && <h5><b>Can be activated after block <a href={`${props.dfoCore.getContextElement("etherscanURL")}block/${delayedBlock}`} target="_blank">#{delayedBlock}</a></b></h5>}
                 <aside>
                     {parseInt(setup.endBlock) > 0 ? <p><b>block end</b>: <a className="BLKEMD" target="_blank" href={`${props.dfoCore.getContextElement("etherscanURL")}block/${setup.endBlock}`}>{setup.endBlock}</a></p> : <p><b>Duration</b>: {getPeriodFromDuration(setupInfo.blockDuration)}</p>}
                     {!setupInfo.free && <>

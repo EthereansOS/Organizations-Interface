@@ -40,7 +40,7 @@ const Hosted = (props) => {
                         let rewardPerBlock = 0;
                         let canActivateSetup = false;
                         await Promise.all(setups.map(async (setup, i) => {
-                            const { '0': s, '1': setupInfo } = await contract.methods.setup(i).call();
+                            const { '0': s, '1': setupInfo } = await props.dfoCore.loadFarmingSetup(contract, i);
                             if (!canActivateSetup) {
                                 canActivateSetup = parseInt(setupInfo.renewTimes) > 0 && !setup.active && parseInt(setupInfo.lastSetupIndex) === parseInt(i);
                             }

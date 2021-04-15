@@ -114,6 +114,7 @@ const Create = (props) => {
                     [
                         isFree,
                         parseInt(setup.blockDuration),
+                        parseInt(setup.startBlock),
                         window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.rewardPerBlock), selectedRewardToken.decimals)),
                         window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.minStakeable), mainTokenDecimals)),
                         !isFree ? window.numberToString(props.dfoCore.fromDecimals(window.numberToString(setup.maxStakeable)), mainTokenDecimals) : 0,
@@ -163,7 +164,7 @@ const Create = (props) => {
                     window.web3.utils.sha3("init(bool,address,address)").substring(0, 10) + window.web3.eth.abi.encodeParameters(["bool", "address", "address"], [farmingData.byMint, data.element.doubleProxyAddress, window.voidEthereumAddress]).substring(2),
                     window.getNetworkElement("ethItemOrchestratorAddress"),
                     farmingData.rewardTokenAddress,
-                    abi.encode(["tuple(bool,uint256,uint256,uint256,uint256,uint256,address,address,address,address,bool,uint256,uint256,uint256)[]"], [farmingData.setups])
+                    abi.encode(["tuple(bool,uint256,uint256,uint256,uint256,uint256,uint256,address,address,address,address,bool,uint256,uint256,uint256)[]"], [farmingData.setups])
                 ).encodeABI();
                 var transaction = await window.blockchainCall(farmFactory.methods.deploy, deployPayload);
                 var receipt = await window.web3.eth.getTransactionReceipt(transaction.transactionHash);
