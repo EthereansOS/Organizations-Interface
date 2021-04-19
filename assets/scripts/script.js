@@ -14,24 +14,24 @@ if ('WebSocket' in window) {
         setTimeout(function() {
             var oldOnMessage = window.webSocket.onmessage;
             window.webSocket.onmessage = function onnessage(msg) {
-                if(msg.data === 'connected') {
+                if (msg.data === 'connected') {
                     return;
                 }
-                if(msg.data == 'refreshcss') {
-                    return oldOnMessage(msg); 
+                if (msg.data == 'refreshcss') {
+                    return oldOnMessage(msg);
                 }
                 var regex = `${window.location.protocol}//${window.location.hostname}:${window.location.port}/`
                 var requiredScripts = [];
                 var dataFiles = $('script[data-file]');
                 dataFiles.each(function() {
-                    requiredScripts.push(this.dataset.file.split(regex).join('')); 
+                    requiredScripts.push(this.dataset.file.split(regex).join(''));
                 })
                 dataFiles.remove();
                 $('script[src="assets/scripts/script.js"]').remove();
                 requiredScripts.unshift('assets/scripts/script.js');
                 window.scriptsLoaded && (window.scriptsLoaded = window.scriptsLoaded.filter(it => !it.endsWith('.jsx') && it.indexOf('assets/scripts/script.js') === -1));
                 ScriptLoader.babels = {};
-                if(window.loadedModules) {
+                if (window.loadedModules) {
                     Object.keys(window.loadedModules).forEach(it => {
                         delete window[it];
                         delete window["_" + it];
@@ -42,16 +42,16 @@ if ('WebSocket' in window) {
                     window.loadedModules = {};
                 }
                 ScriptLoader.load({
-                    scripts : requiredScripts,
-                    callback : async function() {
+                    scripts: requiredScripts,
+                    callback: async function() {
                         await window.loadContext();
                         try {
-                            if($('.globalCatcher').length > 0) {
+                            if ($('.globalCatcher').length > 0) {
                                 return ReactDOM.render(React.createElement(Index), document.body);
                             }
                             var element = $('.DFOElement');
                             (element.length !== 0 ? element : $('.DFOList')).findReactComponent().forceUpdate();
-                        } catch(e) {
+                        } catch (e) {
                             return oldOnMessage(msg);
                         }
                     }
@@ -1162,7 +1162,7 @@ window.generateAndCompileContract = async function generateAndCompileContract(so
     }
 
     var compilers = (await window.SolidityUtilities.getCompilers()).releases;
-    var version = (await window.getSupportedSolidityVersion())[0]//Object.keys(compilers)[0];
+    var version = (await window.getSupportedSolidityVersion())[0] //Object.keys(compilers)[0];
     sourceCode.unshift('');
     sourceCode.unshift('pragma solidity ^' + version + ';');
 
@@ -1437,7 +1437,7 @@ window.loadLogo = async function loadLogo(address) {
 };
 
 window.loadOffChainWallets = async function loadOffChainWallets() {
-    if(window.context.bypassTokens) {
+    if (window.context.bypassTokens) {
         return;
     }
     window.loadedTokens = window.loadedTokens || {};
@@ -1843,7 +1843,7 @@ window.loadStakingData = async function loadStakingData(element, old) {
         split.length === 1 && (split = elem.name.split('_'));
         var liquidityMiningContractAddress = split[split.length - 1];
         if (elem.name.indexOf('farming.authorized.') === -1) {
-            if(!old) {
+            if (!old) {
                 promises.push(window.setStakingManagerData(element, window.newContract(window.context.LiquidityMiningContractABI, liquidityMiningContractAddress), blockTiers, active));
             }
         } else {
@@ -1909,22 +1909,122 @@ window.setStakingManagerData = async function setStakingManagerData(element, sta
     return stakingManagerData;
 };
 
+window.loadFarmingSetup = async function loadFarmingSetup(contract, i) {
+
+    window.abi = window.abi || new ethers.utils.AbiCoder();
+
+    try {
+        return await window.blockchainCall(contract.methods.setup, i);
+    } catch (e) {}
+
+    var models = {
+        setup: {
+            types: [
+                "uint256",
+                "bool",
+                "uint256",
+                "uint256",
+                "uint256",
+                "uint256",
+                "uint256",
+                "uint256"
+            ],
+            names: [
+                "infoIndex",
+                "active",
+                "startBlock",
+                "endBlock",
+                "lastUpdateBlock",
+                "objectId",
+                "rewardPerBlock",
+                "totalSupply"
+            ]
+        },
+        info: {
+            types: [
+                "bool",
+                "uint256",
+                "uint256",
+                "uint256",
+                "uint256",
+                "uint256",
+                "address",
+                "address",
+                "address",
+                "address",
+                "bool",
+                "uint256",
+                "uint256",
+                "uint256"
+            ],
+            names: [
+                "free",
+                "blockDuration",
+                "originalRewardPerBlock",
+                "minStakeable",
+                "maxStakeable",
+                "renewTimes",
+                "ammPlugin",
+                "liquidityPoolTokenAddress",
+                "mainTokenAddress",
+                "ethereumAddress",
+                "involvingETH",
+                "penaltyFee",
+                "setupsCount",
+                "lastSetupIndex"
+            ]
+        }
+    };
+    var data = await this.web3.eth.call({
+        to: contract.options.address,
+        data: contract.methods.setup(i).encodeABI()
+    });
+    var types = [
+        `tuple(${models.setup.types.join(',')})`,
+        `tuple(${models.info.types.join(',')})`
+    ];
+    try {
+        data = window.abi.decode(types, data);
+    } catch (e) {}
+    var setup = {};
+    for (var i in models.setup.names) {
+        var name = models.setup.names[i];
+        var value = data[0][i];
+        value !== true && value !== false && (value = value.toString());
+        setup[name] = value;
+    }
+    var info = {};
+    for (var i in models.info.names) {
+        var name = models.info.names[i];
+        var value = data[1][i];
+        value !== true && value !== false && (value = value.toString());
+        info[name] = value;
+    }
+    info.startBlock = info.startBlock || "0";
+    return [setup, info];
+}
+
 window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, farmExtensionAddress, blockTiers, active) {
     var extension = window.newContract(window.context.DFOBasedFarmExtensionABI, farmExtensionAddress);
-    var contract = window.newContract(window.context.FarmMainABI, (await window.blockchainCall(extension.methods.data))[0]);
+    var contract;
+    try {
+        contract = window.newContract(window.context.FarmMainABI, (await window.blockchainCall(extension.methods.data))[0]);
+    } catch (e) {
+        console.error(e);
+    }
     var farmData = {
         extension,
         contract,
         active,
         blockTiers,
-        old : false
+        old: false
     };
     farmData.rewardToken = await window.loadTokenInfos(await window.blockchainCall(contract.methods._rewardTokenAddress));
     farmData.setups = await window.blockchainCall(contract.methods.setups);
     farmData.setupsCount = farmData.setups.length;
     farmData.tiers = {};
-    for(var i = 0; i < farmData.setupsCount; i++) {
-        var setupData = (await window.blockchainCall(contract.methods.setup, i))[1];
+    for (var i = 0; i < farmData.setupsCount; i++) {
+        var setupData = (await window.loadFarmingSetup(contract, i))[1];//(await window.blockchainCall(contract.methods.setup, i))[1];
         var setup = {};
         Object.entries(setupData).forEach(it => setup[it[0]] = it[1]);
         setup.mainToken = await window.loadTokenInfos(setup.mainTokenAddress);
