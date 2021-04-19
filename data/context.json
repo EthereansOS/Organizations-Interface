@@ -39,7 +39,7 @@
     "indexAddressRopsten": "0x976e088D6cb237f0b1aCfc6d31C7e23d4b7e0591",
     "dFOBasedFixedInflationExtensionFactory" : "0x6023Be91577480B134421A47F2b836FEd095d320",
     "dFOBasedFixedInflationExtensionFactoryRopsten" : "0xB2E8cdb6b9E1592f2692Ff1AA3B3d4F8bE5089d5",
-    "farmFactoryAddress" : "0xa3E5AdE7436cdFA6Cd296FDa713CA0f259d9f9f0",
+    "farmFactoryAddress" : "0x6BC8530fecc0001b9FC0bf5DAA17873e847616ed",
     "farmFactoryAddressRopsten": "0x75687cb2A21F7c596DC973193f26D01c597F2e75",
     "dFOBasedFarmExtensionFactoryAddress" : "0x7ee9297dabB036cAa6F526dD0459315c7237e017",
     "dFOBasedFarmExtensionFactoryAddressRopsten" : "0x01eFa8f069cbB802fFb81a09D1185cd0F634CE4C",
