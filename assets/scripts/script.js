@@ -407,21 +407,22 @@ window.getAddress = async function getAddress() {
 
 window.getSendingOptions = function getSendingOptions(transaction, value) {
     return new Promise(async function(ok, ko) {
+        var lastGasLimit = (await window.web3.eth.getBlock('latest')).gasLimit;
         if (transaction) {
             var from = await window.getAddress();
             var nonce = await window.web3.eth.getTransactionCount(from);
             return window.bypassEstimation ? ok({
                 nonce,
                 from,
-                gas: window.gasLimit || '7900000',
+                gas: window.gasLimit || lastGasLimit,
                 value
             }) : transaction.estimateGas({
                     nonce,
                     from,
                     gasPrice: window.web3.utils.toWei("13", "gwei"),
                     value,
-                    gas: '7900000',
-                    gasLimit: '7900000'
+                    gas: lastGasLimit,
+                    gasLimit: lastGasLimit
                 },
                 function(error, gas) {
                     if (error) {
@@ -430,14 +431,14 @@ window.getSendingOptions = function getSendingOptions(transaction, value) {
                     return ok({
                         nonce,
                         from,
-                        gas: gas || window.gasLimit || '7900000',
+                        gas: gas || window.gasLimit || lastGasLimit,
                         value
                     });
                 });
         }
         return ok({
             from: window.walletAddress || null,
-            gas: window.gasLimit || '99999999'
+            gas: window.gasLimit || lastGasLimit
         });
     });
 };
