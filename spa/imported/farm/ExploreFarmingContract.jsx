@@ -187,7 +187,7 @@ const ExploreFarmingContract = (props) => {
                 var setupsCode = '';
                 for(var i in setups) {
                     var setup = setups[i];
-                    setupsCode = "        " + 
+                    setupsCode += "        " + 
                     `farmingSetups[${i}] = FarmingSetupConfiguration(${setup.add}, ${setup.disable}, ${setup.index}, FarmingSetupInfo(${setup.info.free}, ${setup.info.blockDuration}, ${setup.info.startBlock}, ${setup.info.originalRewardPerBlock}, ${setup.info.minStakeable}, ${setup.info.maxStakeable}, ${setup.info.renewTimes}, ${window.web3.utils.toChecksumAddress(setup.info.ammPlugin)}, ${window.web3.utils.toChecksumAddress(setup.info.liquidityPoolTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.mainTokenAddress)}, ${window.web3.utils.toChecksumAddress(setup.info.ethereumAddress)}, ${setup.info.involvingETH}, ${setup.info.penaltyFee}, ${setup.info.setupsCount}, ${setup.info.lastSetupIndex}));` +
                     "\n";
                 }
