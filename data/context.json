@@ -13,6 +13,7 @@
     "coingeckoEthereumPriceURL": "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=ethereum",
     "coingeckoEthereumPriceRequestInterval": 600000,
     "trustwalletImgURLTemplate": "https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/{0}/logo.png",
+    "covenantsContextURL" : "https://raw.githubusercontent.com/EthereansOS/covenants-interface/main/src/data/context.json.js",
     "defaultOcelotTokenAddress": "0x9784b427ecb5275c9300ea34adef57923ab170af",
     "defaultOcelotTokenAddressRopsten": "0x6ae6cf934b2bd8c84d932aee75102ca2ef1bf2ce",
     "daiTokenAddress" : "0x6b175474e89094c44da98b954eedeac495271d0f",

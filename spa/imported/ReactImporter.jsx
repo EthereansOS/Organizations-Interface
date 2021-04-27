@@ -59,6 +59,14 @@ function injectGlobalProps(p) {
     props.dfoCore.getBlockNumber = async function getBlockNumber() {
         return parseInt(await window.web3.eth.getBlockNumber());
     }
+    props.dfoCore.tryRetrieveWellKnownTokenImage = function tryRetrieveWellKnownTokenImage(address) {
+        address = window.web3.utils.toChecksumAddress(address || this.voidEthereumAddress);
+        var wellKnownTokens = window.context.wellKnownTokens || {};
+        var wellKnownTokensStart = JSON.parse(JSON.stringify(wellKnownTokens));
+        wellKnownTokens = {};
+        Object.entries(wellKnownTokensStart).forEach(it => wellKnownTokens[this.web3.utils.toChecksumAddress(it[0] || this.voidEthereumAddress)] = window.formatLink(it[1]));
+        return wellKnownTokens[address];
+    }
     props.dfoCore.loadFarmingSetup = async function loadFarmingSetup(contract, i) {
 
         try {

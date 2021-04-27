@@ -9,6 +9,8 @@ const Coin = (props) => {
     const [image, setImage] = useState(props.dfoCore.getContextElement('trustwalletImgURLTemplate').split('{0}').join(window.web3.utils.toChecksumAddress(props.address)));
     const { icons } = require('../../../data/context.json').default;
 
+    var wellKnownTokenImage = props.dfoCore.tryRetrieveWellKnownTokenImage(address);
+
     var imageLink = props.address === window.voidEthereumAddress ? ethereumLogoImage : image;
 
     var addr = props.dfoCore.web3.utils.toChecksumAddress(props.address);
@@ -18,6 +20,9 @@ const Coin = (props) => {
     }
 
     const onImageError = () => {
+        if(wellKnownTokenImage) {
+            return setImage(wellKnownTokenImage);
+        }
         if (icons[props.address.toLowerCase()]) {
             setImage(icons[props.address.toLowerCase()]);
         } else {

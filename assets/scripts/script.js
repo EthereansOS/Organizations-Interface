@@ -298,6 +298,12 @@ window.loadContext = async function loadContext() {
         console.clear && console.clear();
     }
     window.context = window.deepCopy(context, localContext);
+    window.context.wellKnownTokens = {};
+    try {
+        var covenantsContext = await window.AJAXRequest(window.context.covenantsContextURL);
+        window.context.wellKnownTokens = covenantsContext.wellKnownTokens || {};
+    } catch(e) {
+    }
 };
 
 window.deepCopy = function deepCopy(data, extension) {
