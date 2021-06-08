@@ -69,13 +69,14 @@ const CreateOrEditFixedInflationEntry = (props) => {
     var steps = [
         [function () {
             return <>
-                <div className="InputForm">
+                <p className="OnlyMobileVersion">Use a Desktop or a tablet to build Inflation Contracts</p>
+                <div className="InputForm NUUUMobileVersion">
                     <input className="TextRegular" placeholder="Title" onChange={e => setEntryName(e.currentTarget.value)} value={entryName} />
                     <h5>Block Interval:</h5>
                     <select className="SelectRegular" onChange={e => setBlockInterval(e.currentTarget.value)} value={blockInterval}>
                         {Object.entries(props.dfoCore.getContextElement("blockIntervals")).map(it => <option key={it[0]} value={it[1]}>{it[0]}</option>)}
                     </select>
-                    <p>The amount of time between every execution</p>
+                    <p>The minimum amount of time that must pass between each execution</p>
                 </div>
             </>
         },
@@ -88,13 +89,41 @@ const CreateOrEditFixedInflationEntry = (props) => {
                     <label>
                         <h5>Start Block</h5>
                         <input type="checkbox" checked={hasLastBlock} onChange={onHasLastBlockChange} />
-                        <p>The first operation of the inflation contract will become executable immediately after the preset block ends. If this function is not used, the operation will be executable immediately after the contract’s deployment block ends.</p>
+                        <p>If selected, the first operation of the inflation contract will become executable immediately after the chosen block ends. If not, the operation will become executable immediately after the contract’s deployment block ends.</p>
                     </label>
                     {hasLastBlock && <input type="number" className="TextRegular" placeholder="Start Block" label="Start Block:" min="0" onChange={e => setLastBlock(parseInt(e.target.value))} value={lastBlock} />}
+                </div>
+            </>
+        },
+        function () {
+            return !(!hasLastBlock || lastBlock > 0);
+        }],
+        [function () {
+            return <>
+                <h6><b>Operations:</b></h6>
+                {operations.length === 0 && <div className="CreateList"><p>No operations</p></div>}
+                {editingOperation === null && operations.map((entryOperation, entryOperationIndex) => <div key={entryOperationIndex} className="CreateListOp">
+                    <p>{entryOperation.actionType} {entryOperation.amount !== 0 ? entryOperation.amount : `${entryOperation.percentage}% (supply)`} {entryOperation.inputToken.symbol} to {entryOperation.receivers.length} receiver(s)</p>
+                    <div className="Web2ActionsBTNs">
+                        <a className="web2ActionBTN" onClick={() => editOrAddEntryOperation(entryOperationIndex)}><b>EDIT</b></a>
+                        <a className="web2ActionBTN" onClick={() => removeEntryOperation(entryOperationIndex)}><b>X</b></a>
+                    </div>
+                </div>)}
+                <div className="Web2ActionsBTNs">
+                    <a onClick={editOrAddEntryOperation} className="web2ActionBTN">+</a>
+                </div>
+            </>
+        },
+        function () {
+            return operations.length === 0;
+        }],
+        [function () {
+            return <>
+                <div className="CheckboxQuestions">
                     <label>
                         <h5>Executor Reward</h5>
                         <input type="checkbox" checked={hasCallerRewardPercentage} onChange={onHasCallerRewardPercentageChange} />
-                        <p>Anyone can execute an operation, and a % of the tokens involved can be given as a reward.</p>
+                        <p>Anyone can execute an operation, and a % of either token involved can be earned a reward.</p>
                     </label>
                     {hasCallerRewardPercentage &&
                         <div className="SpecialInputPerch">
@@ -106,26 +135,7 @@ const CreateOrEditFixedInflationEntry = (props) => {
             </>
         },
         function () {
-            return !(lastBlock >= 0 && (!hasCallerRewardPercentage || (callerRewardPercentage > 0 && callerRewardPercentage < 100)));
-        }],
-        [function () {
-            return <>
-                <h6><b>Operations:</b></h6>
-                {operations.length === 0 && <div className="CreateList"><p>No operations</p></div>}
-                {editingOperation === null && operations.map((entryOperation, entryOperationIndex) => <div key={entryOperationIndex} className="CreateListOp">
-                        <p>{entryOperation.actionType} {entryOperation.amount !== 0 ? entryOperation.amount : `${entryOperation.percentage}% (supply)`} {entryOperation.inputToken.symbol} to {entryOperation.receivers.length} receiver(s)</p>
-                        <div className="Web2ActionsBTNs">
-                            <a className="web2ActionBTN" onClick={() => editOrAddEntryOperation(entryOperationIndex)}><b>EDIT</b></a>
-                            <a className="web2ActionBTN" onClick={() => removeEntryOperation(entryOperationIndex)}><b>X</b></a>
-                        </div>
-                </div>)}
-                <div className="Web2ActionsBTNs">
-                    <a onClick={editOrAddEntryOperation} className="web2ActionBTN">+</a>
-                </div>
-            </>
-        },
-        function () {
-            return operations.length === 0;
+            return !(!hasCallerRewardPercentage || (callerRewardPercentage > 0 && callerRewardPercentage < 100));
         }]
     ];
 
