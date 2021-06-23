@@ -221,7 +221,9 @@ window.onEthereumUpdate = function onEthereumUpdate(millis) {
                 window.uniswapV2Router = window.newContract(window.context.uniSwapV2RouterAbi, window.context.uniSwapV2RouterAddress);
                 window.wethAddress = window.web3.utils.toChecksumAddress(await window.blockchainCall(window.uniswapV2Router.methods.WETH));
                 window.farmFactory = window.newContract(window.context.FarmFactoryABI, window.getNetworkElement("farmFactoryAddress"));
+                window.farmFactoryGen2 = window.newContract(window.context.FarmFactoryABI, window.getNetworkElement("farmGen2FactoryAddress"));
                 window.dfoBasedFarmExtensionFactory = window.newContract(window.context.DFOBasedFarmExtensionFactoryABI, window.getNetworkElement("dFOBasedFarmExtensionFactoryAddress"));
+                window.dfoBasedFarmExtensionFactoryGen2 = window.newContract(window.context.DFOBasedFarmExtensionFactoryABI, window.getNetworkElement("dFOBasedFarmGen2ExtensionFactoryAddress"));
                 window.ammAggregator = window.newContract(window.context.AMMAggregatorABI, window.getNetworkElement("ammAggregatorAddress"));
                 window.list = {
                     DFO: {
@@ -1997,25 +1999,45 @@ window.loadFarmingSetup = async function loadFarmingSetup(contract, i) {
     for (var i in models.setup.names) {
         var name = models.setup.names[i];
         var value = data[0][i];
-        value !== true && value !== false && (value = value.toString());
+        value && value !== true && value !== false && (value = value.toString());
         setup[name] = value;
     }
     var info = {};
     for (var i in models.info.names) {
         var name = models.info.names[i];
         var value = data[1][i];
-        value !== true && value !== false && (value = value.toString());
+        value && value !== true && value !== false && (value = value.toString());
         info[name] = value;
     }
     info.startBlock = info.startBlock || "0";
     return [setup, info];
 }
 
+window.getFarmingContractGenerationByAddress = async function getFarmingContractGenerationByAddress(address) {
+    var gen2FarmingFactoryAddress = window.getNetworkElement("farmGen2FactoryAddress");
+    var gen1FarmingFactoryAddress = window.getNetworkElement("farmFactoryAddress");
+    var log = await window.getLogs({
+        address: [
+            gen2FarmingFactoryAddress,
+            gen1FarmingFactoryAddress
+        ],
+        topics: [
+            window.web3.utils.sha3('FarmMainDeployed(address,address,bytes)'),
+            window.web3.eth.abi.encodeParameter("address", address)
+        ],
+        fromBlock: 0,
+        toBlock: 'latest'
+    });
+    return log[0].address.toLowerCase() === gen2FarmingFactoryAddress.toLowerCase() ? "gen2" : "gen1";
+}
+
 window.setNewFarmingManagerData = async function setNewFarmingManagerData(element, farmExtensionAddress, blockTiers, active) {
     var extension = window.newContract(window.context.DFOBasedFarmExtensionABI, farmExtensionAddress);
     var contract;
+    var farmMainContractAddress = (await window.blockchainCall(extension.methods.data))[0];
+    var generation = await window.getFarmingContractGenerationByAddress(farmMainContractAddress);
     try {
-        contract = window.newContract(window.context.FarmMainABI, (await window.blockchainCall(extension.methods.data))[0]);
+        contract = window.newContract(window.context[generation === 'gen2' ? "FarmMainGen2ABI" : 'FarmMainABI'], farmMainContractAddress);
     } catch (e) {
         console.error(e);
     }
@@ -2031,7 +2053,7 @@ window.setNewFarmingManagerData = async function setNewFarmingManagerData(elemen
     farmData.setupsCount = farmData.setups.length;
     farmData.tiers = {};
     for (var i = 0; i < farmData.setupsCount; i++) {
-        var setupData = (await window.loadFarmingSetup(contract, i))[1];//(await window.blockchainCall(contract.methods.setup, i))[1];
+        var setupData = (await window.loadFarmingSetup(contract, i))[1];
         var setup = {};
         Object.entries(setupData).forEach(it => setup[it[0]] = it[1]);
         setup.mainToken = await window.loadTokenInfos(setup.mainTokenAddress);
@@ -2039,6 +2061,7 @@ window.setNewFarmingManagerData = async function setNewFarmingManagerData(elemen
     }
     farmData.tiers = Object.values(farmData.tiers);
     farmData.setupsCount = farmData.tiers.length;
+    farmData.generation = generation;
     return farmData;
 };
 

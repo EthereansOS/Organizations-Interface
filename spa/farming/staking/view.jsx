@@ -11,6 +11,7 @@ var StakingView = React.createClass({
         'spa/imported/shared/TokenInput.jsx',
         'spa/imported/shared/ApproveButton.jsx',
         'spa/imported/farm/CreateOrEditFarmingSetup.jsx',
+        'spa/imported/farm/CreateOrEditFarmingSetupGen2.jsx',
         'spa/imported/farm/CreateOrEditFarmingSetups.jsx'
     ],
     requiredModules: [
@@ -44,7 +45,7 @@ var StakingView = React.createClass({
         });
     },
     renderFarmData(element) {
-        var props = {...this.getProps(), farmAddress : element.contract.options.address};
+        var props = {...this.getProps(), farmAddress : element.contract.options.address, generation : element.generation};
         element.readonly && delete props.edit;
         return React.createElement(ExploreFarmingContract, props);
     },
@@ -114,6 +115,15 @@ var StakingView = React.createClass({
         var newOldStakingData = oldStakingData && oldStakingData.filter(it => !it.old);
         newOldStakingData && newOldStakingData.forEach(it => it.readonly = true);
         oldStakingData = oldStakingData && oldStakingData.filter(it => it.old);
+        var stakingData = [];
+        try {
+            stakingData = [
+                ...this.props.stakingData.filter(it => it.generation === 'gen2'),
+                ...this.props.stakingData.filter(it => it.generation === 'gen1'),
+                ...this.props.stakingData.filter(it => it.old)
+            ];
+        } catch(e) {
+        }
         return (<ul className="DFOHosting HostingCategoryTitleYYY">
             <section className="HostingCategoryTitle">
                 <h2>Active Farming Contracts</h2>
@@ -124,7 +134,7 @@ var StakingView = React.createClass({
             {(!this.state || !this.state.edit) && (!this.props || !this.props.stakingData) && <LoaderMinimino />}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.length === 0 && <h4>No Farming Contracts <a href="javascript:;" onClick={() => _this.emit('edit/toggle', true, () => _this.setState({ edit: true }))} className="LinkVisualButton LinkVisualPropose LinkVisualButtonB">Create</a></h4>}
             {(!this.state || !this.state.edit) && this.props && this.props.stakingData && this.props.stakingData.length > 0 && <section className="DappBox">
-                {this.props.stakingData.map(this.renderStakingData)}
+                {stakingData.map(this.renderStakingData)}
             </section>}
             {(!this.state || !this.state.edit) && <section className="HostingCategoryTitle">
                 <h2>Farming Contracts History</h2>

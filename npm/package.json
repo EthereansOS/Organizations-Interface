@@ -6,6 +6,7 @@
   "scripts": {
     "web3": "browserify web3.js | uglifyjs > ../assets/plugins/web3.min.js",
     "rlp": "browserify rlp.js | uglifyjs > ../assets/plugins/rlp.min.js",
+    "univ3": "browserify univ3.js > ../assets/plugins/univ3.min.js",
     "monaco.editor": "webpack --progress && rm ../assets/plugins/monaco.editor/35bb8d560db5205616671eab8c4d0303.ttf && rm ../assets/plugins/monaco.editor/monaco.editor.min.js.LICENSE"
   },
   "author": "",
@@ -23,6 +24,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
+    "@uniswap/v3-sdk": "^3.1.0",
     "keccak": "^3.0.0",
     "rlp": "^2.2.4"
   }

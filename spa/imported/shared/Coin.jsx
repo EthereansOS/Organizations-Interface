@@ -1,15 +1,19 @@
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import defaultLogoImage from '../../../assets/images/default-logo.png';
 import ethereumLogoImage from '../../../assets/images/eth.png';
+import Loading from '../Loading';
 import { connect } from 'react-redux';
 
 const Coin = (props) => {
-    const { forcedImage, height } = props;
+    const { forcedImage, address } = props;
     const [image, setImage] = useState(props.dfoCore.getContextElement('trustwalletImgURLTemplate').split('{0}').join(window.web3.utils.toChecksumAddress(props.address)));
     const { icons } = require('../../../data/context.json').default;
+    const [tokenSymbol, setTokenSymbol] = useState('');
 
-    var wellKnownTokenImage = props.dfoCore.tryRetrieveWellKnownTokenImage(props.address);
+    useEffect(() => props.dfoCore.getTokenSymbol(address).then(setTokenSymbol), []);
+
+    var wellKnownTokenImage = props.dfoCore.tryRetrieveWellKnownTokenImage(address);
 
     var imageLink = props.address === window.voidEthereumAddress ? ethereumLogoImage : image;
 
@@ -30,7 +34,11 @@ const Coin = (props) => {
         }
     }
 
-    return <img className={props.className} height={height || 24} src={forcedImage || imageLink} onError={(e) => onImageError()} />
+    return (
+        image === defaultLogoImage ? tokenSymbol ? <span className="TokenCoolFancy"><span>{window.shortenWord(tokenSymbol, 4, true)}</span></span> :
+        <Loading/> :
+        <img className={props.className} src={forcedImage || imageLink} onError={onImageError}/>
+    ); 
 }
 
 Coin.propTypes = {

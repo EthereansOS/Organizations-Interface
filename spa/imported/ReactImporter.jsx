@@ -35,10 +35,11 @@ window.exports = window.exports || {};
 
 function injectGlobalProps(p) {
     var props = {...p};
-    props.dfoCore = {...window, ...props.dfoCore};
+    props.dfoCore = window.dfoCore = {...window, ...props.dfoCore};
     props.dfoCore.address = window.walletAddress;
     props.dfoCore.web3 = window.web3;
     props.dfoCore.networkId = window.networkId;
+    props.dfoCore.chainId = window.networkId;
     props.dfoCore.getContextElement = function getContextElement(elementName) {
         return window.getNetworkElement(elementName) || window.context[elementName];
     };
@@ -66,6 +67,19 @@ function injectGlobalProps(p) {
         wellKnownTokens = {};
         Object.entries(wellKnownTokensStart).forEach(it => wellKnownTokens[this.web3.utils.toChecksumAddress(it[0] || this.voidEthereumAddress)] = window.formatLink(it[1]));
         return wellKnownTokens[address];
+    }
+    props.dfoCore.getTokenSymbol = async function getTokenSymbol(address) {
+        var token = await this.getContract(this.getContextElement('ERC20ABI'), address);
+        var symbol = await token.methods.symbol().call();
+        return symbol;
+    }
+    props.dfoCore.isItem = async function isItem(address) {
+        return (await this.getContract(this.getContextElement("ERC20ABI"), address)).isItem;
+    }
+
+    props.dfoCore.isItemSync = async function isItemSync(address) {
+        var toChecksumAddress = this.web3.utils.toChecksumAddress;
+        return window.dfoCore.itemsTokens.filter(it => toChecksumAddress(it.address) === toChecksumAddress(address)).length > 0;
     }
     props.dfoCore.loadFarmingSetup = async function loadFarmingSetup(contract, i) {
 
@@ -148,14 +162,14 @@ function injectGlobalProps(p) {
         for(var i in models.setup.names) {
             var name = models.setup.names[i];
             var value = data[0][i];
-            value !== true && value !== false && (value = value.toString());
+            value && value !== true && value !== false && (value = value.toString());
             setup[name] = value;
         }
         var info = {};
         for(var i in models.info.names) {
             var name = models.info.names[i];
             var value = data[1][i];
-            value !== true && value !== false && (value = value.toString());
+            value && value !== true && value !== false && (value = value.toString());
             info[name] = value;
         }
         info.startBlock = info.startBlock || "0";

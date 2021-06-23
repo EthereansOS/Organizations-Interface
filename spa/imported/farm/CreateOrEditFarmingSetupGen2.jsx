@@ -2,8 +2,15 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { connect } from 'react-redux';
 import { Coin, Input, TokenInput } from '../../../../components/shared';
+import {
+    tickToPrice,
+    nearestUsableTick,
+    TICK_SPACINGS,
+    TickMath
+} from '@uniswap/v3-sdk/dist/';
+import { Token } from "@uniswap/sdk-core/dist";
 
-const CreateOrEditFarmingSetup = (props) => {
+const CreateOrEditFarmingSetupGen2 = (props) => {
     const { rewardToken, onAddFarmingSetup, editSetup, onEditFarmingSetup, dfoCore, onCancel } = props;
     const selectedFarmingType = editSetup ? (editSetup.free ? "free" : "locked") : props.selectedFarmingType;
     // general purpose
@@ -17,6 +24,8 @@ const CreateOrEditFarmingSetup = (props) => {
     const [renewTimes, setRenewTimes] = useState((editSetup && editSetup.renewTimes) ? editSetup.renewTimes : 0);
     const [involvingEth, setInvolvingEth] = useState((editSetup && editSetup.involvingEth) ? editSetup.involvingEth : false);
     const [ethSelectData, setEthSelectData] = useState((editSetup && editSetup.ethSelectData) ? editSetup.ethSelectData : null);
+    const [tickUpper, setTickUpper] = useState((editSetup && editSetup.tickUpper) ? editSetup.tickUpper : 0);
+    const [tickLower, setTickLower] = useState((editSetup && editSetup.tickLower) ? editSetup.tickLower : 0);
     // token state
     const [liquidityPoolToken, setLiquidityPoolToken] = useState((editSetup && editSetup.data) ? editSetup.data : null);
     const [mainTokenIndex, setMainTokenIndex] = useState((editSetup && editSetup.mainTokenIndex) ? editSetup.mainTokenIndex : 0);
@@ -26,8 +35,16 @@ const CreateOrEditFarmingSetup = (props) => {
     const [hasPenaltyFee, setHasPenaltyFee] = useState((editSetup && editSetup.penaltyFee) ? editSetup.penaltyFee > 0 : false);
     const [penaltyFee, setPenaltyFee] = useState((editSetup && editSetup.penaltyFee) ? editSetup.penaltyFee : 0);
     const [ethAddress, setEthAddress] = useState((editSetup && editSetup.ethAddress) ? editSetup.ethAddress : "");
+    const [uniswapTokens, setUniswapTokens] = useState([]);
+    const [secondTokenIndex, setSecondTokenIndex] = useState(1);
+    const [maxPrice, setMaxPrice] = useState(0);
+    const [minPrice, setMinPrice] = useState(0);
     // current step
     const [currentStep, setCurrentStep] = useState(0);
+
+    const dilutedTickRange = 92100;
+    var tickLowerInput;
+    var tickUpperInput;
 
     useEffect(() => {
         if (editSetup && (editSetup.liquidityPoolTokenAddress || (editSetup.liquidityPoolToken && editSetup.liquidityPoolToken.address))) {
@@ -35,18 +52,51 @@ const CreateOrEditFarmingSetup = (props) => {
         }
     }, []);
 
+    useEffect(() => {
+        var minPrice;
+        var maxPrice;
+        try {
+            setMinPrice(minPrice = tickToPrice(uniswapTokens[secondTokenIndex], uniswapTokens[1 - secondTokenIndex], parseInt(tickLowerInput.value = tickLower)).toSignificant(18));
+        } catch(e) {
+        }
+        try {
+            setMaxPrice(maxPrice = tickToPrice(uniswapTokens[secondTokenIndex], uniswapTokens[1 - secondTokenIndex], parseInt(tickUpperInput.value = tickUpper)).toSignificant(18));
+        } catch(e) {
+        }
+    }, [tickLower, tickUpper, secondTokenIndex]);
+
     const onSelectLiquidityPoolToken = async (address) => {
         if (!address) return;
         setLoading(true);
         try {
-            const ammAggregator = await dfoCore.getContract(dfoCore.getContextElement('AMMAggregatorABI'), dfoCore.getContextElement('ammAggregatorAddress'));
-            const res = await ammAggregator.methods.info(address).call();
-            const name = res['name'];
-            const ammAddress = res['amm'];
-            const ammContract = await dfoCore.getContract(dfoCore.getContextElement('AMMABI'), ammAddress);
-            const ammData = await ammContract.methods.data().call();
-            const lpInfo = await ammContract.methods.byLiquidityPool(address).call();
+            const poolContract = await dfoCore.getContract(dfoCore.getContextElement("UniswapV3PoolABI"), address);
+            var fee = await poolContract.methods.fee().call();
+            var tick = parseInt((await poolContract.methods.slot0().call()).tick);
+            var tickLower = nearestUsableTick(tick, TICK_SPACINGS[fee]);
+            var tickUpper = tickLower;
+            if(props.gen2SetupType === 'diluted') {
+                tickLower -= dilutedTickRange;
+                tickUpper += dilutedTickRange;
+            }
+            setTickLower(nearestUsableTick(tickLower, TICK_SPACINGS[fee]));
+            setTickUpper(nearestUsableTick(tickUpper, TICK_SPACINGS[fee]));
+            console.log({
+                tick : nearestUsableTick(tick, TICK_SPACINGS[fee]),
+                tickLower,
+                tickUpper
+            });
+
+            const lpInfo = [
+                [], [], [
+                    await poolContract.methods.token0().call(),
+                    await poolContract.methods.token1().call()
+                ]
+            ];
+            const ammData = [
+                await (await dfoCore.getContract(dfoCore.getContextElement("UniswapV3NonfungiblePositionManagerABI"), dfoCore.getContextElement('uniswapV3NonfungiblePositionManagerAddress'))).methods.WETH9().call()
+            ];
             const tokens = [];
+            var uniTokens = [];
             let ethTokenFound = false;
             setInvolvingEth(false);
             await Promise.all(lpInfo[2].map(async (tkAddress) => {
@@ -63,19 +113,25 @@ const CreateOrEditFarmingSetup = (props) => {
                     }
                 }
                 const currentToken = await dfoCore.getContract(dfoCore.getContextElement('ERC20ABI'), tkAddress);
-                const symbol = tkAddress === window.voidEthereumAddress ? "ETH" : await currentToken.methods.symbol().call();
-                tokens.push({ symbol, address: tkAddress, isEth: tkAddress.toLowerCase() === ammData[0].toLowerCase() })
+                const symbol = tkAddress === window.voidEthereumAddress || tkAddress === ammData[0] ? "ETH" : await currentToken.methods.symbol().call();
+                var name = tkAddress === window.voidEthereumAddress || tkAddress === ammData[0] ? "Ethereum" : await currentToken.methods.name().call();
+                var decimals = parseInt(tkAddress ===window.voidEthereumAddress ? "18" : await currentToken.methods.decimals().call());
+                tokens.push({ symbol, name, decimals, address: tkAddress, isEth: tkAddress.toLowerCase() === ammData[0].toLowerCase() });
+                var uniToken = new Token(props.dfoCore.chainId, tkAddress, decimals, name, symbol);
+                uniTokens.push(uniToken);
             }));
-            const lpTokenContract = await dfoCore.getContract(dfoCore.getContextElement('ERC20ABI'), address);
-            const decimals = await lpTokenContract.methods.decimals().call();
             if (!ethTokenFound) setEthSelectData(null);
             setLiquidityPoolToken({
                 address,
-                name,
+                name: 'Uniswap V3',
                 tokens,
-                decimals,
+                poolContract,
+                fee,
+                tick
             });
             setMainToken(tokens[0]);
+            setUniswapTokens(uniTokens);
+            setSecondTokenIndex(1);
         } catch (error) {
             setInvolvingEth(false);
             setEthSelectData(null);
@@ -106,10 +162,10 @@ const CreateOrEditFarmingSetup = (props) => {
     }
 
     const addSetup = () => {
-        if(hasMinStakeable && window.formatNumber(minStakeable) <= 0) {
+        if (hasMinStakeable && window.formatNumber(minStakeable) <= 0) {
             return;
         }
-        if(isRenewable && window.formatNumber(renewTimes) <= 0) {
+        if (isRenewable && window.formatNumber(renewTimes) <= 0) {
             return;
         }
         const setup = {
@@ -126,16 +182,36 @@ const CreateOrEditFarmingSetup = (props) => {
             rewardPerBlock,
             maxStakeable,
             penaltyFee,
-            ethAddress
+            ethAddress,
+            tickLower,
+            tickUpper
         };
         editSetup ? onEditFarmingSetup(setup, props.editSetupIndex) : onAddFarmingSetup(setup);
     }
 
     function next() {
-        if(selectedFarmingType === 'locked' && window.formatNumber(maxStakeable) <= 0) {
+        if (selectedFarmingType === 'locked' && window.formatNumber(maxStakeable) <= 0) {
             return;
         }
-        liquidityPoolToken && window.formatNumber(blockDuration) > 0 && window.formatNumber(rewardPerBlock) > 0 && setCurrentStep(1);
+        currentStep === 0 && liquidityPoolToken && window.formatNumber(blockDuration) > 0 && window.formatNumber(rewardPerBlock) > 0 && setCurrentStep(props.gen2SetupType === 'diluted' ? 2 : 1);
+        currentStep === 1 && tickUpper !== tickLower && tickLower >= TickMath.MIN_TICK && tickUpper <= TickMath.MAX_TICK && tickLower < tickUpper && tickLower % TICK_SPACINGS[liquidityPoolToken.fee] === 0 && tickUpper % TICK_SPACINGS[liquidityPoolToken.fee] === 0 && setCurrentStep(2);
+    }
+
+    function updateTick(tick, increment) {
+        var tickToUpdate = tick === 0 ? tickLower : tickUpper;
+        var step = TICK_SPACINGS[liquidityPoolToken.fee];
+        increment && (tickToUpdate += step);
+        !increment && (tickToUpdate -= step);
+        tickToUpdate = tickToUpdate > TickMath.MAX_TICK ? TickMath.MAX_TICK : tickToUpdate < TickMath.MIN_TICK ? TickMath.MIN_TICK : tickToUpdate;
+        tick === 0 && setTickLower(tickToUpdate);
+        tick === 1 && setTickUpper(tickToUpdate);
+    }
+
+    function onTickInputBlur(e) {
+        var value = nearestUsableTick(window.formatNumber(e.currentTarget.value) || 0, TICK_SPACINGS[liquidityPoolToken.fee]);
+        var tick = parseInt(e.currentTarget.dataset.tick);
+        tick === 0 && setTickLower(value);
+        tick === 1 && setTickUpper(value);
     }
 
     const getFirstStep = () => {
@@ -158,37 +234,18 @@ const CreateOrEditFarmingSetup = (props) => {
                     {
                         liquidityPoolToken && <>
                             {
-                                false && ethSelectData && 
-                                    <div className="form-check HIDEO">
-                                        <input className="form-check-input" type="checkbox" checked={involvingEth} onChange={(e) => setInvolvingEth(e.target.checked)} id="involvingEth" />
-                                        <label className="form-check-label" htmlFor="involvingEth">
-                                            Use {ethSelectData.symbol} as ETH
-                                        </label>
-                                    </div>
-                            }
-                            {
-                                selectedFarmingType === 'locked' && <>
-                                    <select className="SelectRegular" value={mainTokenIndex} onChange={(e) => { setMainTokenIndex(e.target.value); setMainToken(liquidityPoolToken.tokens[e.target.value]); }}>
-                                        {
-                                            liquidityPoolToken.tokens.map((tk, index) => {
-                                                return <option key={tk.address} value={index}>{!tk.isEth ? tk.symbol : involvingEth ? 'ETH' : tk.symbol}</option>
-                                            })
-                                        }
-                                    </select>
-                                    <div className="FancyExplanationCreate">
-                                        <div className="InputTokensRegular">
-                                            <h6>Max stakeable</h6>
-                                            <p className="BreefRecapB">The maximum amount of main tokens staked simultaneously.</p>
-                                            <div className="InputTokenRegular">
-                                                <Input min={0} showCoin={true} address={(mainToken.isEth && involvingEth) ? props.dfoCore.voidEthereumAddress : mainToken.address} value={maxStakeable} name={(mainToken.isEth && involvingEth) ? 'ETH' : mainToken.symbol} onChange={(e) => setMaxStakeable(e.target.value)} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </>
+                                false && ethSelectData &&
+                                <div className="form-check HIDEO">
+                                    <input className="form-check-input" type="checkbox" checked={involvingEth} onChange={(e) => setInvolvingEth(e.target.checked)} id="involvingEth" />
+                                    <label className="form-check-label" htmlFor="involvingEth">
+                                        Use {ethSelectData.symbol} as ETH
+                                    </label>
+                                </div>
                             }
                             <div className="FancyExplanationCreate">
+                                        <h6>Reward per block</h6>
+                                        <p className="BreefRecapB">Select the duration of the setup. The selected timeband will determine the end block once the setup begins.</p>
                                 <div className="InputTokensRegular">
-                                    <h6>Reward per block</h6>
                                     <div className="InputTokenRegular">
                                         <Input min={0} showCoin={true} address={rewardToken.address} value={rewardPerBlock} name={rewardToken.symbol} onChange={(e) => onFreeRewardPerBlockUpdate(e.target.value)} />
                                     </div>
@@ -196,17 +253,18 @@ const CreateOrEditFarmingSetup = (props) => {
                             </div>
                             <div className="FancyExplanationCreate">
                                 <p className="BreefRecapB">Select the duration of the setup. The selected timeband will determinate the end block once activated</p>
-                                <select className="SelectRegular" value={blockDuration} onChange={(e) => setBlockDuration(e.target.value)}>
-                                    <option value={0}>Choose setup duration</option>
-                                    {
-                                        Object.keys(props.dfoCore.getContextElement("blockIntervals")).map((key, index) => {
-                                            return <option key={key} value={props.dfoCore.getContextElement("blockIntervals")[key]}>{key}</option>
-                                        })
-                                    }
-                                </select>
+                            
+                            <select className="SelectRegular" value={blockDuration} onChange={(e) => setBlockDuration(e.target.value)}>
+                                <option value={0}>Choose setup duration</option>
+                                {
+                                    Object.keys(props.dfoCore.getContextElement("blockIntervals")).map((key, index) => {
+                                        return <option key={key} value={props.dfoCore.getContextElement("blockIntervals")[key]}>{key}</option>
+                                    })
+                                }
+                            </select>
                             </div>
                             <div className="FancyExplanationCreate">
-                                <p className="BreefRecapB"><b>Total reward ({`${blockDuration}`} blocks): {rewardPerBlock * blockDuration} {rewardToken.symbol}</b></p>
+                            <p className="BreefRecapB"><b>Total reward ({`${blockDuration}`} blocks): {rewardPerBlock * blockDuration} {rewardToken.symbol}</b></p>
                             </div>
                         </>
                     }
@@ -219,6 +277,51 @@ const CreateOrEditFarmingSetup = (props) => {
         </div>
     }
 
+    const choosetick = () => {
+        return (
+            <div>
+
+                <div className="generationSelector">
+                    <div className="InputTokenRegular">
+                        <input className="PriceRangeInput" type="number" min={TickMath.MIN_TICK} max={TickMath.MAX_TICK} data-tick="0" ref={ref => tickLowerInput = ref} defaultValue={tickLower} onBlur={onTickInputBlur}/>
+                    </div>
+                    <div className="InputTokenRegular">
+                        <a className="tickerchanger" href="javascript:;" onClick={() => updateTick(0, false)}> - </a>
+                        <a className="tickerchanger" href="javascript:;" onClick={() => updateTick(0, true)}> + </a>
+                    </div>
+                    <h6>Min Price</h6>
+                    <h5>{minPrice} {liquidityPoolToken.tokens[1 - secondTokenIndex].symbol}</h5>
+                    <p>The minumum price of the curve, all position will be 100% {liquidityPoolToken.tokens[1 - secondTokenIndex].symbol} at this price and will no more earn fees.</p>
+                </div>
+                <div className="generationSelector">
+                    <div className="InputTokenRegular">
+                        <input className="PriceRangeInput" type="number" min={TickMath.MIN_TICK} max={TickMath.MAX_TICK} data-tick="1" ref={ref => tickUpperInput = ref} defaultValue={tickUpper} onBlur={onTickInputBlur}/>
+                    </div>
+                    <div className="InputTokenRegular">
+                        <a className="tickerchanger" href="javascript:;" onClick={() => updateTick(1, false)}> - </a>
+                        <a className="tickerchanger" href="javascript:;" onClick={() => updateTick(1, true)}> + </a>
+                    </div>
+                    <h6>Max Price</h6>
+                    <h5>{maxPrice} {liquidityPoolToken.tokens[1 - secondTokenIndex].symbol}</h5>
+                    <p>The minumum price of the curve, all position will be 100% {liquidityPoolToken.tokens[1 - secondTokenIndex].symbol} at this price and will no more earn fees.</p>
+                </div>
+                <div className="FancyExplanationCreate">
+                    <div className="FancyExplanationCreateS">
+                    <h6>{liquidityPoolToken.tokens[secondTokenIndex].symbol} per {liquidityPoolToken.tokens[1 - secondTokenIndex].symbol}</h6>
+                    <p>Current Price: {tickToPrice(uniswapTokens[secondTokenIndex], uniswapTokens[1 - secondTokenIndex], parseInt(liquidityPoolToken.tick)).toSignificant(18)} {liquidityPoolToken.tokens[1 - secondTokenIndex].symbol}<br></br>Tick: {liquidityPoolToken.tick}</p>
+                    </div>
+                    <div className="FancyExplanationCreateS">
+                        <a className="web2ActionBTN web2ActionBTNGigi" onClick={() => setSecondTokenIndex(1 - secondTokenIndex)}>Switch</a>
+                    </div>
+                </div>
+                <div className="Web2ActionsBTNs">
+                    <a onClick={() => setCurrentStep(0)} className="backActionBTN">Back</a>
+                    <a onClick={next} className="web2ActionBTN">Next</a>
+                </div>
+            </div>
+        );
+    };
+
     const getSecondStep = () => {
         return (
             <div className="CheckboxQuestions">
@@ -226,7 +329,7 @@ const CreateOrEditFarmingSetup = (props) => {
                     <h6><input type="checkbox" checked={hasStartBlock} onChange={(e) => {
                         setStartBlock(0);
                         setHasStartBlock(e.target.checked);
-                    }}/> Start Block</h6>
+                    }} /> Start Block</h6>
                     {
                         hasStartBlock && <div className="InputTokensRegular InputRegularB">
                             <Input min={0} value={startBlock} onChange={(e) => setStartBlock(e.target.value)} />
@@ -238,10 +341,10 @@ const CreateOrEditFarmingSetup = (props) => {
                     <h6><input type="checkbox" checked={hasMinStakeable} onChange={(e) => onUpdateHasMinStakeable(e.target.checked)} id="minStakeable" /> Min stakeable</h6>
                     {
                         hasMinStakeable && <div className="InputTokensRegular">
-                                <div className="InputTokenRegular">
-                                    <Input min={0} showCoin={true} address={(!mainToken?.isEth && !liquidityPoolToken.tokens[mainTokenIndex].isEth) ? `${mainToken?.address || liquidityPoolToken.tokens[mainTokenIndex].address}` : involvingEth ? props.dfoCore.voidEthereumAddress : `${mainToken?.address || liquidityPoolToken.tokens[mainTokenIndex].address}`} value={minStakeable} name={(!mainToken?.isEth && !liquidityPoolToken.tokens[mainTokenIndex].isEth) ? `${mainToken?.symbol || liquidityPoolToken.tokens[mainTokenIndex].symbol}` : involvingEth ? 'ETH' : `${mainToken?.symbol || liquidityPoolToken.tokens[mainTokenIndex].symbol}`} onChange={(e) => setMinSteakeable(e.target.value)} />
-                                </div>
-                                {
+                            <div className="InputTokenRegular">
+                                <Input min={0} showCoin={true} address={(!mainToken?.isEth && !liquidityPoolToken.tokens[mainTokenIndex].isEth) ? `${mainToken?.address || liquidityPoolToken.tokens[mainTokenIndex].address}` : involvingEth ? props.dfoCore.voidEthereumAddress : `${mainToken?.address || liquidityPoolToken.tokens[mainTokenIndex].address}`} value={minStakeable} name={(!mainToken?.isEth && !liquidityPoolToken.tokens[mainTokenIndex].isEth) ? `${mainToken?.symbol || liquidityPoolToken.tokens[mainTokenIndex].symbol}` : involvingEth ? 'ETH' : `${mainToken?.symbol || liquidityPoolToken.tokens[mainTokenIndex].symbol}`} onChange={(e) => setMinSteakeable(e.target.value)} />
+                            </div>
+                            {
                                 selectedFarmingType === 'free' && <>
                                     <h6>Main Token</h6>
                                     <select className="SelectRegular" value={mainTokenIndex} onChange={(e) => { setMainTokenIndex(e.target.value); setMainToken(liquidityPoolToken.tokens[e.target.value]); }}>
@@ -258,23 +361,6 @@ const CreateOrEditFarmingSetup = (props) => {
                     }
                     <p className="BreefRecapB">[Optional] You can set a floor for the minimum amount of main tokens required to stake a position.</p>
                 </div>
-                {
-                    selectedFarmingType === 'locked' && <>
-                        <div className="FancyExplanationCreate">
-                            <h6><input type="checkbox" checked={hasPenaltyFee} onChange={(e) => onUpdateHasPenaltyFee(e.target.checked)} id="penaltyFee" /> Penalty fee </h6>
-                            {
-                                hasPenaltyFee && <>
-                                    <div className="SpecialInputPerch">
-                                        <aside>%</aside>
-                                        <input placeholder="Penalty Fee" type="number" min={0} max={100} value={penaltyFee} onChange={(e) => onUpdatePenaltyFee(e.target.value)} className="TextRegular" />
-                                    </div>
-                                    <p className="BreefRecapB">Main Token: {rewardToken.symbol}</p>
-                                </>
-                            }
-                            <p className="BreefRecapB">[Optional] You can set a penalty fee as a percentage of the total rewards for a locked position that must be paid to close it before the end block.</p>
-                        </div>
-                    </>
-                }
                 <div className="FancyExplanationCreate">
                     <h6><input type="checkbox" checked={isRenewable} onChange={(e) => {
                         setRenewTimes(0);
@@ -288,15 +374,20 @@ const CreateOrEditFarmingSetup = (props) => {
                     <p className="BreefRecapB">[Optional] You can customize a setup to automatically repeat itself after the end block.</p>
                 </div>
                 <div className="Web2ActionsBTNs">
-                    <a onClick={() => setCurrentStep(0)} className="backActionBTN">Back</a>
+                    <a onClick={() => setCurrentStep(1)} className="backActionBTN">Back</a>
                     <a onClick={() => addSetup()} className="web2ActionBTN">{editSetup ? 'Edit' : 'Add'}</a>
                 </div>
             </div>
         )
     }
 
-    return currentStep === 0 ? getFirstStep() : currentStep === 1 ? getSecondStep() : <div />
+    var steps = [
+        getFirstStep,
+        choosetick,
+        getSecondStep
+    ];
 
+    return steps[currentStep || 0]();
 }
 
 
@@ -305,4 +396,4 @@ const mapStateToProps = (state) => {
     return { dfoCore: core.dfoCore };
 }
 
-export default connect(mapStateToProps)(CreateOrEditFarmingSetup);
+export default connect(mapStateToProps)(CreateOrEditFarmingSetupGen2);
