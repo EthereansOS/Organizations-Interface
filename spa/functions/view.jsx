@@ -36,30 +36,34 @@ var Functions = React.createClass({
         delete this.mountDate;
     },
     onClick(e, element) {
-        e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
-        var type = $(e.target).hasClass('RwWrite') ? 'submit' : 'read';
-        var args = [];
         var _this = this;
-        if (this[element.codeName + 'Input']) {
-            this[element.codeName + 'Input'].children().each((i, elem) => {
-                var $element = $($(elem).children()[0]);
-                var val = $element.val();
-                $element.is('input[type="number"]') && (val = parseInt(val));
-                $element.is('select') && (val = val === 'true');
-                val !== undefined && args.push(val);
+        try {
+            e && e.preventDefault && e.preventDefault(true) && e.stopPropagation && e.stopPropagation(true);
+            var type = $(e.target).hasClass('RwWrite') ? 'submit' : 'read';
+            var args = [];
+            var _this = this;
+            if (this[element.codeName + 'Input']) {
+                this[element.codeName + 'Input'].children().each((i, elem) => {
+                    var $element = $($(elem).children()[0]);
+                    var val = $element.val();
+                    $element.is('input[type="number"]') && (val = parseInt(val));
+                    $element.is('select') && (val = val === 'true');
+                    val !== undefined && args.push($element.is('input[data-many="true"]') ? JSON.parse(val) : val);
+                });
+            }
+            var r = (_this.state && _this.state.response) || [];
+            delete r[element.codeName];
+            this.emit('message');
+            _this.setState({ response: r }, function () {
+                _this.controller.call(type, element.codeName, element.inputParameters, args, element.returnAbiParametersArray, element.needsSender).then(r => {
+                    var response = ((_this.state && _this.state.response) || {});
+                    response[element.codeName] = r;
+                    _this.setState({ response });
+                }).catch(e => _this.emit('message', e.message || e, "error"));
             });
+        } catch(exception) {
+            _this.emit('message', (exception.message || exception), "error")
         }
-        var _this = this;
-        var r = (_this.state && _this.state.response) || [];
-        delete r[element.codeName];
-        this.emit('message');
-        _this.setState({ response: r }, function () {
-            _this.controller.call(type, element.codeName, element.inputParameters, args, element.returnAbiParametersArray, element.needsSender).then(r => {
-                var response = ((_this.state && _this.state.response) || {});
-                response[element.codeName] = r;
-                _this.setState({ response });
-            }).catch(e => _this.emit('message', e.message || e, "error"));
-        });
     },
     renderInput(element) {
         if (element.isInternal || !element.methodSignature) {
@@ -67,7 +71,7 @@ var Functions = React.createClass({
         }
         return (<ul ref={ref => element.inputParameters && element.inputParameters.length > 0 && (this[element.codeName + 'Input'] = $(ref))}>
             {element.inputParameters.map((it, i) => (!element.needsSender || i > (element.submitable ? 1 : 0)) && <li key={it.codeName}>
-                {(it === 'bytes32' || it === 'address' || it === 'string' || it.indexOf('uint') == 0) && <input type={it.indexOf('uint') == 0 ? "number" : "text"} min="0" placeholder={it === 'address' ? "address" : ""}></input>}
+                {(it.indexOf('bytes32') === 0 || it.indexOf('address') === 0 || it.indexOf('string') === 0 || it.indexOf('bool[]') === 0 || it.indexOf('uint') === 0) && <input type={it.indexOf('uint') === 0 && it.indexOf('[]') === -1 ? "number" : "text"} min="0" data-many={it.indexOf('[]') !== -1} placeholder={it === 'address' ? "address" : ""}></input>}
                 {it === 'bool' && <select>
                     <option value="false" selected>false</option>
                     <option value="true">true</option>
