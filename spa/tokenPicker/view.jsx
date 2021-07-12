@@ -54,6 +54,11 @@ var TokenPicker = React.createClass({
         var _this = this;
         this.props.element && window.loadWallets(_this.props.element, uniswapPairs => _this.setState({uniswapPairs}), true);
     },
+    cloneToken(source) {
+        var copy = {};
+        Object.entries(source).forEach(it => it[0] !== 'token' && (copy[it[0]] = it[1]));
+        return JSON.stringify(copy);
+    },
     renderSelection() {
         var list = this.getList();
         return (<section className="PikaPikaYaYa" tabindex="-1" onBlur={this.toggle}>
@@ -61,9 +66,9 @@ var TokenPicker = React.createClass({
                 <input onFocus={this.toggle} ref={ref => (this.input = ref) && (ref.value = (this.state && this.state.search) || '')} type="text" placeholder="Search Name/Address" onKeyUp={this.onType} onChange={this.onType}/>
             </section>
             <section className="PikaPikaFind">
-                {!list && <h4>Loading tokens...</h4>}
-                {list && list.length === 0 && <h4>No results found</h4>}
-                {list && list.map(it => <a className="PikaPikaFindaaaaaaaaa" key={it.address} onClick={this.toggle} href="javascript:;" data-item={JSON.stringify(it)}>
+                {!list || (list.length == 0 && this.state?.loadingUniswapPairs) && <h4>Loading tokens...</h4>}
+                {list && list.length === 0 && !this.state?.loadingUniswapPairs && <h4>No results found</h4>}
+                {list && list.map(it => <a className="PikaPikaFindaaaaaaaaa" key={it.address} onClick={this.toggle} href="javascript:;" data-item={this.cloneToken(it)}>
                     <img src={it.logo}/>
                     <p>{it.name} ({it.symbol})</p>
                 </a>)}

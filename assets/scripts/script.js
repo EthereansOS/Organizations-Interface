@@ -1640,7 +1640,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
     } else {
         uniswapPairs = uniswapPairs.filter(it => myToken.indexOf(window.web3.eth.abi.encodeParameter('address', it.token0.address)) !== -1 || myToken.indexOf(window.web3.eth.abi.encodeParameter('address', it.token1.address)) !== -1);
     }!subArrays && secondToken && myToken.push(window.web3.eth.abi.encodeParameter('address', secondToken));
-    view && view.enqueue(() => view.setState({ uniswapPairs }));
+    view && view.enqueue(() => view.setState({ loadingUniswapPairs: uniswapPairs.length == 0, uniswapPairs }));
     while (myToken) {
         for (var tranche of blockSearchTranches) {
             var logArgs = {
@@ -1693,7 +1693,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
                     pairToken.isUniswapPair = true;
                     uniswapPairs.push(window.loadedUniswapPairs[pairTokenAddress] = pairToken);
                     pairToken.symbol = pairToken.token0.symbol + '/' + pairToken.token1.symbol;
-                    view && view.enqueue(() => view.setState({ uniswapPairs }));
+                    view && view.enqueue(() => view.setState({ loadingUniswapPairs: uniswapPairs.length == 0, uniswapPairs }));
                 } catch (e) {
                     console.error(e);
                 }
@@ -1701,7 +1701,7 @@ window.loadUniswapPairs = async function loadUniswapPairs(view, address, secondT
         }
         myToken = subArrays && subArrays.length > 0 ? subArrays.splice(0, 1)[0] : undefined;
     }
-    uniswapPairs.length === 0 && view && view.enqueue(() => view.setState({ uniswapPairs }));
+    view && view.enqueue(() => view.setState({ loadingUniswapPairs: false, uniswapPairs }));
     return uniswapPairs;
 };
 
